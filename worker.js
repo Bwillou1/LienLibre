@@ -4,13 +4,10 @@
  * Ce script écoute les requêtes GET contenant un paramètre `?url=...`.
  * Il récupère l'HTML du site cible en contournant les WAF (User-Agent/Headers spoofing),
  * extrait les métadonnées Open Graph (avec fallbacks Twitter et HTML5 standard),
- * puis génère une page HTML de redirection instantanée contenant les balises OG.
- * Il supporte également les requêtes JSON pour la prévisualisation dans le frontend.
- * 
- * SÉCURITÉ :
- * - Protection anti-redirection ouverte (whitelist des médias canadiens).
- * - En-têtes HTTP de sécurité (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
- * - Assainissement des entrées (XSS protection).
+ * puis génère :
+ * - Une redirection instantanée si le domaine est dans la liste de confiance.
+ * - Une page d'avertissement de sécurité (avec IP et bouton continuer) si le domaine est suspect,
+ *   tout en conservant l'affichage de la miniature (Open Graph) pour les robots de Meta.
  */
 
 // Headers complets pour imiter un navigateur de bureau moderne et contourner les protections WAF
@@ -46,7 +43,7 @@ const SECURITY_HEADERS = {
   "Referrer-Policy": "strict-origin-when-cross-origin"
 };
 
-// Liste blanche des médias canadiens autorisés pour éviter le contournement par hameçonnage (Phishing)
+// Liste blanche des médias canadiens autorisés (Redirection directe instantanée)
 const ALLOWED_DOMAINS = [
   // Nationaux & Majeurs
   "lapresse.ca",
@@ -222,37 +219,12 @@ export default {
       });
     }
 
-    // Sécurité : Bloquer les redirections vers des domaines non autorisés (Protection Open Redirect)
-    if (!isDomainAllowed(targetUrl.hostname)) {
-      const isJson = 
-        requestUrl.searchParams.get("json") === "1" || 
-        (request.headers.get("Accept") || "").includes("application/json");
-
-      if (isJson) {
-        return new Response(JSON.stringify({ error: "Domaine non autorisé pour des raisons de sécurité." }), {
-          status: 403,
-          headers: {
-            ...CORS_HEADERS,
-            "Content-Type": "application/json; charset=utf-8"
-          }
-        });
-      }
-
-      return new Response(getBlockedDomainHTML(targetUrl.hostname), {
-        status: 403,
-        headers: {
-          ...CORS_HEADERS,
-          ...SECURITY_HEADERS,
-          "Content-Type": "text/html; charset=utf-8"
-        }
-      });
-    }
-
-    // Détecter si le client demande du JSON (pour la prévisualisation dans le frontend)
     const isJsonRequested = 
       requestUrl.searchParams.get("json") === "1" || 
       requestUrl.searchParams.get("json") === "true" ||
       (request.headers.get("Accept") || "").includes("application/json");
+
+    const isAllowed = isDomainAllowed(targetUrl.hostname);
 
     // 3. Extraire les métadonnées de la page cible
     const meta = {
@@ -306,16 +278,14 @@ export default {
             }
           });
 
-        // Exécuter la réécriture pour forcer le parsing des flux
         const transformedResponse = rewriter.transform(response);
-        await transformedResponse.arrayBuffer(); // Déclenche le streaming et remplit l'objet "meta"
+        await transformedResponse.arrayBuffer(); // Déclenche le parsing
       }
     } catch (err) {
       console.error("Erreur lors du scraping :", err);
-      // Nous ne levons pas d'erreur ici. Si le site bloque ou tombe, la redirection fonctionnera toujours!
     }
 
-    // 4. Appliquer la logique de Fallback multiniveau
+    // 4. Appliquer la logique de Fallback
     const finalTitle = (meta.title || meta.twitterTitle || meta.standardTitle || targetUrl.hostname).trim();
     const finalDescription = (meta.description || meta.twitterDescription || "Cliquez pour lire l'article complet sur " + targetUrl.hostname).trim();
     
@@ -324,7 +294,6 @@ export default {
       rawImage = meta.fallbackImages[0];
     }
     
-    // Résoudre l'URL de l'image si elle est relative
     const finalImage = rawImage ? resolveUrl(targetUrl.href, rawImage) : "";
 
     // 5. Renvoyer la réponse selon le format demandé
@@ -334,7 +303,8 @@ export default {
           title: finalTitle,
           description: finalDescription,
           image: finalImage,
-          url: targetUrl.href
+          url: targetUrl.href,
+          allowed: isAllowed
         }),
         {
           status: 200,
@@ -346,9 +316,25 @@ export default {
       );
     }
 
-    // Renvoyer le HTML de redirection avec les balises Open Graph
+    // Si le domaine est dans la liste blanche ➡️ Redirection immédiate
+    if (isAllowed) {
+      return new Response(
+        generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage),
+        {
+          status: 200,
+          headers: {
+            ...CORS_HEADERS,
+            ...SECURITY_HEADERS,
+            "Content-Type": "text/html; charset=utf-8"
+          }
+        }
+      );
+    }
+
+    // Si le domaine est suspect ➡️ Page d'avertissement avec IP (mais miniature préservée pour les bots)
+    const userIp = request.headers.get("CF-Connecting-IP") || "Inconnue";
     return new Response(
-      generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage),
+      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp),
       {
         status: 200,
         headers: {
@@ -493,8 +479,227 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
   </div>
 
   <script>
-    // Redirection Javascript de secours immédiate
     window.location.href = ${JSON.stringify(targetUrl)};
+  </script>
+</body>
+</html>`;
+}
+
+/**
+ * Génère une page d'avertissement de sécurité (phishing/spam) pour les domaines non vérifiés.
+ * Les balises Open Graph de la cible sont incluses dans le <head> pour que la miniature s'affiche tout de même sur Meta.
+ */
+function generateWarningHTML(targetUrl, title, description, image, userIp) {
+  const escapedUrl = escapeHtml(targetUrl);
+  const escapedTitle = escapeHtml(title);
+  const escapedDesc = escapeHtml(description);
+  const escapedImg = escapeHtml(image);
+  const escapedIp = escapeHtml(userIp);
+  const hostname = new URL(targetUrl).hostname;
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avertissement de Sécurité - LienLibre</title>
+  
+  <!-- Balises Open Graph pour afficher l'aperçu sur Facebook/Instagram -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="${escapedUrl}">
+  <meta property="og:title" content="${escapedTitle}">
+  <meta property="og:description" content="${escapedDesc}">
+  ${escapedImg ? `<meta property="og:image" content="${escapedImg}">` : ""}
+  <meta property="og:site_name" content="LienLibre">
+  
+  <!-- Balises Meta Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="${escapedUrl}">
+  <meta name="twitter:title" content="${escapedTitle}">
+  <meta name="twitter:description" content="${escapedDesc}">
+  ${escapedImg ? `<meta name="twitter:image" content="${escapedImg}">` : ""}
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #020617;
+      color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 1rem;
+      padding: 2.5rem;
+      max-width: 550px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+    }
+    .icon-container {
+      width: 4rem;
+      height: 4rem;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .icon {
+      color: #ef4444;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+      color: #f87171;
+    }
+    p {
+      color: #9ca3af;
+      font-size: 0.95rem;
+      margin: 0 0 1.5rem;
+      line-height: 1.6;
+    }
+    .info-box {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: left;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+    .info-row {
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .info-row:last-child {
+      margin-bottom: 0;
+    }
+    .info-label {
+      color: #6b7280;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .info-value {
+      color: #e5e7eb;
+      font-family: monospace;
+      word-break: break-all;
+      text-align: right;
+    }
+    .btn-report {
+      display: block;
+      background-color: #ef4444;
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: background-color 0.2s;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .btn-report:hover {
+      background-color: #dc2626;
+    }
+    .advanced-toggle {
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0.5rem;
+    }
+    .advanced-toggle:hover {
+      color: #9ca3af;
+    }
+    .advanced-content {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+    .btn-continue {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #d1d5db;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      margin-top: 0.5rem;
+      transition: all 0.2s;
+    }
+    .btn-continue:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon-container">
+      <span class="icon">⚠️</span>
+    </div>
+    <h1>Lien non vérifié</h1>
+    <p>Ce lien redirige vers un site qui ne figure pas dans notre liste de confiance des médias canadiens. Par mesure de sécurité pour éviter le hameçonnage (phishing), la redirection n'est pas automatique.</p>
+    
+    <div class="info-box">
+      <div class="info-row">
+        <span class="info-label">Destination :</span>
+        <span class="info-value">${escapeHtml(hostname)}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Votre IP publique :</span>
+        <span class="info-value">${escapedIp}</span>
+      </div>
+    </div>
+
+    <a href="https://www.antifraudcentre-centreantifraude.ca/report-signalez-fra.htm" target="_blank" rel="noopener noreferrer" class="btn-report">
+      Signaler une tentative de fraude
+    </a>
+
+    <button class="advanced-toggle" onclick="toggleAdvanced()">Options avancées</button>
+    
+    <div id="advanced-content" class="advanced-content">
+      <p>Si vous faites confiance à ce site, vous pouvez continuer vers la page d'origine.</p>
+      <a href="${escapedUrl}" class="btn-continue">Continuer vers le site (non recommandé)</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleAdvanced() {
+      const content = document.getElementById('advanced-content');
+      if (content.style.display === 'block') {
+        content.style.display = 'none';
+      } else {
+        content.style.display = 'block';
+        content.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   </script>
 </body>
 </html>`;
@@ -586,95 +791,6 @@ function getWelcomeHTML() {
     <p>Ceci est l'instance Cloudflare Worker de l'application open-source <strong>LienLibre</strong>. Ce service sert de passerelle de contournement et d'extraction de métadonnées.</p>
     <p>Pour l'utiliser, passez un paramètre URL encodé :<br><code>?url=https://adresse-du-media.com/article</code></p>
     <p style="font-size: 0.9rem; color: #6b7280;">Pour configurer votre interface utilisateur, déployez le code frontend et pointez la variable <code>WORKER_URL</code> vers cette adresse.</p>
-  </div>
-</body>
-</html>`;
-}
-
-/**
- * Génère le HTML d'erreur pour les domaines non autorisés (Sécurité anti-phishing)
- */
-function getBlockedDomainHTML(hostname) {
-  const escapedHost = escapeHtml(hostname);
-  return `<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LienLibre - Domaine non autorisé</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #030712;
-      color: #f3f4f6;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 1.5rem;
-      box-sizing: border-box;
-    }
-    .card {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(239, 68, 68, 0.15);
-      border-radius: 1rem;
-      padding: 2.5rem;
-      max-width: 600px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-    }
-    .icon {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-    }
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin: 0 0 1rem;
-      color: #f87171;
-    }
-    p {
-      color: #9ca3af;
-      font-size: 0.95rem;
-      margin: 0 0 1.5rem;
-      line-height: 1.6;
-    }
-    .allowed-list {
-      background-color: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      text-align: left;
-      font-size: 0.8rem;
-      color: #9ca3af;
-      max-height: 150px;
-      overflow-y: auto;
-    }
-    .allowed-item {
-      display: inline-block;
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 0.15rem 0.4rem;
-      border-radius: 0.25rem;
-      margin: 0.2rem;
-      font-family: monospace;
-      font-size: 0.75rem;
-      color: #22d3ee;
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <div class="icon">⚠️</div>
-    <h1>Domaine non autorisé</h1>
-    <p>Pour des raisons de sécurité et afin d'éviter les tentatives de phishing (hameçonnage), cette instance de LienLibre n'autorise la redirection que vers les principaux médias d'information canadiens.</p>
-    <p style="font-size: 0.85rem; color: #ef4444;">Le domaine <strong>${escapedHost}</strong> n'est pas autorisé.</p>
-    <div class="allowed-list">
-      <strong style="color: #e5e7eb;">Médias pris en charge :</strong><br>
-      ${ALLOWED_DOMAINS.map(d => `<span class="allowed-item">${d}</span>`).join('')}
-    </div>
   </div>
 </body>
 </html>`;
