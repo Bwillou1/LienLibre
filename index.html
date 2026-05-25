@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LienLibre — Partagez l'actualité canadienne sans censure</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Contournez le blocage de Meta (Facebook/Instagram) sur les médias canadiens. Générez un lien pont gratuit avec aperçu Open Graph complet.">
+  <meta name="keywords" content="LienLibre, Meta, Facebook, Instagram, blocage, médias canadiens, actualités, censure, loi C-18, proxy, Open Graph">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="LienLibre — Partagez l'actualité canadienne sans censure">
+  <meta property="og:description" content="Contournez le blocage de Meta sur les médias canadiens. Générez un lien pont gratuit en 2 secondes.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80">
+  
+  <!-- Google Fonts - Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              500: '#06b6d4',
+              600: '#0891b2',
+              700: '#0e7490',
+              950: '#020617',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Styles personnalisés pour le flou et les animations -->
+  <style>
+    body {
+      background-color: #020617;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(124, 58, 237, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .gradient-border {
+      position: relative;
+    }
+    .gradient-border::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(to right, #06b6d4, #6366f1);
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0.15;
+      transition: opacity 0.3s ease;
+    }
+    .gradient-border:hover::after {
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body class="text-zinc-100 min-h-screen flex flex-col justify-between antialiased">
+
+  <!-- Header / Navigation -->
+  <header class="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between border-b border-zinc-900">
+    <div class="flex items-center gap-3">
+      <div class="h-9 w-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-white">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+        </svg>
+      </div>
+      <span class="font-display font-extrabold text-2xl tracking-tight bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">LienLibre</span>
+    </div>
+    
+    <div>
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-zinc-400 hover:text-zinc-200 transition-colors text-sm font-medium">
+        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+        </svg>
+        <span>Open Source</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-6 py-12 flex flex-col items-center justify-center">
+    
+    <!-- Hero / Headline -->
+    <div class="text-center max-w-2xl mb-10">
+      <div class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-5">
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+        </span>
+        Contre le blocage des médias canadiens
+      </div>
+      <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-4 leading-tight">
+        Partagez l'actualité <br>
+        <span class="bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">sans censure.</span>
+      </h1>
+      <p class="text-zinc-400 text-base sm:text-lg leading-relaxed max-w-xl mx-auto">
+        Meta bloque les liens d'information au Canada ? Collez votre lien bloqué pour générer un pont affichant correctement la miniature sur les réseaux sociaux.
+      </p>
+    </div>
+
+    <!-- Generator Panel -->
+    <div class="w-full glass-panel gradient-border rounded-2xl p-6 sm:p-8 shadow-2xl relative">
+      <form id="generator-form" class="space-y-4">
+        <div>
+          <label for="url-input" class="block text-sm font-semibold text-zinc-300 mb-2">URL de l'article canadien</label>
+          <div class="relative rounded-lg shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-.778.099-1.533.284-2.253" />
+              </svg>
+            </div>
+            <input 
+              type="url" 
+              name="url" 
+              id="url-input" 
+              required
+              placeholder="Ex: https://www.lapresse.ca/actualites/politique/..." 
+              class="block w-full pl-10 pr-4 py-3.5 bg-zinc-950/60 border border-zinc-800 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm transition-all"
+            >
+          </div>
+        </div>
+        
+        <button 
+          type="submit" 
+          class="w-full bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-600 hover:to-indigo-700 text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg hover:shadow-cyan-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm"
+        >
+          <span>Générer mon LienLibre</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </button>
+      </form>
+
+      <!-- Error Message -->
+      <div id="error-message" class="hidden mt-4 p-3 bg-red-950/30 border border-red-500/20 text-red-400 rounded-lg text-sm flex items-start gap-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 shrink-0 mt-0.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+        </svg>
+        <span id="error-text">Une erreur est survenue lors du traitement de l'URL.</span>
+      </div>
+
+      <!-- Result Area (Hidden initially) -->
+      <div id="result-area" class="hidden mt-8 space-y-6 pt-6 border-t border-zinc-800/80">
+        
+        <!-- Output Link Box -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-zinc-300">Votre LienLibre généré</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <div class="grow bg-zinc-950/80 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-cyan-400 font-mono select-all break-all flex items-center justify-between">
+              <span id="output-url"></span>
+            </div>
+            <button 
+              id="copy-btn"
+              class="bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium px-5 py-3 rounded-lg text-sm transition-all active:scale-95 shrink-0 flex items-center justify-center gap-2"
+            >
+              <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
+              </svg>
+              <svg id="copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-emerald-400 hidden">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              <span id="copy-btn-text">Copier</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Preview Card Section -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="block text-sm font-semibold text-zinc-300">Aperçu de la carte sur les réseaux sociaux</span>
+            <span class="text-xs text-zinc-500 flex items-center gap-1.5">
+              <span class="h-1.5 w-1.5 bg-cyan-400 rounded-full"></span>
+              Généré en direct par le Worker
+            </span>
+          </div>
+
+          <!-- Live Mock Card -->
+          <div id="preview-card" class="bg-[#18191a] border border-[#2f3031] rounded-xl overflow-hidden shadow-xl max-w-lg mx-auto transition-all duration-300">
+            
+            <!-- Skeleton Loader -->
+            <div id="preview-skeleton" class="animate-pulse space-y-3">
+              <div class="bg-zinc-800 h-48 w-full"></div>
+              <div class="p-4 space-y-3">
+                <div class="bg-zinc-800 h-3 w-1/4 rounded"></div>
+                <div class="bg-zinc-800 h-4 w-3/4 rounded"></div>
+                <div class="bg-zinc-800 h-3 w-5/6 rounded"></div>
+              </div>
+            </div>
+
+            <!-- Real Preview Content (Hidden initially) -->
+            <div id="preview-content" class="hidden">
+              <div class="relative bg-zinc-900 aspect-video overflow-hidden border-b border-[#2f3031]">
+                <img id="preview-img" src="" alt="Aperçu de l'article" class="w-full h-full object-cover">
+                <div id="preview-img-placeholder" class="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950 flex flex-col items-center justify-center text-zinc-600 gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                  </svg>
+                  <span class="text-xs">Pas d'image détectée (redirection préservée)</span>
+                </div>
+              </div>
+              <div class="p-3 text-left">
+                <span id="preview-domain" class="text-[12px] text-[#b0b3b8] uppercase font-sans tracking-wide block mb-1"></span>
+                <h4 id="preview-title" class="text-sm font-semibold text-[#e4e6eb] leading-snug line-clamp-2 mb-1"></h4>
+                <p id="preview-desc" class="text-[12px] text-[#b0b3b8] line-clamp-2 leading-normal"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Explainer / How it works Section -->
+    <section class="w-full mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-zinc-900">
+      <div class="space-y-3">
+        <h3 class="font-display font-bold text-xl text-cyan-400 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
+          </svg>
+          Pourquoi LienLibre ?
+        </h3>
+        <p class="text-zinc-400 text-sm leading-relaxed">
+          En réponse à la loi canadienne sur les nouvelles en ligne (Loi C-18), Meta a bloqué le partage d'actualités au Canada. Cette mesure empêche la publication et la visualisation de miniatures d'articles sur Facebook et Instagram. LienLibre agit comme une passerelle neutre pour contourner cette restriction sans enfreindre la loi.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <h3 class="font-display font-bold text-xl text-indigo-400 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 21l8.982-11.795H11.72l1.309-6H4.33L18 14.158H9.813Z" />
+          </svg>
+          Comment ça fonctionne ?
+        </h3>
+        <p class="text-zinc-400 text-sm leading-relaxed">
+          Le lien généré pointe vers notre serveur proxy (Cloudflare Worker). Lorsque le robot de Facebook scanne ce lien, le Worker télécharge l'article original, extrait ses balises Open Graph (image, titre, description) et lui renvoie. Pour un utilisateur normal, la page effectue une redirection transparente et instantanée vers l'article d'origine.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full max-w-7xl mx-auto px-6 py-6 text-center text-xs text-zinc-600 border-t border-zinc-910">
+    <p>LienLibre est un outil open-source distribué sous licence MIT. Aucune donnée n'est stockée ni enregistrée sur nos serveurs.</p>
+  </footer>
+
+  <!-- Script Front -->
+  <script>
+    // Redirection client directe si l'URL est passée en paramètre (Fallback local)
+    const urlParams = new URLSearchParams(window.location.search);
+    const target = urlParams.get('url');
+    if (target) {
+      try {
+        const decoded = decodeURIComponent(target);
+        const parsed = new URL(decoded);
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+          window.location.replace(decoded);
+        }
+      } catch (e) {
+        console.error("URL de redirection invalide");
+      }
+    }
+
+    // URL du Worker Cloudflare à personnaliser (utilisez l'adresse IP locale de votre ordinateur pour tester sur mobile)
+    const WORKER_URL = 'http://172.16.3.53:8787';
+
+    const form = document.getElementById('generator-form');
+    const urlInput = document.getElementById('url-input');
+    const resultArea = document.getElementById('result-area');
+    const outputUrl = document.getElementById('output-url');
+    const copyBtn = document.getElementById('copy-btn');
+    const copyBtnText = document.getElementById('copy-btn-text');
+    const copyIcon = document.getElementById('copy-icon');
+    const copiedIcon = document.getElementById('copied-icon');
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+
+    // Éléments de prévisualisation
+    const previewCard = document.getElementById('preview-card');
+    const previewSkeleton = document.getElementById('preview-skeleton');
+    const previewContent = document.getElementById('preview-content');
+    const previewImg = document.getElementById('preview-img');
+    const previewImgPlaceholder = document.getElementById('preview-img-placeholder');
+    const previewDomain = document.getElementById('preview-domain');
+    const previewTitle = document.getElementById('preview-title');
+    const previewDesc = document.getElementById('preview-desc');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Réinitialisation
+      errorMessage.classList.add('hidden');
+      resultArea.classList.remove('hidden');
+      previewSkeleton.classList.remove('hidden');
+      previewContent.classList.add('hidden');
+      
+      const rawUrl = urlInput.value.trim();
+      
+      // Validation basique
+      try {
+        const parsed = new URL(rawUrl);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+          throw new Error();
+        }
+      } catch (_) {
+        showError("Veuillez saisir une URL valide commençant par http:// ou https://");
+        resultArea.classList.add('hidden');
+        return;
+      }
+
+      // Encodage sécurisé de l'URL cible
+      const encodedUrl = encodeURIComponent(rawUrl);
+      
+      // Construction de l'URL finale pointant vers le Worker
+      const finalLink = `${WORKER_URL}?url=${encodedUrl}`;
+      outputUrl.textContent = finalLink;
+
+      // Faire défiler vers les résultats pour les mobiles
+      setTimeout(() => {
+        resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+
+      // Charger l'aperçu depuis le Worker en mode JSON
+      try {
+        const previewApiUrl = `${WORKER_URL}?url=${encodedUrl}&json=1`;
+        const response = await fetch(previewApiUrl);
+        
+        if (!response.ok) {
+          throw new Error();
+        }
+
+        const data = await response.json();
+        
+        // Mettre à jour l'aperçu
+        if (data.image) {
+          previewImg.src = data.image;
+          previewImg.classList.remove('hidden');
+          previewImgPlaceholder.classList.add('hidden');
+        } else {
+          previewImg.classList.add('hidden');
+          previewImgPlaceholder.classList.remove('hidden');
+        }
+
+        // Extraire et nettoyer le nom de domaine
+        const targetHost = new URL(rawUrl).hostname.replace('www.', '');
+        previewDomain.textContent = targetHost;
+        previewTitle.textContent = data.title || targetHost;
+        previewDesc.textContent = data.description || "Cliquez pour voir l'article original.";
+
+        // Afficher le contenu de prévisualisation
+        previewSkeleton.classList.add('hidden');
+        previewContent.classList.remove('hidden');
+      } catch (err) {
+        console.warn("Impossible de charger la prévisualisation (le Worker est-il déployé ?)", err);
+        // Fallback en cas d'erreur de prévisualisation
+        const fallbackHost = new URL(rawUrl).hostname.replace('www.', '');
+        previewDomain.textContent = fallbackHost;
+        previewTitle.textContent = fallbackHost;
+        previewDesc.textContent = "Lien de redirection LienLibre";
+        previewImg.classList.add('hidden');
+        previewImgPlaceholder.classList.remove('hidden');
+        
+        previewSkeleton.classList.add('hidden');
+        previewContent.classList.remove('hidden');
+      }
+    });
+
+    // Copie dans le presse-papier
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = outputUrl.textContent;
+      if (!textToCopy) return;
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        // Changement d'état visuel (Succès)
+        copyBtnText.textContent = 'Copié !';
+        copyIcon.classList.add('hidden');
+        copiedIcon.classList.remove('hidden');
+        copyBtn.classList.remove('bg-zinc-800', 'hover:bg-zinc-700');
+        copyBtn.classList.add('bg-emerald-950/45', 'border', 'border-emerald-500/20', 'text-emerald-400');
+
+        // Réinitialisation après 2 secondes
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copier';
+          copyIcon.classList.remove('hidden');
+          copiedIcon.classList.add('hidden');
+          copyBtn.classList.add('bg-zinc-800', 'hover:bg-zinc-700');
+          copyBtn.classList.remove('bg-emerald-950/45', 'border', 'border-emerald-500/20', 'text-emerald-400');
+        }, 2000);
+      }).catch(err => {
+        console.error('Erreur lors de la copie :', err);
+        showError("Impossible de copier automatiquement. Veuillez sélectionner et copier le lien manuellement.");
+      });
+    });
+
+    function showError(text) {
+      errorText.textContent = text;
+      errorMessage.classList.remove('hidden');
+      errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+</body>
+</html>
