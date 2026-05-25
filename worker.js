@@ -6,9 +6,14 @@
  * extrait les métadonnées Open Graph (avec fallbacks Twitter et HTML5 standard),
  * puis génère une page HTML de redirection instantanée contenant les balises OG.
  * Il supporte également les requêtes JSON pour la prévisualisation dans le frontend.
+ * 
+ * SÉCURITÉ :
+ * - Protection anti-redirection ouverte (whitelist des médias canadiens).
+ * - En-têtes HTTP de sécurité (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
+ * - Assainissement des entrées (XSS protection).
  */
 
-// Headers complets pour imiter un navigateur de bureau moderne et contourner les protections anti-scraping (WAF)
+// Headers complets pour imiter un navigateur de bureau moderne et contourner les protections WAF
 const SPOOF_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -32,6 +37,60 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "*",
   "Access-Control-Max-Age": "86400"
 };
+
+// En-têtes HTTP de sécurité globaux
+const SECURITY_HEADERS = {
+  "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src *; data: *;",
+  "X-Frame-Options": "DENY",
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin"
+};
+
+// Liste blanche des médias canadiens autorisés pour éviter le contournement par hameçonnage (Phishing)
+const ALLOWED_DOMAINS = [
+  "lapresse.ca",
+  "radio-canada.ca",
+  "cbc.ca",
+  "ctvnews.ca",
+  "tvanouvelles.ca",
+  "ledevoir.com",
+  "journaldemontreal.com",
+  "journaldequebec.com",
+  "theglobeandmail.com",
+  "nationalpost.com",
+  "thestar.com",
+  "torontostar.com",
+  "globalnews.ca",
+  "rds.ca",
+  "tsn.ca",
+  "lesoleil.com",
+  "lactualite.com",
+  "noovo.info",
+  "infopresse.com",
+  "lesaffaires.com",
+  "macleans.ca",
+  "tvo.org",
+  "cheknews.ca",
+  "hilltimes.com",
+  "timescolonist.com",
+  "vancouversun.com",
+  "calgaryherald.com",
+  "edmontonjournal.com",
+  "leaderpost.com",
+  "theprovince.com",
+  "winnipegfreepress.com",
+  "chronicleherald.ca",
+  "republiquedebagages.ca",
+  "l-express.ca"
+];
+
+/**
+ * Vérifie si le domaine cible fait partie des médias canadiens de confiance.
+ */
+function isDomainAllowed(hostname) {
+  const cleanHost = hostname.toLowerCase().replace(/^www\./, "");
+  return ALLOWED_DOMAINS.some(domain => cleanHost === domain || cleanHost.endsWith("." + domain));
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -60,6 +119,7 @@ export default {
         status: 200,
         headers: {
           ...CORS_HEADERS,
+          ...SECURITY_HEADERS,
           "Content-Type": "text/html; charset=utf-8"
         }
       });
@@ -78,6 +138,32 @@ export default {
         headers: {
           ...CORS_HEADERS,
           "Content-Type": "application/json; charset=utf-8"
+        }
+      });
+    }
+
+    // Sécurité : Bloquer les redirections vers des domaines non autorisés (Protection Open Redirect)
+    if (!isDomainAllowed(targetUrl.hostname)) {
+      const isJson = 
+        requestUrl.searchParams.get("json") === "1" || 
+        (request.headers.get("Accept") || "").includes("application/json");
+
+      if (isJson) {
+        return new Response(JSON.stringify({ error: "Domaine non autorisé pour des raisons de sécurité." }), {
+          status: 403,
+          headers: {
+            ...CORS_HEADERS,
+            "Content-Type": "application/json; charset=utf-8"
+          }
+        });
+      }
+
+      return new Response(getBlockedDomainHTML(targetUrl.hostname), {
+        status: 403,
+        headers: {
+          ...CORS_HEADERS,
+          ...SECURITY_HEADERS,
+          "Content-Type": "text/html; charset=utf-8"
         }
       });
     }
@@ -187,6 +273,7 @@ export default {
         status: 200,
         headers: {
           ...CORS_HEADERS,
+          ...SECURITY_HEADERS,
           "Content-Type": "text/html; charset=utf-8"
         }
       }
@@ -419,6 +506,95 @@ function getWelcomeHTML() {
     <p>Ceci est l'instance Cloudflare Worker de l'application open-source <strong>LienLibre</strong>. Ce service sert de passerelle de contournement et d'extraction de métadonnées.</p>
     <p>Pour l'utiliser, passez un paramètre URL encodé :<br><code>?url=https://adresse-du-media.com/article</code></p>
     <p style="font-size: 0.9rem; color: #6b7280;">Pour configurer votre interface utilisateur, déployez le code frontend et pointez la variable <code>WORKER_URL</code> vers cette adresse.</p>
+  </div>
+</body>
+</html>`;
+}
+
+/**
+ * Génère le HTML d'erreur pour les domaines non autorisés (Sécurité anti-phishing)
+ */
+function getBlockedDomainHTML(hostname) {
+  const escapedHost = escapeHtml(hostname);
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LienLibre - Domaine non autorisé</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #030712;
+      color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+    .card {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      border-radius: 1rem;
+      padding: 2.5rem;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 1rem;
+      color: #f87171;
+    }
+    p {
+      color: #9ca3af;
+      font-size: 0.95rem;
+      margin: 0 0 1.5rem;
+      line-height: 1.6;
+    }
+    .allowed-list {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: left;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .allowed-item {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.25rem;
+      margin: 0.2rem;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: #22d3ee;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">⚠️</div>
+    <h1>Domaine non autorisé</h1>
+    <p>Pour des raisons de sécurité et afin d'éviter les tentatives de phishing (hameçonnage), cette instance de LienLibre n'autorise la redirection que vers les principaux médias d'information canadiens.</p>
+    <p style="font-size: 0.85rem; color: #ef4444;">Le domaine <strong>${escapedHost}</strong> n'est pas autorisé.</p>
+    <div class="allowed-list">
+      <strong style="color: #e5e7eb;">Médias pris en charge :</strong><br>
+      ${ALLOWED_DOMAINS.map(d => `<span class="allowed-item">${d}</span>`).join('')}
+    </div>
   </div>
 </body>
 </html>`;
