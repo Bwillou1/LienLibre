@@ -193,6 +193,17 @@
           </div>
         </div>
 
+        <!-- Unverified Domain Alert -->
+        <div id="unverified-warning" class="hidden p-4 bg-amber-950/20 border border-amber-500/25 text-amber-300 rounded-lg text-xs leading-relaxed space-y-1">
+          <div class="font-semibold flex items-center gap-1.5 text-amber-400">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4 shrink-0">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            Domaine non vérifié
+          </div>
+          <p>Ce site ne figure pas dans notre liste blanche de confiance des médias d'information canadiens. L'aperçu miniature fonctionnera sur les réseaux sociaux, mais un écran d'avertissement de sécurité sera affiché aux visiteurs avant de les rediriger vers la cible.</p>
+        </div>
+
         <!-- Preview Card Section -->
         <div class="space-y-3">
           <div class="flex items-center justify-between">
@@ -302,6 +313,7 @@
     const copiedIcon = document.getElementById('copied-icon');
     const errorMessage = document.getElementById('error-message');
     const errorText = document.getElementById('error-text');
+    const unverifiedWarning = document.getElementById('unverified-warning');
 
     // Éléments de prévisualisation
     const previewCard = document.getElementById('preview-card');
@@ -318,6 +330,7 @@
       
       // Réinitialisation
       errorMessage.classList.add('hidden');
+      unverifiedWarning.classList.add('hidden');
       resultArea.classList.remove('hidden');
       previewSkeleton.classList.remove('hidden');
       previewContent.classList.add('hidden');
@@ -358,6 +371,11 @@
         }
 
         const data = await response.json();
+
+        // Afficher l'avertissement si le domaine n'est pas vérifié
+        if (data.allowed === false) {
+          unverifiedWarning.classList.remove('hidden');
+        }
         
         // Mettre à jour l'aperçu
         if (data.image) {
