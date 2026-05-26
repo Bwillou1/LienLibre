@@ -936,17 +936,8 @@
         lastStatsData = { totalClicks: data.total_clicks, domains: data.domains };
         displayStats(data.total_clicks, data.domains);
       } catch (err) {
-        console.warn("Utilisation des statistiques de démonstration (KV non connecté) :", err);
-        // Fallback avec des données réalistes pour que la section soit toujours visible
-        const mockTotal = 12450;
-        const mockDomains = {
-          "lapresse.ca": 5420,
-          "radio-canada.ca": 3850,
-          "ledevoir.com": 1840,
-          "cbc.ca": 1340
-        };
-        lastStatsData = { totalClicks: mockTotal, domains: mockDomains };
-        displayStats(mockTotal, mockDomains);
+        console.warn("Impossible de charger les statistiques réelles (ou aucun clic enregistré) :", err);
+        statsSection.classList.add('hidden');
       }
     }
 
