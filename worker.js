@@ -258,6 +258,7 @@ export default {
     }
 
     const requestUrl = new URL(request.url);
+    const lang = (requestUrl.searchParams.get("lang") || "fr").toLowerCase();
 
     // 2. Point de terminaison API Stats
     if (requestUrl.pathname === "/api/stats") {
@@ -417,7 +418,7 @@ export default {
     // Si le domaine est dans la liste blanche ➡️ Redirection immédiate
     if (isAllowed) {
       return new Response(
-        generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage),
+        generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang),
         {
           status: 200,
           headers: {
@@ -432,7 +433,7 @@ export default {
     // Si le domaine est suspect ➡️ Page d'avertissement avec IP (mais miniature préservée pour les bots)
     const userIp = request.headers.get("CF-Connecting-IP") || "Inconnue";
     return new Response(
-      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp),
+      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang),
       {
         status: 200,
         headers: {
@@ -472,15 +473,228 @@ function escapeHtml(str) {
 /**
  * Génère le HTML pour rediriger l'utilisateur tout en affichant l'aperçu Open Graph pour les bots.
  */
-function generateRedirectionHTML(targetUrl, title, description, image) {
+const WORKER_TRANSLATIONS = {
+  fr: {
+    redirectTitle: "Redirection sécurisée",
+    redirecting: "LienLibre vous redirige vers l'article d'origine :",
+    fallbackNote: "Si la redirection automatique ne fonctionne pas après quelques secondes, veuillez cliquer ci-dessous.",
+    accessBtn: "Accéder à l'article",
+    supportBanner: "<strong>Soutenez le journalisme local :</strong> ce média (<strong>{host}</strong>) a besoin de vous. Pensez à vous abonner ou à désactiver votre bloqueur de pub sur leur site."
+  },
+  en: {
+    redirectTitle: "Secure Redirection",
+    redirecting: "LienLibre is redirecting you to the original article:",
+    fallbackNote: "If the automatic redirection does not work after a few seconds, please click below.",
+    accessBtn: "Access the article",
+    supportBanner: "<strong>Support local journalism:</strong> this media outlet (<strong>{host}</strong>) needs you. Please consider subscribing or disabling your ad blocker on their site."
+  },
+  ar: {
+    redirectTitle: "إعادة توجيه آمنة",
+    redirecting: "يقوم LienLibre بإعادة توجيهك إلى المقال الأصلي:",
+    fallbackNote: "إذا لم تعمل إعادة التوجيه التلقائي بعد بضع ثوانٍ، يرجى النقر أدناه.",
+    accessBtn: "الوصول إلى المقال",
+    supportBanner: "<strong>ادعم الصحافة المحلية:</strong> هذه الوسيلة الإعلامية (<strong>{host}</strong>) بحاجة إليك. يرجى التفكير في الاشتراك أو إيقاف تشغيل مانع الإعلانات على موقعهم."
+  },
+  es: {
+    redirectTitle: "Redirección segura",
+    redirecting: "LienLibre le está redirigiendo al artículo original:",
+    fallbackNote: "Si la redirección automática no funciona después de unos segundos, haga clic a continuación.",
+    accessBtn: "Acceder al artículo",
+    supportBanner: "<strong>Apoye el periodismo local:</strong> este medio (<strong>{host}</strong>) le necesita. Considere suscribirse o desactivar su bloqueador de anuncios en su sitio."
+  },
+  it: {
+    redirectTitle: "Reindirizzamento sicuro",
+    redirecting: "LienLibre ti sta reindirizzando all'articolo originale:",
+    fallbackNote: "Se il reindirizzamento automatico non funziona dopo pochi secondi, clicca qui sotto.",
+    accessBtn: "Accedi all'articolo",
+    supportBanner: "<strong>Sostieni il giornalismo locale:</strong> questo media (<strong>{host}</strong>) ha bisogno di te. Considera di abbonarti o disattivare il tuo ad blocker sul loro sito."
+  },
+  zh: {
+    redirectTitle: "安全重定向",
+    redirecting: "LienLibre 正在将您重定向至原始文章：",
+    fallbackNote: "如果自动重定向在几秒钟后未运行，请点击下方链接。",
+    accessBtn: "访问文章",
+    supportBanner: "<strong>支持本地新闻：</strong>该媒体（<strong>{host}</strong>）需要您的支持。请考虑订阅或在其网站上停用广告拦截器。"
+  },
+  cr: {
+    redirectTitle: "Kwayask pimi-cahkêyhk",
+    redirecting: "LienLibre wîci-ayamihtân ôma âcimowin:",
+    fallbackNote: "Kîspin nama-sêmâk pimohtêmakahk, ôta cahkêyhk.",
+    accessBtn: "Ayamihtâ âcimowin",
+    supportBanner: "<strong>Wîcihiwê kânata âcimowina:</strong> ôma (<strong>{host}</strong>) wîci-nîso-kamik. Masinahikan kie wîcihiwê."
+  },
+  iu: {
+    redirectTitle: "Nalunaiqtillugu nuutitauniq",
+    redirecting: "LienLibre nuutitsijuq tusaraksaq-mut:",
+    fallbackNote: "Utaqqilaurlutit maanna nuutingippat.",
+    accessBtn: "Tusaraksaq atulugu",
+    supportBanner: "<strong>Ikayurlugu tusagaksat:</strong> una (<strong>{host}</strong>) ikayuriqquq. Ikayuriaqutit."
+  },
+  in: {
+    redirectTitle: "Tshitisheun e kanatshiau",
+    redirecting: "LienLibre tshitissipitamin nete tipatshimun:",
+    fallbackNote: "Eka sêmâk tshitissipitamin, kussenitan nete tshe miskamin.",
+    accessBtn: "Tipatshimun aitun",
+    supportBanner: "<strong>Uitsheue tipatshimun:</strong> nete (<strong>{host}</strong>) uitsheue tshetshi tutamin."
+  },
+  moh: {
+    redirectTitle: "Tsi nioht tyohtetyon",
+    redirecting: "LienLibre tsi niahsewenni ne karihwaneken:",
+    fallbackNote: "Kwah ok kwahiaton ne thó tsi niiorihwà:ke.",
+    accessBtn: "Acceder ne karihwaneken",
+    supportBanner: "<strong>Sewarihwakwenihs ne ohwentsia:</strong> ne (<strong>{host}</strong>) karihwaneken. Takwarent."
+  }
+};
+
+const WORKER_WARN_TRANSLATIONS = {
+  fr: {
+    warnTitle: "Avertissement de Sécurité - LienLibre",
+    unverifiedLink: "Lien non vérifié",
+    warnDesc: "Ce lien redirige vers un site qui ne figure pas dans notre liste de confiance des médias d'information canadiens. Par mesure de sécurité pour éviter le hameçonnage (phishing), la redirection est suspendue temporairement.",
+    countdownText: "Redirection automatique dans <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    destination: "Destination :",
+    ipLabel: "Votre IP publique :",
+    reportBtn: "Signaler une tentative de fraude au Canada",
+    advancedBtn: "Options avancées",
+    advancedDesc: "Si vous faites confiance à ce site, vous pouvez continuer vers la page d'origine.",
+    continueBtn: "Continuer vers le site (non recommandé)",
+    supportBanner: "<strong>Soutenez le journalisme indépendant :</strong> Pensez à visiter les sites de presse directement et à vous abonner pour financer l'information locale."
+  },
+  en: {
+    warnTitle: "Security Warning - LienLibre",
+    unverifiedLink: "Unverified Link",
+    warnDesc: "This link redirects to a website that is not on our trusted whitelist of Canadian news media. As a security measure to prevent phishing, the redirection is temporarily suspended.",
+    countdownText: "Automatic redirection in <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    destination: "Destination:",
+    ipLabel: "Your public IP:",
+    reportBtn: "Report a scam attempt in Canada",
+    advancedBtn: "Advanced options",
+    advancedDesc: "If you trust this site, you can proceed to the original page.",
+    continueBtn: "Continue to site (not recommended)",
+    supportBanner: "<strong>Support independent journalism:</strong> Consider visiting news sites directly and subscribing to fund local reporting."
+  },
+  ar: {
+    warnTitle: "تحذير أمان - LienLibre",
+    unverifiedLink: "رابط غير موثق",
+    warnDesc: "إعادة التوجيه إلى موقع غير مدرج في قائمتنا البيضاء لوسائل الإعلام الكندية الموثوقة. كإجراء أمني لمنع التصيد الاحتيالي، تم تعليق إعادة التوجيه مؤقتاً.",
+    countdownText: "إعادة التوجيه تلقائياً خلال <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> ثوانٍ...",
+    destination: "الوجهة:",
+    ipLabel: "عنوان IP العام الخاص بك:",
+    reportBtn: "الإبلاغ عن محاولة احتيال في كندا",
+    advancedBtn: "خيارات متقدمة",
+    advancedDesc: "إذا كنت تثق في هذا الموقع، يمكنك المتابعة إلى الصفحة الأصلية.",
+    continueBtn: "المتابعة إلى الموقع (غير مستحسن)",
+    supportBanner: "<strong>ادعم الصحافة المستقلة:</strong> فكر في زيارة مواقع الأخبار مباشرة والاشتراك لتمويل الصحافة المحلية."
+  },
+  es: {
+    warnTitle: "Advertencia de seguridad - LienLibre",
+    unverifiedLink: "Enlace no verificado",
+    warnDesc: "Este enlace redirige a un sitio web que no está en nuestra lista de confianza de medios canadienses. Como medida de seguridad contra el phishing, la redirección se ha suspendido temporalmente.",
+    countdownText: "Redirección automática en <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    destination: "Destino:",
+    ipLabel: "Su IP pública:",
+    reportBtn: "Reportar un intento de fraude en Canadá",
+    advancedBtn: "Opciones avanzadas",
+    advancedDesc: "Si confía en este sitio, puede continuar a la página de origen.",
+    continueBtn: "Continuar al sitio (no recomendado)",
+    supportBanner: "<strong>Apoye el periodismo independiente:</strong> Considere visitar los sitios de noticias directamente y suscribirse para financiar la información local."
+  },
+  it: {
+    warnTitle: "Avviso di sicurezza - LienLibre",
+    unverifiedLink: "Link non verificato",
+    warnDesc: "Questo link reindirizza a un sito web che non è nella nostra lista di fiducia dei media canadesi. Come misura di sicurezza per evitare il phishing, il reindirizzamento è temporaneamente sospeso.",
+    countdownText: "Reindirizzamento automatico in <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    destination: "Destinazione:",
+    ipLabel: "Il tuo IP pubblico:",
+    reportBtn: "Segnala un tentativo di frode in Canada",
+    advancedBtn: "Opzioni avanzate",
+    advancedDesc: "Se ti fidi di questo sito, puoi procedere alla pagina di origine.",
+    continueBtn: "Continua sul sito (non consigliato)",
+    supportBanner: "<strong>Sostieni il giornalismo indipendente:</strong> Prendi in considerazione l'idea di visitare direttamente i siti di informazione e abbonarti per finanziare il giornalismo locale."
+  },
+  zh: {
+    warnTitle: "安全警告 - LienLibre",
+    unverifiedLink: "未经验证的链接",
+    warnDesc: "此链接重定向至不在我们信任的加拿大新闻媒体白名单中的网站。作为防范网络钓鱼的安全措施，重定向已暂时挂起。",
+    countdownText: "将在 <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> 秒内自动重定向...",
+    destination: "目标地址:",
+    ipLabel: "您的公网 IP:",
+    reportBtn: "在加拿大举报欺诈行为",
+    advancedBtn: "高级选项",
+    advancedDesc: "如果您信任此网站，可以继续前往原始页面。",
+    continueBtn: "继续前往网站（不推荐）",
+    supportBanner: "<strong>支持独立新闻：</strong>请考虑直接访问新闻网站并订阅以资助本地报道。"
+  },
+  cr: {
+    warnTitle: "Nama-kwayask kiskêyihtâkwan - LienLibre",
+    unverifiedLink: "Nama-kwayask pimohtêw",
+    warnDesc: "Ôma kiskinowâpahtihikowin nama-kiskêyihtâkwan ôta. Wîcihiwêw-paminikêwin sêmâk ka-pêhon.",
+    countdownText: "Pimohtêwin sêmâk <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    destination: "Tânte pimi-ayâw:",
+    ipLabel: "Kiyahk IP pimohtêwin:",
+    reportBtn: "Report a scam attempt in Canada",
+    advancedBtn: "Wîci-ayamihtân kîkway",
+    advancedDesc: "Kîspin kwayask, sêmâk ka-wâpahtên âcimowin.",
+    continueBtn: "Sêmâk (Nama-kwayask)",
+    supportBanner: "<strong>Wîcihiwê âcimowina:</strong> Masinahikan kie wîcihiwê."
+  },
+  iu: {
+    warnTitle: "Nalunaiqtillugu nuutitauniq - LienLibre",
+    unverifiedLink: "Nalunaiqtaulluarsimangittuq Link",
+    warnDesc: "Una qaritaujakkuurutinga ilisimajaujut list-inginniiqataungittuq. Ajuqhaqquq takuksautitsijjutimik maanna.",
+    countdownText: "Nuutitsijuq maanna <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    destination: "Nuutarvik:",
+    ipLabel: "IP-it:",
+    reportBtn: "Report a scam attempt in Canada",
+    advancedBtn: "Ikayuriaqutit",
+    advancedDesc: "Ikayurumalutit tunisijungnarqutit.",
+    continueBtn: "Atulugu",
+    supportBanner: "<strong>Ikayurlugu tusagaksat:</strong> Una ikayuriqquq."
+  },
+  in: {
+    warnTitle: "Eka tshissikuat tshe ishinakuat - LienLibre",
+    unverifiedLink: "Eka tshissikuat Link",
+    warnDesc: "Mane tshitshipan eka e nishtutamin tshe ishinakuat. Tshe uapataman mishta aimun.",
+    countdownText: "Tshitissipitamin nete <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    destination: "Tshitisheun:",
+    ipLabel: "IP nete:",
+    reportBtn: "Report a scam attempt in Canada",
+    advancedBtn: "Advanced options",
+    advancedDesc: "Kussenitan nete tshe miskamin.",
+    continueBtn: "Tshitissipitamin",
+    supportBanner: "<strong>Uitsheue tipatshimun:</strong> Uitsheue tshetshi tutamin."
+  },
+  moh: {
+    warnTitle: "Iáh teiowatennion - LienLibre",
+    unverifiedLink: "Iáh teiowatennion Link",
+    warnDesc: "Tsi niiorihwà:ke iáh teiowatennion ne Kanada. Thó nioht kaia'táhrho.",
+    countdownText: "Tsi niahsewenni ne <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    destination: "Destination:",
+    ipLabel: "IP:",
+    reportBtn: "Report a scam in Canada",
+    advancedBtn: "Options",
+    advancedDesc: "Kwah ok kwahiaton ne thó tsi niiorihwà:ke.",
+    continueBtn: "Continuer vers le site (non recommandé)",
+    supportBanner: "<strong>Sewarihwakwenihs ne ohwentsia:</strong> Takwarent."
+  }
+};
+
+/**
+ * Génère le HTML pour rediriger l'utilisateur tout en affichant l'aperçu Open Graph pour les bots.
+ */
+function generateRedirectionHTML(targetUrl, title, description, image, lang = "fr") {
   const escapedUrl = escapeHtml(targetUrl);
   const escapedTitle = escapeHtml(title);
   const escapedDesc = escapeHtml(description);
   const escapedImg = escapeHtml(image);
   const targetHost = new URL(targetUrl).hostname.replace("www.", "");
 
+  const trans = WORKER_TRANSLATIONS[lang] || WORKER_TRANSLATIONS.fr;
+  const htmlDir = lang === "ar" ? "rtl" : "ltr";
+  const supportBannerText = trans.supportBanner.replace("{host}", escapeHtml(targetHost));
+
   return `<!DOCTYPE html>
-<html lang="fr">
+<html lang="${lang}" dir="${htmlDir}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -588,14 +802,14 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
 <body>
   <div class="card">
     <div class="spinner"></div>
-    <h1>Redirection sécurisée</h1>
-    <p>LienLibre vous redirige vers l'article d'origine :<br><strong style="color: #e5e7eb; word-break: break-all;">${escapedTitle}</strong></p>
-    <p style="font-size: 0.85rem;">Si la redirection automatique ne fonctionne pas après quelques secondes, veuillez cliquer ci-dessous.</p>
-    <a href="${escapedUrl}" class="link-btn">Accéder à l'article</a>
+    <h1>${trans.redirectTitle}</h1>
+    <p>${trans.redirecting}<br><strong style="color: #e5e7eb; word-break: break-all;">${escapedTitle}</strong></p>
+    <p style="font-size: 0.85rem;">${trans.fallbackNote}</p>
+    <a href="${escapedUrl}" class="link-btn">${trans.accessBtn}</a>
   </div>
 
   <div class="support-banner">
-    <span class="heart">❤️</span> <strong>Soutenez le journalisme local :</strong> ce média (<strong>${escapeHtml(targetHost)}</strong>) a besoin de vous. Pensez à vous abonner ou à désactiver votre bloqueur de pub sur leur site.
+    <span class="heart">❤️</span> ${supportBannerText}
   </div>
 
   <script>
@@ -608,7 +822,7 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
 /**
  * Génère une page d'avertissement de sécurité (phishing/spam) pour les domaines non vérifiés.
  */
-function generateWarningHTML(targetUrl, title, description, image, userIp) {
+function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr") {
   const escapedUrl = escapeHtml(targetUrl);
   const escapedTitle = escapeHtml(title);
   const escapedDesc = escapeHtml(description);
@@ -616,12 +830,20 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
   const escapedIp = escapeHtml(userIp);
   const hostname = new URL(targetUrl).hostname;
 
+  const trans = WORKER_WARN_TRANSLATIONS[lang] || WORKER_WARN_TRANSLATIONS.fr;
+  const htmlDir = lang === "ar" ? "rtl" : "ltr";
+  
+  // Anti-fraud report URL selection (EN vs FR/Indigenous)
+  const reportUrl = (lang === "fr" || lang === "cr" || lang === "iu" || lang === "in" || lang === "moh")
+    ? "https://www.antifraudcentre-centreantifraude.ca/report-signalez-fra.htm"
+    : "https://www.antifraudcentre-centreantifraude.ca/report-signalez-eng.htm";
+
   return `<!DOCTYPE html>
-<html lang="fr">
+<html lang="${lang}" dir="${htmlDir}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avertissement de Sécurité - LienLibre</title>
+  <title>${trans.warnTitle}</title>
   
   <!-- Balises Open Graph pour afficher l'aperçu sur Facebook/Instagram -->
   <meta property="og:type" content="article">
@@ -803,38 +1025,38 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
     <div class="icon-container">
       <span class="icon">⚠️</span>
     </div>
-    <h1>Lien non vérifié</h1>
-    <p>Ce lien redirige vers un site qui ne figure pas dans notre liste de confiance des médias d'information canadiens. Par mesure de sécurité pour éviter le hameçonnage (phishing), la redirection est suspendue temporairement.</p>
+    <h1>${trans.unverifiedLink}</h1>
+    <p>${trans.warnDesc}</p>
     
     <div style="margin-bottom: 1.5rem; padding: 0.75rem; background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.5rem; color: #f87171; font-size: 0.9rem; font-weight: 500;">
-      Redirection automatique dans <span id="countdown" style="font-family: monospace; font-weight: bold; font-size: 1.05rem;">10</span> s...
+      ${trans.countdownText.replace("{sec}", `<span id="countdown" style="font-family: monospace; font-weight: bold; font-size: 1.05rem;">10</span>`)}
     </div>
 
     <div class="info-box">
       <div class="info-row">
-        <span class="info-label">Destination :</span>
+        <span class="info-label">${trans.destination}</span>
         <span class="info-value">${escapeHtml(hostname)}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Votre IP publique :</span>
+        <span class="info-label">${trans.ipLabel}</span>
         <span class="info-value">${escapedIp}</span>
       </div>
     </div>
 
-    <a href="https://www.antifraudcentre-centreantifraude.ca/report-signalez-fra.htm" target="_blank" rel="noopener noreferrer" class="btn-report">
-      Signaler une tentative de fraude au Canada
+    <a href="${reportUrl}" target="_blank" rel="noopener noreferrer" class="btn-report">
+      ${trans.reportBtn}
     </a>
 
-    <button class="advanced-toggle" onclick="toggleAdvanced()">Options avancées</button>
+    <button class="advanced-toggle" onclick="toggleAdvanced()">${trans.advancedBtn}</button>
     
     <div id="advanced-content" class="advanced-content">
-      <p>Si vous faites confiance à ce site, vous pouvez continuer vers la page d'origine.</p>
-      <a href="${escapedUrl}" class="btn-continue">Continuer vers le site (non recommandé)</a>
+      <p>${trans.advancedDesc}</p>
+      <a href="${escapedUrl}" class="btn-continue">${trans.continueBtn}</a>
     </div>
   </div>
 
   <div class="support-banner">
-    <span class="heart">❤️</span> <strong>Soutenez le journalisme indépendant :</strong> Pensez à visiter les sites de presse directement et à vous abonner pour financer l'information locale.
+    <span class="heart">❤️</span> ${trans.supportBanner}
   </div>
 
   <script>
