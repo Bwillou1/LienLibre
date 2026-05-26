@@ -36,17 +36,29 @@ Suivez ce guide rapide pour mettre en ligne votre propre instance de LienLibre e
 
 ---
 
+### 📊 Optionnel : Activer les statistiques en temps réel
+
+Pour que le tableau de bord des statistiques en direct s'affiche sur votre site, vous devez lier un espace de stockage gratuit **Cloudflare KV** à votre Worker :
+
+1. Dans votre tableau de bord Cloudflare, allez dans **Workers & Pages** > **KV** > cliquez sur **Create Namespace**.
+2. Nommez-le `lienlibre-kv` et cliquez sur **Add**.
+3. Allez dans les paramètres de votre Worker `lienlibre-api` > onglet **Settings** > **Variables** > faites défiler jusqu'à **KV Namespace Bindings** > cliquez sur **Add Binding**.
+4. Saisissez **`LIENLIBRE_KV`** comme **Variable name** (nom de la variable), et sélectionnez **`lienlibre-kv`** comme **KV Namespace**.
+5. Cliquez sur **Save** et redéployez votre Worker.
+*Le tableau de bord apparaîtra automatiquement au bas de votre site web dès que des clics commenceront à s'accumuler !*
+
+---
+
 ### Étape 3 : Partager et Utiliser l'outil
 
-1. Accédez à votre interface utilisateur déployée sur GitHub Pages.
+1. Accédez à votre interface utilisateur déployée sur GitHub Pages (ex: `https://votre-pseudo.github.io/LienLibre/`).
 2. Collez l'URL d'un article de presse canadien bloqué par Meta.
 3. Cliquez sur **Générer mon LienLibre**.
-4. Copiez le lien pont généré.
-5. Vous pouvez désormais partager ce lien directement sur Facebook ou Instagram. L'aperçu (image, titre, résumé) s'affichera correctement pour vos contacts, et cliquer dessus les redirigera instantanément et de façon transparente vers l'article d'origine.
+4. Copiez le lien pont généré et partagez-le librement !
 
 ---
 
 ## 🔒 Confidentialité & Limitation
 
-* **Zéro base de données** : Le Worker passe l'état directement dans les paramètres d'URL (`?url=...`). Aucun stockage de données de navigation n'est effectué, assurant un respect total de la vie privée des utilisateurs.
-* **Résilience** : La logique du Worker intègre des mécanismes de spoofing de requêtes pour contourner les protections anti-scraping de base des éditeurs de presse et extrait de manière intelligente les métadonnées (fallbacks multiples).
+* **Respect de la vie privée** : Bien que les statistiques comptabilisent le nombre de redirections, **aucune information personnelle** (comme les adresses IP, les noms ou les comptes) n'est enregistrée. Tout est agrégé de manière 100% anonyme.
+* **Résilience** : La logique du Worker intègre des mécanismes de spoofing de requêtes pour contourner les protections anti-scraping des éditeurs de presse et extrait de manière intelligente les métadonnées.
