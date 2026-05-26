@@ -1,6 +1,6 @@
 # 🔗 LienLibre
 
-LienLibre est une application web open-source et **100 % gratuite** conçue pour contourner le blocage du partage de liens d'actualité imposé par Meta (Facebook, Instagram) au Canada. Elle permet de générer un lien "pont" (proxy) personnalisé qui affiche correctement la miniature (Open Graph) d'un article tout en redirigeant instantanément l'utilisateur vers le média d'origine.
+LienLibre est une application web open-source et **100 % gratuite** conçue pour contourner le blocage du partage de liens d'actualité imposé par Meta (Facebook, Instagram) au Canada. Elle permet de générer un lien "pont" (proxy) personnalisé qui affiche correctement la miniature (Open Graph) d'un article tout en redirigeant l'utilisateur vers le média d'origine après un court délai de 3 secondes (permettant d'afficher une bannière de sensibilisation à l'abonnement).
 
 ---
 

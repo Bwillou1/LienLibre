@@ -8,6 +8,11 @@
  * - Une redirection instantanée si le domaine est dans la liste de confiance.
  * - Une page d'avertissement de sécurité (avec IP et bouton continuer) si le domaine est suspect,
  *   tout en conservant l'affichage de la miniature (Open Graph) pour les robots de Meta.
+ * 
+ * NOUVELLES FONCTIONNALITÉS :
+ * - Anti-Tracking : Nettoyage automatique des paramètres de pistage Meta/Google (fbclid, utm_*, etc.).
+ * - Statistiques en temps réel : Enregistrement anonyme des clics et domaines via Cloudflare KV (LIENLIBRE_KV).
+ * - Mode "Abonnement" : Bannière d'incitation à soutenir le journalisme local.
  */
 
 // Headers complets pour imiter un navigateur de bureau moderne et contourner les protections WAF
@@ -169,6 +174,79 @@ function isDomainAllowed(hostname) {
   return ALLOWED_DOMAINS.some(domain => cleanHost === domain || cleanHost.endsWith("." + domain));
 }
 
+/**
+ * Nettoie les paramètres de pistage Meta/Google (Anti-Tracking).
+ */
+function cleanTrackingParameters(urlStr) {
+  try {
+    const parsed = new URL(urlStr);
+    const paramsToStrip = [
+      "fbclid", "gclid", "utm_source", "utm_medium", "utm_campaign", 
+      "utm_term", "utm_content", "msclkid", "mc_eid", "yclid", 
+      "twclid", "dclid", "_hsenc", "_hsmi"
+    ];
+    let strippedAny = false;
+    for (const param of paramsToStrip) {
+      if (parsed.searchParams.has(param)) {
+        parsed.searchParams.delete(param);
+        strippedAny = true;
+      }
+    }
+    return { cleanedUrl: parsed.href, strippedAny };
+  } catch (e) {
+    return { cleanedUrl: urlStr, strippedAny: false };
+  }
+}
+
+/**
+ * Enregistre un clic de manière 100% anonyme dans le stockage Cloudflare KV.
+ */
+async function recordClick(env, hostname) {
+  if (!env || !env.LIENLIBRE_KV) return;
+  try {
+    const cleanHost = hostname.toLowerCase().replace(/^www\./, "");
+    
+    // 1. Incrémenter le total global
+    const totalKey = "stats:total_clicks";
+    let total = parseInt(await env.LIENLIBRE_KV.get(totalKey) || "0");
+    await env.LIENLIBRE_KV.put(totalKey, (total + 1).toString());
+
+    // 2. Incrémenter la statistique du domaine
+    const domainKey = `stats:domain:${cleanHost}`;
+    let domainTotal = parseInt(await env.LIENLIBRE_KV.get(domainKey) || "0");
+    await env.LIENLIBRE_KV.put(domainKey, (domainTotal + 1).toString());
+  } catch (e) {
+    console.error("Erreur d'écriture KV :", e);
+  }
+}
+
+/**
+ * Récupère les statistiques agrégées depuis le stockage Cloudflare KV.
+ */
+async function getStats(env) {
+  if (!env || !env.LIENLIBRE_KV) {
+    // Fallback si KV n'est pas configuré pour éviter de faire planter le site
+    return { total_clicks: 0, domains: {} };
+  }
+  try {
+    const totalClicks = parseInt(await env.LIENLIBRE_KV.get("stats:total_clicks") || "0");
+    
+    // Lister toutes les clés de domaine
+    const listResult = await env.LIENLIBRE_KV.list({ prefix: "stats:domain:" });
+    const domains = {};
+    
+    for (const key of listResult.keys) {
+      const val = await env.LIENLIBRE_KV.get(key.name) || "0";
+      const domainName = key.name.replace("stats:domain:", "");
+      domains[domainName] = parseInt(val);
+    }
+    
+    return { total_clicks: totalClicks, domains };
+  } catch (e) {
+    return { total_clicks: 0, domains: {}, error: e.message };
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     // 1. Gérer les requêtes CORS Preflight (OPTIONS)
@@ -179,7 +257,21 @@ export default {
       });
     }
 
-    // Uniquement accepter les requêtes GET
+    const requestUrl = new URL(request.url);
+
+    // 2. Point de terminaison API Stats
+    if (requestUrl.pathname === "/api/stats") {
+      const stats = await getStats(env);
+      return new Response(JSON.stringify(stats), {
+        status: 200,
+        headers: {
+          ...CORS_HEADERS,
+          "Content-Type": "application/json; charset=utf-8"
+        }
+      });
+    }
+
+    // Uniquement accepter les requêtes GET pour le reste
     if (request.method !== "GET") {
       return new Response("Méthode non autorisée", { 
         status: 405, 
@@ -187,7 +279,6 @@ export default {
       });
     }
 
-    const requestUrl = new URL(request.url);
     const targetUrlString = requestUrl.searchParams.get("url");
 
     // Si aucune URL n'est passée, afficher une page de bienvenue informative
@@ -202,7 +293,7 @@ export default {
       });
     }
 
-    // 2. Valider et formater l'URL cible
+    // 3. Valider et formater l'URL cible
     let targetUrl;
     try {
       targetUrl = new URL(targetUrlString.trim());
@@ -219,6 +310,10 @@ export default {
       });
     }
 
+    // 4. Anti-Tracking : Nettoyer l'URL cible
+    const { cleanedUrl, strippedAny } = cleanTrackingParameters(targetUrl.href);
+    targetUrl = new URL(cleanedUrl); // Utiliser l'URL nettoyée des mouchards
+
     const isJsonRequested = 
       requestUrl.searchParams.get("json") === "1" || 
       requestUrl.searchParams.get("json") === "true" ||
@@ -226,7 +321,10 @@ export default {
 
     const isAllowed = isDomainAllowed(targetUrl.hostname);
 
-    // 3. Extraire les métadonnées de la page cible
+    // Enregistrer le clic de manière asynchrone (sans bloquer la redirection de l'utilisateur)
+    ctx.waitUntil(recordClick(env, targetUrl.hostname));
+
+    // 5. Extraire les métadonnées de la page cible
     const meta = {
       title: "",
       description: "",
@@ -246,7 +344,6 @@ export default {
       });
 
       if (response.ok) {
-        // Utiliser HTMLRewriter de Cloudflare pour extraire en streaming les balises de métadonnées
         const rewriter = new HTMLRewriter()
           .on('meta[property="og:title"]', {
             element(el) { meta.title = el.getAttribute("content") || ""; }
@@ -285,7 +382,7 @@ export default {
       console.error("Erreur lors du scraping :", err);
     }
 
-    // 4. Appliquer la logique de Fallback
+    // 6. Appliquer la logique de Fallback
     const finalTitle = (meta.title || meta.twitterTitle || meta.standardTitle || targetUrl.hostname).trim();
     const finalDescription = (meta.description || meta.twitterDescription || "Cliquez pour lire l'article complet sur " + targetUrl.hostname).trim();
     
@@ -296,7 +393,7 @@ export default {
     
     const finalImage = rawImage ? resolveUrl(targetUrl.href, rawImage) : "";
 
-    // 5. Renvoyer la réponse selon le format demandé
+    // 7. Renvoyer la réponse selon le format demandé
     if (isJsonRequested) {
       return new Response(
         JSON.stringify({
@@ -304,7 +401,8 @@ export default {
           description: finalDescription,
           image: finalImage,
           url: targetUrl.href,
-          allowed: isAllowed
+          allowed: isAllowed,
+          trackingCleaned: strippedAny
         }),
         {
           status: 200,
@@ -379,6 +477,7 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
   const escapedTitle = escapeHtml(title);
   const escapedDesc = escapeHtml(description);
   const escapedImg = escapeHtml(image);
+  const targetHost = new URL(targetUrl).hostname.replace("www.", "");
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -402,8 +501,8 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
   <meta name="twitter:description" content="${escapedDesc}">
   ${escapedImg ? `<meta name="twitter:image" content="${escapedImg}">` : ""}
 
-  <!-- Redirection automatique côté client (immédiate) -->
-  <meta http-equiv="refresh" content="0;url=${escapedUrl}">
+  <!-- Redirection automatique après 3 secondes pour laisser le temps de voir la bannière d'abonnement -->
+  <meta http-equiv="refresh" content="3;url=${escapedUrl}">
   
   <style>
     body {
@@ -411,6 +510,7 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
       background-color: #030712;
       color: #f3f4f6;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -428,6 +528,7 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
       width: 100%;
       text-align: center;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      margin-bottom: 1.5rem;
     }
     .spinner {
       border: 3px solid rgba(255, 255, 255, 0.05);
@@ -467,19 +568,52 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
     .link-btn:hover {
       background-color: #0e7490;
     }
+    .support-banner {
+      background-color: rgba(6, 182, 212, 0.05);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      color: #22d3ee;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      font-size: 0.85rem;
+      max-width: 500px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .heart {
+      color: #f43f5e;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="spinner"></div>
-    <h1>Redirection sécurisée</h1>
+    <h1>Redirection automatique dans <span id="countdown">3</span> s</h1>
     <p>LienLibre vous redirige vers l'article d'origine :<br><strong style="color: #e5e7eb; word-break: break-all;">${escapedTitle}</strong></p>
-    <p style="font-size: 0.85rem;">Si la redirection automatique ne fonctionne pas après quelques secondes, veuillez cliquer ci-dessous.</p>
+    <p style="font-size: 0.85rem;">Si la redirection automatique ne fonctionne pas, veuillez cliquer ci-dessous.</p>
     <a href="${escapedUrl}" class="link-btn">Accéder à l'article</a>
   </div>
 
+  <div class="support-banner">
+    <span class="heart">❤️</span> <strong>Soutenez le journalisme local :</strong> ce média (<strong>${escapeHtml(targetHost)}</strong>) a besoin de vous. Pensez à vous abonner ou à désactiver votre bloqueur de pub sur leur site.
+  </div>
+
   <script>
-    window.location.href = ${JSON.stringify(targetUrl)};
+    (function() {
+      let secondsLeft = 3;
+      const countdownEl = document.getElementById("countdown");
+      const url = ${JSON.stringify(targetUrl)};
+      const interval = setInterval(function() {
+        secondsLeft--;
+        if (countdownEl) {
+          countdownEl.textContent = secondsLeft;
+        }
+        if (secondsLeft <= 0) {
+          clearInterval(interval);
+          window.location.href = url;
+        }
+      }, 1000);
+    })();
   </script>
 </body>
 </html>`;
@@ -487,7 +621,6 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
 
 /**
  * Génère une page d'avertissement de sécurité (phishing/spam) pour les domaines non vérifiés.
- * Les balises Open Graph de la cible sont incluses dans le <head> pour que la miniature s'affiche tout de même sur Meta.
  */
 function generateWarningHTML(targetUrl, title, description, image, userIp) {
   const escapedUrl = escapeHtml(targetUrl);
@@ -525,6 +658,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
       background-color: #020617;
       color: #f3f4f6;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -542,6 +676,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
       width: 100%;
       text-align: center;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+      margin-bottom: 1.5rem;
     }
     .icon-container {
       width: 4rem;
@@ -657,6 +792,21 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
       background-color: rgba(255, 255, 255, 0.1);
       color: white;
     }
+    .support-banner {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #9ca3af;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      font-size: 0.85rem;
+      max-width: 550px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .heart {
+      color: #f43f5e;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -665,7 +815,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
       <span class="icon">⚠️</span>
     </div>
     <h1>Lien non vérifié</h1>
-    <p>Ce lien redirige vers un site qui ne figure pas dans notre liste de confiance des médias canadiens. Par mesure de sécurité pour éviter le hameçonnage (phishing), la redirection n'est pas automatique.</p>
+    <p>Ce lien redirige vers un site qui ne figure pas dans notre liste de confiance des médias d'information canadiens. Par mesure de sécurité pour éviter le hameçonnage (phishing), la redirection n'est pas automatique.</p>
     
     <div class="info-box">
       <div class="info-row">
@@ -679,7 +829,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
     </div>
 
     <a href="https://www.antifraudcentre-centreantifraude.ca/report-signalez-fra.htm" target="_blank" rel="noopener noreferrer" class="btn-report">
-      Signaler une tentative de fraude
+      Signaler une tentative de fraude au Canada
     </a>
 
     <button class="advanced-toggle" onclick="toggleAdvanced()">Options avancées</button>
@@ -688,6 +838,10 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
       <p>Si vous faites confiance à ce site, vous pouvez continuer vers la page d'origine.</p>
       <a href="${escapedUrl}" class="btn-continue">Continuer vers le site (non recommandé)</a>
     </div>
+  </div>
+
+  <div class="support-banner">
+    <span class="heart">❤️</span> <strong>Soutenez le journalisme indépendant :</strong> Pensez à visiter les sites de presse directement et à vous abonner pour financer l'information locale.
   </div>
 
   <script>

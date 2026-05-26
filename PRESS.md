@@ -24,7 +24,7 @@ Ce document regroupe les informations nécessaires pour la presse, les journalis
 Depuis la loi C-18, Meta bloque le partage d'actualités au Canada. Les Canadiens ne peuvent plus partager d'articles de presse locale avec leurs proches sur Facebook ou Instagram. LienLibre a été créé pour redonner cette liberté d'expression de manière simple et citoyenne.
 
 ### Comment fonctionne la technologie ?
-LienLibre utilise une architecture "serverless" (Cloudflare Workers). Lorsqu'un lien est partagé sur Facebook, le robot de Facebook visite le lien LienLibre. Notre serveur va charger discrètement la page de presse originale, extraire son titre, son image et sa description, et les renvoyer au robot de Facebook. Lorsque c'est un humain qui clique sur le lien, il est instantanément redirigé vers le journal d'origine.
+LienLibre utilise une architecture "serverless" (Cloudflare Workers). Lorsqu'un lien est partagé sur Facebook, le robot de Facebook visite le lien LienLibre. Notre serveur va charger discrètement la page de presse originale, extraire son titre, son image et sa description, et les renvoyer au robot de Facebook. Lorsque c'est un humain qui clique sur le lien, il est redirigé vers le journal d'origine après un court délai de 3 secondes permettant d'afficher une bannière d'abonnement.
 
 ### Est-ce légal ?
 Oui. Le service ne copie pas les articles de presse et n'enfreint pas le droit d'auteur. Il agit simplement comme un pont intelligent de redirection. De plus, il encourage le soutien à la presse locale grâce à une bannière invitant les utilisateurs à s'abonner aux journaux d'origine.
@@ -37,7 +37,7 @@ Oui. Le service ne copie pas les articles de presse et n'enfreint pas le droit d
 
 **CANADA, le 25 mai 2026** — Alors que le blocage du partage des médias canadiens sur les plateformes de Meta (Facebook et Instagram) perdure en raison de la loi C-18, un jeune programmeur canadien de 14 ans, William Guindon, propose une solution citoyenne et open-source : **LienLibre**.
 
-Disponible gratuitement et sans installation, LienLibre permet à n’importe quel citoyen de coller l’URL d’un média bloqué (comme La Presse, Radio-Canada ou des journaux régionaux) pour générer un lien "pont". Une fois partagé sur les réseaux sociaux, ce lien affiche correctement la miniature de l’article, puis redirige de façon invisible le lecteur vers le site du média d’origine.
+Disponible gratuitement et sans installation, LienLibre permet à n’importe quel citoyen de coller l’URL d’un média bloqué (comme La Presse, Radio-Canada ou des journaux régionaux) pour générer un lien "pont". Une fois partagé sur les réseaux sociaux, ce lien affiche correctement la miniature de l’article, puis redirige le lecteur vers le site du média d’origine après un court délai de 3 secondes.
 
 **Protéger la vie privée et soutenir la presse locale**
 En plus de contourner les restrictions, LienLibre intègre une dimension éthique et de cybersécurité :
@@ -58,7 +58,7 @@ En plus de contourner les restrictions, LienLibre intègre une dimension éthiqu
 
 **CANADA, May 25, 2026** — As the ban on sharing Canadian news links on Meta’s platforms (Facebook and Instagram) continues under Bill C-18, a 14-year-old Canadian developer, William Guindon, has launched a community-driven, open-source workaround: **LienLibre**.
 
-Available completely free of charge and with no installation required, LienLibre allows anyone to paste a blocked news URL (such as CBC, La Presse, or local community newspapers) to generate a "bridge" link. When shared on social media, the link displays the article’s thumbnail, title, and summary as usual, then seamlessly redirects clicking users to the original news website.
+Available completely free of charge and with no installation required, LienLibre allows anyone to paste a blocked news URL (such as CBC, La Presse, or local community newspapers) to generate a "bridge" link. When shared on social media, the link displays the article’s thumbnail, title, and summary as usual, then redirects clicking users to the original news website after a brief 3-second delay.
 
 **Privacy protection and support for local journalism**
 LienLibre is designed with strong privacy and security principles:
