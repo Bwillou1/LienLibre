@@ -173,7 +173,12 @@
         
         <!-- Output Link Box -->
         <div class="space-y-2">
-          <label class="block text-sm font-semibold text-zinc-300">Votre LienLibre généré</label>
+          <div class="flex items-center justify-between">
+            <label class="block text-sm font-semibold text-zinc-300">Votre LienLibre généré</label>
+            <span id="tracking-cleaned-badge" class="hidden text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full flex items-center gap-1 font-medium">
+              🧹 Pistage nettoyé
+            </span>
+          </div>
           <div class="flex flex-col sm:flex-row gap-2">
             <div class="grow bg-zinc-950/80 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-cyan-400 font-mono select-all break-all flex items-center justify-between">
               <span id="output-url"></span>
@@ -276,6 +281,33 @@
       </div>
     </section>
 
+    <!-- Real-time Stats Section -->
+    <section id="stats-section" class="w-full mt-12 bg-zinc-900/20 border border-zinc-800/80 rounded-xl p-6 hidden">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h3 class="font-display font-bold text-lg text-emerald-400 flex items-center gap-2">
+            <span class="flex h-2.5 w-2.5 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            Impact en temps réel (Open Data)
+          </h3>
+          <p class="text-zinc-500 text-xs">Statistiques anonymes et publiques de contournement du blocage Meta.</p>
+        </div>
+        <div class="flex items-baseline gap-2 bg-zinc-950/80 border border-zinc-850 px-4 py-2 rounded-lg">
+          <span id="total-clicks-count" class="font-mono text-2xl font-bold text-emerald-400">0</span>
+          <span class="text-xs text-zinc-400">clics contournés</span>
+        </div>
+      </div>
+      
+      <div class="space-y-4">
+        <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Top des domaines de presse partagés</h4>
+        <div id="top-domains-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- Footer -->
@@ -314,6 +346,12 @@
     const errorMessage = document.getElementById('error-message');
     const errorText = document.getElementById('error-text');
     const unverifiedWarning = document.getElementById('unverified-warning');
+    const trackingCleanedBadge = document.getElementById('tracking-cleaned-badge');
+
+    // Éléments de statistiques
+    const statsSection = document.getElementById('stats-section');
+    const totalClicksCount = document.getElementById('total-clicks-count');
+    const topDomainsList = document.getElementById('top-domains-list');
 
     // Éléments de prévisualisation
     const previewCard = document.getElementById('preview-card');
@@ -331,6 +369,7 @@
       // Réinitialisation
       errorMessage.classList.add('hidden');
       unverifiedWarning.classList.add('hidden');
+      trackingCleanedBadge.classList.add('hidden');
       resultArea.classList.remove('hidden');
       previewSkeleton.classList.remove('hidden');
       previewContent.classList.add('hidden');
@@ -375,6 +414,11 @@
         // Afficher l'avertissement si le domaine n'est pas vérifié
         if (data.allowed === false) {
           unverifiedWarning.classList.remove('hidden');
+        }
+
+        // Afficher le badge de nettoyage du pistage si des mouchards ont été retirés
+        if (data.trackingCleaned === true) {
+          trackingCleanedBadge.classList.remove('hidden');
         }
         
         // Mettre à jour l'aperçu
@@ -443,6 +487,54 @@
       errorMessage.classList.remove('hidden');
       errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+
+    async function loadStats() {
+      try {
+        const response = await fetch(`${WORKER_URL}/api/stats`);
+        if (!response.ok) return;
+        const data = await response.json();
+        
+        // S'assurer qu'il y a des clics enregistrés pour afficher la section
+        if (!data || typeof data.total_clicks !== 'number' || data.total_clicks === 0) {
+          return;
+        }
+        
+        // Mettre à jour le compteur global
+        totalClicksCount.textContent = data.total_clicks.toLocaleString();
+        
+        // Trier les domaines par clics décroissants
+        const sortedDomains = Object.entries(data.domains || {})
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 6); // Top 6
+          
+        if (sortedDomains.length > 0) {
+          topDomainsList.innerHTML = '';
+          sortedDomains.forEach(([domain, count]) => {
+            const pct = Math.max(3, Math.round((count / data.total_clicks) * 100));
+            const item = document.createElement('div');
+            item.className = 'space-y-1.5';
+            item.innerHTML = `
+              <div class="flex justify-between text-xs">
+                <span class="font-medium text-zinc-300">${domain}</span>
+                <span class="text-zinc-500 font-mono">${count.toLocaleString()} clics</span>
+              </div>
+              <div class="w-full bg-zinc-950/60 border border-zinc-900 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-500 to-indigo-500 h-full rounded-full" style="width: ${pct}%"></div>
+              </div>
+            `;
+            topDomainsList.appendChild(item);
+          });
+        }
+        
+        // Afficher la section
+        statsSection.classList.remove('hidden');
+      } catch (err) {
+        console.warn("Impossible de charger les statistiques :", err);
+      }
+    }
+
+    // Charger les statistiques au chargement de la page
+    loadStats();
   </script>
 </body>
 </html>
