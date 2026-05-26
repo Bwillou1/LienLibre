@@ -501,8 +501,8 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
   <meta name="twitter:description" content="${escapedDesc}">
   ${escapedImg ? `<meta name="twitter:image" content="${escapedImg}">` : ""}
 
-  <!-- Redirection automatique après 3 secondes pour laisser le temps de voir la bannière d'abonnement -->
-  <meta http-equiv="refresh" content="3;url=${escapedUrl}">
+  <!-- Redirection automatique côté client (immédiate) -->
+  <meta http-equiv="refresh" content="0;url=${escapedUrl}">
   
   <style>
     body {
@@ -588,9 +588,9 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
 <body>
   <div class="card">
     <div class="spinner"></div>
-    <h1>Redirection automatique dans <span id="countdown">3</span> s</h1>
+    <h1>Redirection sécurisée</h1>
     <p>LienLibre vous redirige vers l'article d'origine :<br><strong style="color: #e5e7eb; word-break: break-all;">${escapedTitle}</strong></p>
-    <p style="font-size: 0.85rem;">Si la redirection automatique ne fonctionne pas, veuillez cliquer ci-dessous.</p>
+    <p style="font-size: 0.85rem;">Si la redirection automatique ne fonctionne pas après quelques secondes, veuillez cliquer ci-dessous.</p>
     <a href="${escapedUrl}" class="link-btn">Accéder à l'article</a>
   </div>
 
@@ -599,21 +599,7 @@ function generateRedirectionHTML(targetUrl, title, description, image) {
   </div>
 
   <script>
-    (function() {
-      let secondsLeft = 3;
-      const countdownEl = document.getElementById("countdown");
-      const url = ${JSON.stringify(targetUrl)};
-      const interval = setInterval(function() {
-        secondsLeft--;
-        if (countdownEl) {
-          countdownEl.textContent = secondsLeft;
-        }
-        if (secondsLeft <= 0) {
-          clearInterval(interval);
-          window.location.href = url;
-        }
-      }, 1000);
-    })();
+    window.location.href = ${JSON.stringify(targetUrl)};
   </script>
 </body>
 </html>`;
@@ -651,6 +637,9 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
   <meta name="twitter:title" content="${escapedTitle}">
   <meta name="twitter:description" content="${escapedDesc}">
   ${escapedImg ? `<meta name="twitter:image" content="${escapedImg}">` : ""}
+
+  <!-- Redirection de sécurité différée (10 secondes) -->
+  <meta http-equiv="refresh" content="10;url=${escapedUrl}">
 
   <style>
     body {
@@ -815,8 +804,12 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
       <span class="icon">⚠️</span>
     </div>
     <h1>Lien non vérifié</h1>
-    <p>Ce lien redirige vers un site qui ne figure pas dans notre liste de confiance des médias d'information canadiens. Par mesure de sécurité pour éviter le hameçonnage (phishing), la redirection n'est pas automatique.</p>
+    <p>Ce lien redirige vers un site qui ne figure pas dans notre liste de confiance des médias d'information canadiens. Par mesure de sécurité pour éviter le hameçonnage (phishing), la redirection est suspendue temporairement.</p>
     
+    <div style="margin-bottom: 1.5rem; padding: 0.75rem; background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.5rem; color: #f87171; font-size: 0.9rem; font-weight: 500;">
+      Redirection automatique dans <span id="countdown" style="font-family: monospace; font-weight: bold; font-size: 1.05rem;">10</span> s...
+    </div>
+
     <div class="info-box">
       <div class="info-row">
         <span class="info-label">Destination :</span>
@@ -854,6 +847,22 @@ function generateWarningHTML(targetUrl, title, description, image, userIp) {
         content.scrollIntoView({ behavior: 'smooth' });
       }
     }
+
+    (function() {
+      let secondsLeft = 10;
+      const countdownEl = document.getElementById("countdown");
+      const url = ${JSON.stringify(targetUrl)};
+      const interval = setInterval(function() {
+        secondsLeft--;
+        if (countdownEl) {
+          countdownEl.textContent = secondsLeft;
+        }
+        if (secondsLeft <= 0) {
+          clearInterval(interval);
+          window.location.href = url;
+        }
+      }, 1000);
+    })();
   </script>
 </body>
 </html>`;
