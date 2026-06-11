@@ -73,6 +73,7 @@ const ALLOWED_DOMAINS = [
   "tvo.org",
   "cheknews.ca",
   "hilltimes.com",
+   "therover.ca",
   
   // Coopératives de l'information (Québec)
   "lesoleil.com",
