@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "updated_at": "2026-06-12",
+  "description": "Exemple de blocklist LienLibre. Ne pas publier de données personnelles. Bloquer les domaines utilisés pour phishing, malware, IP logging ou abus répétés.",
+  "blocked_hosts": [
+    "grabify.link",
+    "iplogger.org",
+    "2no.co",
+    "yip.su"
+  ],
+  "forced_warning_hosts": [
+    "ngrok-free.app",
+    "trycloudflare.com",
+    "workers.dev",
+    "pages.dev",
+    "vercel.app",
+    "netlify.app"
+  ],
+  "blocked_extensions": [
+    ".exe",
+    ".scr",
+    ".msi",
+    ".apk",
+    ".dmg",
+    ".pkg",
+    ".bat",
+    ".cmd",
+    ".ps1",
+    ".jar",
+    ".vbs",
+    ".iso"
+  ]
+}

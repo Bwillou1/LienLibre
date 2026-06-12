@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr-CA" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Statistiques LienLibre — Open Data, sécurité et domaines partagés</title>
+  <meta name="description" content="Tableau de bord Open Data de LienLibre : clics contournés, domaines de presse partagés, audits automatiques, alertes anti-hameçonnage et statistiques anonymes.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="canonical" href="https://bwillou1.github.io/LienLibre/stats.html">
+  <link rel="sitemap" type="application/xml" href="https://bwillou1.github.io/LienLibre/sitemap.xml">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LienLibre">
+  <meta property="og:locale" content="fr_CA">
+  <meta property="og:url" content="https://bwillou1.github.io/LienLibre/stats.html">
+  <meta property="og:title" content="Statistiques LienLibre — Open Data du partage d’actualités censurées">
+  <meta property="og:description" content="Suivez l’impact public et anonyme de LienLibre : clics, domaines, audits automatiques et protections anti-hameçonnage.">
+  <meta property="og:image" content="https://bwillou1.github.io/LienLibre/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "Statistiques Open Data LienLibre",
+    "description": "Statistiques publiques et anonymes sur l’utilisation de LienLibre : clics contournés, domaines partagés, alertes anti-hameçonnage et audits automatiques.",
+    "url": "https://bwillou1.github.io/LienLibre/stats.html",
+    "license": "https://opensource.org/licenses/MIT",
+    "creator": {
+      "@type": "Organization",
+      "name": "Projet citoyen LienLibre"
+    },
+    "keywords": ["LienLibre", "Open Data", "Meta", "médias canadiens", "statistiques", "anti-hameçonnage"]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: rgba(255,255,255,.86);
+      --surface-strong: #fff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: rgba(15,23,42,.10);
+      --brand: #0f766e;
+      --blue: #2563eb;
+      --purple: #7c3aed;
+      --orange: #f59e0b;
+      --red: #dc2626;
+      --green: #059669;
+      --shadow: 0 18px 55px rgba(15,23,42,.12);
+      --radius: 24px;
+      --container: 1180px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 0 0, rgba(37,99,235,.14), transparent 34rem),
+        radial-gradient(circle at 90% 5%, rgba(15,118,110,.16), transparent 28rem),
+        linear-gradient(180deg, #f8fafc 0%, #eef6f7 100%);
+      min-height: 100vh;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(15,23,42,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,.045) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, black, transparent 84%);
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    .container { width: min(100% - 2rem, var(--container)); margin-inline: auto; }
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: rgba(248,250,252,.78);
+      border-bottom: 1px solid var(--line);
+    }
+    .header-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      font-size: 1.18rem;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--brand), var(--blue), var(--purple));
+      box-shadow: 0 14px 32px rgba(37,99,235,.22);
+    }
+    .nav { display: flex; gap: .55rem; align-items: center; }
+    .nav a, .refresh-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .68rem .9rem;
+      background: rgba(255,255,255,.76);
+      color: #334155;
+      font-weight: 800;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .nav a:hover, .refresh-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(15,23,42,.08); background: #fff; }
+    .hero { padding: 4.5rem 0 2rem; display: grid; gap: 1rem; }
+    .eyebrow {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      border: 1px solid rgba(15,118,110,.22);
+      background: rgba(240,253,250,.86);
+      color: var(--brand);
+      border-radius: 999px;
+      padding: .42rem .72rem;
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .dot { width: .55rem; height: .55rem; border-radius: 999px; background: var(--green); box-shadow: 0 0 0 8px rgba(5,150,105,.10); }
+    h1 {
+      margin: 0;
+      max-width: 980px;
+      font-size: clamp(2.2rem, 7vw, 5.4rem);
+      line-height: .96;
+      letter-spacing: -.07em;
+    }
+    .gradient { background: linear-gradient(110deg, #0f172a, var(--brand), var(--blue), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { max-width: 76ch; color: #475569; font-size: clamp(1.02rem, 2vw, 1.25rem); line-height: 1.7; margin: 0; }
+    .status-row { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: .5rem; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      border-radius: 999px;
+      padding: .48rem .68rem;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      color: #334155;
+      font-weight: 850;
+      font-size: .84rem;
+    }
+    .pill strong { color: var(--brand); }
+    .grid { display: grid; gap: 1rem; }
+    .cards { grid-template-columns: repeat(1, 1fr); margin: 1rem 0; }
+    .card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+    .metric-card { padding: 1.1rem; min-height: 156px; }
+    .metric-card::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 999px;
+      inset: auto -36px -52px auto;
+      background: rgba(37,99,235,.08);
+    }
+    .metric-label { color: var(--muted); font-weight: 900; font-size: .86rem; }
+    .metric-value { margin-top: .45rem; font-size: clamp(2.4rem, 10vw, 4rem); line-height: 1; font-weight: 950; letter-spacing: -.07em; }
+    .metric-foot { margin-top: .45rem; color: var(--muted); font-size: .84rem; }
+    .panel { padding: 1.1rem; }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .panel h2 { margin: 0; font-size: clamp(1.35rem, 4vw, 2rem); letter-spacing: -.045em; }
+    .panel p { margin: .2rem 0 0; color: var(--muted); }
+    .two-col { grid-template-columns: 1fr; }
+    .domain-list, .event-list, .lang-list { display: grid; gap: .72rem; }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      padding: .85rem;
+      box-shadow: 0 10px 24px rgba(15,23,42,.045);
+    }
+    .item-row { display: flex; justify-content: space-between; gap: .75rem; align-items: baseline; margin-bottom: .55rem; }
+    .name { font-weight: 900; overflow-wrap: anywhere; }
+    .count { color: var(--muted); font-size: .86rem; font-weight: 850; white-space: nowrap; }
+    .bar { height: 10px; border-radius: 999px; background: #e2e8f0; overflow: hidden; }
+    .bar span { display: block; height: 100%; width: var(--pct); border-radius: inherit; background: linear-gradient(90deg, var(--brand), var(--blue)); transition: width .5s ease; }
+    .bar.orange span { background: linear-gradient(90deg, var(--orange), #ea580c); }
+    .bar.green span { background: linear-gradient(90deg, var(--green), var(--brand)); }
+    .hour-chart { min-height: 280px; display: flex; align-items: end; gap: .35rem; padding: 1rem; border: 1px solid var(--line); border-radius: 18px; background: #fff; overflow-x: auto; }
+    .hour { min-width: 22px; display: grid; align-items: end; gap: .35rem; height: 230px; }
+    .hour-bar { width: 100%; height: var(--h); min-height: 3px; border-radius: 999px 999px 4px 4px; background: linear-gradient(180deg, var(--blue), var(--brand)); }
+    .hour small { writing-mode: vertical-rl; transform: rotate(180deg); color: var(--muted); font-size: .68rem; white-space: nowrap; }
+    .empty {
+      border: 1px dashed rgba(100,116,139,.36);
+      border-radius: 18px;
+      padding: 1rem;
+      background: rgba(248,250,252,.82);
+      color: var(--muted);
+    }
+    .privacy-box {
+      display: grid;
+      gap: .7rem;
+      border: 1px solid rgba(15,118,110,.18);
+      background: rgba(240,253,250,.72);
+      border-radius: 22px;
+      padding: 1rem;
+    }
+    .privacy-box strong { color: #047857; }
+    .footer { padding: 2rem 0 2.5rem; color: var(--muted); }
+    .footer a { color: #334155; font-weight: 850; }
+    .loading { opacity: .66; pointer-events: none; }
+    @media (min-width: 640px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 900px) { .cards { grid-template-columns: repeat(4, 1fr); } .two-col { grid-template-columns: 1.2fr .8fr; } }
+    @media (max-width: 520px) { .container { width: min(100% - 1rem, var(--container)); } .nav a { display: none; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="Retour à LienLibre">
+        <span class="brand-mark" aria-hidden="true">↗</span>
+        <span>LienLibre <span style="display:block;color:#64748b;font-size:.68rem;letter-spacing:.02em">Open Data</span></span>
+      </a>
+      <nav class="nav" aria-label="Navigation">
+        <a href="./">Accueil</a>
+        <a href="./llms.txt">llms.txt</a>
+        <button id="refresh-btn" class="refresh-btn" type="button">Rafraîchir</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container hero">
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span> Tableau de bord public</span>
+      <h1>Statistiques détaillées <span class="gradient">LienLibre</span></h1>
+      <p class="lead">Mesure anonymisée de l’impact citoyen : clics contournés, domaines de presse partagés, audits automatiques, alertes anti-hameçonnage et signaux de sécurité — sans exposer d’adresse IP ni donnée personnelle.</p>
+      <div class="status-row">
+        <span class="pill">État API : <strong id="api-status">chargement</strong></span>
+        <span class="pill">Dernière mise à jour : <strong id="updated-at">—</strong></span>
+        <span class="pill">Source : <strong>Cloudflare Worker</strong></span>
+      </div>
+    </section>
+
+    <section class="container grid cards" aria-label="Compteurs principaux">
+      <article class="card metric-card">
+        <div class="metric-label">Clics contournés</div>
+        <div id="total-clicks" class="metric-value">0</div>
+        <div class="metric-foot">Redirections vers des médias ou liens audités</div>
+      </article>
+      <article class="card metric-card">
+        <div class="metric-label">Domaines partagés</div>
+        <div id="domain-count" class="metric-value">0</div>
+        <div class="metric-foot">Domaines uniques observés publiquement</div>
+      </article>
+      <article class="card metric-card">
+        <div class="metric-label">Audits automatiques</div>
+        <div id="audits-count" class="metric-value">0</div>
+        <div class="metric-foot">Domaines inconnus analysés par le mini-bot</div>
+      </article>
+      <article class="card metric-card">
+        <div class="metric-label">Alertes 10 s</div>
+        <div id="warnings-count" class="metric-value">0</div>
+        <div class="metric-foot">Barrières anti-hameçonnage affichées</div>
+      </article>
+    </section>
+
+    <section class="container grid two-col">
+      <article class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2>Top des domaines de presse partagés</h2>
+            <p>Classement public basé sur des compteurs agrégés.</p>
+          </div>
+        </div>
+        <div id="domain-list" class="domain-list"><div class="empty">Chargement des domaines…</div></div>
+      </article>
+
+      <aside class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2>Répartition sécurité</h2>
+            <p>Whitelist officielle, audit automatique et avertissements.</p>
+          </div>
+        </div>
+        <div id="trust-list" class="event-list"><div class="empty">Chargement…</div></div>
+      </aside>
+    </section>
+
+    <section class="container grid two-col" style="margin-top:1rem">
+      <article class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2>Activité récente</h2>
+            <p>Histogramme agrégé par heure si l’endpoint détaillé est disponible.</p>
+          </div>
+        </div>
+        <div id="hour-chart" class="hour-chart" aria-label="Activité horaire"><div class="empty">Aucune série horaire disponible pour l’instant.</div></div>
+      </article>
+
+      <aside class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2>Langues utilisées</h2>
+            <p>Mesure anonyme des interfaces les plus consultées.</p>
+          </div>
+        </div>
+        <div id="language-list" class="lang-list"><div class="empty">Aucune donnée linguistique disponible.</div></div>
+      </aside>
+    </section>
+
+    <section class="container grid two-col" style="margin-top:1rem">
+      <article class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2>Événements de protection</h2>
+            <p>Signaux publics utiles pour améliorer la défense anti-hameçonnage.</p>
+          </div>
+        </div>
+        <div id="security-events" class="event-list"><div class="empty">Aucun événement de sécurité détaillé disponible.</div></div>
+      </article>
+
+      <aside class="card panel privacy-box">
+        <h2>Confidentialité par design</h2>
+        <p><strong>Recommandé :</strong> conserver uniquement des compteurs agrégés. Ne publiez pas les IP, user-agents complets, URLs complètes sensibles ou identifiants personnels.</p>
+        <p>Pour les statistiques avancées, utilisez des clés anonymisées : domaine, langue, type de décision sécurité, heure arrondie.</p>
+        <p>Objectif : prouver l’impact de LienLibre sans transformer l’outil en système de surveillance.</p>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <p>LienLibre — outil citoyen open-source MIT. <a href="https://github.com/Bwillou1/LienLibre" target="_blank" rel="noopener noreferrer">Code source</a></p>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const WORKER_URL = 'https://lienlibre.guindonwilliam2.workers.dev';
+    const FALLBACK_STATS = {
+      total_clicks: 0,
+      domains: {},
+      trust: { verified: 0, auto: 0, warning: 0 },
+      languages: {},
+      hourly: [],
+      security_events: {},
+      audited_domains: 0,
+      warnings_shown: 0,
+      updated_at: null
+    };
+
+    const $ = selector => document.querySelector(selector);
+    const fmt = new Intl.NumberFormat('fr-CA');
+
+    const dom = {
+      apiStatus: $('#api-status'),
+      updatedAt: $('#updated-at'),
+      totalClicks: $('#total-clicks'),
+      domainCount: $('#domain-count'),
+      auditsCount: $('#audits-count'),
+      warningsCount: $('#warnings-count'),
+      domainList: $('#domain-list'),
+      trustList: $('#trust-list'),
+      hourChart: $('#hour-chart'),
+      languageList: $('#language-list'),
+      securityEvents: $('#security-events'),
+      refreshBtn: $('#refresh-btn')
+    };
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+    }
+
+    async function fetchJSON(path) {
+      const url = new URL(path, WORKER_URL);
+      const response = await fetch(url.toString(), { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+      if (!response.ok) throw new Error(`${path} ${response.status}`);
+      return response.json();
+    }
+
+    async function loadStats() {
+      document.body.classList.add('loading');
+      dom.apiStatus.textContent = 'chargement';
+      try {
+        let data;
+        try {
+          data = await fetchJSON('/api/stats/detailed');
+        } catch (_) {
+          data = await fetchJSON('/api/stats');
+        }
+        renderStats(normalizeStats(data));
+        dom.apiStatus.textContent = 'connectée';
+      } catch (error) {
+        console.warn('Stats indisponibles', error);
+        renderStats(FALLBACK_STATS);
+        dom.apiStatus.textContent = 'indisponible';
+      } finally {
+        document.body.classList.remove('loading');
+      }
+    }
+
+    function normalizeStats(data) {
+      return {
+        total_clicks: Number(data.total_clicks ?? data.totalClicks ?? 0),
+        domains: data.domains || data.top_domains || {},
+        trust: data.trust || data.safety || {
+          verified: Number(data.verified_clicks ?? 0),
+          auto: Number(data.auto_whitelisted ?? data.auto_audited ?? 0),
+          warning: Number(data.warnings_shown ?? 0)
+        },
+        languages: data.languages || data.langs || {},
+        hourly: data.hourly || data.hours || [],
+        security_events: data.security_events || data.securityEvents || {},
+        audited_domains: Number(data.audited_domains ?? data.auto_audited ?? data.auto_whitelisted ?? 0),
+        warnings_shown: Number(data.warnings_shown ?? data.warning_count ?? 0),
+        updated_at: data.updated_at || data.updatedAt || new Date().toISOString()
+      };
+    }
+
+    function renderStats(data) {
+      const domains = Object.entries(data.domains || {}).map(([k, v]) => [k, Number(v) || 0]).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+      dom.totalClicks.textContent = fmt.format(data.total_clicks || 0);
+      dom.domainCount.textContent = fmt.format(domains.length);
+      dom.auditsCount.textContent = fmt.format(data.audited_domains || data.trust?.auto || 0);
+      dom.warningsCount.textContent = fmt.format(data.warnings_shown || data.trust?.warning || 0);
+      dom.updatedAt.textContent = data.updated_at ? new Date(data.updated_at).toLocaleString('fr-CA') : '—';
+
+      renderBars(dom.domainList, domains.slice(0, 12), 'clics', '');
+      renderTrust(data.trust || {});
+      renderHourly(data.hourly || []);
+      renderBars(dom.languageList, Object.entries(data.languages || {}).sort((a,b)=>Number(b[1])-Number(a[1])), 'visites', 'green');
+      renderBars(dom.securityEvents, Object.entries(data.security_events || {}).sort((a,b)=>Number(b[1])-Number(a[1])), 'événements', 'orange');
+    }
+
+    function renderBars(container, entries, suffix, tone) {
+      if (!entries.length) {
+        container.innerHTML = '<div class="empty">Aucune donnée disponible pour l’instant.</div>';
+        return;
+      }
+      const max = Math.max(...entries.map(([, value]) => Number(value) || 0), 1);
+      container.innerHTML = entries.map(([name, value]) => {
+        const safeValue = Number(value) || 0;
+        const pct = Math.max(5, Math.round((safeValue / max) * 100));
+        return `<div class="item">
+          <div class="item-row"><span class="name">${escapeHTML(name)}</span><span class="count">${fmt.format(safeValue)} ${escapeHTML(suffix)}</span></div>
+          <div class="bar ${tone}" aria-hidden="true"><span style="--pct:${pct}%;width:${pct}%"></span></div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderTrust(trust) {
+      const entries = [
+        ['Whitelist officielle', Number(trust.verified ?? trust.manual ?? 0)],
+        ['Auto-audité par mini-bot', Number(trust.auto ?? trust.autoWhitelisted ?? 0)],
+        ['Avertissement 10 secondes', Number(trust.warning ?? trust.warned ?? 0)]
+      ];
+      renderBars(dom.trustList, entries.filter(([, value]) => value > 0), 'liens', 'green');
+    }
+
+    function renderHourly(hourly) {
+      if (!Array.isArray(hourly) || !hourly.length) {
+        dom.hourChart.innerHTML = '<div class="empty">Aucune série horaire disponible pour l’instant. Ajoutez l’endpoint /api/stats/detailed côté Worker pour activer ce graphique.</div>';
+        return;
+      }
+      const normalized = hourly.map(item => ({
+        label: item.hour || item.time || item.label || '',
+        value: Number(item.clicks ?? item.count ?? item.value ?? 0)
+      })).slice(-48);
+      const max = Math.max(...normalized.map(i => i.value), 1);
+      dom.hourChart.innerHTML = normalized.map(item => {
+        const h = Math.max(3, Math.round((item.value / max) * 210));
+        const label = item.label ? new Date(item.label).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) : '';
+        return `<div class="hour" title="${escapeHTML(label)} — ${fmt.format(item.value)} clics"><div class="hour-bar" style="--h:${h}px;height:${h}px"></div><small>${escapeHTML(label)}</small></div>`;
+      }).join('');
+    }
+
+    dom.refreshBtn.addEventListener('click', loadStats);
+    loadStats();
+  </script>
+</body>
+</html>

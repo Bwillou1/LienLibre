@@ -1,0 +1,33 @@
+name = "lienlibre-api"
+main = "worker.js"
+compatibility_date = "2024-05-25"
+
+# Active les logs Worker dans Cloudflare
+[observability]
+enabled = true
+
+[vars]
+PUBLIC_STATS_ENABLED = "true"
+
+# Décommentez après avoir créé les namespaces KV.
+# wrangler kv namespace create LIENLIBRE_KV
+# wrangler kv namespace create LIENLIBRE_WHITELIST
+# wrangler kv namespace create LIENLIBRE_LINKS
+
+# [[kv_namespaces]]
+# binding = "LIENLIBRE_KV"
+# id = "VOTRE_ID_STATS"
+
+# [[kv_namespaces]]
+# binding = "LIENLIBRE_WHITELIST"
+# id = "VOTRE_ID_WHITELIST"
+
+# [[kv_namespaces]]
+# binding = "LIENLIBRE_LINKS"
+# id = "VOTRE_ID_LIENS_OPAQUES"
+
+# Secret recommandé :
+# wrangler secret put LINK_SIGNING_SECRET
+
+# Optionnel si Turnstile est ajouté :
+# wrangler secret put TURNSTILE_SECRET_KEY

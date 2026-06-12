@@ -1,0 +1,17 @@
+{
+  "name": "lienlibre",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Outil citoyen open-source canadien pour générer des liens pont Open Graph malgré le blocage Meta des médias au Canada.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev worker.js",
+    "deploy:worker": "wrangler deploy",
+    "check:worker": "node --check worker.js",
+    "check:html": "node -e \"const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); if(!html.includes('<main')) throw new Error('main missing'); console.log('HTML basic check ok')\"",
+    "check": "npm run check:worker && npm run check:html"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
