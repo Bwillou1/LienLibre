@@ -1,4 +1,4 @@
-name = "lienlibre-api"
+name = "lienlibre"
 main = "worker.js"
 compatibility_date = "2024-05-25"
 
