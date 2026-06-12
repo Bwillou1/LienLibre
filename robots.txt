@@ -1,0 +1,53 @@
+# LienLibre — Politique d’accès des robots
+# Position : projet citoyen en réaction au blocage/censure des médias canadiens
+# par Meta au Canada.
+#
+# Objectif :
+# 1) laisser le robot de PRÉVISUALISATION de liens lire les balises Open Graph,
+#    sinon les miniatures Facebook/Instagram risquent de casser ;
+# 2) refuser les robots Meta élargis / IA / entraînement / indexation générale.
+#
+# IMPORTANT GitHub Pages : pour être respecté à l’échelle de l’hôte
+# bwillou1.github.io, ce fichier doit aussi être disponible à :
+# https://bwillou1.github.io/robots.txt
+# Si LienLibre utilise un domaine personnalisé, placez ce fichier à la racine
+# de ce domaine, par exemple https://lienlibre.ca/robots.txt
+
+User-agent: *
+Allow: /
+
+# Meta / Facebook / Instagram — robot nécessaire aux aperçus Open Graph.
+# Ne pas bloquer si vous voulez garder une miniature correcte lors du partage.
+User-agent: facebookexternalhit
+Allow: /
+
+# Meta — robots non essentiels à l’aperçu social : censurés/refusés.
+User-agent: Facebot
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Meta-ExternalFetcher
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+# Autres robots de prévisualisation sociale utiles.
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot-LinkExpanding
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+Sitemap: https://bwillou1.github.io/LienLibre/sitemap.xml
