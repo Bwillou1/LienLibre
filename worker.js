@@ -272,6 +272,73 @@ export default {
       });
     }
 
+    // 3. Point de terminaison API Create (/api/create - supporte POST et GET pour compatibilité totale)
+    if (requestUrl.pathname === "/api/create") {
+      let targetInput = "";
+      let targetLang = lang;
+
+      if (request.method === "POST") {
+        try {
+          const body = await request.json();
+          targetInput = body.url || body.targetUrl || "";
+          if (body.lang) targetLang = body.lang.toLowerCase();
+        } catch (e) {
+          try {
+            const formData = await request.formData();
+            targetInput = formData.get("url") || "";
+            if (formData.get("lang")) targetLang = formData.get("lang").toLowerCase();
+          } catch (_) {}
+        }
+      } else {
+        targetInput = requestUrl.searchParams.get("url") || "";
+      }
+
+      if (!targetInput) {
+        return new Response(JSON.stringify({ error: "URL cible manquante." }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+
+      try {
+        let parsedTarget = new URL(targetInput.trim());
+        const { cleanedUrl } = cleanTrackingParameters(parsedTarget.href);
+        parsedTarget = new URL(cleanedUrl);
+
+        const isAllowed = isDomainAllowed(parsedTarget.hostname);
+        const randomId = Math.random().toString(36).substring(2, 10);
+
+        if (env && env.LIENLIBRE_KV) {
+          await env.LIENLIBRE_KV.put(`link:${randomId}`, JSON.stringify({
+            url: parsedTarget.href,
+            lang: targetLang,
+            created: Date.now()
+          }), { expirationTtl: 60 * 60 * 24 * 30 }); // 30 jours
+        }
+
+        const langParam = targetLang !== "fr" ? `&lang=${targetLang}` : "";
+        const directLink = `${requestUrl.origin}/?url=${encodeURIComponent(parsedTarget.href)}${langParam}`;
+        const shortLink = `${requestUrl.origin}/l/${randomId}${langParam}`;
+
+        return new Response(JSON.stringify({
+          ok: true,
+          id: randomId,
+          url: parsedTarget.href,
+          link: directLink,
+          shortLink: shortLink,
+          allowed: isAllowed
+        }), {
+          status: 200,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: "URL invalide ou mal formée." }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+    }
+
     // Uniquement accepter les requêtes GET pour le reste
     if (request.method !== "GET") {
       return new Response("Méthode non autorisée", { 
@@ -280,7 +347,23 @@ export default {
       });
     }
 
-    const targetUrlString = requestUrl.searchParams.get("url");
+    let targetUrlString = requestUrl.searchParams.get("url");
+
+    // Résolution des liens courts /l/:id ou /go/:id
+    if (!targetUrlString && (requestUrl.pathname.startsWith("/l/") || requestUrl.pathname.startsWith("/go/"))) {
+      const id = requestUrl.pathname.replace(/^\/(?:l|go)\//, "").split("/")[0].split("?")[0];
+      if (env && env.LIENLIBRE_KV && id) {
+        const stored = await env.LIENLIBRE_KV.get(`link:${id}`);
+        if (stored) {
+          try {
+            const parsedStored = JSON.parse(stored);
+            targetUrlString = parsedStored.url;
+          } catch (_) {
+            targetUrlString = stored;
+          }
+        }
+      }
+    }
 
     // Si aucune URL n'est passée, afficher une page de bienvenue informative
     if (!targetUrlString) {
