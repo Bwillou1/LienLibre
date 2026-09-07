@@ -884,6 +884,7 @@
       previewContent.classList.add('hidden');
       
       const rawUrl = urlInput.value.trim();
+      let targetHost = '';
       
       // Validation basique
       try {
@@ -891,6 +892,7 @@
         if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
           throw new Error();
         }
+        targetHost = parsed.hostname.replace(/^www\./i, '');
       } catch (_) {
         showError(trans.errorInvalidUrl || "Veuillez saisir une URL valide.");
         resultArea.classList.add('hidden');
@@ -916,10 +918,15 @@
         const response = await fetch(previewApiUrl);
         
         if (!response.ok) {
-          throw new Error();
+          throw new Error("HTTP error " + response.status);
         }
 
         const data = await response.json();
+
+        // Extraire et nettoyer le nom de domaine
+        previewDomain.textContent = targetHost;
+        previewTitle.textContent = data.title || targetHost;
+        previewDesc.textContent = data.description || (currentLang === 'fr' ? "Cliquez pour voir l'article original." : "Click to view original article.");
 
         // Afficher l'avertissement si le domaine n'est pas vérifié
         if (data.allowed === false) {
@@ -929,12 +936,15 @@
             unverifiedMailtoLink.href = generateMailtoUrl(currentLang, targetHost);
           }
         } else {
+          unverifiedWarning.classList.add('hidden');
           currentUnverifiedDomain = '';
         }
 
         // Afficher le badge de nettoyage du pistage si des mouchards ont été retirés
         if (data.trackingCleaned === true) {
           trackingCleanedBadge.classList.remove('hidden');
+        } else {
+          trackingCleanedBadge.classList.add('hidden');
         }
         
         // Mettre à jour l'aperçu
@@ -947,21 +957,14 @@
           previewImgPlaceholder.classList.remove('hidden');
         }
 
-        // Extraire et nettoyer le nom de domaine
-        const targetHost = new URL(rawUrl).hostname.replace('www.', '');
-        previewDomain.textContent = targetHost;
-        previewTitle.textContent = data.title || targetHost;
-        previewDesc.textContent = data.description || (currentLang === 'fr' ? "Cliquez pour voir l'article original." : "Click to view original article.");
-
         // Afficher le contenu de prévisualisation
         previewSkeleton.classList.add('hidden');
         previewContent.classList.remove('hidden');
       } catch (err) {
-        console.warn("Impossible de charger la prévisualisation (le Worker est-il déployé ?)", err);
+        console.warn("Erreur lors de la prévisualisation :", err);
         // Fallback en cas d'erreur de prévisualisation
-        const fallbackHost = new URL(rawUrl).hostname.replace('www.', '');
-        previewDomain.textContent = fallbackHost;
-        previewTitle.textContent = fallbackHost;
+        previewDomain.textContent = targetHost;
+        previewTitle.textContent = targetHost;
         previewDesc.textContent = currentLang === 'fr' ? "Lien de redirection LienLibre" : "LienLibre redirect link";
         previewImg.classList.add('hidden');
         previewImgPlaceholder.classList.remove('hidden');
