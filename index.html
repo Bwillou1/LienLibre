@@ -242,7 +242,7 @@
         </div>
 
         <!-- Unverified Domain Alert -->
-        <div id="unverified-warning" class="hidden p-4 bg-amber-950/20 border border-amber-500/25 text-amber-300 rounded-lg text-xs leading-relaxed space-y-1">
+        <div id="unverified-warning" class="hidden p-4 bg-amber-950/20 border border-amber-500/25 text-amber-300 rounded-lg text-xs leading-relaxed space-y-2">
           <div class="font-semibold flex items-center gap-1.5 text-amber-400">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4 shrink-0">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
@@ -250,6 +250,15 @@
             <span data-i18n="unverifiedTitle">Domaine non vérifié</span>
           </div>
           <p data-i18n="unverifiedDesc">Ce site ne figure pas dans notre liste blanche de confiance des médias d'information canadiens. L'aperçu miniature fonctionnera sur les réseaux sociaux, mais un écran d'avertissement de sécurité sera affiché aux visiteurs avant de les rediriger vers la cible.</p>
+          <div class="pt-1 flex items-center">
+            <a id="unverified-mailto-link" href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/30 rounded-lg text-[11px] font-medium transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+                <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z" />
+                <path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z" />
+              </svg>
+              <span data-i18n="unverifiedMailtoBtn">Demander l'ajout de ce média (Courriel)</span>
+            </a>
+          </div>
         </div>
 
         <!-- Preview Card Section -->
@@ -385,6 +394,7 @@
         copiedText: "Copié !",
         unverifiedTitle: "Domaine non vérifié",
         unverifiedDesc: "Ce site ne figure pas dans notre liste blanche de confiance des médias d'information canadiens. L'aperçu miniature fonctionnera sur les réseaux sociaux, mais un écran d'avertissement de sécurité sera affiché aux visiteurs avant de les rediriger vers la cible.",
+        unverifiedMailtoBtn: "Demander l'ajout de ce média (Courriel)",
         previewTitle: "Aperçu de la carte sur les réseaux sociaux",
         previewLive: "Généré en direct par le Worker",
         previewPlaceholder: "Pas d'image détectée (redirection préservée)",
@@ -417,6 +427,7 @@
         copiedText: "Copied!",
         unverifiedTitle: "Unverified domain",
         unverifiedDesc: "This site is not in our trusted whitelist of Canadian news media. The thumbnail preview will work on social networks, but a security warning screen will be shown to visitors before redirecting them to the destination.",
+        unverifiedMailtoBtn: "Request adding this media (Email)",
         previewTitle: "Social media card preview",
         previewLive: "Generated live by the Worker",
         previewPlaceholder: "No image detected (redirection preserved)",
@@ -449,6 +460,7 @@
         copiedText: "تم النسخ!",
         unverifiedTitle: "نطاق غير موثق",
         unverifiedDesc: "هذا الموقع ليس في قائمتنا البيضاء الموثوقة لوسائل الإعلام الكندية. ستعمل المعاينة المصغرة على الشبكات الاجتماعية، ولكن ستظهر شاشة تحذير أمان للزوار قبل توجيههم.",
+        unverifiedMailtoBtn: "طلب إضافة هذه الوسيلة الإعلامية (بريد إلكتروني)",
         previewTitle: "معاينة البطاقة على شبكات التواصل",
         previewLive: "تم إنشاؤه مباشرة بواسطة Worker",
         previewPlaceholder: "لم يتم العثور على صورة (تم الحفاظ على إعادة التوجيه)",
@@ -481,6 +493,7 @@
         copiedText: "¡Copiado!",
         unverifiedTitle: "Dominio no verificado",
         unverifiedDesc: "Este sitio no está en nuestra lista de confianza de medios de comunicación canadienses. La vista previa funcionará en las redes sociales, pero se mostrará una pantalla de advertencia de seguridad a los visitantes antes de redirigirlos.",
+        unverifiedMailtoBtn: "Solicitar la adición de este medio (Correo)",
         previewTitle: "Vista previa en redes sociales",
         previewLive: "Generado en vivo por el Worker",
         previewPlaceholder: "No se detectó imagen (redirección preservada)",
@@ -513,6 +526,7 @@
         copiedText: "Copiato!",
         unverifiedTitle: "Dominio non verificato",
         unverifiedDesc: "Questo sito non è presente nella nostra lista di fiducia dei media canadesi. L'anteprima funzionerà sui social network, ma verrà mostrata una schermata di avviso di sicurezza prima di reindirizzare i visitatori.",
+        unverifiedMailtoBtn: "Richiedi l'integrazione di questo media (Email)",
         previewTitle: "Anteprima della scheda social",
         previewLive: "Generato in tempo reale dal Worker",
         previewPlaceholder: "Nessuna immagine rilevata (reindirizzamento preservato)",
@@ -545,6 +559,7 @@
         copiedText: "已复制！",
         unverifiedTitle: "未经验证的域名",
         unverifiedDesc: "此网站不在我们信任的加拿大新闻媒体白名单中。社交网络上的缩略图预览将正常工作，但在重定向之前，访问者将看到安全警告页面。",
+        unverifiedMailtoBtn: "申请添加此媒体 (电子邮件)",
         previewTitle: "社交媒体卡片预览",
         previewLive: "由 Worker 实时生成",
         previewPlaceholder: "未检测到图片（重定向保留）",
@@ -577,6 +592,7 @@
         copiedText: "Naspitahikâtêw!",
         unverifiedTitle: "Nama-kwayask kiskêyihtâkwan",
         unverifiedDesc: "Ôma kiskinowâpahtihikowin nama-kiskêyihtâkwan ôta. Wâpahtihikowin masinahikan ka-wîci-ayamihtân, mâka sêmâk kîkway nika-wâpahtênân wîcihiwêw-paminikêwin.",
+        unverifiedMailtoBtn: "Sēkakinamowin kīkway (E-mail)",
         previewTitle: "Tânisi tisi-wâpahcikan",
         previewLive: "Osihtâw sêmâk",
         previewPlaceholder: "Nama-kîkway masinipicikêw",
@@ -609,6 +625,7 @@
         copiedText: "Aajiqiijut!",
         unverifiedTitle: "Nalunaiqtaulluarsimangittuq",
         unverifiedDesc: "Una qaritaujakkuurutinga ilisimajaujut list-inginniiqataungittuq. Takuksaujjutinga pinasuarungnaraluaqtuq, kisianili qaujisaqtauluni nutqallaktitaujjaalauqtuq.",
+        unverifiedMailtoBtn: "ᑐᒃᓯᕋᐅᑎ ᑐᓴᒐᒃᓴᓕᕆᔨᓂᒃ ᐃᓚᓯᖁᔨᓂᕐᒧᑦ (Email)",
         previewTitle: "Tusaraksaq takuksautillugu",
         previewLive: "Worker-mit pilirijaujuq maanna",
         previewPlaceholder: "Ajjiqangittuq",
@@ -641,6 +658,7 @@
         copiedText: "Kussenitakanu!",
         unverifiedTitle: "Eka tshissikuat tshe ishinakuat",
         unverifiedDesc: "Mane tshitshipan eka e nishtutamin tshe ishinakuat. Tshe uapataman mishta aimun, eka e kuesht aitini.",
+        unverifiedMailtoBtn: "Natshishikutamun tshe takuakinut (Email)",
         previewTitle: "Uapatamin tipatshimun",
         previewLive: "Tutan anutshish",
         previewPlaceholder: "Eka uapatamin masinipitsheun",
@@ -673,6 +691,7 @@
         copiedText: "Wehni'!",
         unverifiedTitle: "Iáh teiowatennion",
         unverifiedDesc: "Tsi niiorihwà:ke iáh teiowatennion ne Kanada. Thó nioht kaia'táhrho, kwah ok iente' aiorihwá:ke.",
+        unverifiedMailtoBtn: "Waharihwahserónni ne LienLibre (Email)",
         previewTitle: "Tsi nioht kaia'táhrho",
         previewLive: "Worker ne anotsis",
         previewPlaceholder: "Iáh teka'táhrho",
@@ -715,9 +734,63 @@
     const errorMessage = document.getElementById('error-message');
     const errorText = document.getElementById('error-text');
     const unverifiedWarning = document.getElementById('unverified-warning');
+    const unverifiedMailtoLink = document.getElementById('unverified-mailto-link');
     const trackingCleanedBadge = document.getElementById('tracking-cleaned-badge');
     const donationLink = document.getElementById('donation-link');
     const langSelect = document.getElementById('lang-select');
+    let currentUnverifiedDomain = '';
+
+    const MAILTO_TEMPLATES = {
+      en: {
+        subject: "Media Integration Request for LienLibre - {domain} (Case #{caseId})",
+        body: `Bonjour, Hello,\n\nI hope this message finds you well.\n\nI am a journalist writing to you on behalf of {domain} (or: as an independent journalist). I would like to add my media platform to the LienLibre tool because [insert your reason here].\n\nTo contact me, you can reach out via [insert your contact info].\n\nThank you for reading my message.\n\nWarm regards,\n[Your Name]\n\n#case id: {caseId}`
+      },
+      fr: {
+        subject: "Demande d'ajout de média pour LienLibre - {domain} (Cas #{caseId})",
+        body: `Bonjour,\n\nJ'espère que vous allez bien.\n\nJe suis journaliste pour {domain} (ou : en tant que journaliste indépendant·e). J'aimerais ajouter mon média à l'outil LienLibre car [insérer votre raison ici].\n\nPour me contacter, vous pouvez m'écrire à [insérer vos coordonnées].\n\nMerci d'avoir lu mon message.\n\nCordialement,\n\n[Votre Nom]\n\n#case id : {caseId}`
+      },
+      ar: {
+        subject: "طلب إضافة وسيلة إعلامية إلى LienLibre - {domain} (Case #{caseId})",
+        body: `مرحباً،\n\nأتمنى أن تكونوا بخير.\n\nأنا صحفي(ة) وأكتب لكم نيابةً عن {domain} (أو: كصحفي(ة) مستقل(ة)). أود إضافة منصتي الإعلامية إلى أداة LienLibre لأن [أدخل السبب هنا].\n\nللتواصل معي، يمكنكم مراسلتي عبر [أدخل معلومات الاتصال هنا].\n\nشكرًا لقراءة رسالتي.\n\nمع فائق الاحترام والتقدير،\n\n[اسمك]\n\n#case id: {caseId}`
+      },
+      es: {
+        subject: "Solicitud de integración de medios para LienLibre - {domain} (Caso #{caseId})",
+        body: `Hola,\n\nEspero que se encuentre bien.\n\nSoy periodista y les escribo en nombre de {domain} (o: como periodista independiente). Me gustaría añadir mi medio de comunicación a la herramienta LienLibre porque [inserta tu razón aquí].\n\nPara ponerse en contacto conmigo, puede hacerlo a través de [inserta tus datos de contacto].\n\nGracias por leer mi mensaje.\n\nSaludos cordiales,\n\n[Tu Nombre]\n\n#case id: {caseId}`
+      },
+      it: {
+        subject: "Richiesta di integrazione media per LienLibre - {domain} (Caso #{caseId})",
+        body: `Buongiorno,\n\nSpero che questa email vi trovi bene.\n\nSono un·a giornalista e vi scrivo a nome di {domain} (o: come giornalista indipendente). Vorrei aggiungere il mio media allo strumento LienLibre perché [inserisci il motivo qui].\n\nPer contattarmi, potete trovarmi a [inserisci i tuoi dati di contatto].\n\nGrazie per aver letto il mio messaggio.\n\nCordiali saluti,\n\n[Il tuo nome]\n\n#case id: {caseId}`
+      },
+      zh: {
+        subject: "LienLibre 媒体添加申請 - {domain} (案件编号 #{caseId})",
+        body: `您好，\n\n展信佳。\n\n我是一名记者，代表 {domain} (或者：作为一名独立记者) 向您致信。我想将我的媒体平台添加到 LienLibre 工具中，因为 [在此处插入您的原因]。\n\n如需与我联系，请通过 [在此处插入您的联系方式]。\n\n感谢您抽空阅读我的信件。\n\n顺祝商祺，\n\n[您的名字]\n\n#case id: {caseId}`
+      },
+      cr: {
+        subject: "Sēkakinamowin kīkway LienLibre - {domain} (Case #{caseId})",
+        body: `Tānisi,\n\nNipakosēyimowān miywāyāyan.\n\nNīya ācimowinihkēw, nimāmitonēyihten ōma {domain} (or: independent ācimowinihkēw). Nitawēyihten ta-asitahikātēg nītācimowin ōta LienLibre tansi [insert your reason here].\n\nKakwēcimiyan, kika-asitahamawin ōta [insert your contact info].\n\nKinaskomitin ē-kī-isihitaman nitācimowin.\n\nMina mīywātisiwin,\n\n[Your Name]\n\n#case id: {caseId}`
+      },
+      iu: {
+        subject: "ᑐᒃᓯᕋᐅᑎ ᑐᓴᒐᒃᓴᓕᕆᔨᓂᒃ ᐃᓚᓯᖁᔨᓂᕐᒧᑦ LienLibre - {domain} (Case #{caseId})",
+        body: `ᖃᓄᐃᑉᐱᑦ, Haloo,\n\nᖃᓄᐃᙱᑦᑎᐊᕐᓂᕐᓂᒃ ᓂᕆᐅᒃᐳᖓ.\n\nᑐᓴᒐᒃᓴᓕᕆᔨᐅᕗᖓ ᑎᑎᕋᖅᑐᖓ ᐅᖃᕐᕕᒋᓪᓗᑎᑦ ᐱᔾᔪᑎᒋᓪᓗᒍ {domain} (or: ᓇᖕᒥᓂᖅ ᑐᓴᒐᒃᓴᓕᕆᔨᐅᓪᓗᖓ). ᐃᓚᓯᔪᒪᒐᒪ ᑐᓴᒐᒃᓴᓕᕆᕝᕕᓐᓂᒃ ᐅᕗᖓ LienLibre ᐱᔾᔪᑎᒋᓪᓗᒍ [insert your reason here].\n\nᐅᖃᕐᕕᒋᔪᓐᓇᖅᐸᕐᒪ ᐅᕗᖓ [insert your contact info].\n\nᖁᔭᓐᓇᖄ ᐅᖃᓕᒫᕋᕕᐅᒃ ᑎᑎᕋᖅᑕᒃᑲ.\n\nᐃᒃᐱᒍᓱᑦᑎᐊᕐᓂᒃᑯᑦ,\n\n[Your Name]\n\n#case id: {caseId}`
+      },
+      in: {
+        subject: "Natshishikutamun tshe takuakinut utatshimushinu LienLibre - {domain} (Case #{caseId})",
+        body: `Kuei,\n\nNipakuasseniten tshe munu-ayan.\n\nNinian utatshimushish (or: independent utatshimushish) miam {domain}. Nitapuaten tshe takuakinut nutatshimushinu ut LienLibre tshekuan [insert your reason here].\n\nTshe tshi tueshin, ut nika tshi itatshimushen [insert your contact info].\n\nTshinaskumitin e tshi tshitapataman nutatshimun.\n\nMinuat tshitueshin,\n\n[Your Name]\n\n#case id: {caseId}`
+      },
+      moh: {
+        subject: "Ne tsha nikarihóten ne LienLibre waharihwahserónni - {domain} (Case #{caseId})",
+        body: `Kwe kwe,\n\nKateriwayentéhris ki nón:wa skennen'kóva ken'tiiéntere.\n\nIken's ne kahwátsire tsi niioríwa {domain} (or: independent kahwátsire). Iken's ií:kehre ratiió'te ne LienLibre oh niyon tsi [insert your reason here].\n\nTsatáweia tsi ní:ioht tsi tskatsenri [insert your contact info].\n\nNiawen'kówa tsi wahatshá:ri ne ioríwa.\n\nOnhwentsiákon,\n\n[Your Name]\n\n#case id: {caseId}`
+      }
+    };
+
+    function generateMailtoUrl(lang, domain) {
+      const t = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
+      const randomId = Math.floor(100000 + Math.random() * 900000).toString();
+      const domainClean = (domain || "").replace(/^www\./i, '');
+      const subject = t.subject.replace('{domain}', domainClean).replace('{caseId}', randomId);
+      const body = t.body.replace('{domain}', domainClean).replace(/{caseId}/g, randomId);
+      return `mailto:guindonwilliam2@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
 
     // Mettre à jour le lien de don s'il est configuré
     if (donationLink && DONATION_URL && DONATION_URL !== '#') {
@@ -770,6 +843,11 @@
         document.documentElement.dir = 'rtl';
       } else {
         document.documentElement.dir = 'ltr';
+      }
+
+      // Mettre à jour le lien mailto si un domaine non vérifié est actif
+      if (currentUnverifiedDomain && unverifiedMailtoLink) {
+        unverifiedMailtoLink.href = generateMailtoUrl(lang, currentUnverifiedDomain);
       }
 
       // Sauvegarder le choix
@@ -846,6 +924,12 @@
         // Afficher l'avertissement si le domaine n'est pas vérifié
         if (data.allowed === false) {
           unverifiedWarning.classList.remove('hidden');
+          currentUnverifiedDomain = targetHost;
+          if (unverifiedMailtoLink) {
+            unverifiedMailtoLink.href = generateMailtoUrl(currentLang, targetHost);
+          }
+        } else {
+          currentUnverifiedDomain = '';
         }
 
         // Afficher le badge de nettoyage du pistage si des mouchards ont été retirés

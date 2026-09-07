@@ -322,8 +322,10 @@ export default {
 
     const isAllowed = isDomainAllowed(targetUrl.hostname);
 
-    // Enregistrer le clic de manière asynchrone (sans bloquer la redirection de l'utilisateur)
-    ctx.waitUntil(recordClick(env, targetUrl.hostname));
+    // Enregistrer le clic réel de manière asynchrone (pour les vrais visiteurs, pas pour les prévisualisations JSON)
+    if (!isJsonRequested) {
+      ctx.waitUntil(recordClick(env, targetUrl.hostname));
+    }
 
     // 5. Extraire les métadonnées de la page cible
     const meta = {
@@ -679,6 +681,220 @@ const WORKER_WARN_TRANSLATIONS = {
   }
 };
 
+const MAILTO_TEMPLATES = {
+  en: {
+    btn: "Request integration for this media (Email)",
+    question: "Are you a local or independent news organization?",
+    subject: "Media Integration Request for LienLibre - {domain} (Case #{caseId})",
+    body: `Bonjour, Hello,
+
+I hope this message finds you well.
+
+I am a journalist writing to you on behalf of {domain} (or: as an independent journalist). I would like to add my media platform to the LienLibre tool because [insert your reason here].
+
+To contact me, you can reach out via [insert your contact info].
+
+Thank you for reading my message.
+
+Warm regards,
+[Your Name]
+
+#case id: {caseId}`
+  },
+  fr: {
+    btn: "Demander l'ajout de ce média (Courriel)",
+    question: "Vous êtes un média d'information local ou indépendant ?",
+    subject: "Demande d'ajout de média pour LienLibre - {domain} (Cas #{caseId})",
+    body: `Bonjour,
+
+J'espère que vous allez bien.
+
+Je suis journaliste pour {domain} (ou : en tant que journaliste indépendant·e). J'aimerais ajouter mon média à l'outil LienLibre car [insérer votre raison ici].
+
+Pour me contacter, vous pouvez m'écrire à [insérer vos coordonnées].
+
+Merci d'avoir lu mon message.
+
+Cordialement,
+
+[Votre Nom]
+
+#case id : {caseId}`
+  },
+  ar: {
+    btn: "طلب إضافة هذه الوسيلة الإعلامية (بريد إلكتروني)",
+    question: "هل أنت وسيلة إعلامية محلية أو مستقلة؟",
+    subject: "طلب إضافة وسيلة إعلامية إلى LienLibre - {domain} (Case #{caseId})",
+    body: `مرحباً،
+
+أتمنى أن تكونوا بخير.
+
+أنا صحفي(ة) وأكتب لكم نيابةً عن {domain} (أو: كصحفي(ة) مستقل(ة)). أود إضافة منصتي الإعلامية إلى أداة LienLibre لأن [أدخل السبب هنا].
+
+للتواصل معي، يمكنكم مراسلتي عبر [أدخل معلومات الاتصال هنا].
+
+شكرًا لقراءة رسالتي.
+
+مع فائق الاحترام والتقدير،
+
+[اسمك]
+
+#case id: {caseId}`
+  },
+  es: {
+    btn: "Solicitar la adición de este medio (Correo)",
+    question: "¿Es usted un medio de comunicación local o independiente?",
+    subject: "Solicitud de integración de medios para LienLibre - {domain} (Caso #{caseId})",
+    body: `Hola,
+
+Espero que se encuentre bien.
+
+Soy periodista y les escribo en nombre de {domain} (o: como periodista independiente). Me gustaría añadir mi medio de comunicación a la herramienta LienLibre porque [inserta tu razón aquí].
+
+Para ponerse en contacto conmigo, puede hacerlo a través de [inserta tus datos de contacto].
+
+Gracias por leer mi mensaje.
+
+Saludos cordiales,
+
+[Tu Nombre]
+
+#case id: {caseId}`
+  },
+  it: {
+    btn: "Richiedi l'integrazione di questo media (Email)",
+    question: "Sei un media locale o indipendente?",
+    subject: "Richiesta di integrazione media per LienLibre - {domain} (Caso #{caseId})",
+    body: `Buongiorno,
+
+Spero che questa email vi trovi bene.
+
+Sono un·a giornalista e vi scrivo a nome di {domain} (o: come giornalista indipendente). Vorrei aggiungere il mio media allo strumento LienLibre perché [inserisci il motivo qui].
+
+Per contattarmi, potete trovarmi a [inserisci i tuoi dati di contatto].
+
+Grazie per aver letto il mio messaggio.
+
+Cordiali saluti,
+
+[Il tuo nome]
+
+#case id: {caseId}`
+  },
+  zh: {
+    btn: "申请添加此媒体 (电子邮件)",
+    question: "您是本地或独立新闻媒体吗？",
+    subject: "LienLibre 媒体添加申請 - {domain} (案件编号 #{caseId})",
+    body: `您好，
+
+展信佳。
+
+我是一名记者，代表 {domain} (或者：作为一名独立记者) 向您致信。我想将我的媒体平台添加到 LienLibre 工具中，因为 [在此处插入您的原因]。
+
+如需与我联系，请通过 [在此处插入您的联系方式]。
+
+感谢您抽空阅读我的信件。
+
+顺祝商祺，
+
+[您的名字]
+
+#case id: {caseId}`
+  },
+  cr: {
+    btn: "Sēkakinamowin kīkway (E-mail)",
+    question: "Kîya cî ōma ācimowin paminikêw?",
+    subject: "Sēkakinamowin kīkway LienLibre - {domain} (Case #{caseId})",
+    body: `Tānisi,
+
+Nipakosēyimowān miywāyāyan.
+
+Nīya ācimowinihkēw, nimāmitonēyihten ōma {domain} (or: independent ācimowinihkēw). Nitawēyihten ta-asitahikātēg nītācimowin ōta LienLibre tansi [insert your reason here].
+
+Kakwēcimiyan, kika-asitahamawin ōta [insert your contact info].
+
+Kinaskomitin ē-kī-isihitaman nitācimowin.
+
+Mina mīywātisiwin,
+
+[Your Name]
+
+#case id: {caseId}`
+  },
+  iu: {
+    btn: "ᑐᒃᓯᕋᐅᑎ ᑐᓴᒐᒃᓴᓕᕆᔨᓂᒃ ᐃᓚᓯᖁᔨᓂᕐᒧᑦ (Email)",
+    question: "ᑐᓴᒐᒃᓴᓕᕆᔨᐅᕖᑦ ᓄᓇᓕᖕᓂ?",
+    subject: "ᑐᒃᓯᕋᐅᑎ ᑐᓴᒐᒃᓴᓕᕆᔨᓂᒃ ᐃᓚᓯᖁᔨᓂᕐᒧᑦ LienLibre - {domain} (Case #{caseId})",
+    body: `ᖃᓄᐃᑉᐱᑦ, Haloo,
+
+ᖃᓄᐃᙱᑦᑎᐊᕐᓂᕐᓂᒃ ᓂᕆᐅᒃᐳᖓ.
+
+ᑐᓴᒐᒃᓴᓕᕆᔨᐅᕗᖓ ᑎᑎᕋᖅᑐᖓ ᐅᖃᕐᕕᒋᓪᓗᑎᑦ ᐱᔾᔪᑎᒋᓪᓗᒍ {domain} (or: ᓇᖕᒥᓂᖅ ᑐᓴᒐᒃᓴᓕᕆᔨᐅᓪᓗᖓ). ᐃᓚᓯᔪᒪᒐᒪ ᑐᓴᒐᒃᓴᓕᕆᕝᕕᓐᓂᒃ ᐅᕗᖓ LienLibre ᐱᔾᔪᑎᒋᓪᓗᒍ [insert your reason here].
+
+ᐅᖃᕐᕕᒋᔪᓐᓇᖅᐸᕐᒪ ᐅᕗᖓ [insert your contact info].
+
+ᖁᔭᓐᓇᖄ ᐅᖃᓕᒫᕋᕕᐅᒃ ᑎᑎᕋᖅᑕᒃᑲ.
+
+ᐃᒃᐱᒍᓱᑦᑎᐊᕐᓂᒃᑯᑦ,
+
+[Your Name]
+
+#case id: {caseId}`
+  },
+  in: {
+    btn: "Natshishikutamun tshe takuakinut (Email)",
+    question: "Tshin tshekuan utatshimushish?",
+    subject: "Natshishikutamun tshe takuakinut utatshimushinu LienLibre - {domain} (Case #{caseId})",
+    body: `Kuei,
+
+Nipakuasseniten tshe munu-ayan.
+
+Ninian utatshimushish (or: independent utatshimushish) miam {domain}. Nitapuaten tshe takuakinut nutatshimushinu ut LienLibre tshekuan [insert your reason here].
+
+Tshe tshi tueshin, ut nika tshi itatshimushen [insert your contact info].
+
+Tshinaskumitin e tshi tshitapataman nutatshimun.
+
+Minuat tshitueshin,
+
+[Your Name]
+
+#case id: {caseId}`
+  },
+  moh: {
+    btn: "Waharihwahserónni ne LienLibre (Email)",
+    question: "Íse ken ne kahwátsire tsi niioríwa?",
+    subject: "Ne tsha nikarihóten ne LienLibre waharihwahserónni - {domain} (Case #{caseId})",
+    body: `Kwe kwe,
+
+Kateriwayentéhris ki nón:wa skennen'kóva ken'tiiéntere.
+
+Iken's ne kahwátsire tsi niioríwa {domain} (or: independent kahwátsire). Iken's ií:kehre ratiió'te ne LienLibre oh niyon tsi [insert your reason here].
+
+Tsatáweia tsi ní:ioht tsi tskatsenri [insert your contact info].
+
+Niawen'kówa tsi wahatshá:ri ne ioríwa.
+
+Onhwentsiákon,
+
+[Your Name]
+
+#case id: {caseId}`
+  }
+};
+
+/**
+ * Génère une URL mailto pré-remplie multilingue avec un identifiant de dossier (Case ID) aléatoire.
+ */
+function generateMailtoUrl(lang, domain) {
+  const t = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
+  const randomId = Math.floor(100000 + Math.random() * 900000).toString();
+  const domainClean = (domain || "").replace(/^www\./i, "");
+  const subject = t.subject.replace("{domain}", domainClean).replace("{caseId}", randomId);
+  const body = t.body.replace("{domain}", domainClean).replace(/{caseId}/g, randomId);
+  return "mailto:guindonwilliam2@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+}
+
 /**
  * Génère le HTML pour rediriger l'utilisateur tout en affichant l'aperçu Open Graph pour les bots.
  */
@@ -838,6 +1054,9 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
     ? "https://www.antifraudcentre-centreantifraude.ca/report-signalez-fra.htm"
     : "https://www.antifraudcentre-centreantifraude.ca/report-signalez-eng.htm";
 
+  const mailTpl = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
+  const mailtoUrl = generateMailtoUrl(lang, hostname);
+
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${htmlDir}">
 <head>
@@ -929,7 +1148,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       border-radius: 0.5rem;
       padding: 1rem;
       text-align: left;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       font-size: 0.85rem;
     }
     .info-row {
@@ -951,6 +1170,23 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       font-family: monospace;
       word-break: break-all;
       text-align: right;
+    }
+    .btn-mailto {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.55rem 1.15rem;
+      border-radius: 0.375rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    .btn-mailto:hover {
+      background-color: #1d4ed8;
     }
     .btn-report {
       display: block;
@@ -1041,6 +1277,15 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
         <span class="info-label">${trans.ipLabel}</span>
         <span class="info-value">${escapedIp}</span>
       </div>
+    </div>
+
+    <div style="margin-top: -0.5rem; margin-bottom: 1.5rem; padding: 0.85rem; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 0.6rem; text-align: center;">
+      <div style="font-size: 0.82rem; color: #93c5fd; margin-bottom: 0.6rem; font-weight: 500;">
+        📰 ${escapeHtml(mailTpl.question)}
+      </div>
+      <a href="${mailtoUrl}" class="btn-mailto">
+        ✉️ ${escapeHtml(mailTpl.btn)}
+      </a>
     </div>
 
     <a href="${reportUrl}" target="_blank" rel="noopener noreferrer" class="btn-report">
