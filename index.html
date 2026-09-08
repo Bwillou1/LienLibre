@@ -389,15 +389,13 @@
           </div>
         </div>
 
-        <!-- Mandatory Legal Agreement Checkbox -->
-        <div class="pt-1 pb-1">
-          <label class="flex items-start gap-2.5 cursor-pointer select-none group p-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-950/60 border border-slate-300/80 dark:border-slate-800 hover:border-cyan-500/50 transition-all">
-            <input type="checkbox" id="checkbox-legal-agree" required class="mt-0.5 h-4 w-4 rounded border-slate-400 dark:border-slate-700 text-cyan-600 focus:ring-cyan-500 cursor-pointer">
-            <span class="text-xs text-slate-700 dark:text-slate-300 leading-snug">
-              <span data-i18n="legalCheckboxLabel">Je certifie que ce lien mène vers une source d'information légitime et j'accepte sans réserve les</span>
-              <button type="button" id="btn-open-legal-from-check" class="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold cursor-pointer" data-i18n="legalCheckboxLink">Conditions d'Utilisation et la Décharge Juridique</button>.
-            </span>
-          </label>
+        <!-- Clickwrap Legal Agreement Notice -->
+        <div class="p-2.5 rounded-xl bg-slate-100/70 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 leading-snug flex items-center gap-2">
+          <span class="text-sm shrink-0">⚖️</span>
+          <span>
+            <span data-i18n="legalCheckboxLabel">En cliquant sur « Générer mon LienLibre », vous certifiez partager une source d'information légitime et vous acceptez sans réserve les</span>
+            <button type="button" id="btn-open-legal-from-check" class="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold cursor-pointer" data-i18n="legalCheckboxLink">Conditions d'Utilisation et la Décharge Juridique</button>.
+          </span>
         </div>
         
         <button 
@@ -1270,7 +1268,7 @@
         statsTopDomains: "Top des domaines de presse consultés",
         clicksText: "clics",
         navReportBtn: "Signaler un abus",
-        legalCheckboxLabel: "Je certifie que ce lien mène vers une source d'information légitime et j'accepte sans réserve les",
+        legalCheckboxLabel: "En cliquant sur « Générer mon LienLibre », vous certifiez partager une source d'information légitime et vous acceptez sans réserve les",
         legalCheckboxLink: "Conditions d'Utilisation et la Décharge Juridique",
         errorMustAgreeLegal: "Veuillez certifier la source et accepter les Conditions d'Utilisation.",
         sourceBlockedAlert: "Lien bloqué : ce domaine ou type de lien est restreint par mesure de sécurité.",
@@ -1350,7 +1348,7 @@
         statsTopDomains: "Top visited news outlets",
         clicksText: "clicks",
         navReportBtn: "Report Abuse",
-        legalCheckboxLabel: "I certify that this link leads to a legitimate information source and accept the",
+        legalCheckboxLabel: "By clicking \"Generate my LienLibre\", you certify sharing a legitimate information source and accept the",
         legalCheckboxLink: "Terms of Service & Legal Disclaimer",
         errorMustAgreeLegal: "Please certify the source and accept the Terms of Service to proceed.",
         sourceBlockedAlert: "Link blocked: this domain or link format is restricted for security reasons.",
@@ -1430,7 +1428,7 @@
         statsTopDomains: "أكثر المنافذ الإخبارية زيارة",
         clicksText: "نقرة",
         navReportBtn: "إبلاغ عن مخالفة",
-        legalCheckboxLabel: "أؤكد أن هذا الرابط يوجه إلى مصدر معلومات مشروع وأقبل",
+        legalCheckboxLabel: "بالنقر على «إنشاء رابط LienLibre»، فإنك تؤكد مشاركة مصدر معلومات مشروع وتوافق دون قيد أو شرط على",
         legalCheckboxLink: "شروط الاستخدام وإخلاء المسؤولية القانونية",
         errorMustAgreeLegal: "يرجى الموافقة على الشروط القانونية وتوثيق المصدر للمتابعة.",
         sourceBlockedAlert: "تم حظر الرابط: هذا النطاق أو نوع الرابط مقيد لأسباب أمنية.",
@@ -1510,7 +1508,7 @@
         statsTopDomains: "Principales medios consultados",
         clicksText: "clics",
         navReportBtn: "Reportar un abuso",
-        legalCheckboxLabel: "Certifico que este enlace conduce a una fuente de información legítima y acepto las",
+        legalCheckboxLabel: "Al hacer clic en «Generar mi LienLibre», certifica compartir una fuente de información legítima y acepta las",
         legalCheckboxLink: "Condiciones de Uso y Descargo Legal",
         errorMustAgreeLegal: "Por favor, marque la casilla de aceptación legal para continuar.",
         sourceBlockedAlert: "Enlace bloqueado: este dominio o tipo de enlace está restringido por seguridad.",
@@ -1590,7 +1588,7 @@
         statsTopDomains: "Media più consultati",
         clicksText: "clic",
         navReportBtn: "Segnala un abuso",
-        legalCheckboxLabel: "Certifico che questo link conduce a una fonte informativa legittima e accetto le",
+        legalCheckboxLabel: "Cliccando su «Genera il mio LienLibre», certifichi di condividere una fonte informativa legittima e accetti le",
         legalCheckboxLink: "Condizioni d'Uso e la Clausola di Esonero",
         errorMustAgreeLegal: "Spunta la casella di accettazione legale per continuare.",
         sourceBlockedAlert: "Link bloccato: questo dominio o formato è limitato per sicurezza.",
@@ -1670,7 +1668,7 @@
         statsTopDomains: "访问最多的新闻域名",
         clicksText: "次点击",
         navReportBtn: "举报违规链接",
-        legalCheckboxLabel: "我声明并承诺此链接指向合法真实的信息来源，并完全同意",
+        legalCheckboxLabel: "点击“生成我的 LienLibre”即代表您声明分享合法真实的信息来源，并完全同意",
         legalCheckboxLink: "服务条款与法律免责声明",
         errorMustAgreeLegal: "请勾选确认框并同意服务条款以继续。",
         sourceBlockedAlert: "链接已被拦截：该域名或文件类型因安全规则被禁止。",
@@ -1750,7 +1748,7 @@
         statsTopDomains: "Kâ-mâmawi-wâpahtamihk",
         clicksText: "pimohtêwin",
         navReportBtn: "Pimohtê-mâmawi",
-        legalCheckboxLabel: "Naspitahâ kwayask âcimowin kânata êkwa",
+        legalCheckboxLabel: "Kâ-tôhtamiyan «Osihtâ niyahk LienLibre», naspitahâ kwayask âcimowin êkwa",
         legalCheckboxLink: "Masinahikan & Legal Terms",
         errorMustAgreeLegal: "Pimi-astâ checkbox tisi-wâpahtamihk.",
         sourceBlockedAlert: "Nama-kwayask: kâ-kipitinikâtêk URL.",
@@ -1830,7 +1828,7 @@
         statsTopDomains: "Takujaujuqpaat",
         clicksText: "nuktarviit",
         navReportBtn: "Nalunaiqsiniq",
-        legalCheckboxLabel: "Nalunaiqpara una tusaraksaq kikkutuinnarnut uvalu",
+        legalCheckboxLabel: "Tuqługu «Sanalugu LienLibre-ga», nalunaiqpara tusaraksaq uvalu",
         legalCheckboxLink: "Maligait & Terms",
         errorMustAgreeLegal: "Nalunaiqsigiit aturniaqtatit maligait.",
         sourceBlockedAlert: "Umiksimajuq: nalunaiqtaulluarsimangittuq URL.",
@@ -1910,7 +1908,7 @@
         statsTopDomains: "Mane e uapataman",
         clicksText: "aitun",
         navReportBtn: "Uitsheun",
-        legalCheckboxLabel: "Nitapuaten kwayask tipatshimun nete mak",
+        legalCheckboxLabel: "E tshitutamin «Tutamashu nitishiliniun LienLibre», nitapuaten kwayask tipatshimun mak",
         legalCheckboxLink: "Masinahikan & Terms",
         errorMustAgreeLegal: "Tutan checkbox tshetshi uitsheut.",
         sourceBlockedAlert: "Eka kuesht: kâ-kipitinikâtêk URL.",
@@ -1990,7 +1988,7 @@
         statsTopDomains: "Top Domains",
         clicksText: "clicks",
         navReportBtn: "Karihwaneken",
-        legalCheckboxLabel: "Kateriwayentéhris ne karihwaneken skennen'kówa ohni",
+        legalCheckboxLabel: "Tsi niahsewenni «Katshenri ne LienLibre», kateriwayentéhris ne karihwaneken skennen'kówa ohni",
         legalCheckboxLink: "Tsi niorihwà:ke & Terms",
         errorMustAgreeLegal: "Kwahiaton checkbox ne tsi niorihwà:ke.",
         sourceBlockedAlert: "Iáh teiowatennion: URL.",
@@ -2538,13 +2536,6 @@
       
       const currentLang = langSelect.value;
       const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
-
-      // Mandatory Legal Agreement Check
-      const checkboxLegalAgree = document.getElementById('checkbox-legal-agree');
-      if (checkboxLegalAgree && !checkboxLegalAgree.checked) {
-        showError(trans.errorMustAgreeLegal || "Veuillez certifier la source et accepter les Conditions d'Utilisation.");
-        return;
-      }
 
       // Reset
       errorMessage.classList.add('hidden');
