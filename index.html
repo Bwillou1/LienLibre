@@ -200,6 +200,17 @@
           <button type="button" id="btn-open-legal" class="hover:text-cyan-400 transition-colors text-left" data-i18n="navLegal">Mentions Légales & CGU</button>
         </nav>
 
+        <!-- Mirror / Fork 1-Click Button -->
+        <button 
+          type="button" 
+          id="btn-open-mirror" 
+          class="flex items-center gap-1.5 bg-gradient-to-r from-cyan-500/15 via-indigo-500/15 to-purple-500/15 hover:from-cyan-500/25 hover:to-purple-500/25 text-cyan-300 hover:text-cyan-200 border border-cyan-500/30 hover:border-cyan-400/50 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-sm group cursor-pointer"
+          title="Créer votre propre site miroir en 1 clic (Fork GitHub)"
+        >
+          <span class="text-sm group-hover:rotate-12 transition-transform">🪞</span>
+          <span data-i18n="navMirror">Créer un miroir</span>
+        </button>
+
         <!-- PWA Install Button (Shown if installable) -->
         <button 
           type="button" 
@@ -754,6 +765,116 @@
     </div>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- MODAL : Créer un site miroir (Décentralisation & Fork 1-clic)              -->
+  <!-- ========================================================================= -->
+  <div id="mirror-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden" role="dialog" aria-modal="true" aria-labelledby="modal-mirror-title">
+    <div id="mirror-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"></div>
+    
+    <div class="relative w-full max-w-2xl max-h-[85vh] flex flex-col bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-10">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <span class="text-base">🪞</span>
+          </div>
+          <div>
+            <h3 id="modal-mirror-title" class="font-display font-bold text-base sm:text-lg text-white" data-i18n="mirrorModalTitle">
+              Créer votre propre site miroir (Décentralisation)
+            </h3>
+          </div>
+        </div>
+        <button type="button" id="btn-close-mirror" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors" aria-label="Fermer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-5 text-slate-300 text-xs sm:text-sm leading-relaxed">
+        
+        <div class="p-4 bg-cyan-950/40 border border-cyan-500/25 rounded-xl text-cyan-200 text-xs sm:text-sm leading-relaxed flex items-start gap-3 shadow-inner">
+          <span class="text-xl shrink-0">🌐</span>
+          <p data-i18n="mirrorModalDesc">
+            LienLibre est une infrastructure civique et éducative 100% open-source. En créant un miroir, vous contribuez à la résilience et à la décentralisation de l'accès à l'information publique.
+          </p>
+        </div>
+
+        <!-- Step 1: 1-Click Fork -->
+        <div class="space-y-3 p-4 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-sm flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs font-mono font-bold border border-cyan-500/30">1</span>
+              <span data-i18n="mirrorStep1Title">Forker le projet sur votre GitHub (1 clic)</span>
+            </h4>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Instantané</span>
+          </div>
+          <p data-i18n="mirrorStep1Desc" class="text-slate-400 text-xs">
+            Créez instantanément une copie miroir complète du projet sur votre compte GitHub personnel ou d'organisation.
+          </p>
+          <a 
+            href="https://github.com/Bwillou1/LienLibre/fork" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-md hover:shadow-cyan-500/25 transition-all w-full justify-center group"
+          >
+            <svg class="h-4 w-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+            </svg>
+            <span data-i18n="mirrorForkBtn">Forker sur GitHub ↗</span>
+          </a>
+        </div>
+
+        <!-- Step 2: Enable GitHub Pages -->
+        <div class="space-y-2 p-4 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+          <h4 class="font-bold text-white text-sm flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-mono font-bold border border-indigo-500/30">2</span>
+            <span data-i18n="mirrorStep2Title">Activer l'hébergement gratuit (GitHub Pages)</span>
+          </h4>
+          <p data-i18n="mirrorStep2Desc" class="text-slate-400 text-xs">
+            Dans votre nouveau dépôt GitHub : 1. Allez dans Settings > Pages. 2. Sous Branch, sélectionnez 'main' / Save. Votre miroir est instantanément en ligne !
+          </p>
+        </div>
+
+        <!-- Step 3: Deploy Worker Backend (Optional) -->
+        <div class="space-y-2 p-4 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-sm flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs font-mono font-bold border border-purple-500/30">3</span>
+              <span data-i18n="mirrorStep3Title">Déployer votre propre Worker Cloudflare (Optionnel)</span>
+            </h4>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Autonomie 100%</span>
+          </div>
+          <p data-i18n="mirrorStep3Desc" class="text-slate-400 text-xs">
+            Pour disposer de votre propre passerelle serveur sans aucune dépendance, déployez worker.js sur un compte Cloudflare gratuit et ajustez WORKER_URL.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between shrink-0">
+        <a 
+          href="https://github.com/Bwillou1/LienLibre" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="text-xs text-slate-400 hover:text-cyan-300 transition-colors flex items-center gap-1"
+        >
+          <span>Consulter le code source</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+          </svg>
+        </a>
+        <button type="button" id="btn-close-mirror-bottom" class="bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs px-5 py-2 rounded-xl shadow transition-colors" data-i18n="mirrorCloseBtn">
+          Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Client-side Logic -->
   <script>
     // Worker Endpoint
@@ -774,6 +895,7 @@
       fr: {
         navHowItWorks: "Fonctionnement",
         navShare: "Partager LienLibre",
+        navMirror: "Créer un miroir",
         navStats: "Statistiques",
         navLegal: "Mentions Légales & CGU",
         pwaInstallBtn: "Installer l'app",
@@ -809,6 +931,16 @@
         shareCopyModelBtn: "Copier le texte",
         shareCopyModelSuccess: "Copié ! À coller sur Facebook",
         shareCopyLinkBtn: "Copier le lien",
+        mirrorModalTitle: "Créer votre propre site miroir (Décentralisation)",
+        mirrorModalDesc: "LienLibre est une infrastructure civique et éducative 100% open-source. En créant un miroir, vous contribuez à la résilience et à la décentralisation de l'accès à l'information publique.",
+        mirrorStep1Title: "Forker le projet sur votre GitHub (1 clic)",
+        mirrorStep1Desc: "Créez instantanément une copie miroir complète du projet sur votre compte GitHub personnel ou d'organisation.",
+        mirrorForkBtn: "Forker sur GitHub ↗",
+        mirrorStep2Title: "Activer l'hébergement gratuit (GitHub Pages)",
+        mirrorStep2Desc: "Dans votre nouveau dépôt GitHub : 1. Allez dans Settings > Pages. 2. Sous Branch, sélectionnez 'main' / Save. Votre miroir est instantanément en ligne !",
+        mirrorStep3Title: "Déployer votre propre Worker Cloudflare (Optionnel)",
+        mirrorStep3Desc: "Pour disposer de votre propre passerelle serveur sans aucune dépendance, déployez worker.js sur un compte Cloudflare gratuit et ajustez WORKER_URL.",
+        mirrorCloseBtn: "Fermer",
         statsTitle: "Impact Civique en direct (Open Data)",
         statsDesc: "Statistiques globales et agrégées en temps réel.",
         statsCountLabel: "articles consultés",
@@ -819,6 +951,7 @@
       en: {
         navHowItWorks: "How it works",
         navShare: "Share LienLibre",
+        navMirror: "Create a mirror",
         navStats: "Statistics",
         navLegal: "Legal Notice & Terms",
         pwaInstallBtn: "Install App",
@@ -854,6 +987,16 @@
         shareCopyModelBtn: "Copy text",
         shareCopyModelSuccess: "Copied! Ready to paste",
         shareCopyLinkBtn: "Copy link",
+        mirrorModalTitle: "Decentralization & 1-Click Mirror Site",
+        mirrorModalDesc: "LienLibre is an open-source civic and educational infrastructure. By creating a mirror, you enhance network resilience and ensure decentralized public access to news.",
+        mirrorStep1Title: "Fork the project to your GitHub (1 click)",
+        mirrorStep1Desc: "Instantly create a complete mirror copy of the repository on your personal or organization GitHub account.",
+        mirrorForkBtn: "Fork on GitHub ↗",
+        mirrorStep2Title: "Enable free hosting (GitHub Pages)",
+        mirrorStep2Desc: "In your new GitHub repo: 1. Go to Settings > Pages. 2. Under Branch, select 'main' / Save. Your mirror is instantly live!",
+        mirrorStep3Title: "Deploy your own Cloudflare Worker (Optional)",
+        mirrorStep3Desc: "To host your own server gateway with zero third-party dependencies, deploy worker.js on a free Cloudflare account.",
+        mirrorCloseBtn: "Close",
         statsTitle: "Real-time Civic Impact (Open Data)",
         statsDesc: "Global aggregated statistics in real time.",
         statsCountLabel: "articles viewed",
@@ -864,6 +1007,7 @@
       ar: {
         navHowItWorks: "كيفية العمل",
         navShare: "مشاركة المشروع",
+        navMirror: "إنشاء موقع متطابق (Fork)",
         navStats: "الإحصائيات",
         navLegal: "الشروط القانونية",
         pwaInstallBtn: "تثبيت التطبيق",
@@ -899,6 +1043,16 @@
         shareCopyModelBtn: "نسخ النص",
         shareCopyModelSuccess: "تم النسخ!",
         shareCopyLinkBtn: "نسخ الرابط",
+        mirrorModalTitle: "اللامركزية وإنشاء موقع متطابق",
+        mirrorModalDesc: "مشروع LienLibre مفتوح المصدر بالكامل. من خلال إنشاء موقع متطابق، تساهم في تعزيز الوصول اللامركزي للبيانات والأخبار العامة.",
+        mirrorStep1Title: "تفريغ المشروع على GitHub (نقرة واحدة)",
+        mirrorStep1Desc: "أنشئ نسخة فورية من المشروع على حسابك في GitHub.",
+        mirrorForkBtn: "Fork على GitHub ↗",
+        mirrorStep2Title: "تفعيل الاستضافة المجانية (GitHub Pages)",
+        mirrorStep2Desc: "في مستودعك: Settings > Pages > اختر 'main' ثم احفظ. سيعمل موقعك فورًا!",
+        mirrorStep3Title: "نشر خادم Cloudflare خاص بك (اختياري)",
+        mirrorStep3Desc: "لاستضافة خادم وسيط خاص بك، انشر ملف worker.js على حساب Cloudflare مجاني.",
+        mirrorCloseBtn: "إغلاق",
         statsTitle: "الأثر المباشر (بيانات مفتوحة)",
         statsDesc: "إحصاءات مجمعة في الوقت الفعلي.",
         statsCountLabel: "مقال تم الاطلاع عليه",
@@ -909,6 +1063,7 @@
       es: {
         navHowItWorks: "Funcionamiento",
         navShare: "Compartir LienLibre",
+        navMirror: "Crear un espejo (Fork)",
         navStats: "Estadísticas",
         navLegal: "Aviso Legal y Términos",
         pwaInstallBtn: "Instalar App",
@@ -944,6 +1099,16 @@
         shareCopyModelBtn: "Copiar texto",
         shareCopyModelSuccess: "¡Copiado!",
         shareCopyLinkBtn: "Copiar enlace",
+        mirrorModalTitle: "Descentralización y Sitio Espejo",
+        mirrorModalDesc: "LienLibre es 100% código abierto. Al crear un espejo, contribuyes a la resiliencia y el libre acceso descentralizado a la información.",
+        mirrorStep1Title: "Hacer un Fork en GitHub (1 clic)",
+        mirrorStep1Desc: "Crea instantáneamente una copia completa en tu cuenta de GitHub.",
+        mirrorForkBtn: "Fork en GitHub ↗",
+        mirrorStep2Title: "Activar GitHub Pages gratis",
+        mirrorStep2Desc: "En tu repositorio: Settings > Pages > rama 'main' > Guardar. ¡Tu sitio estará listo!",
+        mirrorStep3Title: "Desplegar tu propio Worker (Opcional)",
+        mirrorStep3Desc: "Despliega worker.js en tu cuenta gratuita de Cloudflare para tener total autonomía.",
+        mirrorCloseBtn: "Cerrar",
         statsTitle: "Impacto Cívico en tiempo real (Open Data)",
         statsDesc: "Estadísticas agregadas en tiempo real.",
         statsCountLabel: "artículos consultados",
@@ -954,6 +1119,7 @@
       it: {
         navHowItWorks: "Funzionamento",
         navShare: "Condividi LienLibre",
+        navMirror: "Crea un mirror (Fork)",
         navStats: "Statistiche",
         navLegal: "Note Legali & Condizioni",
         pwaInstallBtn: "Installa App",
@@ -989,6 +1155,16 @@
         shareCopyModelBtn: "Copia testo",
         shareCopyModelSuccess: "Copiato!",
         shareCopyLinkBtn: "Copia link",
+        mirrorModalTitle: "Decentralizzazione & Sito Mirror",
+        mirrorModalDesc: "LienLibre è 100% open-source. Creando un mirror, contribuisci alla resilienza e alla decentralizzazione dell'accesso alle notizie.",
+        mirrorStep1Title: "Esegui il Fork su GitHub (1 clic)",
+        mirrorStep1Desc: "Crea istantaneamente una copia specchio del repository sul tuo account GitHub.",
+        mirrorForkBtn: "Fork su GitHub ↗",
+        mirrorStep2Title: "Attiva GitHub Pages gratuito",
+        mirrorStep2Desc: "Nel tuo repository: Settings > Pages > branch 'main' > Salva.",
+        mirrorStep3Title: "Distribuisci il tuo Cloudflare Worker (Opzionale)",
+        mirrorStep3Desc: "Distribuisci worker.js su Cloudflare per una totale autonomia del server proxy.",
+        mirrorCloseBtn: "Chiudi",
         statsTitle: "Impatto Civico in tempo reale (Open Data)",
         statsDesc: "Statistiche aggregate in tempo reale.",
         statsCountLabel: "articoli consultati",
@@ -999,6 +1175,7 @@
       zh: {
         navHowItWorks: "工作原理",
         navShare: "分享本项目",
+        navMirror: "创建镜像站点 (Fork)",
         navStats: "实时统计",
         navLegal: "法律声明与条款",
         pwaInstallBtn: "安装应用",
@@ -1034,6 +1211,16 @@
         shareCopyModelBtn: "复制文案",
         shareCopyModelSuccess: "已复制！可直接粘贴至社交平台",
         shareCopyLinkBtn: "复制链接",
+        mirrorModalTitle: "去中心化与创建镜像站点",
+        mirrorModalDesc: "LienLibre 是一项 100% 开源的公民技术。通过建立镜像站点，您可以共同维护去中心化和高可用的公共资讯访问渠道。",
+        mirrorStep1Title: "一键 Fork 到您的 GitHub",
+        mirrorStep1Desc: "在您的 GitHub 账户上快速生成项目的独立镜像分支。",
+        mirrorForkBtn: "在 GitHub 上 Fork ↗",
+        mirrorStep2Title: "开启免费 GitHub Pages 托管",
+        mirrorStep2Desc: "在您的新代码库中：Settings > Pages > 选择 'main' 分支并保存即可立即上线！",
+        mirrorStep3Title: "部署您自己的 Cloudflare Worker (可选)",
+        mirrorStep3Desc: "将 worker.js 部署到免费的 Cloudflare Workers 上，实现零外部依赖的完全独立网关。",
+        mirrorCloseBtn: "关闭",
         statsTitle: "实时公民影响力 (开放数据)",
         statsDesc: "全网实时汇总统计数据。",
         statsCountLabel: "次文章查阅",
@@ -1044,6 +1231,7 @@
       cr: {
         navHowItWorks: "Tânisi",
         navShare: "Mîkiw LienLibre",
+        navMirror: "Osihtâ Kwayask (Fork)",
         navStats: "Kîkway",
         navLegal: "Masinahikan",
         pwaInstallBtn: "Osihtâ app",
@@ -1079,6 +1267,16 @@
         shareCopyModelBtn: "Naspitahâ masinahikan",
         shareCopyModelSuccess: "Naspitahikâtêw!",
         shareCopyLinkBtn: "Naspitahâ link",
+        mirrorModalTitle: "Osihtâ Kwayask Masinahikan",
+        mirrorModalDesc: "LienLibre open-source. Osihtâ kwayask masinahikan tisi-wîcihiwêhk.",
+        mirrorStep1Title: "1. Forker GitHub (Pêyak)",
+        mirrorStep1Desc: "Osihtâ kwayask GitHub masinahikan.",
+        mirrorForkBtn: "Fork GitHub ↗",
+        mirrorStep2Title: "2. GitHub Pages (Free)",
+        mirrorStep2Desc: "Settings > Pages > 'main' > Save.",
+        mirrorStep3Title: "3. Cloudflare Worker",
+        mirrorStep3Desc: "worker.js paminikêwin Cloudflare.",
+        mirrorCloseBtn: "Kipaha",
         statsTitle: "Kîkway pimi-ayâw",
         statsDesc: "Tânisi tisi-misi-pimohtêyahk mâmawi.",
         statsCountLabel: "pimohtêwin",
@@ -1089,6 +1287,7 @@
       iu: {
         navHowItWorks: "Qanuq pilirivakpa",
         navShare: "Avasiriartitsiniq",
+        navMirror: "Ajjigiingnik (Fork)",
         navStats: "Pilirijjutit",
         navLegal: "Maligait",
         pwaInstallBtn: "Sanajaujuq App",
@@ -1124,6 +1323,16 @@
         shareCopyModelBtn: "Aajiqiilugu titiraqsimajuq",
         shareCopyModelSuccess: "Aajiqiijut!",
         shareCopyLinkBtn: "Aajiqiilugu link-inga",
+        mirrorModalTitle: "Ajjigiingnik sananiq (Fork)",
+        mirrorModalDesc: "LienLibre open-source. Ajjigiingnik sanajunnartutit GitHub-kkuurtuq.",
+        mirrorStep1Title: "1. Fork GitHub",
+        mirrorStep1Desc: "GitHub-mi aajiqataulugu.",
+        mirrorForkBtn: "Fork GitHub ↗",
+        mirrorStep2Title: "2. GitHub Pages",
+        mirrorStep2Desc: "Settings > Pages > 'main' > Save.",
+        mirrorStep3Title: "3. Cloudflare Worker",
+        mirrorStep3Desc: "worker.js aturlugu Cloudflare-mi.",
+        mirrorCloseBtn: "Umiksimajuq",
         statsTitle: "Pilirijjutit maanna",
         statsDesc: "Qaritaujakkuurutiit takujaujut.",
         statsCountLabel: "nuktarviit",
@@ -1134,6 +1343,7 @@
       in: {
         navHowItWorks: "Tanen",
         navShare: "Takuatashu LienLibre",
+        navMirror: "Tshitisheun (Fork)",
         navStats: "Uitsheun",
         navLegal: "Masinahikan",
         pwaInstallBtn: "Tutan App",
@@ -1169,6 +1379,16 @@
         shareCopyModelBtn: "Kussenitan",
         shareCopyModelSuccess: "Kussenitakanu!",
         shareCopyLinkBtn: "Kussenitan link",
+        mirrorModalTitle: "Tshitisheun tutan (Fork)",
+        mirrorModalDesc: "LienLibre open-source. Tutan tshitisheun tshetshi uitsheut.",
+        mirrorStep1Title: "1. Fork GitHub",
+        mirrorStep1Desc: "Tutan GitHub masinahikan.",
+        mirrorForkBtn: "Fork GitHub ↗",
+        mirrorStep2Title: "2. GitHub Pages",
+        mirrorStep2Desc: "Settings > Pages > 'main' > Save.",
+        mirrorStep3Title: "3. Cloudflare Worker",
+        mirrorStep3Desc: "worker.js Cloudflare.",
+        mirrorCloseBtn: "Tshekue",
         statsTitle: "Uitsheun masinahikan",
         statsDesc: "E tshissitutakanit anutshish.",
         statsCountLabel: "aitun",
@@ -1179,6 +1399,7 @@
       moh: {
         navHowItWorks: "Oh nioht",
         navShare: "Sewarihwakwenihs",
+        navMirror: "Tsi nioht (Fork)",
         navStats: "Karihwaneken",
         navLegal: "Tsi niorihwà:ke",
         pwaInstallBtn: "Katshenri App",
@@ -1214,6 +1435,16 @@
         shareCopyModelBtn: "Kwahiaton",
         shareCopyModelSuccess: "Wehni'!",
         shareCopyLinkBtn: "Kwahiaton link",
+        mirrorModalTitle: "Katshenri Tsi nioht (Fork)",
+        mirrorModalDesc: "LienLibre open-source. Katshenri fork GitHub.",
+        mirrorStep1Title: "1. Fork GitHub",
+        mirrorStep1Desc: "Fork ne GitHub.",
+        mirrorForkBtn: "Fork GitHub ↗",
+        mirrorStep2Title: "2. GitHub Pages",
+        mirrorStep2Desc: "Settings > Pages > 'main' > Save.",
+        mirrorStep3Title: "3. Cloudflare Worker",
+        mirrorStep3Desc: "worker.js Cloudflare.",
+        mirrorCloseBtn: "Tsi kanoron",
         statsTitle: "Karihwaneken tsi nioht",
         statsDesc: "Stats tsi nyoht tyohtetyon.",
         statsCountLabel: "clicks",
@@ -1280,9 +1511,47 @@
       openLegalModal();
     }
 
+    // Modal Mirror / Decentralization logic
+    const mirrorModal = document.getElementById('mirror-modal');
+    const mirrorModalBackdrop = document.getElementById('mirror-modal-backdrop');
+    const btnOpenMirror = document.getElementById('btn-open-mirror');
+    const btnCloseMirror = document.getElementById('btn-close-mirror');
+    const btnCloseMirrorBottom = document.getElementById('btn-close-mirror-bottom');
+
+    function openMirrorModal() {
+      if (mirrorModal) {
+        mirrorModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+      }
+    }
+
+    function closeMirrorModal() {
+      if (mirrorModal) {
+        mirrorModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+        if (window.location.hash === '#mirror' || window.location.hash === '#fork') {
+          history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
+      }
+    }
+
+    if (btnOpenMirror) btnOpenMirror.addEventListener('click', openMirrorModal);
+    if (btnCloseMirror) btnCloseMirror.addEventListener('click', closeMirrorModal);
+    if (btnCloseMirrorBottom) btnCloseMirrorBottom.addEventListener('click', closeMirrorModal);
+    if (mirrorModalBackdrop) mirrorModalBackdrop.addEventListener('click', closeMirrorModal);
+
+    if (window.location.hash === '#mirror' || window.location.hash === '#fork') {
+      openMirrorModal();
+    }
+
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !legalModal.classList.contains('hidden')) {
-        closeLegalModal();
+      if (e.key === 'Escape') {
+        if (legalModal && !legalModal.classList.contains('hidden')) {
+          closeLegalModal();
+        }
+        if (mirrorModal && !mirrorModal.classList.contains('hidden')) {
+          closeMirrorModal();
+        }
       }
     });
 
@@ -1508,7 +1777,7 @@
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (trans[key]) {
-          if (['heroTitle', 'unverifiedDesc', 'whyDesc', 'howDesc', 'statsDesc', 'footerText'].includes(key)) {
+          if (['heroTitle', 'unverifiedDesc', 'whyDesc', 'howDesc', 'statsDesc', 'footerText', 'mirrorModalDesc', 'mirrorStep1Desc', 'mirrorStep2Desc', 'mirrorStep3Desc'].includes(key)) {
             el.innerHTML = trans[key];
           } else {
             el.textContent = trans[key];

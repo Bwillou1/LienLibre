@@ -1,21 +1,19 @@
 /**
  * LIENLIBRE - BACKEND (Cloudflare Worker)
  * 
- * Ce script écoute les requêtes GET contenant un paramètre `?url=...`.
- * Il récupère l'HTML du site cible en contournant les WAF (User-Agent/Headers spoofing),
- * extrait les métadonnées Open Graph (avec fallbacks Twitter et HTML5 standard),
- * puis génère :
- * - Une redirection instantanée si le domaine est dans la liste de confiance.
- * - Une page d'avertissement de sécurité (avec IP et bouton continuer) si le domaine est suspect,
- *   tout en conservant l'affichage de la miniature (Open Graph) pour les robots de Meta.
+ * Passerelle citoyenne, éducative et de recherche pour l'interopérabilité
+ * des métadonnées web (Open Graph Protocol, Twitter Cards, Schema.org).
+ * Conforme à l'utilisation équitable (art. 29 Loi sur le droit d'auteur du Canada)
+ * et au statut d'intermédiaire technique passif (art. 31.1 LDA).
  * 
- * NOUVELLES FONCTIONNALITÉS :
- * - Anti-Tracking : Nettoyage automatique des paramètres de pistage Meta/Google (fbclid, utm_*, etc.).
- * - Statistiques en temps réel : Enregistrement anonyme des clics et domaines via Cloudflare KV (LIENLIBRE_KV).
- * - Mode "Abonnement" : Bannière d'incitation à soutenir le journalisme local.
+ * FONCTIONNALITÉS :
+ * - Extraction éphémère de métadonnées Open Graph pour recherche et compatibilité.
+ * - Anti-Tracking : Nettoyage automatique des mouchards publicitaires (fbclid, utm_*, etc.).
+ * - Statistiques ouvertes en temps réel : Agrégation anonyme (Cloudflare KV).
+ * - Zero-Log : Aucune adresse IP ni identifiant utilisateur conservé.
  */
 
-// Headers complets pour imiter un navigateur de bureau moderne et contourner les protections WAF
+// Headers complets pour assurer l'interopérabilité avec les serveurs web distants
 const SPOOF_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -1704,65 +1702,48 @@ function getWelcomeHTML() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LienLibre - Service Proxy d'Actualités</title>
+  <title>LienLibre — Passerelle Citoyenne & Éducative</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
+    * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #030712;
-      color: #f3f4f6;
+      background-color: #090d16;
+      background-image: 
+        radial-gradient(at 15% 10%, rgba(14, 165, 233, 0.15) 0px, transparent 45%),
+        radial-gradient(at 85% 15%, rgba(99, 102, 241, 0.15) 0px, transparent 45%);
+      color: #f1f5f9;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
       padding: 1.5rem;
-      box-sizing: border-box;
     }
     .card {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(6, 182, 212, 0.15);
-      border-radius: 1rem;
-      padding: 3rem;
-      max-width: 600px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      padding: 2.5rem 2rem;
+      max-width: 580px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
     }
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0 0 1rem;
-      background: linear-gradient(to right, #22d3ee, #6366f1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    p {
-      color: #9ca3af;
-      font-size: 1.05rem;
-      margin: 0 0 2rem;
-      line-height: 1.6;
-    }
-    code {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      color: #22d3ee;
-      font-family: monospace;
-      font-size: 0.95rem;
-    }
-    .status {
+    .badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background-color: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.2);
-      color: #4ade80;
-      padding: 0.5rem 1rem;
+      background: rgba(14, 165, 233, 0.12);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: #38bdf8;
+      padding: 0.4rem 0.9rem;
       border-radius: 9999px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 2rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
     }
     .dot {
       width: 8px;
@@ -1770,17 +1751,111 @@ function getWelcomeHTML() {
       background-color: #22c55e;
       border-radius: 50%;
       display: inline-block;
-      box-shadow: 0 0 8px #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0 0 0.75rem;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin: 0 0 1.5rem;
+      line-height: 1.6;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+    @media (min-width: 480px) {
+      .btn-group {
+        flex-direction: row;
+      }
+    }
+    .btn-primary {
+      flex: 1;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #ffffff;
+      padding: 0.85rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px 0 rgba(14, 165, 233, 0.35);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(14, 165, 233, 0.5);
+    }
+    .btn-secondary {
+      flex: 1;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      padding: 0.85rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-secondary:hover {
+      background: rgba(51, 65, 85, 0.8);
+      color: #ffffff;
+    }
+    .legal-notice {
+      font-size: 0.75rem;
+      color: #64748b;
+      line-height: 1.5;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 1.25rem;
+      text-align: left;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="status"><span class="dot"></span> Backend Actif</div>
-    <h1>LienLibre API</h1>
-    <p>Ceci est l'instance Cloudflare Worker de l'application open-source <strong>LienLibre</strong>. Ce service sert de passerelle de contournement et d'extraction de métadonnées.</p>
-    <p>Pour l'utiliser, passez un paramètre URL encodé :<br><code>?url=https://adresse-du-media.com/article</code></p>
-    <p style="font-size: 0.9rem; color: #6b7280;">Pour configurer votre interface utilisateur, déployez le code frontend et pointez la variable <code>WORKER_URL</code> vers cette adresse.</p>
+    <div class="badge">
+      <span class="dot"></span>
+      Passerelle Technique Active
+    </div>
+    <h1>Lien<span>Libre</span></h1>
+    <p>
+      Infrastructure civique et éducative open-source dédiée à l'étude de l'interopérabilité des métadonnées web et au libre accès aux informations publiques d'intérêt général au Canada.
+    </p>
+
+    <div class="btn-group">
+      <a href="https://bwillou1.github.io/LienLibre/" class="btn-primary">
+        <span>Ouvrir l'application</span>
+        <span>↗</span>
+      </a>
+      <a href="https://github.com/Bwillou1/LienLibre/fork" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+        <span>🪞 Créer un miroir</span>
+      </a>
+    </div>
+
+    <div class="legal-notice">
+      ⚖️ <strong>Cadre légal :</strong> Conforme à l'utilisation équitable (art. 29 <em>Loi sur le droit d'auteur du Canada</em>) et au statut de simple conduit technique (art. 31.1 LDA). Aucun cookie publicitaire, zéro conservation de données personnelles.
+    </div>
   </div>
 </body>
 </html>`;
