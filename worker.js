@@ -467,9 +467,11 @@ function checkSecurityThreats(targetUrl, meta = {}) {
 }
 
 /**
- * 🌐 Bouclier DNS Protection Famille & Sécurité (Cloudflare 1.1.1.3 DoH)
- * Interroge en temps réel le résolveur DNS Cloudflare pour Familles (Malware + Adult Content Filter).
- * Bloque instantanément tout domaine classé dangereux, malveillant ou adulte (renvoyant 0.0.0.0 / NXDOMAIN).
+ * 🌐 Double Bouclier DNS Infaillible (NextDNS 8d3993 + Cloudflare 1.1.1.3)
+ * - Interroge NextDNS (listes HaGeZi, 1Hosts, NRD, Contrôle parental).
+ * - Interroge Cloudflare Famille 1.1.1.3 (Illimité, bloque malwares et contenus adultes).
+ * - Si l'un des deux signale un blocage (0.0.0.0, ::, NXDOMAIN), le lien est rejeté.
+ * - Si NextDNS dépasse son quota mensuel gratuit de 300 000 requêtes, Cloudflare protège le relais sans interruption.
  */
 async function checkDnsFamilyShield(hostname) {
   try {
@@ -478,40 +480,77 @@ async function checkDnsFamilyShield(hostname) {
       return { isBlocked: false, reason: "" };
     }
 
-    const dohUrl = `https://family.cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 secondes max
+    const fetchDoh = async (url) => {
+      const ctrl = new AbortController();
+      const tId = setTimeout(() => ctrl.abort(), 1800);
+      try {
+        const res = await fetch(url, {
+          headers: { "Accept": "application/dns-json" },
+          signal: ctrl.signal
+        });
+        clearTimeout(tId);
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (_) {
+        clearTimeout(tId);
+        return null;
+      }
+    };
 
-    const res = await fetch(dohUrl, {
-      headers: { "Accept": "application/dns-json" },
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
+    // Requêtes simultanées vers NextDNS (profil 8d3993) et Cloudflare 1.1.1.3
+    const nextDnsUrl = `https://dns.nextdns.io/8d3993/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
+    const cfUrl = `https://family.cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
 
-    if (res.ok) {
-      const data = await res.json();
-      if (data.Answer && Array.isArray(data.Answer)) {
-        const isBlocked = data.Answer.some(a => a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1");
-        if (isBlocked) {
+    const [nextData, cfData] = await Promise.all([
+      fetchDoh(nextDnsUrl),
+      fetchDoh(cfUrl)
+    ]);
+
+    // 1. Vérification NextDNS
+    if (nextData) {
+      if (nextData.Answer && Array.isArray(nextData.Answer)) {
+        const isBlockedNext = nextData.Answer.some(a => 
+          a.data === "0.0.0.0" || 
+          a.data === "::" || 
+          a.data === "127.0.0.1" || 
+          (typeof a.data === "string" && a.data.startsWith("0.0.0."))
+        );
+        if (isBlockedNext) {
           return {
             isBlocked: true,
-            reason: "Ce domaine est bloqué par le bouclier DNS Protection Famille & Sécurité (Cloudflare 1.1.1.3 : détection de contenus inappropriés ou malveillants)."
+            reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
           };
         }
       }
-      if (data.Status === 3) {
-        return {
-          isBlocked: true,
-          reason: "Ce nom de domaine est introuvable ou inexistant (NXDOMAIN)."
-        };
+      if (nextData.Status === 3) {
+        return { isBlocked: true, reason: "Ce nom de domaine est inexistant ou non attribué (NXDOMAIN)." };
       }
     }
+
+    // 2. Vérification Cloudflare Famille (Secours illimité)
+    if (cfData) {
+      if (cfData.Answer && Array.isArray(cfData.Answer)) {
+        const isBlockedCf = cfData.Answer.some(a => 
+          a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1"
+        );
+        if (isBlockedCf) {
+          return {
+            isBlocked: true,
+            reason: "Ce domaine est bloqué par le bouclier Cloudflare Sécurité & Famille (site malveillant ou contenu explicite)."
+          };
+        }
+      }
+      if (cfData.Status === 3) {
+        return { isBlocked: true, reason: "Ce nom de domaine est inexistant ou non attribué (NXDOMAIN)." };
+      }
+    }
+
   } catch (err) {
-    console.warn("Vérification DNS Famille ignorée (erreur réseau / timeout):", err);
+    console.warn("Erreur de validation DNS bouclier :", err);
   }
+
   return { isBlocked: false, reason: "" };
 }
-
 /**
  * Mini-Bot Sentinel : Analyse heuristique et sémantique automatique gratuite.
  * Évalue la crédibilité journalistique et l'intégrité d'une source web sans intervention humaine et sans frais.
