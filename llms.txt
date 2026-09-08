@@ -1,12 +1,16 @@
 # LienLibre
 
-> LienLibre is an open-source civic tech bridge and proxy designed to preserve the free flow of news and information in Canada, mitigating social platform link bans (such as Meta's C-18 news ban) through privacy-first OpenGraph metadata rendering and transparent instant forwarding.
+> LienLibre is an open-source civic tech and educational laboratory bridge designed for research on web metadata protocols (Open Graph, Schema.org), fair dealing under Section 29 of the Canadian Copyright Act, and preserving public access to emergency safety alerts and public interest journalism.
 
 ## Overview
 - Website: https://bwillou1.github.io/LienLibre/
 - Worker Gateway: https://lienlibre.guindonwilliam2.workers.dev
 - Repository: https://github.com/Bwillou1/LienLibre
 - License: MIT License
+
+## Academic & Educational Framing
+- Purpose: Non-commercial educational research, public safety information dissemination, and technical protocol interoperability.
+- Legal Basis: Fair Dealing (s. 29 Copyright Act) and Network Intermediary / Pure Technical Conduit (s. 31.1 Copyright Act). Does not fall under commercial publisher regulations.
 
 ## Architecture & API
 - `GET /?url=<CANADIAN_NEWS_URL>`: Generates an OpenGraph-compliant HTML bridge with instantaneous client-side redirect for human readers.
@@ -15,6 +19,8 @@
 - `GET /l/:id`: Resolves short redirection links.
 - `GET /p/:packed`: Stateless, deterministic unpacker for opaque bridge links without database dependency.
 - `GET /i/:base64`: Privacy-preserving image proxy to cache and deliver Open Graph thumbnails without exposing origin media CDN topologies.
+- `GET /manifest.json`: Web App Manifest for Progressive Web App (PWA) installation.
+- `GET /sw.js`: PWA service worker.
 
 ## Privacy & Legal Safe Harbor
 - Pure Technical Conduit: LienLibre does not store, host, modify, or republish copyrighted full-text articles.

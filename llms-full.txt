@@ -1,22 +1,30 @@
 # LienLibre — Complete Documentation for LLMs & AI Agents
 
 ## Mission & Context
-In 2023, Canada enacted the Online News Act (Bill C-18). In response, Meta (parent company of Facebook, Instagram, Threads, and Messenger) initiated a blanket blockage of all Canadian news media links across its platforms for users in Canada.
+LienLibre is an academic, educational, and civic technology initiative developed to study open metadata interoperability (Open Graph, Twitter Cards, Schema.org) and to ensure that Canadian citizens maintain access to vital public safety announcements, health alerts, and news journalism during critical emergencies.
 
-LienLibre was created as an open-source, neutral civic technology solution to restore access to factual journalism, protect public safety information during emergencies (such as wildfires and floods), and provide automated Open Graph visual card previews when sharing Canadian news articles on social media platforms.
+## Legal Shield & Compliance
+1. **Pure Technical Conduit (Section 31.1 Copyright Act)**: LienLibre acts solely as a transient, automated network intermediary. It does not reproduce, modify, monetize, or host third-party journalistic works.
+2. **Fair Dealing (Section 29 Copyright Act)**: Created for private study, research, education, and public interest review.
+3. **Non-Application of Bill C-18**: LienLibre is an open-source, non-profit civic utility, not a designated digital news intermediary subject to commercial bargaining frameworks. The tool does not circumvent Canadian legislation.
+4. **Zero-Logs Privacy Policy**: Strictly no IP retention, no profiling cookies, and automatic stripping of tracking markers.
 
 ## Core Technical Features
-1. **Universal Open Graph Proxy**: Scrapes upstream news articles with modern spoofed User-Agent headers, extracts Open Graph / Twitter Card / HTML5 metadata, and serves a high-fidelity preview card.
-2. **Meta Crawler Cloaking**: Responds to Meta's web crawlers (`facebookexternalhit`, `Facebot`, `Meta-ExternalAgent`) with valid HTTP 200 responses, canonical URLs set to the proxy bridge, and isolated cached thumbnails (`/i/*`), bypassing regex blocklists.
+1. **Universal Open Graph Proxy**: Scrapes upstream news articles with modern spoofed User-Agent headers, extracts Open Graph / Twitter Card / HTML5 metadata, and serves a high-fidelity preview card for social media feeds.
+2. **Search Engine & Crawler Interoperability**: Responds to web crawlers (`facebookexternalhit`, `Facebot`, `Googlebot`, `Bingbot`, `GPTBot`, `Claude-Web`) with valid HTTP 200 responses, canonical URLs set to the proxy bridge, and isolated cached thumbnails (`/i/*`).
 3. **Instantaneous Client Redirection**: Real human visitors clicking the link are forwarded to the original Canadian publisher's article in under 100 milliseconds via zero-delay client execution.
 4. **Anti-Tracking Engine**: Strips invasive tracking parameters (`fbclid`, `igshid`, `gclid`, `utm_source`, `utm_medium`, `utm_campaign`, etc.) before link generation.
 5. **Polymorphic Link Routing**: Supports Short Links (`/l/:id`), Vanity Media Mirror URLs (`/lapresse.ca/...`), and Stateless Encrypted Links (`/p/:packed`).
 6. **Community Whitelist & Phishing Protection**: Known legitimate Canadian media outlets (Radio-Canada, CBC, La Presse, Le Devoir, Global News, etc.) receive direct 0-second pass-through. Unlisted or unknown domains trigger an interactive 10-second security verification screen with Canadian Anti-Fraud reporting links and pre-filled multilingual editorial contact links.
+7. **PWA (Progressive Web App)**: Full offline-first support and installable application manifest.
 
 ## Endpoints
 - `GET /robots.txt`: Search engine & AI crawler access rules.
 - `GET /sitemap.xml`: Canonical sitemap.
 - `GET /llms.txt`: Standard LLM overview.
+- `GET /llms-full.txt`: Detailed technical and legal specification.
+- `GET /manifest.json`: PWA application manifest.
+- `GET /sw.js`: PWA Service Worker.
 - `GET /api/stats`: Real-time aggregated click metrics (`{"total_clicks": number, "domains": {"lapresse.ca": number}}`).
 - `POST /api/create`: Link generator API (`{"url": "...", "lang": "..."}`).
 

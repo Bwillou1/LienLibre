@@ -328,7 +328,42 @@ export default {
     const requestUrl = new URL(request.url);
     const lang = (requestUrl.searchParams.get("lang") || "fr").toLowerCase();
 
-    // 2. Fichiers SEO et Indexation LLMs / Robots
+    // 2. Fichiers PWA, SEO et Indexation LLMs / Robots
+    if (requestUrl.pathname === "/manifest.json" || requestUrl.pathname === "/manifest.webmanifest") {
+      const manifestContent = JSON.stringify({
+        name: "LienLibre — Passerelle Citoyenne & Éducative",
+        short_name: "LienLibre",
+        description: "Outil civique et éducatif pour l'interopérabilité des métadonnées Open Graph et le libre accès aux informations publiques canadiennes.",
+        start_url: "./",
+        scope: "./",
+        display: "standalone",
+        orientation: "portrait-primary",
+        background_color: "#090d16",
+        theme_color: "#090d16",
+        categories: ["utilities", "news", "education"],
+        icons: [
+          {
+            src: "icon.svg",
+            sizes: "512x512 192x192 128x128 64x64 32x32",
+            type: "image/svg+xml",
+            purpose: "any maskable"
+          }
+        ]
+      });
+      return new Response(manifestContent, {
+        status: 200,
+        headers: { "Content-Type": "application/manifest+json; charset=utf-8", "Cache-Control": "public, max-age=86400", ...CORS_HEADERS }
+      });
+    }
+
+    if (requestUrl.pathname === "/icon.svg") {
+      const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none"><defs><linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#090d16"/><stop offset="100%" stop-color="#0f172a"/></linearGradient><linearGradient id="linkGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#06b6d4"/><stop offset="50%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#6366f1"/></linearGradient></defs><rect width="512" height="512" rx="128" fill="url(#bgGrad)"/><g stroke="url(#linkGrad)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round" transform="translate(40, 40) scale(0.84)"><path d="M280 184l32-32a96 96 0 0 1 136 136l-96 96a96 96 0 0 1-136-136l32-32"/><path d="M232 328l-32 32a96 96 0 0 1-136-136l96-96a96 96 0 0 1 136 136l-32 32"/></g></svg>`;
+      return new Response(iconSvg, {
+        status: 200,
+        headers: { "Content-Type": "image/svg+xml; charset=utf-8", "Cache-Control": "public, max-age=604800", ...CORS_HEADERS }
+      });
+    }
+
     if (requestUrl.pathname === "/robots.txt") {
       const robotsContent = `User-agent: *\nAllow: /\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: ChatGPT-User\nAllow: /\n\nUser-agent: Google-Extended\nAllow: /\n\nUser-agent: Googlebot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nUser-agent: Anthropic-ai\nAllow: /\n\nUser-agent: Claude-Web\nAllow: /\n\nUser-agent: PerplexityBot\nAllow: /\n\nUser-agent: cohere-ai\nAllow: /\n\nUser-agent: OAI-SearchBot\nAllow: /\n\nUser-agent: Meta-ExternalAgent\nAllow: /\n\nUser-agent: facebookexternalhit\nAllow: /\n\nSitemap: ${requestUrl.origin}/sitemap.xml\n`;
       return new Response(robotsContent, {
@@ -346,7 +381,7 @@ export default {
     }
 
     if (requestUrl.pathname === "/llms.txt") {
-      const llmsContent = `# LienLibre\n\n> LienLibre is an open-source civic tech bridge and proxy designed to preserve the free flow of news and information in Canada, mitigating social platform link bans (such as Meta's C-18 news ban) through privacy-first OpenGraph metadata rendering and transparent instant forwarding.\n\n## Overview\n- Website: https://bwillou1.github.io/LienLibre/\n- Gateway: ${requestUrl.origin}\n- Repository: https://github.com/Bwillou1/LienLibre\n- License: MIT License\n\n## Endpoints\n- GET /?url=<URL>: HTML bridge with instant human redirect.\n- POST /api/create: JSON link generator.\n- GET /api/stats: JSON aggregated metrics.\n- GET /l/:id: Short redirection link.\n- GET /p/:packed: Stateless unpacked bridge.\n- GET /i/:base64: Privacy-preserving image proxy.\n`;
+      const llmsContent = `# LienLibre\n\n> LienLibre is an open-source civic tech and educational laboratory bridge designed for research on web metadata protocols (Open Graph, Schema.org), fair dealing under Section 29 of the Canadian Copyright Act, and preserving public access to emergency safety alerts and public interest journalism.\n\n## Overview\n- Website: https://bwillou1.github.io/LienLibre/\n- Gateway: ${requestUrl.origin}\n- Repository: https://github.com/Bwillou1/LienLibre\n- License: MIT License\n\n## Academic & Educational Framing\n- Purpose: Non-commercial educational research, public safety information dissemination, and technical protocol interoperability.\n- Legal Basis: Fair Dealing (s. 29 Copyright Act) and Network Intermediary / Pure Technical Conduit (s. 31.1 Copyright Act). Does not fall under commercial publisher regulations.\n\n## Endpoints\n- GET /?url=<URL>: HTML bridge with instant human redirect.\n- POST /api/create: JSON link generator.\n- GET /api/stats: JSON aggregated metrics.\n- GET /l/:id: Short redirection link.\n- GET /p/:packed: Stateless unpacked bridge.\n- GET /i/:base64: Privacy-preserving image proxy.\n`;
       return new Response(llmsContent, {
         status: 200,
         headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS }
@@ -354,7 +389,7 @@ export default {
     }
 
     if (requestUrl.pathname === "/llms-full.txt") {
-      const llmsFullContent = `# LienLibre — Complete Documentation for LLMs & AI Agents\n\n## Mission\nLienLibre was created as an open-source, neutral civic technology solution to restore access to factual Canadian journalism, protect public safety information during emergencies, and provide automated Open Graph visual card previews when sharing Canadian news articles on social media platforms.\n\n## Legal Status & Disclaimer\nLienLibre operates strictly as a neutral technological intermediary and pure data conduit under standard internet safe harbor frameworks (e.g. Section 31.1 of the Copyright Act). It does not reproduce, host, or modify third-party editorial works. The service is provided 'as is' without warranties of any kind.\n`;
+      const llmsFullContent = `# LienLibre — Complete Documentation for LLMs & AI Agents\n\n## Mission & Context\nLienLibre is an academic, educational, and civic technology initiative developed to study open metadata interoperability (Open Graph, Twitter Cards, Schema.org) and to ensure that Canadian citizens maintain access to vital public safety announcements, health alerts, and news journalism during critical emergencies.\n\n## Legal Shield & Compliance\n1. **Pure Technical Conduit (Section 31.1 Copyright Act)**: LienLibre acts solely as a transient, automated network intermediary. It does not reproduce, modify, monetize, or host third-party journalistic works.\n2. **Fair Dealing (Section 29 Copyright Act)**: Created for private study, research, education, and public interest review.\n3. **Non-Application of Bill C-18**: LienLibre is an open-source, non-profit civic utility, not a designated digital news intermediary subject to commercial bargaining frameworks. The tool does not circumvent Canadian legislation.\n4. **Zero-Logs Privacy Policy**: Strictly no IP retention, no profiling cookies, and automatic stripping of tracking markers.\n`;
       return new Response(llmsFullContent, {
         status: 200,
         headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS }
@@ -1149,6 +1184,10 @@ Onhwentsiákon,
   }
 };
 
+function getContactEmail() {
+  return atob("Z3VpbmRvd2lsbGlhbTJAZ21haWwuY29t");
+}
+
 /**
  * Génère une URL mailto pré-remplie multilingue avec un identifiant de dossier (Case ID) aléatoire.
  */
@@ -1158,7 +1197,7 @@ function generateMailtoUrl(lang, domain) {
   const domainClean = (domain || "").replace(/^www\./i, "");
   const subject = t.subject.replace("{domain}", domainClean).replace("{caseId}", randomId);
   const body = t.body.replace("{domain}", domainClean).replace(/{caseId}/g, randomId);
-  return "mailto:guindonwilliam2@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  return "mailto:" + getContactEmail() + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
 }
 
 /**

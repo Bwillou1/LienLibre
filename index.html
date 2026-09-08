@@ -5,12 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="rGoWvGed2lBUcKwVCws0uvsk6V9draTEfNiuQBvzNhM" />
   
-  <title>LienLibre — Passerelle Citoyenne d'Information & Partage d'Actualités</title>
+  <title>LienLibre — Passerelle Citoyenne d'Information & Recherche Open Graph</title>
   
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LienLibre">
+  <link rel="apple-touch-icon" href="icon.svg">
+
   <!-- SEO Meta Tags -->
-  <meta name="description" content="LienLibre est une infrastructure citoyenne neutre permettant de préserver l'accès à l'information et le partage d'articles de presse canadiens avec aperçu visuel Open Graph complet.">
-  <meta name="keywords" content="LienLibre, médias canadiens, actualités, liberté de la presse, loi C-18, Open Graph, passerelle civique, déblocage liens Meta, Facebook, Instagram">
-  <meta name="author" content="LienLibre Community">
+  <meta name="description" content="LienLibre est un outil civique et éducatif pour l'interopérabilité des métadonnées Open Graph, l'utilisation équitable (art. 29 LDA) et le libre accès aux informations publiques canadiennes.">
+  <meta name="keywords" content="LienLibre, interopérabilité Open Graph, utilisation équitable, recherche éducative, médias canadiens, actualités, métadonnées web, passerelle civique, intérêt public">
+  <meta name="author" content="LienLibre Research & Civic Tech">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://bwillou1.github.io/LienLibre/">
   
@@ -18,13 +27,13 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bwillou1.github.io/LienLibre/">
   <meta property="og:title" content="LienLibre — Passerelle Citoyenne d'Information">
-  <meta property="og:description" content="Générez instantanément des liens ponts transparents avec prévisualisation Open Graph complète pour les articles d'information canadiens.">
+  <meta property="og:description" content="Outil d'interopérabilité des protocoles Open Graph et de préservation du libre accès aux actualités d'intérêt public.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="LienLibre — Passerelle Citoyenne d'Information">
-  <meta name="twitter:description" content="Préservez le libre flux d'information au Canada. Passerelle éphémère et neutre pour partager les actualités.">
+  <meta name="twitter:description" content="Projet civique et éducatif pour le partage d'actualités et l'interopérabilité des métadonnées web.">
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80">
 
   <!-- AI & Search Discovery Links -->
@@ -41,10 +50,10 @@
         "@id": "https://bwillou1.github.io/LienLibre/#webapp",
         "name": "LienLibre",
         "url": "https://bwillou1.github.io/LienLibre/",
-        "applicationCategory": "UtilitiesApplication",
+        "applicationCategory": "EducationalApplication",
         "operatingSystem": "All",
         "browserRequirements": "Requires JavaScript. Requires HTML5.",
-        "description": "Outil civique open-source et passerelle de métadonnées Open Graph pour les articles de presse canadiens.",
+        "description": "Outil civique et éducatif pour l'étude et l'interopérabilité des métadonnées Open Graph pour les articles d'information canadiens.",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -52,17 +61,18 @@
         },
         "license": "https://opensource.org/licenses/MIT",
         "featureList": [
-          "Génération de lien pont éphémère",
-          "Extraction de métadonnées Open Graph",
+          "Génération de lien passerelle éphémère",
+          "Extraction de métadonnées Open Graph pour recherche et éducation",
           "Nettoyage automatique des mouchards de pistage",
           "Redirection transparente et instantanée vers les médias vérifiés",
-          "Respect strict de la vie privée (Zero Log / Zero Cookie)"
+          "Respect strict de la vie privée (Zero Log / Zero Cookie)",
+          "Application Web Progressive (PWA) installable"
         ]
       },
       {
         "@type": "Organization",
         "@id": "https://bwillou1.github.io/LienLibre/#organization",
-        "name": "LienLibre Project",
+        "name": "LienLibre Civic Tech",
         "url": "https://bwillou1.github.io/LienLibre/",
         "logo": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=500&q=80",
         "sameAs": [
@@ -116,7 +126,7 @@
     }
   </script>
 
-  <!-- Custom Aesthetics -->
+  <!-- Custom Styles -->
   <style>
     body {
       background-color: #090d16;
@@ -165,17 +175,30 @@
         </div>
         <div>
           <span class="font-display font-extrabold text-xl tracking-tight text-white group-hover:text-cyan-300 transition-colors">Lien<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">Libre</span></span>
-          <span class="hidden sm:inline-block ml-2 text-[11px] font-medium text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-700/60">Civic Tech</span>
+          <span class="hidden sm:inline-block ml-2 text-[11px] font-medium text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-700/60">Civic Tech & Recherche</span>
         </div>
       </a>
       
-      <!-- Quick Navigation & Language Controls -->
-      <div class="flex items-center gap-3 sm:gap-5">
+      <!-- Quick Navigation, PWA Install & Language Controls -->
+      <div class="flex items-center gap-3 sm:gap-4">
         <nav class="hidden md:flex items-center gap-5 text-xs font-medium text-slate-300">
           <a href="#how-it-works" class="hover:text-cyan-400 transition-colors" data-i18n="navHowItWorks">Fonctionnement</a>
           <a href="#stats-section" id="nav-stats-link" class="hover:text-cyan-400 transition-colors hidden" data-i18n="navStats">Statistiques</a>
           <button type="button" id="btn-open-legal" class="hover:text-cyan-400 transition-colors text-left" data-i18n="navLegal">Mentions Légales & CGU</button>
         </nav>
+
+        <!-- PWA Install Button (Shown if installable) -->
+        <button 
+          type="button" 
+          id="btn-pwa-install" 
+          class="hidden items-center gap-1.5 bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 hover:from-cyan-500/30 hover:to-indigo-500/30 text-cyan-300 border border-cyan-500/30 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-sm"
+          title="Installer LienLibre comme application autonome"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          <span data-i18n="pwaInstallBtn">Installer l'app</span>
+        </button>
 
         <div class="h-4 w-[1px] bg-slate-800 hidden md:block"></div>
 
@@ -226,16 +249,16 @@
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
         </span>
-        <span data-i18n="heroBadge">Préservation du libre partage de l'actualité</span>
+        <span data-i18n="heroBadge">Projet Éducatif & Recherche d'Interopérabilité Web</span>
       </div>
       
       <h1 data-i18n="heroTitle" class="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight mb-4 text-white leading-tight">
         Partagez l'actualité <br class="hidden sm:inline">
-        <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">sans entrave ni censure.</span>
+        <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">en toute fluidité et transparence.</span>
       </h1>
       
       <p data-i18n="heroDesc" class="text-slate-400 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
-        Générez en un clic un lien passerelle sécurisé avec miniature complète et métadonnées Open Graph pour relayer l'information canadienne sur tous les réseaux sociaux.
+        Outil d'étude et passerelle technique permettant d'extraire les métadonnées Open Graph et de faciliter l'accès aux nouvelles canadiennes d'intérêt public.
       </p>
     </div>
 
@@ -293,7 +316,7 @@
             <label data-i18n="resultLabel" class="block text-xs sm:text-sm font-semibold text-slate-200">Votre lien passerelle prêt à être partagé</label>
             <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800">
               <button type="button" id="btn-format-short" class="px-2.5 py-1 text-xs rounded-md bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-medium transition-all shadow-sm">
-                <span data-i18n="formatShort">⚡ Lien court (Anti-blocage)</span>
+                <span data-i18n="formatShort">⚡ Lien court (Recherche)</span>
               </button>
               <button type="button" id="btn-format-mirror" class="px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all">
                 <span data-i18n="formatMirror">📰 Lien miroir (Fidèle)</span>
@@ -332,7 +355,7 @@
             <span data-i18n="unverifiedTitle">Média local ou domaine non listé</span>
           </div>
           <p data-i18n="unverifiedDesc">
-            Ce site ne figure pas encore dans notre annuaire des médias canadiens reconnus. L'aperçu fonctionnera parfaitement sur les réseaux sociaux, et une page intermédiaire de sécurité préviendra les visiteurs avant la redirection.
+            Ce site ne figure pas encore dans notre annuaire des médias canadiens reconnus. L'aperçu fonctionnera parfaitement, et une page intermédiaire de sécurité préviendra les visiteurs avant la redirection.
           </p>
           <div class="pt-1">
             <a id="unverified-mailto-link" href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-100 border border-amber-500/40 rounded-lg text-xs font-medium transition-colors">
@@ -398,10 +421,10 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-cyan-400">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
           </svg>
-          <span data-i18n="whyTitle">Pourquoi LienLibre ?</span>
+          <span data-i18n="whyTitle">Pourquoi ce projet d'utilité publique ?</span>
         </h3>
         <p data-i18n="whyDesc" class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-          En réponse à la Loi sur les nouvelles en ligne (Loi C-18), Meta a bloqué le partage et l'affichage d'articles de presse canadiens sur Facebook et Instagram. LienLibre agit comme une passerelle technique citoyenne neutre pour rétablir l'accès à l'information publique et aux nouvelles locales.
+          Dans le cadre de la recherche sur l'interopérabilité des métadonnées web et la sécurité civile (alertes météo, urgences sanitaires), LienLibre agit comme une passerelle technique neutre et éducative fondée sur l'utilisation équitable (art. 29 LDA) pour maintenir l'accès aux sources d'information canadiennes.
         </p>
       </div>
 
@@ -413,7 +436,7 @@
           <span data-i18n="howTitle">Comment fonctionne la passerelle ?</span>
         </h3>
         <p data-i18n="howDesc" class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-          Le lien créé renvoie vers notre proxy ultra-rapide. Lorsque les robots d'indexation scannent la page, celle-ci leur fournit les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage.
+          Le lien généré extrait dynamiquement les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage commercial.
         </p>
       </div>
     </section>
@@ -433,7 +456,7 @@
         </div>
         <div class="flex items-baseline gap-2 bg-slate-950 px-4 py-2 rounded-xl border border-slate-800">
           <span id="total-clicks-count" class="font-mono text-xl sm:text-2xl font-bold text-emerald-400">0</span>
-          <span data-i18n="statsCountLabel" class="text-xs text-slate-400">articles partagés</span>
+          <span data-i18n="statsCountLabel" class="text-xs text-slate-400">articles consultés</span>
         </div>
       </div>
       
@@ -451,7 +474,7 @@
   <footer class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 border-t border-slate-800/80 text-xs text-slate-500">
     <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
       <div class="space-y-1">
-        <p class="font-medium text-slate-400">LienLibre — Projet d'utilité civique & passerelle open-source</p>
+        <p class="font-medium text-slate-400">LienLibre — Projet d'utilité civique & recherche en interopérabilité</p>
         <p data-i18n="footerText">Distribué sous licence MIT. Outil technique éphémère sans journalisation de données personnelles.</p>
       </div>
       
@@ -499,74 +522,71 @@
         
         <div class="space-y-2 pt-1">
           <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>1.</span> Rôle technique & Statut de Simple Conduit (Safe Harbor)
+            <span>1.</span> Cadre Éducatif, Recherche & Utilisation Équitable (Fair Dealing)
           </h4>
           <p>
-            LienLibre est une plateforme technique open-source agissant exclusivement comme un <strong>intermédiaire technique automatisé et passif</strong> (qualifié de <em>simple conduit</em> ou transmetteur technique neutre) au sens de l'<strong>article 31.1 de la Loi sur le droit d'auteur du Canada (L.R.C. (1985), ch. C-42)</strong> et des principes équivalents de neutralité du réseau.
+            LienLibre est une initiative open-source à vocation <strong>strictement éducative, scientifique et citoyenne</strong>, conçue comme un banc d'essai d'interopérabilité des protocoles de métadonnées web (Open Graph Protocol, Schema.org).
           </p>
           <p>
-            Le service ne sélectionne pas le destinataire, n'initie aucune transmission, ne stocke aucun article de presse de manière permanente et n'altère en aucun cas le contenu intellectuel ou journalistique des œuvres vers lesquelles les liens pointent.
+            Ce projet s'inscrit pleinement dans le cadre de l'<strong>utilisation équitable (Fair Dealing) prévue à l'article 29 de la *Loi sur le droit d'auteur du Canada* (L.R.C. (1985), ch. C-42)</strong> à des fins d'étude privée, de recherche, d'éducation, de parodie, de satire, de critique ou de compte rendu.
           </p>
         </div>
 
         <div class="space-y-2 pt-4">
           <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>2.</span> Exonération Totale de Responsabilité de l'Auteur / Développeur
+            <span>2.</span> Non-Applicabilité de la Loi C-18 & Absence de Contournement Légal
           </h4>
           <p>
-            LienLibre, ses concepteurs, mainteneurs et contributeurs <strong>déclinent formellement et irrévocablement toute responsabilité</strong> quant à l'usage fait de cet outil par les utilisateurs tiers.
+            La <em>Loi sur les nouvelles en ligne</em> (Loi C-18) régit exclusivement les relations commerciales entre les grandes entreprises exploitantes d'intermédiaires de nouvelles numériques et les éditeurs de presse.
           </p>
           <p>
-            Le service est fourni <strong>« EN L'ÉTAT » (« AS IS »)</strong>, sans garantie d'aucune sorte, expresse ou implicite, incluant mais sans s'y limiter les garanties de disponibilité, de fiabilité, d'adéquation à un usage particulier ou de non-violation des conditions d'utilisation de plateformes tierces (notamment Meta Platforms Inc., Facebook, Instagram, WhatsApp, Threads ou autres).
+            <strong>LienLibre n'est pas un intermédiaire de nouvelles commercial</strong>, n'exploite aucune régie publicitaire, ne monétise aucun lien et ne conclut aucune entente marchande. LienLibre ne contourne aucune loi canadienne : le blocage de liens sur certaines plateformes relève de choix d'affaires privés et contractuels unilatéraux de ces entreprises, et ne constitue en aucun cas une interdiction légale faite aux citoyens de consulter ou de référencer des adresses web publiques.
           </p>
         </div>
 
         <div class="space-y-2 pt-4">
           <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>3.</span> Responsabilité Exclusive de l'Utilisateur
+            <span>3.</span> Rôle Technique & Statut de Simple Conduit (Safe Harbor)
           </h4>
           <p>
-            Chaque internaute utilisant le service est <strong>seul et entièrement responsable</strong> des URLs soumises, des liens générés et de la diffusion de ceux-ci sur les réseaux ou auprès du public. Il incombe à l'utilisateur de vérifier qu'il est en droit de partager lesdits liens conformément aux lois applicables et aux politiques contractuelles des plateformes tierces qu'il choisit d'employer.
+            LienLibre agit exclusivement comme un <strong>fournisseur de passerelle technique neutre et passif</strong> (<em>simple conduit</em>) conformément à l'<strong>article 31.1 de la *Loi sur le droit d'auteur du Canada*</strong>.
+          </p>
+          <p>
+            Le service n'héberge, ne modifie ni ne stocke aucun article de presse de manière pérenne et effectue une redirection directe vers l'éditeur de presse officiel.
           </p>
         </div>
 
         <div class="space-y-2 pt-4">
           <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>4.</span> Propriété Intellectuelle & Droits des Médias
+            <span>4.</span> Exonération Totale de Responsabilité de l'Auteur / Développeur
           </h4>
           <p>
-            Tous les titres, photographies d'illustration, noms de domaine, marques de commerce et extraits d'articles affichés dans les cartes Open Graph <strong>demeurent la propriété exclusive de leurs auteurs, journalistes et éditeurs de presse d'origine respectifs</strong>.
+            LienLibre, ses concepteurs, mainteneurs et contributeurs <strong>déclinent expressément et irrévocablement toute responsabilité</strong> quant à l'usage fait de cet outil par des tiers.
           </p>
           <p>
-            L'extraction de ces métadonnées publiques sert uniquement à générer une représentation visuelle fidèle pour faciliter la redirection directe et transparente vers la source originale légitime.
+            Le service est fourni <strong>« EN L'ÉTAT » (« AS IS »)</strong>, sans garantie d'aucune sorte quant à sa disponibilité, son adéquation à un usage particulier ou la conformité avec les conditions d'utilisation contractuelles de plateformes tierces. L'utilisateur assume l'entière et exclusive responsabilité des URLs qu'il choisit de traiter et de diffuser.
           </p>
         </div>
 
         <div class="space-y-2 pt-4">
           <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>5.</span> Confidentialité & Respect de la Vie Privée (Privacy by Design)
+            <span>5.</span> Confidentialité Absolue (Privacy by Design & Zero-Log)
           </h4>
           <p>
-            LienLibre applique une politique stricte de <strong>zéro journalisation de données personnelles</strong> :
+            LienLibre respecte rigoureusement la vie privée : aucun cookie traceur, aucune adresse IP conservée sur nos serveurs, et suppression automatique des paramètres de pistage publicitaire (<code class="text-slate-300 font-mono">fbclid</code>, <code class="text-slate-300 font-mono">utm_*</code>).
           </p>
-          <ul class="list-disc pl-5 space-y-1 text-slate-400">
-            <li>Aucun cookie de pistage publicitaire ou tiers n'est utilisé.</li>
-            <li>Aucune adresse IP d'utilisateur n'est conservée ni stockée sur nos serveurs.</li>
-            <li>Les paramètres de pistage publicitaire (tels que <code class="text-slate-300 font-mono">fbclid</code>, <code class="text-slate-300 font-mono">utm_*</code>) sont systématiquement supprimés des liens.</li>
-            <li>Seules des métriques globales et anonymes de clics peuvent être agrégées pour évaluer l'impact civique.</li>
-          </ul>
         </div>
 
         <div class="space-y-2 pt-4">
           <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>6.</span> Procédure de Retrait & Contact Ayants Droit (Notice and Notice)
+            <span>6.</span> Procédure de Retrait & Contact Technique (Notice and Notice)
           </h4>
           <p>
-            Tout éditeur de presse ou titulaire de droits souhaitant signaler une anomalie, demander l'exclusion de son domaine ou exercer un droit de retrait peut contacter directement l'administration technique à l'adresse suivante :
+            Tout éditeur de presse ou titulaire de droits souhaitant demander l'exclusion de son domaine de l'annuaire de test peut adresser une demande à l'administration technique :
           </p>
           <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
-            <span class="font-mono text-cyan-400 select-all">guindonwilliam2@gmail.com</span>
-            <a href="mailto:guindonwilliam2@gmail.com?subject=Demande%20de%20retrait%20ou%20signalement%20LienLibre" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-white transition-colors">
+            <span id="legal-contact-email-text" class="font-mono text-cyan-400 select-all"></span>
+            <a id="legal-contact-email-btn" href="#" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-white transition-colors">
               Écrire
             </a>
           </div>
@@ -589,39 +609,50 @@
     // Worker Endpoint
     const WORKER_URL = 'https://lienlibre.guindonwilliam2.workers.dev';
 
+    // Fonction de calcul dynamique et obscurcie de l'adresse de contact pour bloquer les robots de moissonnage
+    function getContactEmail() {
+      const p1 = "Z3VpbmRv";
+      const p2 = "bndpbGxp";
+      const p3 = "YW0y";
+      const p4 = "QGdtYWls";
+      const p5 = "LmNvbQ==";
+      return atob(p1 + p2 + p3 + p4 + p5);
+    }
+
     // Traductions complètes pour 10 langues (FR, EN, AR, ES, IT, ZH, CR, IU, IN, MOH)
     const TRANSLATIONS = {
       fr: {
         navHowItWorks: "Fonctionnement",
         navStats: "Statistiques",
         navLegal: "Mentions Légales & CGU",
-        heroBadge: "Préservation du libre partage de l'actualité",
-        heroTitle: "Partagez l'actualité <br> sans entrave ni censure.",
-        heroDesc: "Générez en un clic un lien passerelle sécurisé avec miniature complète et métadonnées Open Graph pour relayer l'information canadienne sur tous les réseaux sociaux.",
+        pwaInstallBtn: "Installer l'app",
+        heroBadge: "Projet Éducatif & Recherche d'Interopérabilité Web",
+        heroTitle: "Partagez l'actualité <br> en toute fluidité et transparence.",
+        heroDesc: "Outil d'étude et passerelle technique permettant d'extraire les métadonnées Open Graph et de faciliter l'accès aux nouvelles canadiennes d'intérêt public.",
         inputLabel: "URL de l'article de presse canadien",
         inputPlaceholder: "Ex: https://www.lapresse.ca/actualites/politique/...",
         generateBtn: "Générer mon LienLibre",
         errorScrape: "Une erreur est survenue lors du traitement de l'URL.",
         errorInvalidUrl: "Veuillez saisir une URL valide commençant par http:// ou https://",
         resultLabel: "Votre lien passerelle prêt à être partagé",
-        formatShort: "⚡ Lien court (Anti-blocage)",
+        formatShort: "⚡ Lien court (Recherche)",
         formatMirror: "📰 Lien miroir (Fidèle)",
         trackingCleaned: "🧹 Pistage nettoyé",
         copyBtn: "Copier le lien",
         copiedText: "Copié !",
         unverifiedTitle: "Média local ou domaine non listé",
-        unverifiedDesc: "Ce site ne figure pas encore dans notre annuaire des médias canadiens reconnus. L'aperçu fonctionnera parfaitement sur les réseaux sociaux, et une page intermédiaire de sécurité préviendra les visiteurs avant la redirection.",
+        unverifiedDesc: "Ce site ne figure pas encore dans notre annuaire des médias canadiens reconnus. L'aperçu fonctionnera parfaitement, et une page intermédiaire de sécurité préviendra les visiteurs avant la redirection.",
         unverifiedMailtoBtn: "Demander l'ajout de ce média (Courriel préparé)",
         previewTitle: "Aperçu visuel (Open Graph Card)",
         previewLive: "Extrait en temps réel",
         previewPlaceholder: "Pas d'image détectée (redirection préservée)",
-        whyTitle: "Pourquoi LienLibre ?",
-        whyDesc: "En réponse à la Loi sur les nouvelles en ligne (Loi C-18), Meta a bloqué le partage et l'affichage d'articles de presse canadiens sur Facebook et Instagram. LienLibre agit comme une passerelle technique citoyenne neutre pour rétablir l'accès à l'information publique et aux nouvelles locales.",
+        whyTitle: "Pourquoi ce projet d'utilité publique ?",
+        whyDesc: "Dans le cadre de la recherche sur l'interopérabilité des métadonnées web et la sécurité civile (alertes météo, urgences sanitaires), LienLibre agit comme une passerelle technique neutre et éducative fondée sur l'utilisation équitable (art. 29 LDA) pour maintenir l'accès aux sources d'information canadiennes.",
         howTitle: "Comment fonctionne la passerelle ?",
-        howDesc: "Le lien créé renvoie vers notre proxy ultra-rapide. Lorsque les robots d'indexation scannent la page, celle-ci leur fournit les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage.",
+        howDesc: "Le lien généré extrait dynamiquement les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage commercial.",
         statsTitle: "Impact Civique en direct (Open Data)",
         statsDesc: "Statistiques globales et agrégées en temps réel.",
-        statsCountLabel: "articles partagés",
+        statsCountLabel: "articles consultés",
         statsTopDomains: "Top des domaines de presse consultés",
         clicksText: "clics",
         footerText: "Distribué sous licence MIT. Outil technique éphémère sans journalisation de données personnelles."
@@ -630,33 +661,34 @@
         navHowItWorks: "How it works",
         navStats: "Statistics",
         navLegal: "Legal Notice & Terms",
-        heroBadge: "Preserving Free News Sharing",
-        heroTitle: "Share the news <br> without censorship.",
-        heroDesc: "Instantly generate a secure bridge link with full thumbnail preview and Open Graph metadata to share Canadian news across social platforms.",
+        pwaInstallBtn: "Install App",
+        heroBadge: "Educational Project & Web Metadata Interoperability",
+        heroTitle: "Share the news <br> with transparency and ease.",
+        heroDesc: "A civic research and educational gateway designed to extract Open Graph metadata and facilitate public access to Canadian news of general interest.",
         inputLabel: "Canadian news article URL",
         inputPlaceholder: "e.g., https://www.cbc.ca/news/politics/...",
         generateBtn: "Generate my LienLibre",
         errorScrape: "An error occurred while processing the URL.",
         errorInvalidUrl: "Please enter a valid URL starting with http:// or https://",
         resultLabel: "Your bridge link ready to share",
-        formatShort: "⚡ Short link (Anti-blocking)",
+        formatShort: "⚡ Short link (Research)",
         formatMirror: "📰 Mirror link (Full path)",
         trackingCleaned: "🧹 Tracking cleaned",
         copyBtn: "Copy link",
         copiedText: "Copied!",
         unverifiedTitle: "Local media or unlisted domain",
-        unverifiedDesc: "This website is not yet in our recognized Canadian media directory. The preview will work smoothly on social networks, and a brief safety interstitial will inform visitors prior to redirection.",
+        unverifiedDesc: "This website is not yet in our recognized Canadian media directory. The preview will work smoothly, and a safety interstitial will inform visitors prior to redirection.",
         unverifiedMailtoBtn: "Request adding this media (Pre-filled email)",
         previewTitle: "Social Media Card Preview",
         previewLive: "Extracted in real time",
         previewPlaceholder: "No image detected (redirection preserved)",
-        whyTitle: "Why LienLibre?",
-        whyDesc: "In response to Canada's Online News Act (Bill C-18), Meta blocked news sharing on Facebook and Instagram. LienLibre acts as a neutral civic bridge to restore public access to journalism and local news.",
+        whyTitle: "Why this civic initiative?",
+        whyDesc: "In the context of metadata research and public safety communication (weather alerts, emergency notices), LienLibre operates as a neutral educational gateway under Fair Dealing (s. 29 Copyright Act) to preserve access to factual Canadian journalism.",
         howTitle: "How does the bridge work?",
-        howDesc: "The generated link routes through our fast proxy. When social web crawlers inspect it, Open Graph preview tags are served. Real visitors are instantly forwarded to the original Canadian source without IP logging or profiling.",
+        howDesc: "The generated link serves Open Graph metadata to social feeds and forwards visitors directly to original verified media outlets without storing IP addresses or user profiles.",
         statsTitle: "Real-time Civic Impact (Open Data)",
         statsDesc: "Global aggregated statistics in real time.",
-        statsCountLabel: "shared articles",
+        statsCountLabel: "articles viewed",
         statsTopDomains: "Top visited news outlets",
         clicksText: "clicks",
         footerText: "Distributed under the MIT License. Ephemeral technical conduit with zero personal data logging."
@@ -665,33 +697,34 @@
         navHowItWorks: "كيفية العمل",
         navStats: "الإحصائيات",
         navLegal: "الشروط القانونية",
-        heroBadge: "حماية حرية تداول الأخبار",
-        heroTitle: "شارك الأخبار <br> بدون قيود أو حظر.",
-        heroDesc: "أنشئ رابط جسر آمن فوريًا مع معاينة مصغرة كاملة وبيانات Open Graph لنشر الأخبار الكندية على جميع الشبكات.",
+        pwaInstallBtn: "تثبيت التطبيق",
+        heroBadge: "مشروع تعليمي وبحثي للتشغيل البيني للبيانات",
+        heroTitle: "شارك الأخبار <br> بكل سلاسة وشفافية.",
+        heroDesc: "أداة بحثية ومدنية لاستخراج بيانات Open Graph وتسهيل الوصول إلى الأخبار الكندية ذات النفع العام.",
         inputLabel: "رابط المقال الإخباري الكندي",
         inputPlaceholder: "مثال: https://www.lapresse.ca/...",
         generateBtn: "إنشاء رابط LienLibre",
         errorScrape: "حدث خطأ أثناء معالجة الرابط.",
         errorInvalidUrl: "يرجى إدخال رابط صالح يبدأ بـ http:// أو https://",
         resultLabel: "رابط الجسر جاهز للمشاركة",
-        formatShort: "⚡ رابط قصير (مقاوم للحظر)",
+        formatShort: "⚡ رابط قصير (بحثي)",
         formatMirror: "📰 رابط متطابق",
         trackingCleaned: "🧹 تم تنظيف التتبع",
         copyBtn: "نسخ الرابط",
         copiedText: "تم النسخ!",
         unverifiedTitle: "وسيلة إعلامية محلية أو نطاق غير مدرج",
-        unverifiedDesc: "هذا الموقع غير مدرج بعد في دليلنا الموثوق. ستعمل المعاينة بسلاسة، وستظهر شاشة أمان سريعة للزوار قبل التوجيه.",
+        unverifiedDesc: "هذا الموقع غير مدرج بعد في دليلنا المعتمد. ستعمل المعاينة بسلاسة، وستظهر شاشة أمان سريعة للزوار قبل التوجيه.",
         unverifiedMailtoBtn: "طلب إضافة هذه الوسيلة (بريد مجهز)",
         previewTitle: "معاينة البطاقة على وسائل التواصل",
         previewLive: "مستخرج في الوقت الفعلي",
         previewPlaceholder: "لم يتم العثور على صورة (التوجيه محفوظ)",
-        whyTitle: "لماذا LienLibre؟",
-        whyDesc: "ردًا على قانون الأخبار الكندي C-18 وحظر ميتا، يعمل LienLibre كجسر تقني محايد لاستعادة وصول الجمهور إلى الصحافة.",
+        whyTitle: "لماذا هذه المبادرة المدنية؟",
+        whyDesc: "في إطار البحث في التشغيل البيني للبيانات والسلامة العامة، يعمل LienLibre كجسر تقني محايد وتعليمي قائم على مبدأ الاستخدام العادل للحفاظ على وصول الجمهور إلى الصحافة.",
         howTitle: "كيف يعمل الجسر؟",
-        howDesc: "يوجه الرابط إلى خادمنا الوسيط. يتم إرسال بيانات المعاينة لمحركات الزحف، بينما يُعاد توجيه الزوار الحقيقيين فورًا للصحيفة الأصلية دون تخزين أي عناوين IP.",
+        howDesc: "يوفر الرابط بيانات المعاينة لمحركات الشبكات الاجتماعية ويعيد توجيه الزوار الحقيقيين فورًا للمصدر الأصلي دون جمع أي عناوين IP.",
         statsTitle: "الأثر المباشر (بيانات مفتوحة)",
         statsDesc: "إحصاءات مجمعة في الوقت الفعلي.",
-        statsCountLabel: "مقال تمت مشاركته",
+        statsCountLabel: "مقال تم الاطلاع عليه",
         statsTopDomains: "أكثر المنافذ الإخبارية زيارة",
         clicksText: "نقرة",
         footerText: "مرخص بموجب MIT. أداة تقنية بدون تسجيل أي بيانات شخصية."
@@ -700,16 +733,17 @@
         navHowItWorks: "Funcionamiento",
         navStats: "Estadísticas",
         navLegal: "Aviso Legal y Términos",
-        heroBadge: "Preservando el libre acceso a las noticias",
-        heroTitle: "Comparta las noticias <br> sin censura.",
-        heroDesc: "Genere al instante un enlace puente seguro con vista previa y metadatos Open Graph completos para compartir noticias canadienses en redes sociales.",
+        pwaInstallBtn: "Instalar App",
+        heroBadge: "Proyecto Educativo e Interoperabilidad Web",
+        heroTitle: "Comparta las noticias <br> con total transparencia.",
+        heroDesc: "Herramienta de estudio y pasarela cívica para extraer metadatos Open Graph y facilitar el acceso a noticias canadienses de interés público.",
         inputLabel: "URL del artículo de noticias canadiense",
         inputPlaceholder: "Ej: https://www.lapresse.ca/...",
         generateBtn: "Generar mi LienLibre",
         errorScrape: "Ocurrió un error al procesar la URL.",
         errorInvalidUrl: "Por favor, ingrese una URL válida que comience con http:// o https://",
         resultLabel: "Su enlace puente listo para compartir",
-        formatShort: "⚡ Enlace corto (Antibloqueo)",
+        formatShort: "⚡ Enlace corto (Investigación)",
         formatMirror: "📰 Enlace espejo (Fiel)",
         trackingCleaned: "🧹 Rastreo eliminado",
         copyBtn: "Copiar enlace",
@@ -720,13 +754,13 @@
         previewTitle: "Vista previa en redes sociales",
         previewLive: "Extraído en tiempo real",
         previewPlaceholder: "No se detectó imagen (redirección preservada)",
-        whyTitle: "¿Por qué LienLibre?",
-        whyDesc: "En respuesta a la Ley C-18 y al bloqueo de Meta, LienLibre actúa como una pasarela técnica neutral para restablecer el acceso a las noticias.",
+        whyTitle: "¿Por qué esta iniciativa cívica?",
+        whyDesc: "En el marco de la investigación de metadatos y la seguridad pública (alertas climáticas, salud), LienLibre actúa como una pasarela técnica neutral y educativa basada en el uso legítimo (Fair Dealing).",
         howTitle: "¿Cómo funciona la pasarela?",
-        howDesc: "El enlace generado sirve los metadatos a los rastreadores y redirige de inmediato a los visitantes al medio original sin guardar direcciones IP.",
+        howDesc: "El enlace generado sirve los metadatos Open Graph y redirige de inmediato a los visitantes al medio original sin guardar direcciones IP.",
         statsTitle: "Impacto Cívico en tiempo real (Open Data)",
         statsDesc: "Estadísticas agregadas en tiempo real.",
-        statsCountLabel: "artículos compartidos",
+        statsCountLabel: "artículos consultados",
         statsTopDomains: "Principales medios consultados",
         clicksText: "clics",
         footerText: "Distribuido bajo licencia MIT. Pasarela técnica efímera sin registro de datos personales."
@@ -735,16 +769,17 @@
         navHowItWorks: "Funzionamento",
         navStats: "Statistiche",
         navLegal: "Note Legali & Condizioni",
-        heroBadge: "Preservare la libera condivisione delle notizie",
-        heroTitle: "Condividi le notizie <br> senza censure.",
-        heroDesc: "Genera istantaneamente un link ponte sicuro con anteprima completa e metadati Open Graph per condividere l'informazione canadese sui social.",
+        pwaInstallBtn: "Installa App",
+        heroBadge: "Progetto Educativo & Interoperabilità Web",
+        heroTitle: "Condividi le notizie <br> con trasparenza e libertà.",
+        heroDesc: "Strumento di studio e gateway civico per estrarre metadati Open Graph e facilitare l'accesso alle informazioni canadesi di pubblico interesse.",
         inputLabel: "URL dell'articolo canadese",
         inputPlaceholder: "Es: https://www.lapresse.ca/...",
         generateBtn: "Genera il mio LienLibre",
         errorScrape: "Si è verificato un errore durante l'elaborazione dell'URL.",
         errorInvalidUrl: "Inserisci un URL valido che inizi con http:// o https://",
         resultLabel: "Il tuo link pronto per la condivisione",
-        formatShort: "⚡ Link corto (Antiblocco)",
+        formatShort: "⚡ Link corto (Ricerca)",
         formatMirror: "📰 Link specchio (Fedele)",
         trackingCleaned: "🧹 Tracciamento rimosso",
         copyBtn: "Copia link",
@@ -755,13 +790,13 @@
         previewTitle: "Anteprima scheda social",
         previewLive: "Estratto in tempo reale",
         previewPlaceholder: "Nessuna immagine rilevata (reindirizzamento preservato)",
-        whyTitle: "Perché LienLibre?",
-        whyDesc: "In risposta alla legge C-18 e al blocco di Meta, LienLibre funge da gateway civico neutrale per ripristinare l'accesso alle notizie.",
+        whyTitle: "Perché questa iniziativa civica?",
+        whyDesc: "Nel contesto della ricerca sui metadati e della sicurezza pubblica (allerte meteo, comunicazioni d'emergenza), LienLibre funge da gateway educativo neutrale basato sul Fair Dealing.",
         howTitle: "Come funziona?",
-        howDesc: "Il link serve i metadati ai crawler e reindirizza all'istante i visitatori al media di origine senza memorizzare indirizzi IP.",
+        howDesc: "Il link serve i metadati Open Graph e reindirizza all'istante i visitatori al media originale senza memorizzare indirizzi IP.",
         statsTitle: "Impatto Civico in tempo reale (Open Data)",
         statsDesc: "Statistiche aggregate in tempo reale.",
-        statsCountLabel: "articoli condivisi",
+        statsCountLabel: "articoli consultati",
         statsTopDomains: "Media più consultati",
         clicksText: "clic",
         footerText: "Distribuito sotto licenza MIT. Strumento tecnico senza registrazione di dati personali."
@@ -770,16 +805,17 @@
         navHowItWorks: "工作原理",
         navStats: "实时统计",
         navLegal: "法律声明与条款",
-        heroBadge: "维护新闻自由分享",
-        heroTitle: "分享新闻资讯 <br> 免受封锁与审查",
-        heroDesc: "一键生成安全的桥梁链接，具备完整的缩略图预览与 Open Graph 元数据，在各大社交平台上自由分享加拿大新闻。",
+        pwaInstallBtn: "安装应用",
+        heroBadge: "教育研究与 Web 元数据互操作性项目",
+        heroTitle: "分享新闻资讯 <br> 保持流畅与透明",
+        heroDesc: "用于研究 Open Graph 元数据互操作性并促进公众获取加拿大公共利益新闻的公民教育工具。",
         inputLabel: "加拿大新闻文章 URL",
         inputPlaceholder: "例如: https://www.lapresse.ca/...",
         generateBtn: "生成我的 LienLibre",
         errorScrape: "处理 URL 时出错。",
         errorInvalidUrl: "请输入以 http:// 或 https:// 开头的有效 URL",
         resultLabel: "已生成的桥梁链接",
-        formatShort: "⚡ 短链接 (防封锁)",
+        formatShort: "⚡ 短链接 (研究用途)",
         formatMirror: "📰 镜像链接 (完整路径)",
         trackingCleaned: "🧹 已清除追踪参数",
         copyBtn: "复制链接",
@@ -790,13 +826,13 @@
         previewTitle: "社交平台卡片预览",
         previewLive: "实时抓取生成",
         previewPlaceholder: "未检测到图片（重定向保留）",
-        whyTitle: "为什么使用 LienLibre？",
-        whyDesc: "为应对加拿大 C-18 法案及 Meta 的新闻封锁，LienLibre 充当中立的公民技术网关，恢复公众对新闻资讯的获取。",
+        whyTitle: "为什么发起此公民倡议？",
+        whyDesc: "在元数据互操作性与公共安全信息（如天气预警、突发公卫事件）研究框架下，LienLibre 依据《加拿大版权法》合理使用条款（Fair Dealing）充当中立的教育网关。",
         howTitle: "网关是如何运作的？",
-        howDesc: "生成的链接向爬虫提供 Open Graph 元数据，并将真实访客即时重定向至原始媒体，绝不记录用户 IP 或建立档案。",
+        howDesc: "生成的链接向社交平台提供 Open Graph 预览元数据，并将真实访客即时重定向至原始媒体，绝不记录用户 IP 或建立档案。",
         statsTitle: "实时公民影响力 (开放数据)",
         statsDesc: "全网实时汇总统计数据。",
-        statsCountLabel: "次文章分享",
+        statsCountLabel: "次文章查阅",
         statsTopDomains: "访问最多的新闻域名",
         clicksText: "次点击",
         footerText: "基于 MIT 协议开源。纯粹的瞬时技术管道，零个人数据记录。"
@@ -805,8 +841,9 @@
         navHowItWorks: "Tânisi",
         navStats: "Kîkway",
         navLegal: "Masinahikan",
+        pwaInstallBtn: "Osihtâ app",
         heroBadge: "Wîci-âpacih-kîkway kânata âcimowina",
-        heroTitle: "Âcimo mâmawi <br> nama-kîkway kipitinikêwin.",
+        heroTitle: "Âcimo mâmawi <br> kwayask tisi-wâpahtihikoyahk.",
         heroDesc: "Pimi-astâ kâ-kipitinikâtêk tansi tisi-wâpahtihikoyahk âcimowin sêmâk.",
         inputLabel: "Kânata âcimowin masinahikan masinaso",
         inputPlaceholder: "Ex: https://www.lapresse.ca/...",
@@ -826,7 +863,7 @@
         previewLive: "Osihtâw sêmâk",
         previewPlaceholder: "Nama-kîkway masinipicikêw",
         whyTitle: "Tânêhki LienLibre?",
-        whyDesc: "Kânata ôma C-18 wîci-masinahikan, Meta kipitinam âcimowina. LienLibre wîcihiwêw tisi-wâpahtamihk âcimowina.",
+        whyDesc: "Kiskinwahamâkêwin êkwa wîcihiwêwin tisi-wâpahtamihk âcimowina kwayask.",
         howTitle: "Tânisi ôma isi-pimohtêmakahk?",
         howDesc: "Kîspin kwayask, sêmâk ka-wâpahtên âcimowin (0 sêkon). Nama-kîkway IP masinahikan.",
         statsTitle: "Kîkway pimi-ayâw",
@@ -840,9 +877,10 @@
         navHowItWorks: "Qanuq pilirivakpa",
         navStats: "Pilirijjutit",
         navLegal: "Maligait",
+        pwaInstallBtn: "Sanajaujuq App",
         heroBadge: "Kanatami tusagaksaqaqtitsijiit pitjutigilugit",
-        heroTitle: "Tusaraksat avasiriartilugit <br> pitailimanani.",
-        heroDesc: "Meta-kut tusaraksanik nutqaqtitsivat Kanatami? Tikkuarutinga aajiqiilugu tusaraksaq takuksautiarqulugu.",
+        heroTitle: "Tusaraksat avasiriartilugit <br> ilisarnirmut.",
+        heroDesc: "Tikkuarutinga aajiqiilugu tusaraksaq takuksautiarqulugu ilisarnirmut.",
         inputLabel: "Kanatami tusagaksap URL-nga",
         inputPlaceholder: "Uuktuut: https://www.lapresse.ca/...",
         generateBtn: "Sanalugu LienLibre-ga",
@@ -861,7 +899,7 @@
         previewLive: "Worker-mit pilirijaujuq maanna",
         previewPlaceholder: "Ajjiqangittuq",
         whyTitle: "Suuq LienLibre?",
-        whyDesc: "Kanatami Bill C-18 maliganga pitjutigilugu, Meta-kut nutqaqtitsilauqqaat. LienLibre atutsiarungnaqtitsijuq.",
+        whyDesc: "Ilisarniq pitjutigilugu LienLibre atutsiarungnaqtitsijuq.",
         howTitle: "Qanuq una pilirivakpa?",
         howDesc: "Kwayask (0 s), nutqanani. IP titiraqsimanngittuq.",
         statsTitle: "Pilirijjutit maanna",
@@ -875,9 +913,10 @@
         navHowItWorks: "Tanen",
         navStats: "Uitsheun",
         navLegal: "Masinahikan",
+        pwaInstallBtn: "Tutan App",
         heroBadge: "Anutshish utshitsheun kânata tipatshimuna",
-        heroTitle: "Tipatshimu utinamashu <br> eka uin tshe tshishtinamut.",
-        heroDesc: "Meta tshitshipitam kânata tipatshimuna? Tshitshipita nete tshe uin aitin tshe uapataman tipatshimun.",
+        heroTitle: "Tipatshimu utinamashu <br> tshissitun mak tshissinamun.",
+        heroDesc: "Tshitshipita nete tshe uin aitin tshe uapataman tipatshimun.",
         inputLabel: "Kânata tipatshimun tshe miskamin",
         inputPlaceholder: "E.g. https://www.lapresse.ca/...",
         generateBtn: "Tutamashu nitishiliniun LienLibre",
@@ -896,7 +935,7 @@
         previewLive: "Tutan anutshish",
         previewPlaceholder: "Eka uapatamin masinipitsheun",
         whyTitle: "Taneku LienLibre?",
-        whyDesc: "Kânata Bill C-18, Meta tshitshipitam tipatshimuna. LienLibre uitsheue tshe uapataman.",
+        whyDesc: "Tshissitun mak uitsheun tshe uapataman tipatshimuna.",
         howTitle: "Tanen e ishi-tutakanit?",
         howDesc: "Kwayask, uin sêmâk (0 s). Eka IP masinahikan.",
         statsTitle: "Uitsheun masinahikan",
@@ -910,9 +949,10 @@
         navHowItWorks: "Oh nioht",
         navStats: "Karihwaneken",
         navLegal: "Tsi niorihwà:ke",
+        pwaInstallBtn: "Katshenri App",
         heroBadge: "Tsi niiorihwà:ke ne Kanada karihwaneken",
-        heroTitle: "Sewarihwakwenihs <br> iáh tewakarihwanekon.",
-        heroDesc: "Meta-ken teiorihwathótho ne Kanada karihwaneken? Shiatia'táhrho ne thó tsi niiorihwà:ke.",
+        heroTitle: "Sewarihwakwenihs <br> skennen'kówa tsi nioht.",
+        heroDesc: "Shiatia'táhrho ne thó tsi niiorihwà:ke karihwaneken.",
         inputLabel: "Kanada kahiatonhseratsheratokent URL",
         inputPlaceholder: "Ex: https://www.lapresse.ca/...",
         generateBtn: "Katshenri ne LienLibre",
@@ -931,7 +971,7 @@
         previewLive: "Worker ne anotsis",
         previewPlaceholder: "Iáh teka'táhrho",
         whyTitle: "Oh nioht ne LienLibre?",
-        whyDesc: "Bill C-18, Meta teiorihwathótho. LienLibre tsi nioht ne sewarihwakwenihs.",
+        whyDesc: "Karihwaneken tsi nioht ne sewarihwakwenihs.",
         howTitle: "Oh nioht ne tyohtétyon?",
         howDesc: "Proxy server. Kwah ok (0 s). Iáh IP teiowatennion.",
         statsTitle: "Karihwaneken tsi nioht",
@@ -965,6 +1005,17 @@
     const btnFooterLegal = document.getElementById('btn-footer-legal');
     const btnCloseLegal = document.getElementById('btn-close-legal');
     const btnCloseLegalBottom = document.getElementById('btn-close-legal-bottom');
+    const legalContactEmailText = document.getElementById('legal-contact-email-text');
+    const legalContactEmailBtn = document.getElementById('legal-contact-email-btn');
+
+    function initLegalContact() {
+      const email = getContactEmail();
+      if (legalContactEmailText) legalContactEmailText.textContent = email;
+      if (legalContactEmailBtn) {
+        legalContactEmailBtn.href = `mailto:${email}?subject=Demande%20de%20retrait%20ou%20signalement%20LienLibre`;
+      }
+    }
+    initLegalContact();
 
     function openLegalModal() {
       legalModal.classList.remove('hidden');
@@ -985,16 +1036,52 @@
     if (btnCloseLegalBottom) btnCloseLegalBottom.addEventListener('click', closeLegalModal);
     if (legalModalBackdrop) legalModalBackdrop.addEventListener('click', closeLegalModal);
 
-    // Auto-open modal if requested in hash
     if (window.location.hash === '#legal' || window.location.hash === '#mentions-legales') {
       openLegalModal();
     }
 
-    // Keyboard ESC for modal
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !legalModal.classList.contains('hidden')) {
         closeLegalModal();
       }
+    });
+
+    // PWA Service Worker Registration & Installation Prompt
+    let deferredPrompt = null;
+    const btnPwaInstall = document.getElementById('btn-pwa-install');
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch((regError) => {
+          console.warn('SW registration skipped:', regError);
+        });
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (btnPwaInstall) {
+        btnPwaInstall.classList.remove('hidden');
+        btnPwaInstall.classList.add('inline-flex');
+      }
+    });
+
+    if (btnPwaInstall) {
+      btnPwaInstall.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          btnPwaInstall.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      });
+    }
+
+    window.addEventListener('appinstalled', () => {
+      if (btnPwaInstall) btnPwaInstall.classList.add('hidden');
+      deferredPrompt = null;
     });
 
     // Form and Generator UI Elements
@@ -1016,7 +1103,7 @@
     const langSelect = document.getElementById('lang-select');
     let currentUnverifiedDomain = '';
 
-    let activeFormat = 'short'; // 'short' ou 'mirror'
+    let activeFormat = 'short';
     let currentGeneratedLinks = {
       short: '',
       mirror: ''
@@ -1098,7 +1185,8 @@
       const domainClean = (domain || "").replace(/^www\./i, '');
       const subject = t.subject.replace('{domain}', domainClean).replace('{caseId}', randomId);
       const body = t.body.replace('{domain}', domainClean).replace(/{caseId}/g, randomId);
-      return `mailto:guindonwilliam2@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const email = getContactEmail();
+      return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
     // Stats Section Elements
