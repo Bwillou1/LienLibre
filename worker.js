@@ -236,9 +236,13 @@ function cleanTrackingParameters(urlStr) {
   }
 }
 
+// Durée de rétention automatique des données temporaires (30 jours)
+const RETENTION_30_DAYS_SECONDS = 60 * 60 * 24 * 30;
+
 /**
  * Enregistre un clic de manière 100% anonyme dans le stockage Cloudflare KV.
  * Uniquement pour les médias journalistiques officiels et vérifiés.
+ * Rétention maximale de 30 jours (purge automatique par Cloudflare).
  */
 async function recordClick(env, hostname, isVerified = false) {
   if (!env || !env.LIENLIBRE_KV || !isVerified) return;
@@ -250,15 +254,15 @@ async function recordClick(env, hostname, isVerified = false) {
       return;
     }
 
-    // 1. Incrémenter le total global des médias vérifiés
+    // 1. Incrémenter le total global des médias vérifiés (Rétention 30 jours)
     const totalKey = "stats:total_clicks";
     let total = parseInt(await env.LIENLIBRE_KV.get(totalKey) || "0");
-    await env.LIENLIBRE_KV.put(totalKey, (total + 1).toString());
+    await env.LIENLIBRE_KV.put(totalKey, (total + 1).toString(), { expirationTtl: RETENTION_30_DAYS_SECONDS });
 
-    // 2. Incrémenter la statistique du domaine vérifié
+    // 2. Incrémenter la statistique du domaine vérifié (Rétention 30 jours)
     const domainKey = `stats:domain:${cleanHost}`;
     let domainTotal = parseInt(await env.LIENLIBRE_KV.get(domainKey) || "0");
-    await env.LIENLIBRE_KV.put(domainKey, (domainTotal + 1).toString());
+    await env.LIENLIBRE_KV.put(domainKey, (domainTotal + 1).toString(), { expirationTtl: RETENTION_30_DAYS_SECONDS });
   } catch (e) {
     console.error("Erreur d'écriture KV :", e);
   }
@@ -814,7 +818,7 @@ export default {
             lang: targetLang,
             selfCertified: isSelfCertified,
             created: Date.now()
-          }), { expirationTtl: 60 * 60 * 24 * 30 }); // 30 jours
+          }), { expirationTtl: RETENTION_30_DAYS_SECONDS }); // 30 jours
         }
 
         const cleanPath = parsedTarget.href.replace(/^https?:\/\/(?:www\.)?/i, '');
