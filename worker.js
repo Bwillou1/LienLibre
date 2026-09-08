@@ -300,6 +300,32 @@ async function getStats(env) {
   }
 }
 
+/**
+ * Vérifie si un domaine est banni dynamiquement dans Cloudflare KV.
+ * Clé KV : `blacklist:domaine.com`
+ * Permet un bannissement instantané en 5 secondes depuis le tableau de bord Cloudflare sans redéploiement de code.
+ */
+async function checkDynamicBlacklist(env, hostname) {
+  if (!env || !env.LIENLIBRE_KV || !hostname) return null;
+  try {
+    const cleanHost = hostname.toLowerCase().replace(/^www\./i, "").trim();
+    // 1. Vérification exacte du nom d'hôte (ex: blog.fraude.com)
+    const exact = await env.LIENLIBRE_KV.get(`blacklist:${cleanHost}`);
+    if (exact !== null) return exact || "Signalement de sécurité / abus";
+    
+    // 2. Vérification du domaine racine parent (ex: fraude.com)
+    const parts = cleanHost.split(".");
+    if (parts.length > 2) {
+      const rootDomain = parts.slice(-2).join(".");
+      const rootCheck = await env.LIENLIBRE_KV.get(`blacklist:${rootDomain}`);
+      if (rootCheck !== null) return rootCheck || "Signalement de sécurité / abus";
+    }
+    return null;
+  } catch (_) {
+    return null;
+  }
+}
+
 function encodePackedUrl(urlStr) {
   try {
     return btoa(encodeURIComponent(urlStr)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -318,8 +344,16 @@ function decodePackedUrl(packed) {
   }
 }
 
-function getProxyImageUrl(origin, rawImageUrl) {
+/**
+ * Génère l'URL du proxy d'image.
+ * RÈGLE PÉNALE STRICTE : Ne proxyifie QUE si le domaine fait partie de ALLOWED_DOMAINS.
+ * Pour tous les autres domaines, conserve l'URL d'origine sans passer par le proxy /i/.
+ */
+function getProxyImageUrl(origin, rawImageUrl, isAllowed = false) {
   if (!rawImageUrl) return "";
+  if (!isAllowed) {
+    return rawImageUrl; // Pas de relais proxy pour les domaines non vérifiés
+  }
   try {
     const b64 = btoa(rawImageUrl).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
     return `${origin}/i/${b64}`;
@@ -592,19 +626,37 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
   }
 
   score = Math.max(0, Math.min(100, score));
-  // Seuil strict rehaussé à 80 / 100
+  
+  // SEUIL ÉLIMINATOIRE STRICT : 
+  // 1. Si score < 60 et que le domaine n'est pas dans ALLOWED_DOMAINS -> Blocage pur et simple (403)
+  // 2. Si score >= 80 -> Validation automatique comme média journalistique
+  // 3. Si 60 <= score < 80 -> Contenu non répertorié autorisé uniquement avec avertissement statique et clic volontaire
+  const isBlockedByScore = !isAllowed && score < 60;
   const isJournalistic = score >= 80;
   const isValidated = isJournalistic;
+
+  if (isBlockedByScore) {
+    return {
+      score,
+      isJournalistic: false,
+      isValidated: false,
+      isBlocked: true,
+      blockReason: `Score de fiabilité insuffisant (${score}/100 - seuil minimal éliminatoire : 60/100). Ce domaine non répertorié ne présente pas les garanties minimales de publication journalistique ou de sécurité.`,
+      category: "insufficient_score",
+      badgeText: `Source Bloquée (Score insuffisant : ${score}/100)`,
+      signals: ["⚠️ Score d'intégrité inférieur au seuil de 60/100", ...signals]
+    };
+  }
 
   return {
     score,
     isJournalistic,
     isValidated,
     isBlocked: false,
-    category: isJournalistic ? "journalistic_source" : (score >= 50 ? "unverified_content" : "suspicious"),
+    category: isJournalistic ? "journalistic_source" : "unverified_content",
     badgeText: isJournalistic 
       ? `Source Journalistique Conforme (${score}/100)` 
-      : (score >= 50 ? `Contenu Non Répertorié (${score}/100)` : `Source Suspecte (${score}/100)`),
+      : `Contenu Non Répertorié (${score}/100)`,
     signals
   };
 }
@@ -698,7 +750,7 @@ export default {
       });
     }
 
-    // 3. Proxy d'image ultra-sécurisé pour masquer les CDN de presse canadiens à Meta
+    // 3. Proxy d'image ultra-sécurisé pour masquer les CDN de presse canadiens à Meta (Verrouillé aux domaines vérifiés)
     if (requestUrl.pathname.startsWith("/i/")) {
       try {
         const rawB64 = requestUrl.pathname.slice(3).split("?")[0];
@@ -706,6 +758,13 @@ export default {
         while (base64.length % 4) base64 += "=";
         const targetImgUrl = atob(base64);
         if (targetImgUrl.startsWith("http://") || targetImgUrl.startsWith("https://")) {
+          const imgHost = new URL(targetImgUrl).hostname.replace(/^www\./i, "");
+          
+          // VERROUILLAGE PÉNAL STRICT : Seuls les domaines officiels vérifiés sont relayés
+          if (!isDomainAllowed(imgHost)) {
+            return new Response(null, { status: 403, headers: CORS_HEADERS });
+          }
+
           const imgRes = await fetch(targetImgUrl, {
             headers: {
               "User-Agent": SPOOF_HEADERS["User-Agent"],
@@ -726,7 +785,7 @@ export default {
           }
         }
       } catch (e) {}
-      return new Response(null, { status: 404 });
+      return new Response(null, { status: 404, headers: CORS_HEADERS });
     }
 
     // 3. Point de terminaison API Stats
@@ -783,7 +842,21 @@ export default {
         let parsedTarget = new URL(targetInput.trim());
         const { cleanedUrl } = cleanTrackingParameters(parsedTarget.href);
         parsedTarget = new URL(cleanedUrl);
+
+        // 1. Vérification de la liste noire dynamique Cloudflare KV
+        const kvBlacklistReason = await checkDynamicBlacklist(env, parsedTarget.hostname);
+        if (kvBlacklistReason) {
+          return new Response(JSON.stringify({
+            error: true,
+            blocked: true,
+            message: `Ce domaine est suspendu par mesure de sécurité (${kvBlacklistReason}).`
+          }), {
+            status: 403,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+          });
+        }
         
+        // 2. Vérification statique des menaces
         const threat = checkSecurityThreats(parsedTarget);
         if (threat.isBlocked) {
           return new Response(JSON.stringify({
@@ -796,6 +869,7 @@ export default {
           });
         }
 
+        // 3. Bouclier DNS Famille Cloudflare 1.1.1.3
         const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname);
         if (dnsShield.isBlocked) {
           return new Response(JSON.stringify({
@@ -963,7 +1037,28 @@ export default {
 
     const isAllowed = isDomainAllowed(targetUrl.hostname);
 
-    // Vérification préventive immédiate des menaces et du bouclier DNS Famille
+    // 1. Vérification de la liste noire dynamique Cloudflare KV
+    const kvBlacklistReason = await checkDynamicBlacklist(env, targetUrl.hostname);
+    if (kvBlacklistReason) {
+      if (isJsonRequested) {
+        return new Response(JSON.stringify({
+          error: true,
+          blocked: true,
+          title: "Domaine Suspendu",
+          description: `Ce domaine est suspendu par mesure de sécurité (${kvBlacklistReason}).`,
+          allowed: false
+        }), {
+          status: 403,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+      return new Response(generateBlockedHTML(targetUrl.href, `Ce domaine est désactivé suite à un signalement de sécurité ou d'abus (${kvBlacklistReason}).`, lang, requestUrl.origin), {
+        status: 403,
+        headers: { ...CORS_HEADERS, ...SECURITY_HEADERS, "Content-Type": "text/html; charset=utf-8" }
+      });
+    }
+
+    // 2. Vérification préventive immédiate des menaces statiques
     const initialThreat = checkSecurityThreats(targetUrl);
     if (initialThreat.isBlocked) {
       if (isJsonRequested) {
@@ -984,6 +1079,7 @@ export default {
       });
     }
 
+    // 3. Bouclier DNS Protection Famille Cloudflare 1.1.1.3
     const dnsThreat = await checkDnsFamilyShield(targetUrl.hostname);
     if (dnsThreat.isBlocked) {
       if (isJsonRequested) {
@@ -1519,133 +1615,113 @@ const WORKER_TRANSLATIONS = {
 
 const WORKER_WARN_TRANSLATIONS = {
   fr: {
-    warnTitle: "Avertissement de Sécurité - LienLibre",
-    unverifiedLink: "Lien non vérifié",
-    warnDesc: "Ce lien redirige vers un site qui ne figure pas dans notre liste de confiance des médias d'information canadiens. Par mesure de sécurité pour éviter le hameçonnage (phishing), la redirection est suspendue temporairement.",
-    countdownText: "Redirection automatique dans <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    warnTitle: "Sas de Sécurité & Responsabilité — LienLibre",
+    unverifiedLink: "Domaine Non Répertorié",
+    warnDesc: "Ce site ne figure pas dans la liste officielle des médias vérifiés. Conformément au principe du sas de sécurité actif, aucune redirection automatique n'est effectuée.",
     destination: "Destination :",
     ipLabel: "Votre IP publique :",
-    reportBtn: "Signaler une tentative de fraude au Canada",
-    advancedBtn: "Options avancées",
-    advancedDesc: "Si vous faites confiance à ce site, vous pouvez continuer vers la page d'origine.",
-    continueBtn: "Continuer vers le site (non recommandé)",
-    supportBanner: "<strong>Soutenez le journalisme indépendant :</strong> Pensez à visiter les sites de presse directement et à vous abonner pour financer l'information locale."
+    continueBtn: "Quitter LienLibre et continuer vers {host} à mes risques ↗",
+    disclaimerText: "Avertissement : En cliquant ci-dessus, vous accédez à ce site externe sous votre entière responsabilité et déchargez LienLibre de toute responsabilité civile ou pénale quant aux contenus tiers (art. 31.1 LDA).",
+    reportBtn: "Signaler un contenu abusif ou illicite au Canada",
+    supportBanner: "<strong>Soutenez le journalisme d'intérêt public :</strong> Visitez les médias d'information directement et abonnez-vous pour financer la presse locale."
   },
   en: {
-    warnTitle: "Security Warning - LienLibre",
-    unverifiedLink: "Unverified Link",
-    warnDesc: "This link redirects to a website that is not on our trusted whitelist of Canadian news media. As a security measure to prevent phishing, the redirection is temporarily suspended.",
-    countdownText: "Automatic redirection in <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    warnTitle: "Security Airlock & Liability Disclaimer — LienLibre",
+    unverifiedLink: "Unlisted External Domain",
+    warnDesc: "This website is not on our verified whitelist of Canadian news media. In accordance with our active security airlock policy, no automatic redirection is performed.",
     destination: "Destination:",
     ipLabel: "Your public IP:",
-    reportBtn: "Report a scam attempt in Canada",
-    advancedBtn: "Advanced options",
-    advancedDesc: "If you trust this site, you can proceed to the original page.",
-    continueBtn: "Continue to site (not recommended)",
-    supportBanner: "<strong>Support independent journalism:</strong> Consider visiting news sites directly and subscribing to fund local reporting."
+    continueBtn: "Leave LienLibre and proceed to {host} at my own risk ↗",
+    disclaimerText: "Disclaimer: By clicking above, you proceed to this external website under your sole responsibility and hold LienLibre harmless from all civil or criminal liabilities (s. 31.1 Copyright Act).",
+    reportBtn: "Report abusive or illegal content in Canada",
+    supportBanner: "<strong>Support public interest journalism:</strong> Consider subscribing directly to local news organizations."
   },
   ar: {
-    warnTitle: "تحذير أمان - LienLibre",
-    unverifiedLink: "رابط غير موثق",
-    warnDesc: "إعادة التوجيه إلى موقع غير مدرج في قائمتنا البيضاء لوسائل الإعلام الكندية الموثوقة. كإجراء أمني لمنع التصيد الاحتيالي، تم تعليق إعادة التوجيه مؤقتاً.",
-    countdownText: "إعادة التوجيه تلقائياً خلال <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> ثوانٍ...",
+    warnTitle: "حاجز الأمان وإخلاء المسؤولية — LienLibre",
+    unverifiedLink: "نطاق خارجي غير مدرج",
+    warnDesc: "هذا الموقع غير مدرج في القائمة البيضاء الرسمية لوسائل الإعلام المعتمدة. وفقاً لسياسة حاجز الأمان النشط، لا يتم إجراء أي إعادة توجيه تلقائية.",
     destination: "الوجهة:",
     ipLabel: "عنوان IP العام الخاص بك:",
-    reportBtn: "الإبلاغ عن محاولة احتيال في كندا",
-    advancedBtn: "خيارات متقدمة",
-    advancedDesc: "إذا كنت تثق في هذا الموقع، يمكنك المتابعة إلى الصفحة الأصلية.",
-    continueBtn: "المتابعة إلى الموقع (غير مستحسن)",
-    supportBanner: "<strong>ادعم الصحافة المستقلة:</strong> فكر في زيارة مواقع الأخبار مباشرة والاشتراك لتمويل الصحافة المحلية."
+    continueBtn: "مغادرة LienLibre والمتابعة إلى {host} على مسؤوليتي ↗",
+    disclaimerText: "إخلاء مسؤولية: بالنقر أعلاه، فإنك تقر بالوصول إلى هذا الموقع الخارجي على مسؤوليتك الكاملة وتخلي طرف LienLibre من أي مسؤولية قانونية.",
+    reportBtn: "الإبلاغ عن محتوى غير لائق في كندا",
+    supportBanner: "<strong>ادعم الصحافة المستقلة:</strong> فكر في زيارة مواقع الأخبار مباشرة."
   },
   es: {
-    warnTitle: "Advertencia de seguridad - LienLibre",
-    unverifiedLink: "Enlace no verificado",
-    warnDesc: "Este enlace redirige a un sitio web que no está en nuestra lista de confianza de medios canadienses. Como medida de seguridad contra el phishing, la redirección se ha suspendido temporalmente.",
-    countdownText: "Redirección automática en <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    warnTitle: "Control de Seguridad y Descargo Legal — LienLibre",
+    unverifiedLink: "Dominio No Verificado",
+    warnDesc: "Este sitio web no figura en la lista oficial de medios de comunicación verificados. Conforme a la política de seguridad activa, no se realiza ninguna redirección automática.",
     destination: "Destino:",
     ipLabel: "Su IP pública:",
-    reportBtn: "Reportar un intento de fraude en Canadá",
-    advancedBtn: "Opciones avanzadas",
-    advancedDesc: "Si confía en este sitio, puede continuar a la página de origen.",
-    continueBtn: "Continuar al sitio (no recomendado)",
-    supportBanner: "<strong>Apoye el periodismo independiente:</strong> Considere visitar los sitios de noticias directamente y suscribirse para financiar la información local."
+    continueBtn: "Salir de LienLibre y continuar hacia {host} bajo mi propio riesgo ↗",
+    disclaimerText: "Descargo legal: Al hacer clic arriba, usted asume la total responsabilidad por acceder a este sitio externo y exonera a LienLibre de cualquier reclamo legal.",
+    reportBtn: "Reportar un abuso o fraude en Canadá",
+    supportBanner: "<strong>Apoye el periodismo independiente:</strong> Considere suscribirse a medios locales."
   },
   it: {
-    warnTitle: "Avviso di sicurezza - LienLibre",
-    unverifiedLink: "Link non verificato",
-    warnDesc: "Questo link reindirizza a un sito web che non è nella nostra lista di fiducia dei media canadesi. Come misura di sicurezza per evitare il phishing, il reindirizzamento è temporaneamente sospeso.",
-    countdownText: "Reindirizzamento automatico in <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    warnTitle: "Avviso di Sicurezza & Esonero di Responsabilità — LienLibre",
+    unverifiedLink: "Dominio Non in Elenco",
+    warnDesc: "Questo sito non è presente nella lista ufficiale dei media verificati. In conformità con la nostra politica di sicurezza, non viene effettuato alcun reindirizzamento automatico.",
     destination: "Destinazione:",
     ipLabel: "Il tuo IP pubblico:",
-    reportBtn: "Segnala un tentativo di frode in Canada",
-    advancedBtn: "Opzioni avanzate",
-    advancedDesc: "Se ti fidi di questo sito, puoi procedere alla pagina di origine.",
-    continueBtn: "Continua sul sito (non consigliato)",
-    supportBanner: "<strong>Sostieni il giornalismo indipendente:</strong> Prendi in considerazione l'idea di visitare direttamente i siti di informazione e abbonarti per finanziare il giornalismo locale."
+    continueBtn: "Lasciare LienLibre e continuare verso {host} a mio rischio ↗",
+    disclaimerText: "Esonero di responsabilità: Cliccando sopra, accedi a questo sito esterno sotto la tua esclusiva responsabilità ed esoneri LienLibre da ogni responsabilità.",
+    reportBtn: "Segnala un abuso in Canada",
+    supportBanner: "<strong>Sostieni il giornalismo:</strong> Considera di abbonarti ai media locali."
   },
   zh: {
-    warnTitle: "安全警告 - LienLibre",
-    unverifiedLink: "未经验证的链接",
-    warnDesc: "此链接重定向至不在我们信任的加拿大新闻媒体白名单中的网站。作为防范网络钓鱼的安全措施，重定向已暂时挂起。",
-    countdownText: "将在 <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> 秒内自动重定向...",
+    warnTitle: "安全隔离与免责声明 — LienLibre",
+    unverifiedLink: "未收录的外部域名",
+    warnDesc: "此网站未包含在已验证的新闻媒体白名单中。遵循主动安全隔离区原则，系统绝不执行任何自动重定向。",
     destination: "目标地址:",
     ipLabel: "您的公网 IP:",
-    reportBtn: "在加拿大举报欺诈行为",
-    advancedBtn: "高级选项",
-    advancedDesc: "如果您信任此网站，可以继续前往原始页面。",
-    continueBtn: "继续前往网站（不推荐）",
-    supportBanner: "<strong>支持独立新闻：</strong>请考虑直接访问新闻网站并订阅以资助本地报道。"
+    continueBtn: "离开 LienLibre 并自行承担风险继续访问 {host} ↗",
+    disclaimerText: "免责声明：点击上方按钮即代表您确认完全以个人责任访问第三方网站，并免除 LienLibre 的任何民事或刑事法律责任（加拿大版权法第31.1条）。",
+    reportBtn: "在加拿大举报滥用或欺诈行为",
+    supportBanner: "<strong>支持独立新闻：</strong>请考虑直接订阅本地新闻媒体。"
   },
   cr: {
-    warnTitle: "Nama-kwayask kiskêyihtâkwan - LienLibre",
-    unverifiedLink: "Nama-kwayask pimohtêw",
-    warnDesc: "Ôma kiskinowâpahtihikowin nama-kiskêyihtâkwan ôta. Wîcihiwêw-paminikêwin sêmâk ka-pêhon.",
-    countdownText: "Pimohtêwin sêmâk <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    warnTitle: "Sas kwayask paminikêwin - LienLibre",
+    unverifiedLink: "Nama-kwayask kiskêyihtâkwan",
+    warnDesc: "Ôma kiskinowâpahtihikowin nama-kiskêyihtâkwan ôta. Nama-sêmâk pimohtêwin.",
     destination: "Tânte pimi-ayâw:",
     ipLabel: "Kiyahk IP pimohtêwin:",
+    continueBtn: "Nakatamowin LienLibre êkwa pimohtêw {host} ↗",
+    disclaimerText: "Kâ-tôhtamiyan, kiyawaw ka-kiskêyihten ôma kîkway.",
     reportBtn: "Report a scam attempt in Canada",
-    advancedBtn: "Wîci-ayamihtân kîkway",
-    advancedDesc: "Kîspin kwayask, sêmâk ka-wâpahtên âcimowin.",
-    continueBtn: "Sêmâk (Nama-kwayask)",
     supportBanner: "<strong>Wîcihiwê âcimowina:</strong> Masinahikan kie wîcihiwê."
   },
   iu: {
     warnTitle: "Nalunaiqtillugu nuutitauniq - LienLibre",
-    unverifiedLink: "Nalunaiqtaulluarsimangittuq Link",
-    warnDesc: "Una qaritaujakkuurutinga ilisimajaujut list-inginniiqataungittuq. Ajuqhaqquq takuksautitsijjutimik maanna.",
-    countdownText: "Nuutitsijuq maanna <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    unverifiedLink: "Nalunaiqtaulluarsimangittuq Domain",
+    warnDesc: "Una qaritaujakkuurutinga ilisimajaujut list-inginniiqataungittuq. Nuutitsinngittuq qaritaujakkuurutinganik maanna.",
     destination: "Nuutarvik:",
     ipLabel: "IP-it:",
+    continueBtn: "Qimakkugu LienLibre uvalu aturlugu {host} ↗",
+    disclaimerText: "Tuqługu una, illivit nalunaiqtait pilirijjutit.",
     reportBtn: "Report a scam attempt in Canada",
-    advancedBtn: "Ikayuriaqutit",
-    advancedDesc: "Ikayurumalutit tunisijungnarqutit.",
-    continueBtn: "Atulugu",
     supportBanner: "<strong>Ikayurlugu tusagaksat:</strong> Una ikayuriqquq."
   },
   in: {
-    warnTitle: "Eka tshissikuat tshe ishinakuat - LienLibre",
-    unverifiedLink: "Eka tshissikuat Link",
-    warnDesc: "Mane tshitshipan eka e nishtutamin tshe ishinakuat. Tshe uapataman mishta aimun.",
-    countdownText: "Tshitissipitamin nete <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    warnTitle: "Sas kanatshiau uitsheun - LienLibre",
+    unverifiedLink: "Eka tshissikuat Domain",
+    warnDesc: "Mane tshitshipan eka e nishtutamin tshe ishinakuat. Eka sêmâk tshitissipitamin.",
     destination: "Tshitisheun:",
     ipLabel: "IP nete:",
+    continueBtn: "Tshitshipan LienLibre mak pimohtêw {host} ↗",
+    disclaimerText: "E tshitutamin, tshin ka-nishtutamin mishta aimun.",
     reportBtn: "Report a scam attempt in Canada",
-    advancedBtn: "Advanced options",
-    advancedDesc: "Kussenitan nete tshe miskamin.",
-    continueBtn: "Tshitissipitamin",
     supportBanner: "<strong>Uitsheue tipatshimun:</strong> Uitsheue tshetshi tutamin."
   },
   moh: {
-    warnTitle: "Iáh teiowatennion - LienLibre",
-    unverifiedLink: "Iáh teiowatennion Link",
-    warnDesc: "Tsi niiorihwà:ke iáh teiowatennion ne Kanada. Thó nioht kaia'táhrho.",
-    countdownText: "Tsi niahsewenni ne <span id=\"countdown\" style=\"font-family: monospace; font-weight: bold; font-size: 1.05rem;\">{sec}</span> s...",
+    warnTitle: "Sas skennen'kówa - LienLibre",
+    unverifiedLink: "Iáh teiowatennion Domain",
+    warnDesc: "Tsi niiorihwà:ke iáh teiowatennion ne Kanada. Iáh sêmâk tyohtetyon.",
     destination: "Destination:",
     ipLabel: "IP:",
+    continueBtn: "Yah LienLibre ohni tyohtetyon {host} ↗",
+    disclaimerText: "Kwah ok kwahiaton ne thó tsi niiorihwà:ke.",
     reportBtn: "Report a scam in Canada",
-    advancedBtn: "Options",
-    advancedDesc: "Kwah ok kwahiaton ne thó tsi niiorihwà:ke.",
-    continueBtn: "Continuer vers le site (non recommandé)",
     supportBanner: "<strong>Sewarihwakwenihs ne ohwentsia:</strong> Takwarent."
   }
 };
@@ -2043,11 +2119,15 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
 }
 
 /**
- * Génère une page d'avertissement de sécurité (phishing/spam) pour les domaines non vérifiés.
+ * Génère une page d'avertissement de sécurité (sas de sécurité actif) pour les domaines non vérifiés.
+ * Conforme au statut d'intermédiaire technique passif (art. 31.1 LDA) : 
+ * - Aucune redirection automatique (pas de meta refresh, pas de JS timeout).
+ * - Clic actif obligatoire de l'utilisateur avec transfert et acceptation de responsabilité.
+ * - Aucune proxyfication d'images via /i/.
  */
-function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr", currentUrl = "", isCrawler = false, botAudit = null) {
+function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr", currentUrl = "", isCrawler = false, botAudit = null, isAllowed = false) {
   const origin = new URL(currentUrl || targetUrl).origin;
-  const proxyImg = image ? getProxyImageUrl(origin, image) : "";
+  const proxyImg = image ? getProxyImageUrl(origin, image, isAllowed) : "";
   const escapedUrl = escapeHtml(targetUrl);
   const escapedCurrentUrl = escapeHtml(currentUrl || targetUrl);
   const escapedTitle = escapeHtml(title);
@@ -2067,11 +2147,12 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
   const mailTpl = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
   const mailtoUrl = generateMailtoUrl(lang, hostname);
   const siteName = getMediaSiteName(hostname);
-  const encodedPayload = btoa(encodeURIComponent(targetUrl));
 
-  const auditScore = (botAudit && typeof botAudit.score === 'number') ? botAudit.score : 50;
-  const auditBadge = (botAudit && botAudit.badgeText) ? botAudit.badgeText : "Source en cours d'évaluation";
+  const auditScore = (botAudit && typeof botAudit.score === 'number') ? botAudit.score : 60;
+  const auditBadge = (botAudit && botAudit.badgeText) ? botAudit.badgeText : "Contenu Non Répertorié";
   const auditSignals = (botAudit && Array.isArray(botAudit.signals)) ? botAudit.signals : [];
+
+  const continueBtnText = trans.continueBtn.replace("{host}", escapeHtml(hostname));
 
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${htmlDir}">
@@ -2080,7 +2161,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${trans.warnTitle}</title>
   
-  <!-- Balises Open Graph Blindées pour Meta (Facebook, Instagram, Threads, Messenger) -->
+  <!-- Balises Open Graph pour les robots d'exploration -->
   <meta property="og:type" content="article">
   <meta property="og:url" content="${escapedCurrentUrl}">
   <link rel="canonical" href="${escapedCurrentUrl}">
@@ -2095,9 +2176,6 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
   <meta name="twitter:title" content="${escapedTitle}">
   <meta name="twitter:description" content="${escapedDesc}">
   ${escapedImg ? `<meta name="twitter:image" content="${escapedImg}">` : ""}
-
-  <!-- Redirection de sécurité différée (10 secondes, pour les visiteurs réels) -->
-  ${!isCrawler ? `<meta http-equiv="refresh" content="10;url=${escapedUrl}">` : ""}
 
   <style>
     body {
@@ -2116,46 +2194,38 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
     .card {
       background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 1rem;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 1.25rem;
       padding: 2.25rem 2rem;
-      max-width: 550px;
+      max-width: 560px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
       margin-bottom: 1.5rem;
     }
-    .icon-container {
-      width: 3.5rem;
-      height: 3.5rem;
-      background-color: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 50%;
-      display: flex;
+    .badge {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.25rem;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    }
-    .icon {
-      color: #ef4444;
-      font-size: 1.75rem;
-      font-weight: bold;
+      gap: 0.4rem;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
     }
     h1 {
       font-size: 1.35rem;
-      font-weight: 700;
+      font-weight: 800;
       margin: 0 0 0.5rem;
-      color: #f87171;
+      color: #ffffff;
+      line-height: 1.3;
     }
     p {
       color: #9ca3af;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       margin: 0 0 1.25rem;
       line-height: 1.5;
     }
@@ -2206,10 +2276,10 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       font-size: 0.75rem;
     }
     .info-box {
-      background-color: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 0.5rem;
-      padding: 0.85rem;
+      background-color: rgba(2, 6, 23, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.75rem;
+      padding: 0.85rem 1rem;
       text-align: left;
       margin-bottom: 1.25rem;
       font-size: 0.82rem;
@@ -2224,54 +2294,67 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       margin-bottom: 0;
     }
     .info-label {
-      color: #6b7280;
+      color: #64748b;
       font-weight: 500;
       flex-shrink: 0;
     }
     .info-value {
-      color: #e5e7eb;
+      color: #e2e8f0;
       font-family: monospace;
       word-break: break-all;
       text-align: right;
     }
-    .btn-direct-access {
+    .btn-action-leave {
       display: block;
-      background: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
-      color: white;
+      background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+      color: #ffffff;
       text-decoration: none;
-      padding: 0.75rem 1.25rem;
-      border-radius: 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: opacity 0.2s, transform 0.1s;
-      margin-bottom: 0.75rem;
-      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+      padding: 0.95rem 1.25rem;
+      border-radius: 0.65rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+      text-align: center;
     }
-    .btn-direct-access:hover {
+    .btn-action-leave:hover {
       opacity: 0.95;
       transform: translateY(-1px);
+    }
+    .disclaimer-box {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-top: 0.65rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.4;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
     .btn-mailto {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      background-color: #2563eb;
-      color: #ffffff;
+      background-color: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #93c5fd;
       text-decoration: none;
       padding: 0.55rem 1.15rem;
-      border-radius: 0.375rem;
-      font-size: 0.85rem;
+      border-radius: 0.5rem;
+      font-size: 0.82rem;
       font-weight: 600;
       transition: background-color 0.2s;
     }
     .btn-mailto:hover {
-      background-color: #1d4ed8;
+      background-color: rgba(37, 99, 235, 0.35);
     }
     .btn-report {
       display: block;
-      background-color: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.4);
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
       color: #fca5a5;
       text-decoration: none;
       padding: 0.6rem 1rem;
@@ -2283,52 +2366,16 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       text-align: center;
     }
     .btn-report:hover {
-      background-color: rgba(239, 68, 68, 0.25);
-    }
-    .advanced-toggle {
-      background: none;
-      border: none;
-      color: #6b7280;
-      font-size: 0.82rem;
-      cursor: pointer;
-      text-decoration: underline;
-      padding: 0.4rem;
-    }
-    .advanced-toggle:hover {
-      color: #9ca3af;
-    }
-    .advanced-content {
-      display: none;
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 0.82rem;
-      color: #9ca3af;
-    }
-    .btn-continue {
-      display: inline-block;
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #d1d5db;
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      border-radius: 0.375rem;
-      font-weight: 500;
-      margin-top: 0.5rem;
-      transition: all 0.2s;
-    }
-    .btn-continue:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: white;
+      background-color: rgba(239, 68, 68, 0.2);
     }
     .support-banner {
       background-color: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.05);
-      color: #9ca3af;
+      color: #94a3b8;
       border-radius: 0.75rem;
-      padding: 1rem;
-      font-size: 0.85rem;
-      max-width: 550px;
+      padding: 0.9rem;
+      font-size: 0.82rem;
+      max-width: 560px;
       text-align: center;
       line-height: 1.4;
     }
@@ -2340,11 +2387,9 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
 </head>
 <body>
   <div class="card">
-    <div class="icon-container">
-      <span class="icon">🤖</span>
-    </div>
-    <h1>${trans.unverifiedLink}</h1>
-    <p>${trans.warnDesc}</p>
+    <div class="badge">🛡️ ${escapeHtml(trans.unverifiedLink)}</div>
+    <h1>${escapedTitle || escapeHtml(hostname)}</h1>
+    <p>${escapeHtml(trans.warnDesc)}</p>
     
     <!-- Mini-Bot Sentinel Audit Box -->
     <div class="bot-box">
@@ -2361,15 +2406,6 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       </div>` : ''}
     </div>
 
-    <!-- Direct 1-Click Access Button -->
-    <a href="${escapedUrl}" class="btn-direct-access">
-      ⚡ Accéder directement au contenu (Auto-Certification)
-    </a>
-
-    <div style="margin-bottom: 1.25rem; padding: 0.6rem; background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.5rem; color: #f87171; font-size: 0.85rem; font-weight: 500;">
-      ${trans.countdownText.replace("{sec}", `<span id="countdown" style="font-family: monospace; font-weight: bold; font-size: 1.05rem;">10</span>`)}
-    </div>
-
     <div class="info-box">
       <div class="info-row">
         <span class="info-label">${trans.destination}</span>
@@ -2381,8 +2417,17 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       </div>
     </div>
 
-    <div style="margin-top: -0.5rem; margin-bottom: 1.25rem; padding: 0.85rem; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 0.6rem; text-align: center;">
-      <div style="font-size: 0.82rem; color: #93c5fd; margin-bottom: 0.6rem; font-weight: 500;">
+    <!-- Action Explicite de Sortie / Transfert de Responsabilité (Pas de compte à rebours) -->
+    <a href="${escapedUrl}" class="btn-action-leave" rel="noopener noreferrer nofollow" target="_blank">
+      ${continueBtnText}
+    </a>
+    
+    <div class="disclaimer-box">
+      ⚖️ ${escapeHtml(trans.disclaimerText)}
+    </div>
+
+    <div style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 0.6rem; text-align: center;">
+      <div style="font-size: 0.8rem; color: #93c5fd; margin-bottom: 0.5rem; font-weight: 500;">
         📰 ${escapeHtml(mailTpl.question)}
       </div>
       <a href="${mailtoUrl}" class="btn-mailto">
@@ -2391,55 +2436,13 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
     </div>
 
     <a href="${reportUrl}" target="_blank" rel="noopener noreferrer" class="btn-report">
-      ${trans.reportBtn}
+      🚩 ${trans.reportBtn}
     </a>
-
-    <button class="advanced-toggle" onclick="toggleAdvanced()">${trans.advancedBtn}</button>
-    
-    <div id="advanced-content" class="advanced-content">
-      <p>${trans.advancedDesc}</p>
-      <a href="${escapedUrl}" class="btn-continue">${trans.continueBtn}</a>
-    </div>
   </div>
 
   <div class="support-banner">
     <span class="heart">❤️</span> ${trans.supportBanner}
   </div>
-
-  <script>
-    function toggleAdvanced() {
-      const content = document.getElementById('advanced-content');
-      if (content.style.display === 'block') {
-        content.style.display = 'none';
-      } else {
-        content.style.display = 'block';
-        content.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-
-    (function() {
-      let secondsLeft = 10;
-      const countdownEl = document.getElementById("countdown");
-      const interval = setInterval(function() {
-        secondsLeft--;
-        if (countdownEl) {
-          countdownEl.textContent = secondsLeft;
-        }
-        if (secondsLeft <= 0) {
-          clearInterval(interval);
-          try {
-            var p = "${encodedPayload}";
-            var u = decodeURIComponent(atob(p));
-            if (u && (u.indexOf('http://') === 0 || u.indexOf('https://') === 0)) {
-              window.location.replace(u);
-              return;
-            }
-          } catch(e) {}
-          window.location.replace(${JSON.stringify(targetUrl)});
-        }
-      }, 1000);
-    })();
-  </script>
 </body>
 </html>`;
 }
