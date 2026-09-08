@@ -418,10 +418,56 @@ function checkSecurityThreats(targetUrl, meta = {}) {
 }
 
 /**
+ * 🌐 Bouclier DNS Protection Famille & Sécurité (Cloudflare 1.1.1.3 DoH)
+ * Interroge en temps réel le résolveur DNS Cloudflare pour Familles (Malware + Adult Content Filter).
+ * Bloque instantanément tout domaine classé dangereux, malveillant ou adulte (renvoyant 0.0.0.0 / NXDOMAIN).
+ */
+async function checkDnsFamilyShield(hostname) {
+  try {
+    const cleanHost = (hostname || "").toLowerCase().replace(/^www\./, "");
+    if (!cleanHost || isDomainAllowed(cleanHost)) {
+      return { isBlocked: false, reason: "" };
+    }
+
+    const dohUrl = `https://family.cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 secondes max
+
+    const res = await fetch(dohUrl, {
+      headers: { "Accept": "application/dns-json" },
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.Answer && Array.isArray(data.Answer)) {
+        const isBlocked = data.Answer.some(a => a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1");
+        if (isBlocked) {
+          return {
+            isBlocked: true,
+            reason: "Ce domaine est bloqué par le bouclier DNS Protection Famille & Sécurité (Cloudflare 1.1.1.3 : détection de contenus inappropriés ou malveillants)."
+          };
+        }
+      }
+      if (data.Status === 3) {
+        return {
+          isBlocked: true,
+          reason: "Ce nom de domaine est introuvable ou inexistant (NXDOMAIN)."
+        };
+      }
+    }
+  } catch (err) {
+    console.warn("Vérification DNS Famille ignorée (erreur réseau / timeout):", err);
+  }
+  return { isBlocked: false, reason: "" };
+}
+
+/**
  * Mini-Bot Sentinel : Analyse heuristique et sémantique automatique gratuite.
  * Évalue la crédibilité journalistique et l'intégrité d'une source web sans intervention humaine et sans frais.
  */
-function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false) {
+function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThreat = null) {
   if (isWhitelisted) {
     return {
       score: 100,
@@ -433,7 +479,8 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false) {
       signals: [
         "Domaine inscrit au répertoire officiel des médias canadiens",
         "Protocole sécurisé et chiffré HTTPS",
-        "Métadonnées Open Graph intègres"
+        "Métadonnées Open Graph intègres",
+        "Bouclier DNS Protection Famille & Sécurité validé"
       ]
     };
   }
@@ -470,6 +517,19 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false) {
     };
   }
 
+  if (dnsThreat && dnsThreat.isBlocked) {
+    return {
+      score: 0,
+      isJournalistic: false,
+      isValidated: false,
+      isBlocked: true,
+      blockReason: dnsThreat.reason,
+      category: "blocked_threat",
+      badgeText: "Source Bloquée (Bouclier DNS Famille)",
+      signals: ["⚠️ " + dnsThreat.reason]
+    };
+  }
+
   let score = 20; // Base score
   const signals = [];
 
@@ -477,6 +537,8 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false) {
     score += 15;
     signals.push("Protocole sécurisé HTTPS");
   }
+
+  signals.push("Bouclier DNS Protection Famille & Sécurité (1.1.1.3) validé");
 
   const hostname = urlObj.hostname.toLowerCase().replace(/^www\./, "");
   const path = urlObj.pathname.toLowerCase();
@@ -719,6 +781,18 @@ export default {
           });
         }
 
+        const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname);
+        if (dnsShield.isBlocked) {
+          return new Response(JSON.stringify({
+            error: true,
+            blocked: true,
+            message: dnsShield.reason
+          }), {
+            status: 403,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+          });
+        }
+
         const isAllowed = isDomainAllowed(parsedTarget.hostname);
         const randomId = Math.random().toString(36).substring(2, 10);
         const packedSlug = encodePackedUrl(parsedTarget.href);
@@ -874,6 +948,47 @@ export default {
 
     const isAllowed = isDomainAllowed(targetUrl.hostname);
 
+    // Vérification préventive immédiate des menaces et du bouclier DNS Famille
+    const initialThreat = checkSecurityThreats(targetUrl);
+    if (initialThreat.isBlocked) {
+      if (isJsonRequested) {
+        return new Response(JSON.stringify({
+          error: true,
+          blocked: true,
+          title: "Source Bloquée",
+          description: initialThreat.reason,
+          allowed: false
+        }), {
+          status: 403,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+      return new Response(generateBlockedHTML(targetUrl.href, initialThreat.reason, lang, requestUrl.origin), {
+        status: 403,
+        headers: { ...CORS_HEADERS, ...SECURITY_HEADERS, "Content-Type": "text/html; charset=utf-8" }
+      });
+    }
+
+    const dnsThreat = await checkDnsFamilyShield(targetUrl.hostname);
+    if (dnsThreat.isBlocked) {
+      if (isJsonRequested) {
+        return new Response(JSON.stringify({
+          error: true,
+          blocked: true,
+          title: "Source Bloquée (Bouclier DNS)",
+          description: dnsThreat.reason,
+          allowed: false
+        }), {
+          status: 403,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+      return new Response(generateBlockedHTML(targetUrl.href, dnsThreat.reason, lang, requestUrl.origin), {
+        status: 403,
+        headers: { ...CORS_HEADERS, ...SECURITY_HEADERS, "Content-Type": "text/html; charset=utf-8" }
+      });
+    }
+
     // Enregistrer le clic réel de manière asynchrone (pour les vrais visiteurs, pas pour les prévisualisations JSON)
     if (!isJsonRequested) {
       ctx.waitUntil(recordClick(env, targetUrl.hostname));
@@ -969,7 +1084,7 @@ export default {
     const finalImage = rawImage ? resolveUrl(targetUrl.href, rawImage) : "";
 
     // Calcul de l'audit automatique du Mini-Bot
-    const botAudit = calculateBotAudit(targetUrl, meta, isAllowed);
+    const botAudit = calculateBotAudit(targetUrl, meta, isAllowed, dnsThreat);
     const isSelfCertified = requestUrl.searchParams.get("cert") === "1" || 
                             requestUrl.searchParams.get("selfCertified") === "true" || 
                             requestUrl.searchParams.get("verified") === "1" ||
