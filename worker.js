@@ -313,16 +313,121 @@ function getProxyImageUrl(origin, rawImageUrl) {
   }
 }
 
+// 1. Raccourcisseurs d'URL interdits (Anti-Obfuscation)
+const BLOCKED_URL_SHORTENERS = [
+  "bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff.ly", "cutt.ly",
+  "rb.gy", "shorturl.at", "rebrand.ly", "bl.ink", "tiny.cc", "lnkd.in", "s.id", "v.gd",
+  "qr.ae", "trib.al", "linktr.ee", "bc.vc", "adf.ly", "shorte.st", "ouo.io", "clck.ru",
+  "rotf.lol", "vzturl.com", "hyperurl.co", "short.io", "soo.gd"
+];
+
+// 2. Services de stockage cloud chiffré / anonyme / messageries privées (Non-journalistiques)
+const BLOCKED_CLOUD_AND_ANON_SERVICES = [
+  "mega.nz", "mega.io", "t.me", "telegram.me", "telegram.org", "discord.gg", "discord.com",
+  "whatsapp.com", "chat.whatsapp.com", "signal.group", "anonfiles.com", "gofile.io",
+  "mediafire.com", "drive.google.com", "dropbox.com", "wetransfer.com", "pastebin.com",
+  "rentry.co", "ghostbin.com", "sendspace.com", "rapidgator.net", "zippyshare.com",
+  "krakenfiles.com", "1fichier.com", "filecrypt.co", "catbox.moe", "pomf2.lain.la",
+  "file.io", "ufile.io", "bayfiles.com", "ddownload.com", "turbobit.net", "nitroflare.com"
+];
+
+// 3. Extensions de domaines (TLD) jetables ou à haut risque d'abus
+const BLOCKED_TLDS = [
+  ".tk", ".ml", ".ga", ".cf", ".gq", ".top", ".xyz", ".click", ".link", ".stream",
+  ".win", ".loan", ".date", ".party", ".zip", ".mov", ".ru", ".cn", ".pw", ".cc",
+  ".work", ".racing", ".download", ".kim", ".country", ".science", ".cricket", ".gdn",
+  ".men", ".bid", ".trade", ".webcam", ".faith", ".review", ".accountant"
+];
+
+// 4. Extensions de fichiers exécutables / dangereux
+const DANGEROUS_EXTENSIONS_REGEX = /\.(exe|scr|bat|cmd|apk|dmg|iso|zip|rar|7z|tar|gz|sh|vbs|ps1|dll|bin|msi|app|pkg|deb|rpm|jar|vhd|img|torrent)$/i;
+
+// 5. Adresses IP brutes (IPv4 & IPv6)
+const IP_ADDRESS_REGEX = /^(\d{1,3}\.){3}\d{1,3}$|^([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}$/;
+
+// 6. Filtrage sémantique de toxicité / arnaque / phishing / substances illicites
+const TOXIC_SEMANTIC_REGEX = /\b(crypto\s*(giveaway|airdrop|doubler|investment|mining|presale)|free\s*bitcoin|wallet\s*connect|verify\s*your\s*wallet|metamask\s*update|claim\s*tokens?|suspended\s*account|account\s*blocked|verify\s*bank|banking\s*security\s*alert|urgent\s*password|viagra|cialis|casino\s*bonus|warez|crack\s*download|keygen|darkweb|tor\s*mirror|drugs\s*online|buy\s*weapons?|phishing|stealer|malware)\b/i;
+
+/**
+ * Analyse stricte des menaces de sécurité et des vecteurs d'abus.
+ */
+function checkSecurityThreats(targetUrl, meta = {}) {
+  let urlObj = targetUrl;
+  if (typeof targetUrl === "string") {
+    try {
+      urlObj = new URL(targetUrl);
+    } catch (e) {
+      return { isBlocked: true, reason: "URL invalide ou malformée." };
+    }
+  }
+  const hostname = urlObj.hostname.toLowerCase().replace(/^www\./, "");
+  const path = urlObj.pathname.toLowerCase();
+  const search = urlObj.search.toLowerCase();
+  const fullText = `${urlObj.href} ${meta.title || ""} ${meta.description || ""} ${meta.standardTitle || ""}`.toLowerCase();
+
+  // 1. IP brute
+  if (IP_ADDRESS_REGEX.test(hostname)) {
+    return {
+      isBlocked: true,
+      reason: "Les adresses IP directes sont formellement interdites pour prévenir les vecteurs d'attaque."
+    };
+  }
+
+  // 2. Raccourcisseurs d'URL
+  if (BLOCKED_URL_SHORTENERS.some(s => hostname === s || hostname.endsWith("." + s))) {
+    return {
+      isBlocked: true,
+      reason: "Les raccourcisseurs d'URL (ex: bit.ly, tinyurl) sont interdits afin d'empêcher le masquage de destinations malveillantes."
+    };
+  }
+
+  // 3. Stockage cloud chiffré / Messageries anonymes
+  if (BLOCKED_CLOUD_AND_ANON_SERVICES.some(s => hostname === s || hostname.endsWith("." + s))) {
+    return {
+      isBlocked: true,
+      reason: "Les plateformes de stockage chiffré, d'hébergement anonyme de fichiers et de canaux de messagerie privée ne sont pas des organes de presse et sont exclues."
+    };
+  }
+
+  // 4. TLDs suspects / jetables
+  if (BLOCKED_TLDS.some(tld => hostname.endsWith(tld))) {
+    const matchedTld = BLOCKED_TLDS.find(tld => hostname.endsWith(tld)) || "";
+    return {
+      isBlocked: true,
+      reason: `L'extension de domaine (${matchedTld}) est classée à haut risque d'abus et n'est pas autorisée.`
+    };
+  }
+
+  // 5. Fichiers dangereux / exécutables
+  if (DANGEROUS_EXTENSIONS_REGEX.test(path)) {
+    return {
+      isBlocked: true,
+      reason: "Le lien pointe vers un fichier exécutable, une archive ou un binaire potentiellement dangereux."
+    };
+  }
+
+  // 6. Toxicité sémantique / Scam / Phishing
+  if (TOXIC_SEMANTIC_REGEX.test(fullText) || TOXIC_SEMANTIC_REGEX.test(path) || TOXIC_SEMANTIC_REGEX.test(search)) {
+    return {
+      isBlocked: true,
+      reason: "Des marqueurs de sécurité critiques (phishing, fraude, malware ou contenu illicite) ont été détectés."
+    };
+  }
+
+  return { isBlocked: false, reason: "" };
+}
+
 /**
  * Mini-Bot Sentinel : Analyse heuristique et sémantique automatique gratuite.
  * Évalue la crédibilité journalistique et l'intégrité d'une source web sans intervention humaine et sans frais.
  */
-function calculateBotAudit(targetUrl, meta, isWhitelisted) {
+function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false) {
   if (isWhitelisted) {
     return {
       score: 100,
       isJournalistic: true,
       isValidated: true,
+      isBlocked: false,
       category: "whitelisted_media",
       badgeText: "Média Canadien Vérifié (Liste Officielle)",
       signals: [
@@ -333,16 +438,48 @@ function calculateBotAudit(targetUrl, meta, isWhitelisted) {
     };
   }
 
-  let score = 30; // Base score
+  let urlObj = targetUrl;
+  if (typeof targetUrl === "string") {
+    try {
+      urlObj = new URL(targetUrl);
+    } catch (e) {
+      return {
+        score: 0,
+        isJournalistic: false,
+        isValidated: false,
+        isBlocked: true,
+        blockReason: "URL invalide ou malformée.",
+        category: "blocked_threat",
+        badgeText: "Source Bloquée (URL Invalide)",
+        signals: ["⚠️ URL invalide ou malformée."]
+      };
+    }
+  }
+
+  const threat = checkSecurityThreats(urlObj, meta);
+  if (threat.isBlocked) {
+    return {
+      score: 0,
+      isJournalistic: false,
+      isValidated: false,
+      isBlocked: true,
+      blockReason: threat.reason,
+      category: "blocked_threat",
+      badgeText: "Source Bloquée (Menace de Sécurité)",
+      signals: ["⚠️ " + threat.reason]
+    };
+  }
+
+  let score = 20; // Base score
   const signals = [];
 
-  if (targetUrl.protocol === "https:") {
+  if (urlObj.protocol === "https:") {
     score += 15;
     signals.push("Protocole sécurisé HTTPS");
   }
 
-  const hostname = targetUrl.hostname.toLowerCase().replace(/^www\./, "");
-  const path = targetUrl.pathname.toLowerCase();
+  const hostname = urlObj.hostname.toLowerCase().replace(/^www\./, "");
+  const path = urlObj.pathname.toLowerCase();
 
   // Extension de domaine réputée
   if (/\.(ca|qc\.ca|org|com|net|info|news|press|media|tv|fm)$/i.test(hostname)) {
@@ -360,13 +497,13 @@ function calculateBotAudit(targetUrl, meta, isWhitelisted) {
 
   // Schema.org ou données structurées NewsArticle
   if (meta.schemaType && (meta.schemaType.includes("NewsArticle") || meta.schemaType.includes("Article") || meta.schemaType.includes("ReportageNewsArticle"))) {
-    score += 20;
+    score += 25;
     signals.push("Schéma sémantique de presse (NewsArticle / Schema.org)");
   }
 
   // Auteur ou Date de publication
   if (meta.author || meta.publishedTime) {
-    score += 10;
+    score += 15;
     signals.push("Signature d'auteur ou horodatage éditorial détecté");
   }
 
@@ -377,24 +514,20 @@ function calculateBotAudit(targetUrl, meta, isWhitelisted) {
     signals.push("Structure d'URL de rubrique journalistique");
   }
 
-  // Détection d'anomalies ou fichiers suspects
-  if (/\.(exe|scr|bat|cmd|apk|zip|rar|vbs|ps1)$/i.test(path) || /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname)) {
-    score -= 60;
-    signals.push("⚠️ Marqueurs suspects détectés");
-  }
-
   score = Math.max(0, Math.min(100, score));
-  const isJournalistic = score >= 60;
+  // Seuil strict rehaussé à 80 / 100
+  const isJournalistic = score >= 80;
   const isValidated = isJournalistic;
 
   return {
     score,
     isJournalistic,
     isValidated,
-    category: isJournalistic ? "journalistic_source" : (score >= 40 ? "unverified_content" : "suspicious"),
+    isBlocked: false,
+    category: isJournalistic ? "journalistic_source" : (score >= 50 ? "unverified_content" : "suspicious"),
     badgeText: isJournalistic 
-      ? `Source Journalistique Probable (${score}/100)` 
-      : (score >= 40 ? `Contenu Non Répertorié (${score}/100)` : `Source Non Recommandée (${score}/100)`),
+      ? `Source Journalistique Conforme (${score}/100)` 
+      : (score >= 50 ? `Contenu Non Répertorié (${score}/100)` : `Source Suspecte (${score}/100)`),
     signals
   };
 }
@@ -573,6 +706,18 @@ export default {
         let parsedTarget = new URL(targetInput.trim());
         const { cleanedUrl } = cleanTrackingParameters(parsedTarget.href);
         parsedTarget = new URL(cleanedUrl);
+        
+        const threat = checkSecurityThreats(parsedTarget);
+        if (threat.isBlocked) {
+          return new Response(JSON.stringify({
+            error: true,
+            blocked: true,
+            message: threat.reason
+          }), {
+            status: 403,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+          });
+        }
 
         const isAllowed = isDomainAllowed(parsedTarget.hostname);
         const randomId = Math.random().toString(36).substring(2, 10);
@@ -832,6 +977,25 @@ export default {
 
     // 7. Renvoyer la réponse selon le format demandé
     if (isJsonRequested) {
+      if (botAudit.isBlocked) {
+        return new Response(
+          JSON.stringify({
+            error: true,
+            blocked: true,
+            title: "Source Bloquée",
+            description: botAudit.blockReason,
+            allowed: false,
+            botAudit: botAudit
+          }),
+          {
+            status: 403,
+            headers: {
+              ...CORS_HEADERS,
+              "Content-Type": "application/json; charset=utf-8"
+            }
+          }
+        );
+      }
       return new Response(
         JSON.stringify({
           title: finalTitle,
@@ -853,11 +1017,26 @@ export default {
       );
     }
 
+    // Si la source est bloquée pour menace de sécurité -> Erreur 403
+    if (botAudit.isBlocked) {
+      return new Response(
+        generateBlockedHTML(targetUrl.href, botAudit.blockReason, lang, requestUrl.origin),
+        {
+          status: 403,
+          headers: {
+            ...CORS_HEADERS,
+            ...SECURITY_HEADERS,
+            "Content-Type": "text/html; charset=utf-8"
+          }
+        }
+      );
+    }
+
     const userAgent = request.headers.get("User-Agent") || "";
     const isCrawler = /facebookexternalhit|Facebot|Meta-ExternalAgent|Instagram|WhatsApp|Twitterbot|LinkedInBot|Discordbot|TelegramBot|Slackbot/i.test(userAgent);
 
-    // Si le domaine est dans la liste blanche, validé par le Mini-Bot, ou auto-certifié ➡️ Redirection immédiate
-    if (isAllowed || botAudit.isValidated || isSelfCertified) {
+    // 1. Si le domaine est dans la liste blanche ou validé par le Mini-Bot (Score >= 80) -> Redirection immédiate
+    if (isAllowed || botAudit.isValidated) {
       return new Response(
         generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang, requestUrl.href, isCrawler),
         {
@@ -871,7 +1050,22 @@ export default {
       );
     }
 
-    // Si le domaine nécessite une validation ➡️ Page avec Audit du Mini-Bot et déblocage direct en 1 clic
+    // 2. Si le lien est auto-certifié mais n'atteint pas 80/100 -> Interstitiel citoyen avec transfert de responsabilité
+    if (isSelfCertified) {
+      return new Response(
+        generateCitizenInterstitialHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang, requestUrl.href, botAudit),
+        {
+          status: 200,
+          headers: {
+            ...CORS_HEADERS,
+            ...SECURITY_HEADERS,
+            "Content-Type": "text/html; charset=utf-8"
+          }
+        }
+      );
+    }
+
+    // 3. Sinon -> Avertissement standard avec compte à rebours de 10s et audit
     const userIp = request.headers.get("CF-Connecting-IP") || "Inconnue";
     return new Response(
       generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang, requestUrl.href, isCrawler, botAudit),
@@ -886,6 +1080,214 @@ export default {
     );
   }
 };
+
+/**
+ * Génère le HTML pour les URLs bloquées par sécurité.
+ */
+function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
+  const isFr = lang === "fr";
+  const title = isFr ? "Accès Bloqué par Mesure de Sécurité" : "Access Blocked for Security Reasons";
+  const subtitle = isFr ? "Ce lien ne respecte pas les critères de sécurité et d'éthique de LienLibre." : "This link violates LienLibre security and ethics policies.";
+  const homeBtn = isFr ? "Retourner à l'accueil LienLibre" : "Return to LienLibre Home";
+
+  return `<!DOCTYPE html>
+<html lang="${escapeHtml(lang)}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(title)} — LienLibre</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #090d16;
+      background-image: radial-gradient(at 50% 20%, rgba(239, 68, 68, 0.15) 0px, transparent 60%);
+      color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1.5rem;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 1.5rem;
+      padding: 2.5rem 2rem;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.2);
+    }
+    .icon { font-size: 3rem; margin-bottom: 1rem; display: inline-block; }
+    h1 { font-size: 1.5rem; font-weight: 800; color: #f87171; margin: 0 0 0.5rem; }
+    p { color: #94a3b8; font-size: 0.9rem; line-height: 1.5; margin: 0 0 1.25rem; }
+    .reason-box {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      color: #fca5a5;
+      font-size: 0.85rem;
+      text-align: left;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+    .btn-home {
+      display: inline-block;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🛑</div>
+    <h1>${escapeHtml(title)}</h1>
+    <p>${escapeHtml(subtitle)}</p>
+    <div class="reason-box">
+      <strong>Motif du refus :</strong> ${escapeHtml(reason)}
+    </div>
+    <a href="https://bwillou1.github.io/LienLibre/" class="btn-home">${escapeHtml(homeBtn)}</a>
+  </div>
+</body>
+</html>`;
+}
+
+/**
+ * Génère le HTML pour l'interstitiel citoyen (Source auto-certifiée sous le seuil de 80/100).
+ */
+function generateCitizenInterstitialHTML(targetUrl, finalTitle, finalDescription, finalImage, lang, requestUrl, botAudit) {
+  const isFr = lang === "fr";
+  const hostname = new URL(targetUrl).hostname.replace(/^www\./i, '');
+  const title = isFr ? "Passerelle Citoyenne — Source Déclarée" : "Citizen Gateway — Declared Source";
+  const desc = isFr 
+    ? "Ce lien mène vers une source externe auto-certifiée par un utilisateur. LienLibre agit comme intermédiaire technique neutre et ne contrôle ni n'héberge ce contenu."
+    : "This link leads to an external source self-certified by a user. LienLibre acts as a neutral technical intermediary and does not control or host this content.";
+  const continueBtn = isFr ? `Continuer vers ${hostname} ↗` : `Continue to ${hostname} ↗`;
+  const reportBtn = isFr ? "🚩 Signaler ce lien (Abus / Illégalité)" : "🚩 Report this link (Abuse / Illegal)";
+  const reportEmail = "guindonwilliam2@gmail.com";
+  const reportSubject = encodeURIComponent(`[Signalement Abus LienLibre] - ${hostname}`);
+  const reportBody = encodeURIComponent(`Bonjour,\n\nJe signale ce lien pour contenu inapproprié ou abusif :\nURL : ${targetUrl}\nMotif : [Veuillez préciser]\n\nMerci.`);
+  const reportMailto = `mailto:${reportEmail}?subject=${reportSubject}&body=${reportBody}`;
+
+  return `<!DOCTYPE html>
+<html lang="${escapeHtml(lang)}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(finalTitle || hostname)} — LienLibre</title>
+  <meta property="og:title" content="${escapeHtml(finalTitle)}">
+  <meta property="og:description" content="${escapeHtml(finalDescription)}">
+  ${finalImage ? `<meta property="og:image" content="${escapeHtml(finalImage)}">` : ''}
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #090d16;
+      background-image: 
+        radial-gradient(at 15% 15%, rgba(6, 182, 212, 0.15) 0px, transparent 45%),
+        radial-gradient(at 85% 85%, rgba(99, 102, 241, 0.15) 0px, transparent 45%);
+      color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1.5rem;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 1.5rem;
+      padding: 2.25rem 2rem;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #38bdf8;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+    }
+    h1 { font-size: 1.35rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem; line-height: 1.3; }
+    p { color: #94a3b8; font-size: 0.85rem; line-height: 1.5; margin: 0 0 1.25rem; }
+    .dest-box {
+      background: rgba(2, 6, 23, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+    .dest-title { font-size: 0.95rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.35rem; }
+    .dest-host { font-family: monospace; font-size: 0.8rem; color: #94a3b8; word-break: break-all; }
+    .btn-continue {
+      display: block;
+      background: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.85rem 1.25rem;
+      border-radius: 0.6rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+      margin-bottom: 0.75rem;
+    }
+    .btn-continue:hover { transform: translateY(-1px); opacity: 0.95; }
+    .btn-report {
+      display: inline-block;
+      color: #f87171;
+      text-decoration: none;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 0.4rem;
+      background: rgba(239, 68, 68, 0.08);
+      transition: all 0.2s;
+    }
+    .btn-report:hover { background: rgba(239, 68, 68, 0.2); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">⚖️ ${escapeHtml(title)}</div>
+    <h1>${escapeHtml(finalTitle || hostname)}</h1>
+    <p>${escapeHtml(desc)}</p>
+    
+    <div class="dest-box">
+      <div class="dest-title">🌐 ${escapeHtml(hostname)}</div>
+      <div class="dest-host">${escapeHtml(targetUrl)}</div>
+    </div>
+
+    <a href="${escapeHtml(targetUrl)}" class="btn-continue" rel="noopener noreferrer">${escapeHtml(continueBtn)}</a>
+    
+    <div style="margin-top: 1rem;">
+      <a href="${reportMailto}" class="btn-report">${escapeHtml(reportBtn)}</a>
+    </div>
+  </div>
+</body>
+</html>`;
+}
 
 /**
  * Résout une URL relative par rapport à une URL de base.

@@ -313,6 +313,17 @@
           </select>
         </div>
         
+        <!-- Report Abuse in Header -->
+        <button 
+          type="button" 
+          id="btn-nav-report"
+          title="Signaler un lien abusif ou illégal"
+          class="flex items-center gap-1.5 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+        >
+          <span>🚩</span>
+          <span class="hidden sm:inline" data-i18n="navReportBtn">Signaler un abus</span>
+        </button>
+
         <!-- GitHub Source -->
         <a 
           href="https://github.com/Bwillou1/LienLibre" 
@@ -376,6 +387,17 @@
               class="block w-full pl-10 pr-4 py-3 sm:py-3.5 bg-slate-50/80 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm transition-all"
             >
           </div>
+        </div>
+
+        <!-- Mandatory Legal Agreement Checkbox -->
+        <div class="pt-1 pb-1">
+          <label class="flex items-start gap-2.5 cursor-pointer select-none group p-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-950/60 border border-slate-300/80 dark:border-slate-800 hover:border-cyan-500/50 transition-all">
+            <input type="checkbox" id="checkbox-legal-agree" required class="mt-0.5 h-4 w-4 rounded border-slate-400 dark:border-slate-700 text-cyan-600 focus:ring-cyan-500 cursor-pointer">
+            <span class="text-xs text-slate-700 dark:text-slate-300 leading-snug">
+              <span data-i18n="legalCheckboxLabel">Je certifie que ce lien mène vers une source d'information légitime et j'accepte sans réserve les</span>
+              <button type="button" id="btn-open-legal-from-check" class="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold cursor-pointer" data-i18n="legalCheckboxLink">Conditions d'Utilisation et la Décharge Juridique</button>.
+            </span>
+          </label>
         </div>
         
         <button 
@@ -795,74 +817,167 @@
       <!-- Modal Body (Scrollable Legal Text) -->
       <div class="p-6 overflow-y-auto space-y-6 text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed divide-y divide-slate-200 dark:divide-slate-800/80">
         
-        <div class="space-y-2 pt-1">
-          <h4 class="font-semibold text-cyan-700 dark:text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>1.</span> Cadre Éducatif, Recherche & Utilisation Équitable (Fair Dealing)
-          </h4>
-          <p>
-            LienLibre est une initiative open-source à vocation <strong>strictement éducative, scientifique et citoyenne</strong>, conçue comme un banc d'essai d'interopérabilité des protocoles de métadonnées web (Open Graph Protocol, Schema.org).
-          </p>
-          <p>
-            Ce projet s'inscrit pleinement dans le cadre de l'<strong>utilisation équitable (Fair Dealing) prévue à l'article 29 de la *Loi sur le droit d'auteur du Canada* (L.R.C. (1985), ch. C-42)</strong> à des fins d'étude privée, de recherche, d'éducation, de parodie, de satire, de critique ou de compte rendu.
-          </p>
+        <!-- ==================== SECTION FRANÇAISE ==================== -->
+        <div class="space-y-4 pt-1">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-800 dark:text-cyan-300 font-bold text-xs uppercase tracking-wider">
+            🇫🇷 DÉCHARGE LÉGALE & CONDITIONS GÉNÉRALES (FRANÇAIS)
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              1. Cadre Éducatif, Recherche & Utilisation Équitable (Fair Dealing)
+            </h4>
+            <p>
+              LienLibre est une initiative logicielle open-source à vocation <strong>strictement éducative, scientifique et citoyenne</strong>, développée comme banc d'essai d'interopérabilité des protocoles de métadonnées web ouverts (Open Graph Protocol, Schema.org, Twitter Cards).
+            </p>
+            <p>
+              Ce projet s'inscrit rigoureusement dans le cadre de l'<strong>utilisation équitable (Fair Dealing) garantie par l'article 29 de la <em>Loi sur le droit d'auteur du Canada</em> (L.R.C. (1985), ch. C-42)</strong> à des fins d'étude privée, de recherche, d'éducation, de parodie, de satire, de critique et de compte rendu.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              2. Non-Applicabilité de la Loi C-18 & Absence de Contournement
+            </h4>
+            <p>
+              La <em>Loi sur les nouvelles en ligne</em> (Loi C-18) régit exclusivement les accords commerciaux et financiers obligatoires entre les grandes entreprises exploitantes d'intermédiaires de nouvelles numériques et les entreprises de presse canadiennes.
+            </p>
+            <p>
+              <strong>LienLibre n'est pas un intermédiaire de nouvelles commercial</strong> : le service n'exploite aucune régie publicitaire, ne génère aucun revenu, ne commercialise aucun lien et ne conclut aucune entente d'affaires. Le blocage technique de liens sur certaines plateformes tierces relève exclusivement de choix d'affaires privés et unilatéraux de ces entreprises, et ne constitue en aucun cas une interdiction légale ou pénale faite aux citoyens de consulter, référencer ou partager des adresses web publiques.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              3. Statut de Simple Conduit Technique Passif (Safe Harbor)
+            </h4>
+            <p>
+              LienLibre intervient exclusivement à titre de <strong>fournisseur de passerelle technique neutre, automatisée et passive (<em>simple conduit / network intermediary</em>)</strong> conformément à l'<strong>article 31.1 de la <em>Loi sur le droit d'auteur du Canada</em></strong>, à la <strong>Section 512 du Digital Millennium Copyright Act (DMCA)</strong> et à la <strong>Directive 2000/31/CE sur le commerce électronique</strong>.
+            </p>
+            <p>
+              Le service n'initie pas la transmission, ne sélectionne pas le destinataire, ne modifie pas le contenu des articles distants et ne conserve aucun fichier ou contenu protégé de manière permanente.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              4. Exonération Totale et Absolue de Responsabilité de l'Auteur / Développeur
+            </h4>
+            <p>
+              L'auteur, créateur, mainteneurs et contributeurs du projet LienLibre <strong>déclinent expressément et irrévocablement toute responsabilité civile, commerciale, contractuelle ou pénale</strong> découlant directement ou indirectement de l'utilisation, de la génération ou du partage de liens effectués via cet outil.
+            </p>
+            <p>
+              Le logiciel et l'infrastructure sont fournis <strong>« EN L'ÉTAT » (« AS IS ») ET « SELON DISPONIBILITÉ » (« AS AVAILABLE »)</strong>, sans garantie d'aucune sorte, expresse ou implicite, y compris sans s'y limiter les garanties de qualité marchande, d'adéquation à un usage particulier ou de non-violation.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              5. Responsabilité Juridique Pleine et Exclusive de l'Utilisateur (Indemnisation)
+            </h4>
+            <p>
+              L'utilisateur qui soumet, génère ou diffuse une URL via LienLibre assume <strong>l'entière et exclusive responsabilité légale, civile et pénale</strong> des contenus qu'il choisit de relayer.
+            </p>
+            <p>
+              L'utilisateur s'engage formellement à ne pas utiliser LienLibre pour relayer du contenu illégal, diffamatoire, haineux, malveillant (phishing, malware, ransomwares), frauduleux ou contrefaisant. En utilisant ce service, l'utilisateur accepte d'indemniser et de dégager de toute responsabilité l'auteur de LienLibre contre toute réclamation, poursuite ou dommage émanant de tiers.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              6. Protection de la Vie Privée & Absence de Journalisation (Zero-Log)
+            </h4>
+            <p>
+              LienLibre applique une politique stricte de <strong>confidentialité par conception (Privacy by Design)</strong> : aucun mouchard, aucun cookie publicitaire, suppression systématique des identifiants de pistage (<code class="text-cyan-700 dark:text-cyan-300 font-mono">fbclid</code>, <code class="text-cyan-700 dark:text-cyan-300 font-mono">utm_*</code>) et aucune journalisation des adresses IP des utilisateurs.
+            </p>
+          </div>
         </div>
 
-        <div class="space-y-2 pt-4">
-          <h4 class="font-semibold text-cyan-700 dark:text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>2.</span> Non-Applicabilité de la Loi C-18 & Absence de Contournement Légal
-          </h4>
-          <p>
-            La <em>Loi sur les nouvelles en ligne</em> (Loi C-18) régit exclusivement les relations commerciales entre les grandes entreprises exploitantes d'intermédiaires de nouvelles numériques et les éditeurs de presse.
-          </p>
-          <p>
-            <strong>LienLibre n'est pas un intermédiaire de nouvelles commercial</strong>, n'exploite aucune régie publicitaire, ne monétise aucun lien et ne conclut aucune entente marchande. LienLibre ne contourne aucune loi canadienne : le blocage de liens sur certaines plateformes relève de choix d'affaires privés et contractuels unilatéraux de ces entreprises, et ne constitue en aucun cas une interdiction légale faite aux citoyens de consulter ou de référencer des adresses web publiques.
-          </p>
+        <!-- ==================== ENGLISH SECTION ==================== -->
+        <div class="space-y-4 pt-6">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-800 dark:text-indigo-300 font-bold text-xs uppercase tracking-wider">
+            🇨🇦 LEGAL DISCLAIMER & TERMS OF SERVICE (ENGLISH)
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              1. Educational Purpose, Research & Fair Dealing
+            </h4>
+            <p>
+              LienLibre is a non-commercial, open-source civic and educational tool created as a research testbed for web metadata interoperability (Open Graph Protocol, Schema.org, Twitter Cards).
+            </p>
+            <p>
+              This project operates under the <strong>Fair Dealing provisions of Section 29 of the *Copyright Act of Canada* (R.S.C., 1985, c. C-42)</strong> for the purposes of private study, research, education, parody, satire, criticism, and review.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              2. Non-Applicability of the Online News Act (Bill C-18)
+            </h4>
+            <p>
+              The <em>Online News Act</em> (Bill C-18) regulates commercial bargaining frameworks between major digital news intermediaries and news publishers.
+            </p>
+            <p>
+              <strong>LienLibre is not a commercial news intermediary</strong>: it runs no ads, collects no revenue, and enters into no corporate deals. Link blocking on third-party platforms reflects private, unilateral business decisions and does not constitute a legal prohibition against citizens referencing or accessing public web URLs.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              3. Passive Technical Conduit & Intermediary Immunity (Safe Harbor)
+            </h4>
+            <p>
+              LienLibre acts strictly as a <strong>passive, neutral technical conduit</strong> pursuant to <strong>Section 31.1 of the *Copyright Act of Canada*</strong>, <strong>Section 512 of the U.S. Digital Millennium Copyright Act (DMCA)</strong>, and <strong>Directive 2000/31/EC of the European Parliament</strong>.
+            </p>
+            <p>
+              The service does not initiate transmissions, does not select recipients, does not alter content, and permanently stores no third-party copyrighted works.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              4. Complete and Absolute Disclaimer of Author / Maintainer Liability
+            </h4>
+            <p>
+              The author, developer, maintainers, and contributors of LienLibre <strong>expressly and irrevocably disclaim all civil, tort, contractual, or criminal liability</strong> arising out of or related to the use, generation, or dissemination of links created through this service.
+            </p>
+            <p>
+              The service is provided on an <strong>"AS IS" AND "AS AVAILABLE" BASIS</strong>, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              5. Exclusive User Liability & Indemnification
+            </h4>
+            <p>
+              The user generating or distributing URLs via LienLibre bears <strong>sole and exclusive legal responsibility</strong> for the links shared. The user agrees to defend, indemnify, and hold harmless the creator of LienLibre from any third-party claims, liabilities, damages, and expenses.
+            </p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm">
+              6. Privacy by Design & Zero-Log Architecture
+            </h4>
+            <p>
+              LienLibre stores no personal data, uses no tracker cookies, records no IP addresses, and strips third-party tracking parameters automatically.
+            </p>
+          </div>
         </div>
 
-        <div class="space-y-2 pt-4">
-          <h4 class="font-semibold text-cyan-700 dark:text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>3.</span> Rôle Technique & Statut de Simple Conduit (Safe Harbor)
+        <!-- ==================== TAKEDOWN & NOTICE ==================== -->
+        <div class="space-y-3 pt-6">
+          <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-1.5">
+            <span>⚖️</span> Procédure de Retrait, Signalement & Contact (Notice and Notice)
           </h4>
-          <p>
-            LienLibre agit exclusivement comme un <strong>fournisseur de passerelle technique neutre et passif</strong> (<em>simple conduit</em>) conformément à l'<strong>article 31.1 de la *Loi sur le droit d'auteur du Canada*</strong>.
+          <p class="text-xs text-slate-600 dark:text-slate-400">
+            Tout éditeur de presse, titulaire de droits ou citoyen souhaitant demander le retrait d'un domaine ou signaler un lien abusif peut écrire directement à l'administration technique :
           </p>
-          <p>
-            Le service n'héberge, ne modifie ni ne stocke aucun article de presse de manière pérenne et effectue une redirection directe vers l'éditeur de presse officiel.
-          </p>
-        </div>
-
-        <div class="space-y-2 pt-4">
-          <h4 class="font-semibold text-cyan-700 dark:text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>4.</span> Exonération Totale de Responsabilité de l'Auteur / Développeur
-          </h4>
-          <p>
-            LienLibre, ses concepteurs, mainteneurs et contributeurs <strong>déclinent expressément et irrévocablement toute responsabilité</strong> quant à l'usage fait de cet outil par des tiers.
-          </p>
-          <p>
-            Le service est fourni <strong>« EN L'ÉTAT » (« AS IS »)</strong>, sans garantie d'aucune sorte quant à sa disponibilité, son adéquation à un usage particulier ou la conformité avec les conditions d'utilisation contractuelles de plateformes tierces. L'utilisateur assume l'entière et exclusive responsabilité des URLs qu'il choisit de traiter et de diffuser.
-          </p>
-        </div>
-
-        <div class="space-y-2 pt-4">
-          <h4 class="font-semibold text-cyan-700 dark:text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>5.</span> Confidentialité Absolue (Privacy by Design & Zero-Log)
-          </h4>
-          <p>
-            LienLibre respecte rigoureusement la vie privée : aucun cookie traceur, aucune adresse IP conservée sur nos serveurs, et suppression automatique des paramètres de pistage publicitaire (<code class="text-slate-800 dark:text-slate-300 font-mono">fbclid</code>, <code class="text-slate-800 dark:text-slate-300 font-mono">utm_*</code>).
-          </p>
-        </div>
-
-        <div class="space-y-2 pt-4">
-          <h4 class="font-semibold text-cyan-700 dark:text-cyan-400 text-sm flex items-center gap-1.5">
-            <span>6.</span> Procédure de Retrait & Contact Technique (Notice and Notice)
-          </h4>
-          <p>
-            Tout éditeur de presse ou titulaire de droits souhaitant demander l'exclusion de son domaine de l'annuaire de test peut adresser une demande à l'administration technique :
-          </p>
-          <div class="p-3 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
-            <span id="legal-contact-email-text" class="font-mono text-cyan-700 dark:text-cyan-400 select-all"></span>
-            <a id="legal-contact-email-btn" href="#" class="text-xs bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg transition-colors cursor-pointer">
-              Écrire
+          <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-2">
+            <span id="legal-contact-email-text" class="font-mono text-cyan-700 dark:text-cyan-400 select-all font-semibold"></span>
+            <a id="legal-contact-email-btn" href="#" class="text-xs bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer font-medium">
+              ✉️ Envoyer un signalement
             </a>
           </div>
         </div>
@@ -1154,6 +1269,11 @@
         statsCountLabel: "articles consultés",
         statsTopDomains: "Top des domaines de presse consultés",
         clicksText: "clics",
+        navReportBtn: "Signaler un abus",
+        legalCheckboxLabel: "Je certifie que ce lien mène vers une source d'information légitime et j'accepte sans réserve les",
+        legalCheckboxLink: "Conditions d'Utilisation et la Décharge Juridique",
+        errorMustAgreeLegal: "Veuillez certifier la source et accepter les Conditions d'Utilisation.",
+        sourceBlockedAlert: "Lien bloqué : ce domaine ou type de lien est restreint par mesure de sécurité.",
         footerText: "Distribué sous licence MIT. Outil technique éphémère sans journalisation de données personnelles."
       },
       en: {
@@ -1229,6 +1349,11 @@
         statsCountLabel: "articles viewed",
         statsTopDomains: "Top visited news outlets",
         clicksText: "clicks",
+        navReportBtn: "Report Abuse",
+        legalCheckboxLabel: "I certify that this link leads to a legitimate information source and accept the",
+        legalCheckboxLink: "Terms of Service & Legal Disclaimer",
+        errorMustAgreeLegal: "Please certify the source and accept the Terms of Service to proceed.",
+        sourceBlockedAlert: "Link blocked: this domain or link format is restricted for security reasons.",
         footerText: "Distributed under the MIT License. Ephemeral technical conduit with zero personal data logging."
       },
       ar: {
@@ -1304,6 +1429,11 @@
         statsCountLabel: "مقال تم الاطلاع عليه",
         statsTopDomains: "أكثر المنافذ الإخبارية زيارة",
         clicksText: "نقرة",
+        navReportBtn: "إبلاغ عن مخالفة",
+        legalCheckboxLabel: "أؤكد أن هذا الرابط يوجه إلى مصدر معلومات مشروع وأقبل",
+        legalCheckboxLink: "شروط الاستخدام وإخلاء المسؤولية القانونية",
+        errorMustAgreeLegal: "يرجى الموافقة على الشروط القانونية وتوثيق المصدر للمتابعة.",
+        sourceBlockedAlert: "تم حظر الرابط: هذا النطاق أو نوع الرابط مقيد لأسباب أمنية.",
         footerText: "مرخص بموجب MIT. أداة تقنية بدون تسجيل أي بيانات شخصية."
       },
       es: {
@@ -1379,6 +1509,11 @@
         statsCountLabel: "artículos consultados",
         statsTopDomains: "Principales medios consultados",
         clicksText: "clics",
+        navReportBtn: "Reportar un abuso",
+        legalCheckboxLabel: "Certifico que este enlace conduce a una fuente de información legítima y acepto las",
+        legalCheckboxLink: "Condiciones de Uso y Descargo Legal",
+        errorMustAgreeLegal: "Por favor, marque la casilla de aceptación legal para continuar.",
+        sourceBlockedAlert: "Enlace bloqueado: este dominio o tipo de enlace está restringido por seguridad.",
         footerText: "Distribuido bajo licencia MIT. Pasarela técnica efímera sin registro de datos personales."
       },
       it: {
@@ -1454,6 +1589,11 @@
         statsCountLabel: "articoli consultati",
         statsTopDomains: "Media più consultati",
         clicksText: "clic",
+        navReportBtn: "Segnala un abuso",
+        legalCheckboxLabel: "Certifico che questo link conduce a una fonte informativa legittima e accetto le",
+        legalCheckboxLink: "Condizioni d'Uso e la Clausola di Esonero",
+        errorMustAgreeLegal: "Spunta la casella di accettazione legale per continuare.",
+        sourceBlockedAlert: "Link bloccato: questo dominio o formato è limitato per sicurezza.",
         footerText: "Distribuito sotto licenza MIT. Strumento tecnico senza registrazione di dati personali."
       },
       zh: {
@@ -1529,6 +1669,11 @@
         statsCountLabel: "次文章查阅",
         statsTopDomains: "访问最多的新闻域名",
         clicksText: "次点击",
+        navReportBtn: "举报违规链接",
+        legalCheckboxLabel: "我声明并承诺此链接指向合法真实的信息来源，并完全同意",
+        legalCheckboxLink: "服务条款与法律免责声明",
+        errorMustAgreeLegal: "请勾选确认框并同意服务条款以继续。",
+        sourceBlockedAlert: "链接已被拦截：该域名或文件类型因安全规则被禁止。",
         footerText: "基于 MIT 协议开源。纯粹的瞬时技术管道，零个人数据记录。"
       },
       cr: {
@@ -1604,6 +1749,11 @@
         statsCountLabel: "pimohtêwin",
         statsTopDomains: "Kâ-mâmawi-wâpahtamihk",
         clicksText: "pimohtêwin",
+        navReportBtn: "Pimohtê-mâmawi",
+        legalCheckboxLabel: "Naspitahâ kwayask âcimowin kânata êkwa",
+        legalCheckboxLink: "Masinahikan & Legal Terms",
+        errorMustAgreeLegal: "Pimi-astâ checkbox tisi-wâpahtamihk.",
+        sourceBlockedAlert: "Nama-kwayask: kâ-kipitinikâtêk URL.",
         footerText: "LienLibre open-source. MIT masinahikan."
       },
       iu: {
@@ -1679,6 +1829,11 @@
         statsCountLabel: "nuktarviit",
         statsTopDomains: "Takujaujuqpaat",
         clicksText: "nuktarviit",
+        navReportBtn: "Nalunaiqsiniq",
+        legalCheckboxLabel: "Nalunaiqpara una tusaraksaq kikkutuinnarnut uvalu",
+        legalCheckboxLink: "Maligait & Terms",
+        errorMustAgreeLegal: "Nalunaiqsigiit aturniaqtatit maligait.",
+        sourceBlockedAlert: "Umiksimajuq: nalunaiqtaulluarsimangittuq URL.",
         footerText: "LienLibre open-source. MIT."
       },
       in: {
@@ -1754,6 +1909,11 @@
         statsCountLabel: "aitun",
         statsTopDomains: "Mane e uapataman",
         clicksText: "aitun",
+        navReportBtn: "Uitsheun",
+        legalCheckboxLabel: "Nitapuaten kwayask tipatshimun nete mak",
+        legalCheckboxLink: "Masinahikan & Terms",
+        errorMustAgreeLegal: "Tutan checkbox tshetshi uitsheut.",
+        sourceBlockedAlert: "Eka kuesht: kâ-kipitinikâtêk URL.",
         footerText: "LienLibre open-source. MIT."
       },
       moh: {
@@ -1829,6 +1989,11 @@
         statsCountLabel: "clicks",
         statsTopDomains: "Top Domains",
         clicksText: "clicks",
+        navReportBtn: "Karihwaneken",
+        legalCheckboxLabel: "Kateriwayentéhris ne karihwaneken skennen'kówa ohni",
+        legalCheckboxLink: "Tsi niorihwà:ke & Terms",
+        errorMustAgreeLegal: "Kwahiaton checkbox ne tsi niorihwà:ke.",
+        sourceBlockedAlert: "Iáh teiowatennion: URL.",
         footerText: "LienLibre open-source. MIT."
       }
     };
@@ -2342,12 +2507,44 @@
       updateLanguage(e.target.value);
     });
 
+    // Report Abuse button in header
+    const btnNavReport = document.getElementById('btn-nav-report');
+    if (btnNavReport) {
+      btnNavReport.addEventListener('click', () => {
+        const email = getContactEmail();
+        const currentLang = (document.getElementById('lang-select') && document.getElementById('lang-select').value) || 'fr';
+        const isEn = currentLang === 'en';
+        const subject = isEn ? "Abuse / Illegal Content Report - LienLibre" : "Signalement d'abus / Contenu illicite - LienLibre";
+        const body = isEn 
+          ? "Hello,\n\nI would like to report an abuse or illicit content on LienLibre:\n\n- Suspicious URL:\n- Reason for report:\n\nThank you.\n\nDate: " + new Date().toISOString()
+          : "Bonjour,\n\nJe souhaite signaler un lien abusif ou du contenu illicite sur LienLibre :\n\n- URL concernée :\n- Motif du signalement :\n\nMerci.\n\nDate : " + new Date().toISOString();
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      });
+    }
+
+    // Legal modal button from checkbox label
+    const btnOpenLegalFromCheck = document.getElementById('btn-open-legal-from-check');
+    if (btnOpenLegalFromCheck) {
+      btnOpenLegalFromCheck.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openLegalModal();
+      });
+    }
+
     // Form Submit Action
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const currentLang = langSelect.value;
       const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+
+      // Mandatory Legal Agreement Check
+      const checkboxLegalAgree = document.getElementById('checkbox-legal-agree');
+      if (checkboxLegalAgree && !checkboxLegalAgree.checked) {
+        showError(trans.errorMustAgreeLegal || "Veuillez certifier la source et accepter les Conditions d'Utilisation.");
+        return;
+      }
 
       // Reset
       errorMessage.classList.add('hidden');
@@ -2397,6 +2594,12 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: rawUrl, lang: currentLang })
         });
+        if (createRes.status === 403) {
+          const errData = await createRes.json().catch(() => ({}));
+          showError(trans.sourceBlockedAlert || ("🛑 " + (errData.error || "Ce domaine ou type de contenu est interdit par sécurité.")));
+          resultArea.classList.add('hidden');
+          return;
+        }
         if (createRes.ok) {
           const createData = await createRes.json();
           if (createData.shortLink) currentGeneratedLinks.short = createData.shortLink;
@@ -2412,11 +2615,24 @@
         const previewApiUrl = `${WORKER_URL}?url=${encodedUrl}&json=1`;
         const response = await fetch(previewApiUrl);
         
+        if (response.status === 403) {
+          const blockData = await response.json().catch(() => ({}));
+          showError(trans.sourceBlockedAlert || ("🛑 " + (blockData.message || "Ce contenu est interdit.")));
+          resultArea.classList.add('hidden');
+          return;
+        }
+
         if (!response.ok) {
           throw new Error("HTTP error " + response.status);
         }
 
         const data = await response.json();
+
+        if (data.blocked === true) {
+          showError(trans.sourceBlockedAlert || ("🛑 " + (data.message || "Ce domaine est interdit.")));
+          resultArea.classList.add('hidden');
+          return;
+        }
 
         previewDomain.textContent = targetHost;
         previewTitle.textContent = data.title || targetHost;
@@ -2432,7 +2648,7 @@
           if (data.botAudit) {
             if (botAuditScore) botAuditScore.textContent = `${data.botAudit.score} / 100`;
             if (botAuditBadge && botAuditBadgeText) {
-              if (data.botAudit.isValidated || data.botAudit.score >= 60) {
+              if (data.botAudit.isValidated || data.botAudit.score >= 80) {
                 botAuditBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-semibold text-xs';
                 botAuditBadgeText.textContent = trans.botStatusValidated || "Source journalistique hautement probable";
               } else {
