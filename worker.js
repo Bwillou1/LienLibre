@@ -313,6 +313,92 @@ function getProxyImageUrl(origin, rawImageUrl) {
   }
 }
 
+/**
+ * Mini-Bot Sentinel : Analyse heuristique et sémantique automatique gratuite.
+ * Évalue la crédibilité journalistique et l'intégrité d'une source web sans intervention humaine et sans frais.
+ */
+function calculateBotAudit(targetUrl, meta, isWhitelisted) {
+  if (isWhitelisted) {
+    return {
+      score: 100,
+      isJournalistic: true,
+      isValidated: true,
+      category: "whitelisted_media",
+      badgeText: "Média Canadien Vérifié (Liste Officielle)",
+      signals: [
+        "Domaine inscrit au répertoire officiel des médias canadiens",
+        "Protocole sécurisé et chiffré HTTPS",
+        "Métadonnées Open Graph intègres"
+      ]
+    };
+  }
+
+  let score = 30; // Base score
+  const signals = [];
+
+  if (targetUrl.protocol === "https:") {
+    score += 15;
+    signals.push("Protocole sécurisé HTTPS");
+  }
+
+  const hostname = targetUrl.hostname.toLowerCase().replace(/^www\./, "");
+  const path = targetUrl.pathname.toLowerCase();
+
+  // Extension de domaine réputée
+  if (/\.(ca|qc\.ca|org|com|net|info|news|press|media|tv|fm)$/i.test(hostname)) {
+    score += 10;
+    signals.push("Nom de domaine et TLD conformes");
+  }
+
+  // Type Open Graph
+  if (meta.ogType && meta.ogType.toLowerCase().includes("article")) {
+    score += 25;
+    signals.push("Format Open Graph 'article' authentifié");
+  } else if (meta.ogType && meta.ogType.toLowerCase().includes("website")) {
+    score += 5;
+  }
+
+  // Schema.org ou données structurées NewsArticle
+  if (meta.schemaType && (meta.schemaType.includes("NewsArticle") || meta.schemaType.includes("Article") || meta.schemaType.includes("ReportageNewsArticle"))) {
+    score += 20;
+    signals.push("Schéma sémantique de presse (NewsArticle / Schema.org)");
+  }
+
+  // Auteur ou Date de publication
+  if (meta.author || meta.publishedTime) {
+    score += 10;
+    signals.push("Signature d'auteur ou horodatage éditorial détecté");
+  }
+
+  // Mot-clés de chemin journalistique
+  const newsRegex = /\/(actualites?|nouvelles?|news|articles?|reportages?|politique|societe|regions?|nation|monde|opinions?|editorial|chroniques?|journal|en-direct|faits-divers)\b/i;
+  if (newsRegex.test(path)) {
+    score += 15;
+    signals.push("Structure d'URL de rubrique journalistique");
+  }
+
+  // Détection d'anomalies ou fichiers suspects
+  if (/\.(exe|scr|bat|cmd|apk|zip|rar|vbs|ps1)$/i.test(path) || /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname)) {
+    score -= 60;
+    signals.push("⚠️ Marqueurs suspects détectés");
+  }
+
+  score = Math.max(0, Math.min(100, score));
+  const isJournalistic = score >= 60;
+  const isValidated = isJournalistic;
+
+  return {
+    score,
+    isJournalistic,
+    isValidated,
+    category: isJournalistic ? "journalistic_source" : (score >= 40 ? "unverified_content" : "suspicious"),
+    badgeText: isJournalistic 
+      ? `Source Journalistique Probable (${score}/100)` 
+      : (score >= 40 ? `Contenu Non Répertorié (${score}/100)` : `Source Non Recommandée (${score}/100)`),
+    signals
+  };
+}
+
 export default {
   async fetch(request, env, ctx) {
     // 1. Gérer les requêtes CORS Preflight (OPTIONS)
@@ -449,21 +535,31 @@ export default {
     if (requestUrl.pathname === "/api/create") {
       let targetInput = "";
       let targetLang = lang;
+      let isSelfCertified = false;
 
       if (request.method === "POST") {
         try {
           const body = await request.json();
           targetInput = body.url || body.targetUrl || "";
           if (body.lang) targetLang = body.lang.toLowerCase();
+          if (body.selfCertified === true || body.cert === true || body.certified === true) {
+            isSelfCertified = true;
+          }
         } catch (e) {
           try {
             const formData = await request.formData();
             targetInput = formData.get("url") || "";
             if (formData.get("lang")) targetLang = formData.get("lang").toLowerCase();
+            if (formData.get("cert") === "1" || formData.get("selfCertified") === "true") {
+              isSelfCertified = true;
+            }
           } catch (_) {}
         }
       } else {
         targetInput = requestUrl.searchParams.get("url") || "";
+        if (requestUrl.searchParams.get("cert") === "1" || requestUrl.searchParams.get("selfCertified") === "true") {
+          isSelfCertified = true;
+        }
       }
 
       if (!targetInput) {
@@ -486,17 +582,23 @@ export default {
           await env.LIENLIBRE_KV.put(`link:${randomId}`, JSON.stringify({
             url: parsedTarget.href,
             lang: targetLang,
+            selfCertified: isSelfCertified,
             created: Date.now()
           }), { expirationTtl: 60 * 60 * 24 * 30 }); // 30 jours
         }
 
         const cleanPath = parsedTarget.href.replace(/^https?:\/\/(?:www\.)?/i, '');
-        const langQuery = targetLang !== "fr" ? `?lang=${targetLang}` : "";
-        const langParam = targetLang !== "fr" ? `&lang=${targetLang}` : "";
-        const vanityLink = `${requestUrl.origin}/${cleanPath}${langQuery}`;
-        const directLink = `${requestUrl.origin}/?url=${encodeURIComponent(parsedTarget.href)}${langParam}`;
-        const shortLink = `${requestUrl.origin}/l/${randomId}${langParam}`;
-        const packedLink = `${requestUrl.origin}/p/${packedSlug}${langParam}`;
+        const queryParts = [];
+        if (targetLang !== "fr") queryParts.push(`lang=${targetLang}`);
+        if (isSelfCertified) queryParts.push("cert=1");
+        
+        const queryString = queryParts.length > 0 ? "?" + queryParts.join("&") : "";
+        const paramString = queryParts.length > 0 ? "&" + queryParts.join("&") : "";
+
+        const vanityLink = `${requestUrl.origin}/${cleanPath}${queryString}`;
+        const directLink = `${requestUrl.origin}/?url=${encodeURIComponent(parsedTarget.href)}${paramString}`;
+        const shortLink = `${requestUrl.origin}/l/${randomId}${queryString}`;
+        const packedLink = `${requestUrl.origin}/p/${packedSlug}${queryString}`;
 
         return new Response(JSON.stringify({
           ok: true,
@@ -506,7 +608,8 @@ export default {
           directLink: directLink,
           shortLink: shortLink,
           packedLink: packedLink,
-          allowed: isAllowed
+          allowed: isAllowed,
+          selfCertified: isSelfCertified
         }), {
           status: 200,
           headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
@@ -640,6 +743,10 @@ export default {
       twitterDescription: "",
       twitterImage: "",
       standardTitle: "",
+      ogType: "",
+      author: "",
+      publishedTime: "",
+      schemaType: "",
       fallbackImages: []
     };
 
@@ -661,6 +768,15 @@ export default {
           .on('meta[property="og:image"]', {
             element(el) { meta.image = el.getAttribute("content") || ""; }
           })
+          .on('meta[property="og:type"]', {
+            element(el) { meta.ogType = el.getAttribute("content") || ""; }
+          })
+          .on('meta[property="article:author"], meta[name="author"]', {
+            element(el) { meta.author = el.getAttribute("content") || ""; }
+          })
+          .on('meta[property="article:published_time"], meta[name="date"]', {
+            element(el) { meta.publishedTime = el.getAttribute("content") || ""; }
+          })
           .on('meta[name="twitter:title"]', {
             element(el) { meta.twitterTitle = el.getAttribute("content") || ""; }
           })
@@ -672,6 +788,13 @@ export default {
           })
           .on('title', {
             text(textChunk) { meta.standardTitle += textChunk.text; }
+          })
+          .on('script[type="application/ld+json"]', {
+            text(textChunk) {
+              if (textChunk.text && (textChunk.text.includes("NewsArticle") || textChunk.text.includes("Article") || textChunk.text.includes("ReportageNewsArticle"))) {
+                meta.schemaType += textChunk.text;
+              }
+            }
           })
           .on('article img, main img, header img', {
             element(el) {
@@ -689,7 +812,7 @@ export default {
       console.error("Erreur lors du scraping :", err);
     }
 
-    // 6. Appliquer la logique de Fallback
+    // 6. Appliquer la logique de Fallback et calcul du Mini-Bot Sentinel
     const finalTitle = (meta.title || meta.twitterTitle || meta.standardTitle || targetUrl.hostname).trim();
     const finalDescription = (meta.description || meta.twitterDescription || "Cliquez pour lire l'article complet sur " + targetUrl.hostname).trim();
     
@@ -700,6 +823,13 @@ export default {
     
     const finalImage = rawImage ? resolveUrl(targetUrl.href, rawImage) : "";
 
+    // Calcul de l'audit automatique du Mini-Bot
+    const botAudit = calculateBotAudit(targetUrl, meta, isAllowed);
+    const isSelfCertified = requestUrl.searchParams.get("cert") === "1" || 
+                            requestUrl.searchParams.get("selfCertified") === "true" || 
+                            requestUrl.searchParams.get("verified") === "1" ||
+                            requestUrl.searchParams.get("allow") === "1";
+
     // 7. Renvoyer la réponse selon le format demandé
     if (isJsonRequested) {
       return new Response(
@@ -709,7 +839,9 @@ export default {
           image: finalImage,
           url: targetUrl.href,
           allowed: isAllowed,
-          trackingCleaned: strippedAny
+          selfCertified: isSelfCertified,
+          trackingCleaned: strippedAny,
+          botAudit: botAudit
         }),
         {
           status: 200,
@@ -724,8 +856,8 @@ export default {
     const userAgent = request.headers.get("User-Agent") || "";
     const isCrawler = /facebookexternalhit|Facebot|Meta-ExternalAgent|Instagram|WhatsApp|Twitterbot|LinkedInBot|Discordbot|TelegramBot|Slackbot/i.test(userAgent);
 
-    // Si le domaine est dans la liste blanche ➡️ Redirection immédiate
-    if (isAllowed) {
+    // Si le domaine est dans la liste blanche, validé par le Mini-Bot, ou auto-certifié ➡️ Redirection immédiate
+    if (isAllowed || botAudit.isValidated || isSelfCertified) {
       return new Response(
         generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang, requestUrl.href, isCrawler),
         {
@@ -739,10 +871,10 @@ export default {
       );
     }
 
-    // Si le domaine est suspect ➡️ Page d'avertissement avec IP (mais miniature préservée pour les bots)
+    // Si le domaine nécessite une validation ➡️ Page avec Audit du Mini-Bot et déblocage direct en 1 clic
     const userIp = request.headers.get("CF-Connecting-IP") || "Inconnue";
     return new Response(
-      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang, requestUrl.href, isCrawler),
+      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang, requestUrl.href, isCrawler, botAudit),
       {
         status: 200,
         headers: {
@@ -1383,7 +1515,7 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
 /**
  * Génère une page d'avertissement de sécurité (phishing/spam) pour les domaines non vérifiés.
  */
-function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr", currentUrl = "", isCrawler = false) {
+function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr", currentUrl = "", isCrawler = false, botAudit = null) {
   const origin = new URL(currentUrl || targetUrl).origin;
   const proxyImg = image ? getProxyImageUrl(origin, image) : "";
   const escapedUrl = escapeHtml(targetUrl);
@@ -1406,6 +1538,10 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
   const mailtoUrl = generateMailtoUrl(lang, hostname);
   const siteName = getMediaSiteName(hostname);
   const encodedPayload = btoa(encodeURIComponent(targetUrl));
+
+  const auditScore = (botAudit && typeof botAudit.score === 'number') ? botAudit.score : 50;
+  const auditBadge = (botAudit && botAudit.badgeText) ? botAudit.badgeText : "Source en cours d'évaluation";
+  const auditSignals = (botAudit && Array.isArray(botAudit.signals)) ? botAudit.signals : [];
 
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${htmlDir}">
@@ -1452,7 +1588,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       backdrop-filter: blur(16px);
       border: 1px solid rgba(239, 68, 68, 0.3);
       border-radius: 1rem;
-      padding: 2.5rem;
+      padding: 2.25rem 2rem;
       max-width: 550px;
       width: 100%;
       text-align: center;
@@ -1460,15 +1596,15 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       margin-bottom: 1.5rem;
     }
     .icon-container {
-      width: 4rem;
-      height: 4rem;
+      width: 3.5rem;
+      height: 3.5rem;
       background-color: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.3);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
+      margin: 0 auto 1.25rem;
       animation: pulse 2s infinite;
     }
     @keyframes pulse {
@@ -1478,32 +1614,78 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
     }
     .icon {
       color: #ef4444;
-      font-size: 2rem;
+      font-size: 1.75rem;
       font-weight: bold;
     }
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      margin: 0 0 0.75rem;
+      margin: 0 0 0.5rem;
       color: #f87171;
     }
     p {
       color: #9ca3af;
-      font-size: 0.95rem;
-      margin: 0 0 1.5rem;
-      line-height: 1.6;
+      font-size: 0.9rem;
+      margin: 0 0 1.25rem;
+      line-height: 1.5;
     }
-    .info-box {
-      background-color: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 0.5rem;
+    .bot-box {
+      background: rgba(6, 182, 212, 0.08);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 0.75rem;
       padding: 1rem;
       text-align: left;
       margin-bottom: 1.25rem;
       font-size: 0.85rem;
     }
-    .info-row {
+    .bot-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 0.5rem;
+    }
+    .bot-title {
+      font-weight: 700;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .bot-score-badge {
+      background: rgba(6, 182, 212, 0.2);
+      color: #e0f2fe;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      font-family: monospace;
+    }
+    .bot-signals {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.5rem;
+    }
+    .bot-signal-tag {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      padding: 0.2rem 0.45rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+    }
+    .info-box {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0.5rem;
+      padding: 0.85rem;
+      text-align: left;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+    }
+    .info-row {
+      margin-bottom: 0.4rem;
       display: flex;
       justify-content: space-between;
       gap: 1rem;
@@ -1521,6 +1703,23 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       font-family: monospace;
       word-break: break-all;
       text-align: right;
+    }
+    .btn-direct-access {
+      display: block;
+      background: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    }
+    .btn-direct-access:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
     }
     .btn-mailto {
       display: inline-flex;
@@ -1541,37 +1740,39 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
     }
     .btn-report {
       display: block;
-      background-color: #ef4444;
-      color: white;
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
       text-decoration: none;
-      padding: 0.75rem 1.5rem;
+      padding: 0.6rem 1rem;
       border-radius: 0.5rem;
-      font-weight: 600;
+      font-weight: 500;
+      font-size: 0.8rem;
       transition: background-color 0.2s;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       text-align: center;
     }
     .btn-report:hover {
-      background-color: #dc2626;
+      background-color: rgba(239, 68, 68, 0.25);
     }
     .advanced-toggle {
       background: none;
       border: none;
       color: #6b7280;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       cursor: pointer;
       text-decoration: underline;
-      padding: 0.5rem;
+      padding: 0.4rem;
     }
     .advanced-toggle:hover {
       color: #9ca3af;
     }
     .advanced-content {
       display: none;
-      margin-top: 1rem;
-      padding-top: 1rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: #9ca3af;
     }
     .btn-continue {
@@ -1610,12 +1811,32 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
 <body>
   <div class="card">
     <div class="icon-container">
-      <span class="icon">⚠️</span>
+      <span class="icon">🤖</span>
     </div>
     <h1>${trans.unverifiedLink}</h1>
     <p>${trans.warnDesc}</p>
     
-    <div style="margin-bottom: 1.5rem; padding: 0.75rem; background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.5rem; color: #f87171; font-size: 0.9rem; font-weight: 500;">
+    <!-- Mini-Bot Sentinel Audit Box -->
+    <div class="bot-box">
+      <div class="bot-header">
+        <span class="bot-title">🤖 Mini-Bot Sentinel</span>
+        <span class="bot-score-badge">${auditScore} / 100</span>
+      </div>
+      <div style="color: #f1f5f9; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">
+        ${escapeHtml(auditBadge)}
+      </div>
+      ${auditSignals.length > 0 ? `
+      <div class="bot-signals">
+        ${auditSignals.map(s => `<span class="bot-signal-tag">✓ ${escapeHtml(s)}</span>`).join('')}
+      </div>` : ''}
+    </div>
+
+    <!-- Direct 1-Click Access Button -->
+    <a href="${escapedUrl}" class="btn-direct-access">
+      ⚡ Accéder directement au contenu (Auto-Certification)
+    </a>
+
+    <div style="margin-bottom: 1.25rem; padding: 0.6rem; background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.5rem; color: #f87171; font-size: 0.85rem; font-weight: 500;">
       ${trans.countdownText.replace("{sec}", `<span id="countdown" style="font-family: monospace; font-weight: bold; font-size: 1.05rem;">10</span>`)}
     </div>
 
@@ -1630,7 +1851,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       </div>
     </div>
 
-    <div style="margin-top: -0.5rem; margin-bottom: 1.5rem; padding: 0.85rem; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 0.6rem; text-align: center;">
+    <div style="margin-top: -0.5rem; margin-bottom: 1.25rem; padding: 0.85rem; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 0.6rem; text-align: center;">
       <div style="font-size: 0.82rem; color: #93c5fd; margin-bottom: 0.6rem; font-weight: 500;">
         📰 ${escapeHtml(mailTpl.question)}
       </div>

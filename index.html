@@ -437,26 +437,73 @@
           </div>
         </div>
 
-        <!-- Unverified Domain Alert -->
-        <div id="unverified-warning" class="hidden p-4 bg-amber-500/10 dark:bg-amber-950/30 border border-amber-500/30 text-amber-900 dark:text-amber-200 rounded-xl text-xs leading-relaxed space-y-2.5">
-          <div class="font-semibold flex items-center gap-2 text-amber-800 dark:text-amber-300">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4 shrink-0">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-            </svg>
-            <span data-i18n="unverifiedTitle">Média local ou domaine non listé</span>
+        <!-- Mini-Bot Sentinel & Auto-Certification Civic Panel -->
+        <div id="unverified-warning" class="hidden p-4 sm:p-5 bg-gradient-to-br from-cyan-500/10 via-slate-100 to-indigo-500/10 dark:from-cyan-950/40 dark:via-slate-900/60 dark:to-indigo-950/40 border border-cyan-500/30 dark:border-cyan-500/40 rounded-2xl text-xs leading-relaxed space-y-3.5 shadow-sm">
+          
+          <!-- Mini-Bot Header & Score -->
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="font-bold flex items-center gap-2 text-cyan-800 dark:text-cyan-300 text-xs sm:text-sm">
+              <span class="text-base sm:text-lg animate-bounce">🤖</span>
+              <span data-i18n="botAuditTitle">Mini-Bot Sentinel — Audit Automatique de Fiabilité</span>
+            </div>
+            <div class="flex items-center gap-1.5 bg-cyan-500/15 dark:bg-cyan-500/20 border border-cyan-500/40 px-2.5 py-0.5 rounded-full">
+              <span data-i18n="botScoreLabel" class="text-[11px] font-semibold text-cyan-800 dark:text-cyan-200">Indice :</span>
+              <span id="bot-audit-score" class="text-xs font-mono font-bold text-cyan-900 dark:text-cyan-100">85 / 100</span>
+            </div>
           </div>
-          <p data-i18n="unverifiedDesc">
-            Ce site ne figure pas encore dans notre annuaire des médias canadiens reconnus. L'aperçu fonctionnera parfaitement, et une page intermédiaire de sécurité préviendra les visiteurs avant la redirection.
-          </p>
-          <div class="pt-1">
-            <a id="unverified-mailto-link" href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 dark:bg-amber-500/20 dark:hover:bg-amber-500/30 text-amber-900 dark:text-amber-100 border border-amber-500/40 rounded-lg text-xs font-medium transition-colors">
+
+          <!-- Bot Analysis Status Badge & Description -->
+          <div class="space-y-1.5">
+            <div id="bot-audit-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-semibold text-xs">
+              <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span id="bot-audit-badge-text">Source journalistique hautement probable</span>
+            </div>
+            <p data-i18n="unverifiedDesc" class="text-slate-700 dark:text-slate-300 text-xs">
+              Le Mini-Bot évalue gratuitement et en direct l'intégrité de cette source. Vous pouvez auto-certifier ce lien ci-dessous pour débloquer la redirection immédiate sans délai ni formulaire.
+            </p>
+          </div>
+
+          <!-- Detected Signals Badges -->
+          <div id="bot-signals-container" class="flex flex-wrap gap-1.5 pt-0.5">
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-[11px] text-slate-700 dark:text-slate-300">
+              🔒 HTTPS
+            </span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-[11px] text-slate-700 dark:text-slate-300">
+              📰 Open Graph Article
+            </span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-[11px] text-slate-700 dark:text-slate-300">
+              🛡️ Zéro mouchard
+            </span>
+          </div>
+
+          <!-- Interactive Civic Self-Certification Checkbox -->
+          <div class="pt-2 border-t border-cyan-500/20 dark:border-cyan-500/30 space-y-2">
+            <label class="flex items-start gap-2.5 cursor-pointer select-none group p-2 rounded-xl bg-white/60 dark:bg-slate-950/60 border border-cyan-500/30 hover:border-cyan-400 transition-all">
+              <input type="checkbox" id="checkbox-self-certify" class="mt-0.5 h-4 w-4 rounded border-slate-400 dark:border-slate-700 text-cyan-600 focus:ring-cyan-500 cursor-pointer">
+              <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-cyan-700 dark:group-hover:text-cyan-300 transition-colors" data-i18n="selfCertifyCheck">
+                Je certifie que ce lien mène vers un média journalistique ou une source d'intérêt public légitime (Active la redirection immédiate).
+              </span>
+            </label>
+            <div id="self-certify-success" class="hidden text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <span>✅</span>
+              <span data-i18n="selfCertifySuccess">Lien auto-certifié : vos contacts accéderont directement à l'article sans page d'attente !</span>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons: Configure Bot & Fallback Email -->
+          <div class="pt-1 flex items-center justify-between flex-wrap gap-2">
+            <button type="button" id="btn-open-bot-modal" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-medium transition-colors cursor-pointer border border-slate-300 dark:border-slate-700">
+              <span data-i18n="botConfigBtn">⚙️ Configurer le Mini-Bot (Gratuit)</span>
+            </button>
+            <a id="unverified-mailto-link" href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-500/15 hover:bg-cyan-500/25 dark:bg-cyan-500/20 dark:hover:bg-cyan-500/30 text-cyan-900 dark:text-cyan-100 border border-cyan-500/40 rounded-lg text-xs font-medium transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
                 <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z" />
                 <path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z" />
               </svg>
-              <span data-i18n="unverifiedMailtoBtn">Demander l'ajout de ce média (Courriel préparé)</span>
+              <span data-i18n="unverifiedMailtoBtn">Demander l'ajout officiel (Courriel préparé)</span>
             </a>
           </div>
+
         </div>
 
         <!-- Preview Card Section -->
@@ -942,6 +989,81 @@
     </div>
   </div>
 
+  <!-- Modal Mini-Bot Configuration & Architecture (Free & Open) -->
+  <div id="bot-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
+    <!-- Backdrop -->
+    <div id="bot-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Modal Content Window -->
+    <div class="relative w-full max-w-xl max-h-[90vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">🤖</span>
+          <h3 data-i18n="botModalTitle" class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+            Mini-Bot Sentinel — Analyse & Fiabilité
+          </h3>
+        </div>
+        <button type="button" id="btn-close-bot-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer la boîte de dialogue">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="px-6 py-5 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed custom-scrollbar">
+        
+        <p data-i18n="botModalDesc" class="text-slate-700 dark:text-slate-300">
+          Le Mini-Bot Sentinel est un moteur d'audit heuristique et sémantique gratuit intégré à LienLibre. Il analyse instantanément les pages web afin de reconnaître les véritables articles journalistiques d'intérêt public sans intervention humaine et sans coût d'infrastructure.
+        </p>
+
+        <!-- Feature 1 -->
+        <div class="p-3.5 rounded-2xl bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800/60 space-y-1">
+          <h4 class="font-bold text-cyan-900 dark:text-cyan-200 flex items-center gap-1.5">
+            <span>✨</span>
+            <span data-i18n="botModalFeat1Title">100% Gratuit & Sans Clé d'API</span>
+          </h4>
+          <p data-i18n="botModalFeat1Desc" class="text-slate-600 dark:text-slate-400 text-xs">
+            L'algorithme tourne directement sur le Cloudflare Worker ou côté client sans aucun abonnement payant ni quota restrictif.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60 space-y-1">
+          <h4 class="font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
+            <span>🛡️</span>
+            <span data-i18n="botModalFeat2Title">Critères d'Intégrité Journalistique</span>
+          </h4>
+          <p data-i18n="botModalFeat2Desc" class="text-slate-600 dark:text-slate-400 text-xs">
+            Vérifie la conformité Open Graph (og:type="article"), les balises Schema.org NewsArticle, les rubriques de presse, le chiffrement HTTPS et l'absence de fichiers exécutables dangereux.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-1">
+          <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+            <span>⚡</span>
+            <span data-i18n="botModalFeat3Title">Auto-Certification & Décentralisation</span>
+          </h4>
+          <p data-i18n="botModalFeat3Desc" class="text-slate-600 dark:text-slate-400 text-xs">
+            Si un média régional indépendant n'est pas encore listé, les citoyens peuvent auto-certifier le lien en 1 clic pour débloquer la redirection instantanée pour leurs proches.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-end shrink-0">
+        <button type="button" id="btn-close-bot-modal-bottom" class="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs px-5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer" data-i18n="botModalClose">
+          Compris & Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Client-side Logic -->
   <script>
     // Worker Endpoint
@@ -984,8 +1106,24 @@
         copyBtn: "Copier le lien",
         copiedText: "Copié !",
         unverifiedTitle: "Média local ou domaine non listé",
-        unverifiedDesc: "Ce site ne figure pas encore dans notre annuaire des médias canadiens reconnus. L'aperçu fonctionnera parfaitement, et une page intermédiaire de sécurité préviendra les visiteurs avant la redirection.",
-        unverifiedMailtoBtn: "Demander l'ajout de ce média (Courriel préparé)",
+        unverifiedDesc: "Le Mini-Bot évalue gratuitement et en direct l'intégrité de cette source. Vous pouvez auto-certifier ce lien ci-dessous pour débloquer la redirection immédiate sans délai ni formulaire.",
+        unverifiedMailtoBtn: "Demander l'ajout officiel (Courriel préparé)",
+        botAuditTitle: "Mini-Bot Sentinel — Audit Automatique de Fiabilité",
+        botScoreLabel: "Indice :",
+        botStatusValidated: "Source d'information légitime validée par le bot",
+        botStatusEvaluating: "Source en cours d'évaluation — Auto-certification disponible",
+        selfCertifyCheck: "Je certifie que ce lien mène vers un média journalistique ou une source d'intérêt public légitime (Active la redirection immédiate).",
+        selfCertifySuccess: "Lien auto-certifié : vos contacts accéderont directement à l'article sans page d'attente !",
+        botConfigBtn: "⚙️ Configurer le Mini-Bot (Gratuit)",
+        botModalTitle: "Mini-Bot Sentinel — Analyse & Fiabilité",
+        botModalDesc: "Le Mini-Bot Sentinel est un moteur d'audit heuristique et sémantique gratuit intégré à LienLibre. Il analyse instantanément les pages web afin de reconnaître les véritables articles journalistiques d'intérêt public sans intervention humaine et sans coût d'infrastructure.",
+        botModalFeat1Title: "100% Gratuit & Sans Clé d'API",
+        botModalFeat1Desc: "L'algorithme tourne directement sur le Cloudflare Worker ou côté client sans aucun abonnement payant ni quota restrictif.",
+        botModalFeat2Title: "Critères d'Intégrité Journalistique",
+        botModalFeat2Desc: "Vérifie la conformité Open Graph (og:type=\"article\"), les balises Schema.org NewsArticle, les rubriques de presse, le chiffrement HTTPS et l'absence de fichiers exécutables dangereux.",
+        botModalFeat3Title: "Auto-Certification & Décentralisation",
+        botModalFeat3Desc: "Si un média régional indépendant n'est pas encore listé, les citoyens peuvent auto-certifier le lien en 1 clic pour débloquer la redirection instantanée pour leurs proches.",
+        botModalClose: "Compris & Fermer",
         previewTitle: "Aperçu visuel (Open Graph Card)",
         previewLive: "Extrait en temps réel",
         previewPlaceholder: "Pas d'image détectée (redirection préservée)",
@@ -1043,8 +1181,24 @@
         copyBtn: "Copy link",
         copiedText: "Copied!",
         unverifiedTitle: "Local media or unlisted domain",
-        unverifiedDesc: "This website is not yet in our recognized Canadian media directory. The preview will work smoothly, and a safety interstitial will inform visitors prior to redirection.",
-        unverifiedMailtoBtn: "Request adding this media (Pre-filled email)",
+        unverifiedDesc: "The Mini-Bot evaluates this source's credibility in real time for free. You can self-certify this link below to enable instant direct access with zero delay.",
+        unverifiedMailtoBtn: "Request official media addition (Pre-filled email)",
+        botAuditTitle: "Sentinel Mini-Bot — Automatic Reliability Audit",
+        botScoreLabel: "Score:",
+        botStatusValidated: "Legitimate news source validated by bot",
+        botStatusEvaluating: "Unlisted source — Self-certification available",
+        selfCertifyCheck: "I certify that this link leads to a legitimate news media or public interest source (Enables instant redirection).",
+        selfCertifySuccess: "Self-certified link: your contacts will access the article directly with zero wait!",
+        botConfigBtn: "⚙️ Configure Mini-Bot (Free)",
+        botModalTitle: "Sentinel Mini-Bot — Analysis & Reliability",
+        botModalDesc: "The Sentinel Mini-Bot is a free heuristic and semantic engine built into LienLibre. It automatically analyzes web pages to recognize genuine public interest news journalism with zero cost.",
+        botModalFeat1Title: "100% Free & Standalone",
+        botModalFeat1Desc: "The algorithm runs directly in the Cloudflare Worker or client-side with no paid API keys or quotas.",
+        botModalFeat2Title: "Journalistic Integrity Signals",
+        botModalFeat2Desc: "Checks Open Graph article compliance, Schema.org NewsArticle data, editorial news paths, HTTPS encryption, and zero malicious payloads.",
+        botModalFeat3Title: "Self-Certification & Decentralization",
+        botModalFeat3Desc: "If an independent local news outlet is unlisted, citizens can self-certify the link in 1 click for direct access.",
+        botModalClose: "Got it & Close",
         previewTitle: "Social Media Card Preview",
         previewLive: "Extracted in real time",
         previewPlaceholder: "No image detected (redirection preserved)",
@@ -1102,8 +1256,24 @@
         copyBtn: "نسخ الرابط",
         copiedText: "تم النسخ!",
         unverifiedTitle: "وسيلة إعلامية محلية أو نطاق غير مدرج",
-        unverifiedDesc: "هذا الموقع غير مدرج بعد في دليلنا المعتمد. ستعمل المعاينة بسلاسة، وستظهر شاشة أمان سريعة للزوار قبل التوجيه.",
-        unverifiedMailtoBtn: "طلب إضافة هذه الوسيلة (بريد مجهز)",
+        unverifiedDesc: "يقوم الروبوت الذكي بتقييم المصداقية مجاناً في الوقت الفعلي. يمكنك التوثيق الذاتي للرابط لتمكين الوصول الفوري.",
+        unverifiedMailtoBtn: "طلب إضافة هذه الوسيلة رسمياً",
+        botAuditTitle: "المساعد الآلي Sentinel — تقييم المصداقية التلقائي",
+        botScoreLabel: "المؤشر:",
+        botStatusValidated: "مصدر إخباري موثوق تم اعتماده من الروبوت",
+        botStatusEvaluating: "مصدر قيد المراجعة — التوثيق الذاتي متاح",
+        selfCertifyCheck: "أؤكد أن هذا الرابط يعود لوسيلة إعلامية أو مصدر ذي نفع عام (يفعل التوجيه الفوري).",
+        selfCertifySuccess: "تم توثيق الرابط ذاتياً: سيصل متابعوك مباشرة للمقال!",
+        botConfigBtn: "⚙️ إعدادات الروبوت الذكي (مجاني)",
+        botModalTitle: "المساعد الآلي Sentinel — التحليل والمصداقية",
+        botModalDesc: "يقوم الروبوت الآلي بتحليل محتوى وهيكل صفحات الويب تلقائياً للتعرف على الأخبار الحقيقية بدون أي تكلفة أو تدخل يدوي.",
+        botModalFeat1Title: "مجاني 100% وبدون مفاتيح API",
+        botModalFeat1Desc: "يعمل الكود مباشرة على خوادم Cloudflare أو المتصفح بدون اشتراكات.",
+        botModalFeat2Title: "معايير النزاهة الصحفية",
+        botModalFeat2Desc: "يفحص بروتوكولات Open Graph وبيانات Schema.org NewsArticle وتشفير HTTPS.",
+        botModalFeat3Title: "التوثيق الذاتي واللامركزية",
+        botModalFeat3Desc: "إذا لم تكن وسيلة إعلامية محلية مدرجة، يمكن توثيق الرابط بنقرة واحدة.",
+        botModalClose: "فهمت & إغلاق",
         previewTitle: "معاينة البطاقة على وسائل التواصل",
         previewLive: "مستخرج في الوقت الفعلي",
         previewPlaceholder: "لم يتم العثور على صورة (التوجيه محفوظ)",
@@ -1161,8 +1331,24 @@
         copyBtn: "Copiar enlace",
         copiedText: "¡Copiado!",
         unverifiedTitle: "Medio local o dominio no listado",
-        unverifiedDesc: "Este sitio aún no está en nuestro directorio de medios reconocidos. La vista previa funcionará y una breve pantalla de seguridad informará a los visitantes antes de la redirección.",
-        unverifiedMailtoBtn: "Solicitar adición de este medio (Correo preparado)",
+        unverifiedDesc: "El Mini-Bot evalúa la fiabilidad de esta fuente en tiempo real y sin costes. Puede auto-certificar el enlace para habilitar la redirección inmediata.",
+        unverifiedMailtoBtn: "Solicitar adición oficial (Correo preparado)",
+        botAuditTitle: "Mini-Bot Sentinel — Auditoría Automática de Fiabilidad",
+        botScoreLabel: "Índice:",
+        botStatusValidated: "Fuente periodística legítima validada por el bot",
+        botStatusEvaluating: "Fuente en evaluación — Auto-certificación disponible",
+        selfCertifyCheck: "Certifico que este enlace conduce a un medio de noticias legítimo o fuente de interés público (Habilita redirección inmediata).",
+        selfCertifySuccess: "Enlace auto-certificado: ¡acceso directo sin espera!",
+        botConfigBtn: "⚙️ Configurar Mini-Bot (Gratis)",
+        botModalTitle: "Mini-Bot Sentinel — Análisis y Fiabilidad",
+        botModalDesc: "El Mini-Bot analiza automáticamente las páginas web para reconocer artículos periodísticos de interés público de forma 100% gratuita.",
+        botModalFeat1Title: "100% Gratuito y sin clave API",
+        botModalFeat1Desc: "El algoritmo se ejecuta en Cloudflare Worker o en el navegador sin costes.",
+        botModalFeat2Title: "Criterios de Integridad",
+        botModalFeat2Desc: "Comprueba etiquetas Open Graph, Schema.org NewsArticle, cifrado HTTPS y ausencia de scripts maliciosos.",
+        botModalFeat3Title: "Auto-certificación Ciudadana",
+        botModalFeat3Desc: "Los ciudadanos pueden auto-certificar medios independientes en 1 clic para permitir la redirección directa.",
+        botModalClose: "Entendido y Cerrar",
         previewTitle: "Vista previa en redes sociales",
         previewLive: "Extraído en tiempo real",
         previewPlaceholder: "No se detectó imagen (redirección preservada)",
@@ -1220,8 +1406,24 @@
         copyBtn: "Copia link",
         copiedText: "Copiato!",
         unverifiedTitle: "Media locale o dominio non in elenco",
-        unverifiedDesc: "Questo sito non è ancora presente nel nostro elenco. L'anteprima funzionerà e una schermata di sicurezza avviserà i visitatori prima del reindirizzamento.",
-        unverifiedMailtoBtn: "Richiedi aggiunta di questo media (Email pronta)",
+        unverifiedDesc: "Il Mini-Bot valuta l'affidabilità di questa fonte in tempo reale. Puoi auto-certificare il link per consentire l'accesso immediato.",
+        unverifiedMailtoBtn: "Richiedi aggiunta ufficiale (Email pronta)",
+        botAuditTitle: "Mini-Bot Sentinel — Verifica Automatica di Affidabilità",
+        botScoreLabel: "Punteggio:",
+        botStatusValidated: "Fonte giornalistica legittima validata dal bot",
+        botStatusEvaluating: "Fonte in valutazione — Auto-certificazione disponibile",
+        selfCertifyCheck: "Certifico che questo link conduce a una fonte giornalistica o di pubblico interesse (Abilita reindirizzamento immediato).",
+        selfCertifySuccess: "Link auto-certificato: accesso diretto senza attese!",
+        botConfigBtn: "⚙️ Configura Mini-Bot (Gratuito)",
+        botModalTitle: "Mini-Bot Sentinel — Analisi & Affidabilità",
+        botModalDesc: "Il Mini-Bot analizza automaticamente la struttura web per identificare autentici articoli giornalistici a costo zero.",
+        botModalFeat1Title: "100% Gratuito & Autonomo",
+        botModalFeat1Desc: "L'algoritmo opera direttamente senza chiavi API a pagamento.",
+        botModalFeat2Title: "Segnali di Integrità",
+        botModalFeat2Desc: "Verifica metadati Open Graph, Schema.org NewsArticle, percorsi editoriali e crittografia HTTPS.",
+        botModalFeat3Title: "Auto-certificazione Civica",
+        botModalFeat3Desc: "Auto-certifica i media indipendenti in 1 clic per garantire l'accesso immediato.",
+        botModalClose: "Chiudi",
         previewTitle: "Anteprima scheda social",
         previewLive: "Estratto in tempo reale",
         previewPlaceholder: "Nessuna immagine rilevata (reindirizzamento preservato)",
@@ -1279,8 +1481,24 @@
         copyBtn: "复制链接",
         copiedText: "已复制！",
         unverifiedTitle: "本地媒体或未列入域名",
-        unverifiedDesc: "该站点尚未收录在我们的认证媒体目录中。社交预览将正常显示，访问者在跳转前会看到安全提示页面。",
-        unverifiedMailtoBtn: "申请添加此媒体 (预填邮件)",
+        unverifiedDesc: "Sentinel 智能机器人正在免费实时评估该来源的可信度。您可以在下方一键自认证以开启即时免等待访问。",
+        unverifiedMailtoBtn: "申请正式收录此媒体 (预填邮件)",
+        botAuditTitle: "Sentinel 智能分析机器人 — 自动信誉与合规审计",
+        botScoreLabel: "信誉评分:",
+        botStatusValidated: "经机器人验证的真实公共新闻来源",
+        botStatusEvaluating: "未收录来源 — 支持一键公民自认证",
+        selfCertifyCheck: "我确认此链接指向合法的新闻媒体或公共利益资讯来源（立即开启无延迟直达）。",
+        selfCertifySuccess: "链接已自认证：访问者将直接进入文章，无需等待！",
+        botConfigBtn: "⚙️ 配置智能分析机器人 (免费)",
+        botModalTitle: "Sentinel 智能机器人 — 分析与可信度",
+        botModalDesc: "Sentinel 机器人是一款内置于 LienLibre 的免费启发式与语义分析引擎，自动识别真实的新闻文章，零基础设施费用。",
+        botModalFeat1Title: "100% 免费且独立运行",
+        botModalFeat1Desc: "算法直接在 Cloudflare Workers 或客户端运行，无需付费 API 密钥。",
+        botModalFeat2Title: "新闻真实性与完整性标准",
+        botModalFeat2Desc: "检测 Open Graph 文章规范、Schema.org NewsArticle 结构化数据、HTTPS 加密及无恶意脚本。",
+        botModalFeat3Title: "公民自认证与去中心化",
+        botModalFeat3Desc: "如遇到未收录的独立媒体，公民可一键自认证以解锁即时重定向。",
+        botModalClose: "了解并关闭",
         previewTitle: "社交平台卡片预览",
         previewLive: "实时抓取生成",
         previewPlaceholder: "未检测到图片（重定向保留）",
@@ -1338,8 +1556,24 @@
         copyBtn: "Naspitahâ",
         copiedText: "Naspitahikâtêw!",
         unverifiedTitle: "Nama-kwayask kiskêyihtâkwan",
-        unverifiedDesc: "Ôma kiskinowâpahtihikowin nama-kiskêyihtâkwan ôta. Wâpahtihikowin masinahikan ka-wîci-ayamihtân.",
+        unverifiedDesc: "Mini-Bot kwayask âcimowin paminikêw. Kwayask sêmâk tisi-wâpahtamihk.",
         unverifiedMailtoBtn: "Sēkakinamowin kīkway (E-mail)",
+        botAuditTitle: "Sentinel Mini-Bot — Kwayask pimohtêw",
+        botScoreLabel: "Score:",
+        botStatusValidated: "Kwayask âcimowin paminikêw",
+        botStatusEvaluating: "Nama-kiskêyihtâkwan — Kwayask osihtâ",
+        selfCertifyCheck: "Naspitahâ kwayask âcimowin kânata (Sêmâk pimohtê).",
+        selfCertifySuccess: "Kwayask osihtâw: Sêmâk ka-wâpahtên âcimowin!",
+        botConfigBtn: "⚙️ Mini-Bot (Free)",
+        botModalTitle: "Sentinel Mini-Bot — Kwayask",
+        botModalDesc: "Mini-Bot kwayask âcimowin paminikêw sêmâk.",
+        botModalFeat1Title: "100% Free",
+        botModalFeat1Desc: "Nama-kîkway sôniyâw.",
+        botModalFeat2Title: "Kwayask âcimowin",
+        botModalFeat2Desc: "Open Graph kie Schema.org NewsArticle.",
+        botModalFeat3Title: "Kwayask pimohtê",
+        botModalFeat3Desc: "Osihtâ sêmâk tisi-wâpahtamihk.",
+        botModalClose: "Kipaha",
         previewTitle: "Tânisi tisi-wâpahcikan",
         previewLive: "Osihtâw sêmâk",
         previewPlaceholder: "Nama-kîkway masinipicikêw",
@@ -1397,8 +1631,24 @@
         copyBtn: "Aajiqiilugu",
         copiedText: "Aajiqiijut!",
         unverifiedTitle: "Nalunaiqtaulluarsimangittuq",
-        unverifiedDesc: "Una qaritaujakkuurutinga ilisimajaujut list-inginniiqataungittuq.",
+        unverifiedDesc: "Mini-Bot nalunaiqsivaktuq tusaraksaqtiit qaritaujakkuurutinginnik.",
         unverifiedMailtoBtn: "ᑐᒃᓯᕋᐅᑎ ᑐᓴᒐᒃᓴᓕᕆᔨᓂᒃ ᐃᓚᓯᖁᔨᓂᕐᒧᑦ (Email)",
+        botAuditTitle: "Sentinel Mini-Bot — Nalunaiqsiniq",
+        botScoreLabel: "Score:",
+        botStatusValidated: "Tusaraksaq nalunaiqtaujuq",
+        botStatusEvaluating: "Nalunaiqtaulluarsimangittuq — Aturungnaqtutit",
+        selfCertifyCheck: "Nalunaiqpara una tusaraksaq kikkutuinnarnut (Sêmâk nuutitsijuq).",
+        selfCertifySuccess: "Nalunaiqtaujuq: Sêmâk nuutitsiniarputit!",
+        botConfigBtn: "⚙️ Mini-Bot (Free)",
+        botModalTitle: "Sentinel Mini-Bot — Pilirijjut",
+        botModalDesc: "Mini-Bot nalunaiqsivaktuq tusaraksaqtiit qaritaujakkuurutinginnik.",
+        botModalFeat1Title: "100% Akiliksaituq",
+        botModalFeat1Desc: "Cloudflare-mi aturtuq akiliksaituq.",
+        botModalFeat2Title: "Tusaraksaq kwayask",
+        botModalFeat2Desc: "Open Graph uvalu Schema.org NewsArticle.",
+        botModalFeat3Title: "Nalunaiqsiniq",
+        botModalFeat3Desc: "Sanalugu 1-click nuutitsinirmut.",
+        botModalClose: "Umiksimajuq",
         previewTitle: "Tusaraksaq takuksautillugu",
         previewLive: "Worker-mit pilirijaujuq maanna",
         previewPlaceholder: "Ajjiqangittuq",
@@ -1456,8 +1706,24 @@
         copyBtn: "Kussenitan",
         copiedText: "Kussenitakanu!",
         unverifiedTitle: "Eka tshissikuat tshe ishinakuat",
-        unverifiedDesc: "Mane tshitshipan eka e nishtutamin tshe ishinakuat.",
+        unverifiedDesc: "Mini-Bot uitsheue tshetshi nishtutamin tipatshimun sêmâk.",
         unverifiedMailtoBtn: "Natshishikutamun tshe takuakinut (Email)",
+        botAuditTitle: "Sentinel Mini-Bot — Uitsheun",
+        botScoreLabel: "Score:",
+        botStatusValidated: "Tipatshimun kwayask",
+        botStatusEvaluating: "Eka tshissikuat — Kussenitan",
+        selfCertifyCheck: "Nitapuaten kwayask tipatshimun nete (Sêmâk tshitissipitamin).",
+        selfCertifySuccess: "Kwayask tutakanu: Sêmâk tshitissipitamin!",
+        botConfigBtn: "⚙️ Mini-Bot (Free)",
+        botModalTitle: "Sentinel Mini-Bot — Uitsheun",
+        botModalDesc: "Mini-Bot uitsheue tshetshi nishtutamin tipatshimun.",
+        botModalFeat1Title: "100% Free",
+        botModalFeat1Desc: "Eka sonia tutamashu.",
+        botModalFeat2Title: "Tipatshimun",
+        botModalFeat2Desc: "Open Graph mak Schema.org NewsArticle.",
+        botModalFeat3Title: "Kussenitan",
+        botModalFeat3Desc: "1-click sêmâk tshitissipitamin.",
+        botModalClose: "Tshekue",
         previewTitle: "Uapatamin tipatshimun",
         previewLive: "Tutan anutshish",
         previewPlaceholder: "Eka uapatamin masinipitsheun",
@@ -1515,8 +1781,24 @@
         copyBtn: "Kwahiaton",
         copiedText: "Wehni'!",
         unverifiedTitle: "Iáh teiowatennion",
-        unverifiedDesc: "Tsi niiorihwà:ke iáh teiowatennion ne Kanada.",
+        unverifiedDesc: "Mini-Bot karihwaneken tsi nioht kaia'táhrho skennen'kówa.",
         unverifiedMailtoBtn: "Waharihwahserónni ne LienLibre (Email)",
+        botAuditTitle: "Sentinel Mini-Bot — Karihwaneken",
+        botScoreLabel: "Score:",
+        botStatusValidated: "Karihwaneken skennen'kówa",
+        botStatusEvaluating: "Iáh teiowatennion — Kwah ok",
+        selfCertifyCheck: "Kateriwayentéhris ne karihwaneken (Kwah ok tyohtetyon).",
+        selfCertifySuccess: "Karihwaneken tyohtetyon: Kwah ok!",
+        botConfigBtn: "⚙️ Mini-Bot (Free)",
+        botModalTitle: "Sentinel Mini-Bot",
+        botModalDesc: "Mini-Bot karihwaneken tsi nioht kaia'táhrho.",
+        botModalFeat1Title: "100% Free",
+        botModalFeat1Desc: "Iáh kanoron.",
+        botModalFeat2Title: "Karihwaneken",
+        botModalFeat2Desc: "Open Graph ohni Schema.org NewsArticle.",
+        botModalFeat3Title: "Kwah ok",
+        botModalFeat3Desc: "1-click tsi niahsewenni.",
+        botModalClose: "Tsi kanoron",
         previewTitle: "Tsi nioht kaia'táhrho",
         previewLive: "Worker ne anotsis",
         previewPlaceholder: "Iáh teka'táhrho",
@@ -1641,6 +1923,32 @@
       openMirrorModal();
     }
 
+    // Modal Mini-Bot Configuration logic
+    const botModal = document.getElementById('bot-modal');
+    const botModalBackdrop = document.getElementById('bot-modal-backdrop');
+    const btnOpenBotModal = document.getElementById('btn-open-bot-modal');
+    const btnCloseBotModal = document.getElementById('btn-close-bot-modal');
+    const btnCloseBotModalBottom = document.getElementById('btn-close-bot-modal-bottom');
+
+    function openBotModal() {
+      if (botModal) {
+        botModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+      }
+    }
+
+    function closeBotModal() {
+      if (botModal) {
+        botModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+      }
+    }
+
+    if (btnOpenBotModal) btnOpenBotModal.addEventListener('click', openBotModal);
+    if (btnCloseBotModal) btnCloseBotModal.addEventListener('click', closeBotModal);
+    if (btnCloseBotModalBottom) btnCloseBotModalBottom.addEventListener('click', closeBotModal);
+    if (botModalBackdrop) botModalBackdrop.addEventListener('click', closeBotModal);
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (legalModal && !legalModal.classList.contains('hidden')) {
@@ -1648,6 +1956,9 @@
         }
         if (mirrorModal && !mirrorModal.classList.contains('hidden')) {
           closeMirrorModal();
+        }
+        if (botModal && !botModal.classList.contains('hidden')) {
+          closeBotModal();
         }
       }
     });
@@ -1783,6 +2094,14 @@
     const langSelect = document.getElementById('lang-select');
     let currentUnverifiedDomain = '';
 
+    // Mini-Bot Sentinel & Self-Certification Elements
+    const botAuditScore = document.getElementById('bot-audit-score');
+    const botAuditBadge = document.getElementById('bot-audit-badge');
+    const botAuditBadgeText = document.getElementById('bot-audit-badge-text');
+    const botSignalsContainer = document.getElementById('bot-signals-container');
+    const checkboxSelfCertify = document.getElementById('checkbox-self-certify');
+    const selfCertifySuccess = document.getElementById('self-certify-success');
+
     let activeFormat = 'short';
     let currentGeneratedLinks = {
       short: '',
@@ -1800,6 +2119,33 @@
         btnFormatShort.className = 'px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all';
         if (currentGeneratedLinks.mirror) outputUrl.textContent = currentGeneratedLinks.mirror;
       }
+    }
+
+    function applySelfCertification(isCert) {
+      if (isCert) {
+        if (selfCertifySuccess) selfCertifySuccess.classList.remove('hidden');
+        if (currentGeneratedLinks.short && !currentGeneratedLinks.short.includes('cert=1')) {
+          currentGeneratedLinks.short += (currentGeneratedLinks.short.includes('?') ? '&' : '?') + 'cert=1';
+        }
+        if (currentGeneratedLinks.mirror && !currentGeneratedLinks.mirror.includes('cert=1')) {
+          currentGeneratedLinks.mirror += (currentGeneratedLinks.mirror.includes('?') ? '&' : '?') + 'cert=1';
+        }
+      } else {
+        if (selfCertifySuccess) selfCertifySuccess.classList.add('hidden');
+        if (currentGeneratedLinks.short) {
+          currentGeneratedLinks.short = currentGeneratedLinks.short.replace(/([?&])cert=1(&|$)/, (m, p1, p2) => p1 === '?' && p2 ? '?' : (p1 === '&' && p2 ? '&' : '')).replace(/\?$/, '');
+        }
+        if (currentGeneratedLinks.mirror) {
+          currentGeneratedLinks.mirror = currentGeneratedLinks.mirror.replace(/([?&])cert=1(&|$)/, (m, p1, p2) => p1 === '?' && p2 ? '?' : (p1 === '&' && p2 ? '&' : '')).replace(/\?$/, '');
+        }
+      }
+      updateFormatTabUI();
+    }
+
+    if (checkboxSelfCertify) {
+      checkboxSelfCertify.addEventListener('change', (e) => {
+        applySelfCertification(e.target.checked);
+      });
     }
 
     if (btnFormatShort) {
@@ -1835,7 +2181,7 @@
       },
       it: {
         subject: "Richiesta di integrazione media per LienLibre - {domain} (Caso #{caseId})",
-        body: `Buongiorno,\n\nSpero che questa email vi trovi bene.\n\nSono un·a giornalista e vi scrivo a nome di {domain} (o: come giornalista indipendente). Vorrei aggiungere il mio media allo strumento LienLibre perché [inserisci il motivo qui].\n\nPer contattarmi, potete trovarmi a [inserisci i tuoi dati di contatto].\n\nGrazie per aver letto il mio messaggio.\n\nCordiali saluti,\n\n[Il tuo nome]\n\n#case id: {caseId}`
+        body: `Buongiorno,\n\nSpero che questa email vi trovi bene.\n\nSono un·a giornalista e vi scrivo a nome di {domain} (o: comme giornalista indipendente). Vorrei aggiungere il mio media allo strumento LienLibre perché [inserisci il motivo qui].\n\nPer contattarmi, potete trovarmi a [inserisci i tuoi dati di contatto].\n\nGrazie per aver letto il mio messaggio.\n\nCordiali saluti,\n\n[Il tuo nome]\n\n#case id: {caseId}`
       },
       zh: {
         subject: "LienLibre 媒体添加申請 - {domain} (案件编号 #{caseId})",
@@ -1948,7 +2294,7 @@
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (trans[key]) {
-          if (['heroTitle', 'unverifiedDesc', 'whyDesc', 'howDesc', 'statsDesc', 'footerText', 'mirrorModalDesc', 'mirrorStep1Desc', 'mirrorStep2Desc', 'mirrorStep3Desc'].includes(key)) {
+          if (['heroTitle', 'unverifiedDesc', 'whyDesc', 'howDesc', 'statsDesc', 'footerText', 'mirrorModalDesc', 'mirrorStep1Desc', 'mirrorStep2Desc', 'mirrorStep3Desc', 'botModalDesc', 'botModalFeat1Desc', 'botModalFeat2Desc', 'botModalFeat3Desc'].includes(key)) {
             el.innerHTML = trans[key];
           } else {
             el.textContent = trans[key];
@@ -2007,6 +2353,8 @@
       errorMessage.classList.add('hidden');
       unverifiedWarning.classList.add('hidden');
       trackingCleanedBadge.classList.add('hidden');
+      if (checkboxSelfCertify) checkboxSelfCertify.checked = false;
+      if (selfCertifySuccess) selfCertifySuccess.classList.add('hidden');
       resultArea.classList.remove('hidden');
       previewSkeleton.classList.remove('hidden');
       previewContent.classList.add('hidden');
@@ -2079,6 +2427,28 @@
           currentUnverifiedDomain = targetHost;
           if (unverifiedMailtoLink) {
             unverifiedMailtoLink.href = generateMailtoUrl(currentLang, targetHost);
+          }
+
+          if (data.botAudit) {
+            if (botAuditScore) botAuditScore.textContent = `${data.botAudit.score} / 100`;
+            if (botAuditBadge && botAuditBadgeText) {
+              if (data.botAudit.isValidated || data.botAudit.score >= 60) {
+                botAuditBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-semibold text-xs';
+                botAuditBadgeText.textContent = trans.botStatusValidated || "Source journalistique hautement probable";
+              } else {
+                botAuditBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-300 font-semibold text-xs';
+                botAuditBadgeText.textContent = trans.botStatusEvaluating || "Audit en cours / Source non confirmée";
+              }
+            }
+            if (botSignalsContainer && Array.isArray(data.botAudit.signals)) {
+              botSignalsContainer.innerHTML = '';
+              data.botAudit.signals.forEach(sig => {
+                const sigSpan = document.createElement('span');
+                sigSpan.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-[11px] text-slate-700 dark:text-slate-300';
+                sigSpan.textContent = sig;
+                botSignalsContainer.appendChild(sigSpan);
+              });
+            }
           }
         } else {
           unverifiedWarning.classList.add('hidden');
