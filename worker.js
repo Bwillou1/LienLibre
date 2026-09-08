@@ -174,6 +174,46 @@ function isDomainAllowed(hostname) {
   return ALLOWED_DOMAINS.some(domain => cleanHost === domain || cleanHost.endsWith("." + domain));
 }
 
+// Noms officiels des médias pour afficher le véritable nom du média sur les cartes de réseaux sociaux
+const MEDIA_NAMES = {
+  "lapresse.ca": "La Presse",
+  "radio-canada.ca": "Radio-Canada",
+  "ici.radio-canada.ca": "Radio-Canada",
+  "cbc.ca": "CBC News",
+  "ledevoir.com": "Le Devoir",
+  "tvanouvelles.ca": "TVA Nouvelles",
+  "journaldemontreal.com": "Le Journal de Montréal",
+  "journaldequebec.com": "Le Journal de Québec",
+  "theglobeandmail.com": "The Globe and Mail",
+  "nationalpost.com": "National Post",
+  "thestar.com": "Toronto Star",
+  "torontostar.com": "Toronto Star",
+  "globalnews.ca": "Global News",
+  "ctvnews.ca": "CTV News",
+  "rds.ca": "RDS",
+  "tsn.ca": "TSN",
+  "noovo.info": "Noovo Info",
+  "lactualite.com": "L'actualité",
+  "lesaffaires.com": "Les Affaires",
+  "lesoleil.com": "Le Soleil",
+  "latribune.ca": "La Tribune",
+  "lenouvelliste.ca": "Le Nouvelliste",
+  "ledroit.com": "Le Droit",
+  "lequotidien.com": "Le Quotidien",
+  "lavoixdelest.ca": "La Voix de l'Est",
+  "urbania.ca": "Urbania"
+};
+
+function getMediaSiteName(hostname) {
+  const cleanHost = (hostname || "").toLowerCase().replace(/^www\./, "");
+  for (const [domain, name] of Object.entries(MEDIA_NAMES)) {
+    if (cleanHost === domain || cleanHost.endsWith("." + domain)) {
+      return name;
+    }
+  }
+  return cleanHost.charAt(0).toUpperCase() + cleanHost.slice(1);
+}
+
 /**
  * Nettoie les paramètres de pistage Meta/Google (Anti-Tracking).
  */
@@ -316,7 +356,10 @@ export default {
           }), { expirationTtl: 60 * 60 * 24 * 30 }); // 30 jours
         }
 
+        const cleanPath = parsedTarget.href.replace(/^https?:\/\/(?:www\.)?/i, '');
+        const langQuery = targetLang !== "fr" ? `?lang=${targetLang}` : "";
         const langParam = targetLang !== "fr" ? `&lang=${targetLang}` : "";
+        const vanityLink = `${requestUrl.origin}/${cleanPath}${langQuery}`;
         const directLink = `${requestUrl.origin}/?url=${encodeURIComponent(parsedTarget.href)}${langParam}`;
         const shortLink = `${requestUrl.origin}/l/${randomId}${langParam}`;
 
@@ -324,7 +367,8 @@ export default {
           ok: true,
           id: randomId,
           url: parsedTarget.href,
-          link: directLink,
+          link: vanityLink,
+          directLink: directLink,
           shortLink: shortLink,
           allowed: isAllowed
         }), {
@@ -361,6 +405,31 @@ export default {
           } catch (_) {
             targetUrlString = stored;
           }
+        }
+      }
+    }
+
+    // Résolution des liens miroirs ressemblant fidèlement à l'URL originale (/lapresse.ca/actualites/...)
+    if (!targetUrlString && requestUrl.pathname.length > 1 && !requestUrl.pathname.startsWith("/api/")) {
+      const rawPath = requestUrl.pathname.slice(1);
+      if (rawPath === "favicon.ico" || rawPath === "robots.txt") {
+        return new Response(null, { status: 204 });
+      }
+
+      if (rawPath.startsWith("http:/") || rawPath.startsWith("https:/")) {
+        const cleanProto = rawPath.replace(/^(https?):\/+/, "$1://");
+        targetUrlString = cleanProto + (requestUrl.search || "");
+      } else {
+        // Vérifier si le premier segment ressemble à un domaine
+        const firstSlash = rawPath.indexOf("/");
+        const domainCandidate = (firstSlash !== -1 ? rawPath.substring(0, firstSlash) : rawPath).toLowerCase().replace(/^www\./, "");
+
+        if (domainCandidate.includes(".") && !domainCandidate.includes(" ")) {
+          const searchParamsClean = new URLSearchParams(requestUrl.search);
+          searchParamsClean.delete("json");
+          searchParamsClean.delete("lang");
+          const remainingQuery = searchParamsClean.toString() ? "?" + searchParamsClean.toString() : "";
+          targetUrlString = "https://" + rawPath + remainingQuery;
         }
       }
     }
@@ -500,10 +569,13 @@ export default {
       );
     }
 
+    const userAgent = request.headers.get("User-Agent") || "";
+    const isCrawler = /facebookexternalhit|Facebot|Meta-ExternalAgent|Instagram|WhatsApp|Twitterbot|LinkedInBot|Discordbot|TelegramBot|Slackbot/i.test(userAgent);
+
     // Si le domaine est dans la liste blanche ➡️ Redirection immédiate
     if (isAllowed) {
       return new Response(
-        generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang),
+        generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang, requestUrl.href, isCrawler),
         {
           status: 200,
           headers: {
@@ -518,7 +590,7 @@ export default {
     // Si le domaine est suspect ➡️ Page d'avertissement avec IP (mais miniature préservée pour les bots)
     const userIp = request.headers.get("CF-Connecting-IP") || "Inconnue";
     return new Response(
-      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang),
+      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang, requestUrl.href, isCrawler),
       {
         status: 200,
         headers: {
@@ -981,8 +1053,9 @@ function generateMailtoUrl(lang, domain) {
 /**
  * Génère le HTML pour rediriger l'utilisateur tout en affichant l'aperçu Open Graph pour les bots.
  */
-function generateRedirectionHTML(targetUrl, title, description, image, lang = "fr") {
+function generateRedirectionHTML(targetUrl, title, description, image, lang = "fr", currentUrl = "", isCrawler = false) {
   const escapedUrl = escapeHtml(targetUrl);
+  const escapedCurrentUrl = escapeHtml(currentUrl || targetUrl);
   const escapedTitle = escapeHtml(title);
   const escapedDesc = escapeHtml(description);
   const escapedImg = escapeHtml(image);
@@ -991,6 +1064,7 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
   const trans = WORKER_TRANSLATIONS[lang] || WORKER_TRANSLATIONS.fr;
   const htmlDir = lang === "ar" ? "rtl" : "ltr";
   const supportBannerText = trans.supportBanner.replace("{host}", escapeHtml(targetHost));
+  const siteName = getMediaSiteName(targetHost);
 
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${htmlDir}">
@@ -1001,21 +1075,22 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
   
   <!-- Balises Open Graph pour Facebook, Instagram, LinkedIn, Discord -->
   <meta property="og:type" content="article">
-  <meta property="og:url" content="${escapedUrl}">
+  <meta property="og:url" content="${escapedCurrentUrl}">
+  <link rel="canonical" href="${escapedCurrentUrl}">
   <meta property="og:title" content="${escapedTitle}">
   <meta property="og:description" content="${escapedDesc}">
   ${escapedImg ? `<meta property="og:image" content="${escapedImg}">` : ""}
-  <meta property="og:site_name" content="LienLibre">
+  <meta property="og:site_name" content="${escapeHtml(siteName)}">
   
   <!-- Balises Meta Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="${escapedUrl}">
+  <meta name="twitter:url" content="${escapedCurrentUrl}">
   <meta name="twitter:title" content="${escapedTitle}">
   <meta name="twitter:description" content="${escapedDesc}">
   ${escapedImg ? `<meta name="twitter:image" content="${escapedImg}">` : ""}
 
-  <!-- Redirection automatique côté client (immédiate) -->
-  <meta http-equiv="refresh" content="0;url=${escapedUrl}">
+  <!-- Redirection automatique côté client (immédiate pour les visiteurs réels) -->
+  ${!isCrawler ? `<meta http-equiv="refresh" content="0;url=${escapedUrl}">` : ""}
   
   <style>
     body {
@@ -1112,7 +1187,7 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
   </div>
 
   <script>
-    window.location.href = ${JSON.stringify(targetUrl)};
+    window.location.replace(${JSON.stringify(targetUrl)});
   </script>
 </body>
 </html>`;
@@ -1121,8 +1196,9 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
 /**
  * Génère une page d'avertissement de sécurité (phishing/spam) pour les domaines non vérifiés.
  */
-function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr") {
+function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr", currentUrl = "", isCrawler = false) {
   const escapedUrl = escapeHtml(targetUrl);
+  const escapedCurrentUrl = escapeHtml(currentUrl || targetUrl);
   const escapedTitle = escapeHtml(title);
   const escapedDesc = escapeHtml(description);
   const escapedImg = escapeHtml(image);
@@ -1139,6 +1215,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
 
   const mailTpl = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
   const mailtoUrl = generateMailtoUrl(lang, hostname);
+  const siteName = getMediaSiteName(hostname);
 
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${htmlDir}">
@@ -1149,21 +1226,22 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
   
   <!-- Balises Open Graph pour afficher l'aperçu sur Facebook/Instagram -->
   <meta property="og:type" content="article">
-  <meta property="og:url" content="${escapedUrl}">
+  <meta property="og:url" content="${escapedCurrentUrl}">
+  <link rel="canonical" href="${escapedCurrentUrl}">
   <meta property="og:title" content="${escapedTitle}">
   <meta property="og:description" content="${escapedDesc}">
   ${escapedImg ? `<meta property="og:image" content="${escapedImg}">` : ""}
-  <meta property="og:site_name" content="LienLibre">
+  <meta property="og:site_name" content="${escapeHtml(siteName)}">
   
   <!-- Balises Meta Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="${escapedUrl}">
+  <meta name="twitter:url" content="${escapedCurrentUrl}">
   <meta name="twitter:title" content="${escapedTitle}">
   <meta name="twitter:description" content="${escapedDesc}">
   ${escapedImg ? `<meta name="twitter:image" content="${escapedImg}">` : ""}
 
-  <!-- Redirection de sécurité différée (10 secondes) -->
-  <meta http-equiv="refresh" content="10;url=${escapedUrl}">
+  <!-- Redirection de sécurité différée (10 secondes, pour les visiteurs réels) -->
+  ${!isCrawler ? `<meta http-equiv="refresh" content="10;url=${escapedUrl}">` : ""}
 
   <style>
     body {
