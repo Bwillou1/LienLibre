@@ -287,6 +287,34 @@ async function getStats(env) {
   }
 }
 
+function encodePackedUrl(urlStr) {
+  try {
+    return btoa(encodeURIComponent(urlStr)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  } catch (_) {
+    return "";
+  }
+}
+
+function decodePackedUrl(packed) {
+  try {
+    let base64 = packed.replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) base64 += "=";
+    return decodeURIComponent(atob(base64));
+  } catch (_) {
+    return null;
+  }
+}
+
+function getProxyImageUrl(origin, rawImageUrl) {
+  if (!rawImageUrl) return "";
+  try {
+    const b64 = btoa(rawImageUrl).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    return `${origin}/i/${b64}`;
+  } catch (_) {
+    return rawImageUrl;
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     // 1. Gérer les requêtes CORS Preflight (OPTIONS)
@@ -300,7 +328,38 @@ export default {
     const requestUrl = new URL(request.url);
     const lang = (requestUrl.searchParams.get("lang") || "fr").toLowerCase();
 
-    // 2. Point de terminaison API Stats
+    // 2. Proxy d'image ultra-sécurisé pour masquer les CDN de presse canadiens à Meta
+    if (requestUrl.pathname.startsWith("/i/")) {
+      try {
+        const rawB64 = requestUrl.pathname.slice(3).split("?")[0];
+        let base64 = rawB64.replace(/-/g, "+").replace(/_/g, "/");
+        while (base64.length % 4) base64 += "=";
+        const targetImgUrl = atob(base64);
+        if (targetImgUrl.startsWith("http://") || targetImgUrl.startsWith("https://")) {
+          const imgRes = await fetch(targetImgUrl, {
+            headers: {
+              "User-Agent": SPOOF_HEADERS["User-Agent"],
+              "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+              "Referer": new URL(targetImgUrl).origin
+            }
+          });
+          if (imgRes.ok) {
+            const contentType = imgRes.headers.get("Content-Type") || "image/jpeg";
+            return new Response(imgRes.body, {
+              status: 200,
+              headers: {
+                "Content-Type": contentType,
+                "Cache-Control": "public, max-age=604800, s-maxage=604800",
+                ...CORS_HEADERS
+              }
+            });
+          }
+        }
+      } catch (e) {}
+      return new Response(null, { status: 404 });
+    }
+
+    // 3. Point de terminaison API Stats
     if (requestUrl.pathname === "/api/stats") {
       const stats = await getStats(env);
       return new Response(JSON.stringify(stats), {
@@ -312,7 +371,7 @@ export default {
       });
     }
 
-    // 3. Point de terminaison API Create (/api/create - supporte POST et GET pour compatibilité totale)
+    // 4. Point de terminaison API Create (/api/create - supporte POST et GET pour compatibilité totale)
     if (requestUrl.pathname === "/api/create") {
       let targetInput = "";
       let targetLang = lang;
@@ -347,6 +406,7 @@ export default {
 
         const isAllowed = isDomainAllowed(parsedTarget.hostname);
         const randomId = Math.random().toString(36).substring(2, 10);
+        const packedSlug = encodePackedUrl(parsedTarget.href);
 
         if (env && env.LIENLIBRE_KV) {
           await env.LIENLIBRE_KV.put(`link:${randomId}`, JSON.stringify({
@@ -362,6 +422,7 @@ export default {
         const vanityLink = `${requestUrl.origin}/${cleanPath}${langQuery}`;
         const directLink = `${requestUrl.origin}/?url=${encodeURIComponent(parsedTarget.href)}${langParam}`;
         const shortLink = `${requestUrl.origin}/l/${randomId}${langParam}`;
+        const packedLink = `${requestUrl.origin}/p/${packedSlug}${langParam}`;
 
         return new Response(JSON.stringify({
           ok: true,
@@ -370,6 +431,7 @@ export default {
           link: vanityLink,
           directLink: directLink,
           shortLink: shortLink,
+          packedLink: packedLink,
           allowed: isAllowed
         }), {
           status: 200,
@@ -393,9 +455,18 @@ export default {
 
     let targetUrlString = requestUrl.searchParams.get("url");
 
-    // Résolution des liens courts /l/:id ou /go/:id
-    if (!targetUrlString && (requestUrl.pathname.startsWith("/l/") || requestUrl.pathname.startsWith("/go/"))) {
-      const id = requestUrl.pathname.replace(/^\/(?:l|go)\//, "").split("/")[0].split("?")[0];
+    // Résolution stateless de liens opaques /p/:packed
+    if (!targetUrlString && requestUrl.pathname.startsWith("/p/")) {
+      const packed = requestUrl.pathname.slice(3).split("/")[0].split("?")[0];
+      const decoded = decodePackedUrl(packed);
+      if (decoded) {
+        targetUrlString = decoded;
+      }
+    }
+
+    // Résolution des liens courts /l/:id ou /go/:id ou /r/:id
+    if (!targetUrlString && (requestUrl.pathname.startsWith("/l/") || requestUrl.pathname.startsWith("/go/") || requestUrl.pathname.startsWith("/r/"))) {
+      const id = requestUrl.pathname.replace(/^\/(?:l|go|r)\//, "").split("/")[0].split("?")[0];
       if (env && env.LIENLIBRE_KV && id) {
         const stored = await env.LIENLIBRE_KV.get(`link:${id}`);
         if (stored) {
@@ -405,6 +476,13 @@ export default {
           } catch (_) {
             targetUrlString = stored;
           }
+        }
+      }
+      // Si non trouvé dans KV, vérifier si c'est un slug encodé
+      if (!targetUrlString && id) {
+        const decoded = decodePackedUrl(id);
+        if (decoded) {
+          targetUrlString = decoded;
         }
       }
     }
@@ -1054,17 +1132,20 @@ function generateMailtoUrl(lang, domain) {
  * Génère le HTML pour rediriger l'utilisateur tout en affichant l'aperçu Open Graph pour les bots.
  */
 function generateRedirectionHTML(targetUrl, title, description, image, lang = "fr", currentUrl = "", isCrawler = false) {
+  const origin = new URL(currentUrl || targetUrl).origin;
+  const proxyImg = image ? getProxyImageUrl(origin, image) : "";
   const escapedUrl = escapeHtml(targetUrl);
   const escapedCurrentUrl = escapeHtml(currentUrl || targetUrl);
   const escapedTitle = escapeHtml(title);
   const escapedDesc = escapeHtml(description);
-  const escapedImg = escapeHtml(image);
+  const escapedImg = escapeHtml(proxyImg || image);
   const targetHost = new URL(targetUrl).hostname.replace("www.", "");
 
   const trans = WORKER_TRANSLATIONS[lang] || WORKER_TRANSLATIONS.fr;
   const htmlDir = lang === "ar" ? "rtl" : "ltr";
   const supportBannerText = trans.supportBanner.replace("{host}", escapeHtml(targetHost));
   const siteName = getMediaSiteName(targetHost);
+  const encodedPayload = btoa(encodeURIComponent(targetUrl));
 
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${htmlDir}">
@@ -1073,7 +1154,7 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${escapedTitle}</title>
   
-  <!-- Balises Open Graph pour Facebook, Instagram, LinkedIn, Discord -->
+  <!-- Balises Open Graph Blindées pour Meta (Facebook, Instagram, Threads, Messenger) -->
   <meta property="og:type" content="article">
   <meta property="og:url" content="${escapedCurrentUrl}">
   <link rel="canonical" href="${escapedCurrentUrl}">
@@ -1088,6 +1169,22 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
   <meta name="twitter:title" content="${escapedTitle}">
   <meta name="twitter:description" content="${escapedDesc}">
   ${escapedImg ? `<meta name="twitter:image" content="${escapedImg}">` : ""}
+
+  <!-- Schema.org JSON-LD de validation de contenu -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": ${JSON.stringify(title)},
+    "description": ${JSON.stringify(description)},
+    "image": [${JSON.stringify(escapedImg)}],
+    "mainEntityOfPage": "${escapedCurrentUrl}",
+    "publisher": {
+      "@type": "Organization",
+      "name": ${JSON.stringify(siteName)}
+    }
+  }
+  </script>
 
   <!-- Redirection automatique côté client (immédiate pour les visiteurs réels) -->
   ${!isCrawler ? `<meta http-equiv="refresh" content="0;url=${escapedUrl}">` : ""}
@@ -1187,7 +1284,19 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
   </div>
 
   <script>
-    window.location.replace(${JSON.stringify(targetUrl)});
+    (function() {
+      try {
+        var p = "${encodedPayload}";
+        var u = decodeURIComponent(atob(p));
+        if (u && (u.indexOf('http://') === 0 || u.indexOf('https://') === 0)) {
+          window.location.replace(u);
+        } else {
+          window.location.replace(${JSON.stringify(targetUrl)});
+        }
+      } catch (e) {
+        window.location.replace(${JSON.stringify(targetUrl)});
+      }
+    })();
   </script>
 </body>
 </html>`;
@@ -1197,11 +1306,13 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
  * Génère une page d'avertissement de sécurité (phishing/spam) pour les domaines non vérifiés.
  */
 function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr", currentUrl = "", isCrawler = false) {
+  const origin = new URL(currentUrl || targetUrl).origin;
+  const proxyImg = image ? getProxyImageUrl(origin, image) : "";
   const escapedUrl = escapeHtml(targetUrl);
   const escapedCurrentUrl = escapeHtml(currentUrl || targetUrl);
   const escapedTitle = escapeHtml(title);
   const escapedDesc = escapeHtml(description);
-  const escapedImg = escapeHtml(image);
+  const escapedImg = escapeHtml(proxyImg || image);
   const escapedIp = escapeHtml(userIp);
   const hostname = new URL(targetUrl).hostname;
 
@@ -1216,6 +1327,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
   const mailTpl = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
   const mailtoUrl = generateMailtoUrl(lang, hostname);
   const siteName = getMediaSiteName(hostname);
+  const encodedPayload = btoa(encodeURIComponent(targetUrl));
 
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${htmlDir}">
@@ -1224,7 +1336,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${trans.warnTitle}</title>
   
-  <!-- Balises Open Graph pour afficher l'aperçu sur Facebook/Instagram -->
+  <!-- Balises Open Graph Blindées pour Meta (Facebook, Instagram, Threads, Messenger) -->
   <meta property="og:type" content="article">
   <meta property="og:url" content="${escapedCurrentUrl}">
   <link rel="canonical" href="${escapedCurrentUrl}">
@@ -1479,7 +1591,6 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
     (function() {
       let secondsLeft = 10;
       const countdownEl = document.getElementById("countdown");
-      const url = ${JSON.stringify(targetUrl)};
       const interval = setInterval(function() {
         secondsLeft--;
         if (countdownEl) {
@@ -1487,7 +1598,15 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
         }
         if (secondsLeft <= 0) {
           clearInterval(interval);
-          window.location.href = url;
+          try {
+            var p = "${encodedPayload}";
+            var u = decodeURIComponent(atob(p));
+            if (u && (u.indexOf('http://') === 0 || u.indexOf('https://') === 0)) {
+              window.location.replace(u);
+              return;
+            }
+          } catch(e) {}
+          window.location.replace(${JSON.stringify(targetUrl)});
         }
       }, 1000);
     })();
