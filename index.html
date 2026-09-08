@@ -2580,22 +2580,29 @@
 
       // 1. Appel API /api/create
       try {
-        const createRes = await fetch(`${WORKER_URL}/api/create`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: rawUrl, lang: currentLang })
-        });
-        if (createRes.status === 403) {
-          const errData = await createRes.json().catch(() => ({}));
-          showError(trans.sourceBlockedAlert || ("🛑 " + (errData.error || "Ce domaine ou type de contenu est interdit par sécurité.")));
-          resultArea.classList.add('hidden');
-          return;
-        }
-        if (createRes.ok) {
-          const createData = await createRes.json();
-          if (createData.shortLink) currentGeneratedLinks.short = createData.shortLink;
-          if (createData.link) currentGeneratedLinks.mirror = createData.link;
-          updateFormatTabUI();
+        const createCtrl = new AbortController();
+        const createTimeout = setTimeout(() => createCtrl.abort(), 4000);
+        try {
+          const createRes = await fetch(`${WORKER_URL}/api/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: rawUrl, lang: currentLang }),
+            signal: createCtrl.signal
+          });
+          if (createRes.status === 403) {
+            const errData = await createRes.json().catch(() => ({}));
+            showError(trans.sourceBlockedAlert || ("🛑 " + (errData.error || "Ce domaine ou type de contenu est interdit par sécurité.")));
+            resultArea.classList.add('hidden');
+            return;
+          }
+          if (createRes.ok) {
+            const createData = await createRes.json();
+            if (createData.shortLink) currentGeneratedLinks.short = createData.shortLink;
+            if (createData.link) currentGeneratedLinks.mirror = createData.link;
+            updateFormatTabUI();
+          }
+        } finally {
+          clearTimeout(createTimeout);
         }
       } catch (createErr) {
         console.warn("Mode fallback direct actif :", createErr);
@@ -2603,8 +2610,16 @@
 
       // 2. Fetch Card Preview (JSON Mode)
       try {
+        const previewCtrl = new AbortController();
+        const previewTimeout = setTimeout(() => previewCtrl.abort(), 4500);
         const previewApiUrl = `${WORKER_URL}?url=${encodedUrl}&json=1`;
-        const response = await fetch(previewApiUrl);
+        
+        let response;
+        try {
+          response = await fetch(previewApiUrl, { signal: previewCtrl.signal });
+        } finally {
+          clearTimeout(previewTimeout);
+        }
         
         if (response.status === 403) {
           const blockData = await response.json().catch(() => ({}));
@@ -2728,7 +2743,14 @@
 
     async function loadStats() {
       try {
-        const response = await fetch(`${WORKER_URL}/api/stats`);
+        const statsCtrl = new AbortController();
+        const statsTimeout = setTimeout(() => statsCtrl.abort(), 3500);
+        let response;
+        try {
+          response = await fetch(`${WORKER_URL}/api/stats`, { signal: statsCtrl.signal });
+        } finally {
+          clearTimeout(statsTimeout);
+        }
         if (!response.ok) throw new Error("Erreur API");
         const data = await response.json();
         

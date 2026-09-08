@@ -804,23 +804,30 @@ export default {
             return new Response(null, { status: 403, headers: CORS_HEADERS });
           }
 
-          const imgRes = await fetch(targetImgUrl, {
-            headers: {
-              "User-Agent": SPOOF_HEADERS["User-Agent"],
-              "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
-              "Referer": new URL(targetImgUrl).origin
-            }
-          });
-          if (imgRes.ok) {
-            const contentType = imgRes.headers.get("Content-Type") || "image/jpeg";
-            return new Response(imgRes.body, {
-              status: 200,
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 secondes max (Anti-Slowloris)
+          try {
+            const imgRes = await fetch(targetImgUrl, {
               headers: {
-                "Content-Type": contentType,
-                "Cache-Control": "public, max-age=604800, s-maxage=604800",
-                ...CORS_HEADERS
-              }
+                "User-Agent": SPOOF_HEADERS["User-Agent"],
+                "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                "Referer": new URL(targetImgUrl).origin
+              },
+              signal: controller.signal
             });
+            if (imgRes.ok) {
+              const contentType = imgRes.headers.get("Content-Type") || "image/jpeg";
+              return new Response(imgRes.body, {
+                status: 200,
+                headers: {
+                  "Content-Type": contentType,
+                  "Cache-Control": "public, max-age=604800, s-maxage=604800",
+                  ...CORS_HEADERS
+                }
+              });
+            }
+          } finally {
+            clearTimeout(timeoutId);
           }
         }
       } catch (e) {}
@@ -1156,65 +1163,73 @@ export default {
     };
 
     try {
-      // Effectuer la requête vers le média canadien avec nos en-têtes de spoofing
-      const response = await fetch(targetUrl.href, {
-        headers: SPOOF_HEADERS,
-        redirect: "follow"
-      });
+      // Effectuer la requête vers le média canadien avec nos en-têtes de spoofing et un timeout explicite anti-Slowloris
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 secondes max (Anti-Slowloris)
 
-      if (response.ok) {
-        const rewriter = new HTMLRewriter()
-          .on('meta[property="og:title"]', {
-            element(el) { meta.title = el.getAttribute("content") || ""; }
-          })
-          .on('meta[property="og:description"]', {
-            element(el) { meta.description = el.getAttribute("content") || ""; }
-          })
-          .on('meta[property="og:image"]', {
-            element(el) { meta.image = el.getAttribute("content") || ""; }
-          })
-          .on('meta[property="og:type"]', {
-            element(el) { meta.ogType = el.getAttribute("content") || ""; }
-          })
-          .on('meta[property="article:author"], meta[name="author"]', {
-            element(el) { meta.author = el.getAttribute("content") || ""; }
-          })
-          .on('meta[property="article:published_time"], meta[name="date"]', {
-            element(el) { meta.publishedTime = el.getAttribute("content") || ""; }
-          })
-          .on('meta[name="twitter:title"]', {
-            element(el) { meta.twitterTitle = el.getAttribute("content") || ""; }
-          })
-          .on('meta[name="twitter:description"]', {
-            element(el) { meta.twitterDescription = el.getAttribute("content") || ""; }
-          })
-          .on('meta[name="twitter:image"]', {
-            element(el) { meta.twitterImage = el.getAttribute("content") || ""; }
-          })
-          .on('title', {
-            text(textChunk) { meta.standardTitle += textChunk.text; }
-          })
-          .on('script[type="application/ld+json"]', {
-            text(textChunk) {
-              if (textChunk.text && (textChunk.text.includes("NewsArticle") || textChunk.text.includes("Article") || textChunk.text.includes("ReportageNewsArticle"))) {
-                meta.schemaType += textChunk.text;
-              }
-            }
-          })
-          .on('article img, main img, header img', {
-            element(el) {
-              const src = el.getAttribute("src");
-              if (src && meta.fallbackImages.length < 5) {
-                meta.fallbackImages.push(src);
-              }
-            }
-          });
+      try {
+        const response = await fetch(targetUrl.href, {
+          headers: SPOOF_HEADERS,
+          redirect: "follow",
+          signal: controller.signal
+        });
 
-        const transformedResponse = rewriter.transform(response);
-        await transformedResponse.arrayBuffer(); // Déclenche le parsing
+        if (response.ok) {
+          const rewriter = new HTMLRewriter()
+            .on('meta[property="og:title"]', {
+              element(el) { meta.title = el.getAttribute("content") || ""; }
+            })
+            .on('meta[property="og:description"]', {
+              element(el) { meta.description = el.getAttribute("content") || ""; }
+            })
+            .on('meta[property="og:image"]', {
+              element(el) { meta.image = el.getAttribute("content") || ""; }
+            })
+            .on('meta[property="og:type"]', {
+              element(el) { meta.ogType = el.getAttribute("content") || ""; }
+            })
+            .on('meta[property="article:author"], meta[name="author"]', {
+              element(el) { meta.author = el.getAttribute("content") || ""; }
+            })
+            .on('meta[property="article:published_time"], meta[name="date"]', {
+              element(el) { meta.publishedTime = el.getAttribute("content") || ""; }
+            })
+            .on('meta[name="twitter:title"]', {
+              element(el) { meta.twitterTitle = el.getAttribute("content") || ""; }
+            })
+            .on('meta[name="twitter:description"]', {
+              element(el) { meta.twitterDescription = el.getAttribute("content") || ""; }
+            })
+            .on('meta[name="twitter:image"]', {
+              element(el) { meta.twitterImage = el.getAttribute("content") || ""; }
+            })
+            .on('title', {
+              text(textChunk) { meta.standardTitle += textChunk.text; }
+            })
+            .on('script[type="application/ld+json"]', {
+              text(textChunk) {
+                if (textChunk.text && (textChunk.text.includes("NewsArticle") || textChunk.text.includes("Article") || textChunk.text.includes("ReportageNewsArticle"))) {
+                  meta.schemaType += textChunk.text;
+                }
+              }
+            })
+            .on('article img, main img, header img', {
+              element(el) {
+                const src = el.getAttribute("src");
+                if (src && meta.fallbackImages.length < 5) {
+                  meta.fallbackImages.push(src);
+                }
+              }
+            });
+
+          const transformedResponse = rewriter.transform(response);
+          await transformedResponse.arrayBuffer(); // Déclenche le parsing
+        }
+      } finally {
+        clearTimeout(timeoutId);
       }
     } catch (err) {
-      console.error("Erreur lors du scraping :", err);
+      console.warn("Erreur ou timeout lors du scraping :", err.name === "AbortError" ? "Scraping timeout (4s)" : err.message);
     }
 
     // 6. Appliquer la logique de Fallback et calcul du Mini-Bot Sentinel
