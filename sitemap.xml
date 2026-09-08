@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://bwillou1.github.io/LienLibre/</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bwillou1.github.io/LienLibre/?lang=fr" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bwillou1.github.io/LienLibre/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://bwillou1.github.io/LienLibre/?lang=es" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://bwillou1.github.io/LienLibre/?lang=it" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://bwillou1.github.io/LienLibre/?lang=zh" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://bwillou1.github.io/LienLibre/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bwillou1.github.io/LienLibre/" />
+  </url>
+</urlset>

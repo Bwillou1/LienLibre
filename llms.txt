@@ -1,0 +1,22 @@
+# LienLibre
+
+> LienLibre is an open-source civic tech bridge and proxy designed to preserve the free flow of news and information in Canada, mitigating social platform link bans (such as Meta's C-18 news ban) through privacy-first OpenGraph metadata rendering and transparent instant forwarding.
+
+## Overview
+- Website: https://bwillou1.github.io/LienLibre/
+- Worker Gateway: https://lienlibre.guindonwilliam2.workers.dev
+- Repository: https://github.com/Bwillou1/LienLibre
+- License: MIT License
+
+## Architecture & API
+- `GET /?url=<CANADIAN_NEWS_URL>`: Generates an OpenGraph-compliant HTML bridge with instantaneous client-side redirect for human readers.
+- `POST /api/create`: JSON endpoint. Accepts `{"url": "<URL>", "lang": "fr|en|es|it|zh|ar|cr|iu|in|moh"}` and returns clean short and vanity mirror URLs.
+- `GET /api/stats`: JSON endpoint providing aggregated, fully anonymized click counter statistics.
+- `GET /l/:id`: Resolves short redirection links.
+- `GET /p/:packed`: Stateless, deterministic unpacker for opaque bridge links without database dependency.
+- `GET /i/:base64`: Privacy-preserving image proxy to cache and deliver Open Graph thumbnails without exposing origin media CDN topologies.
+
+## Privacy & Legal Safe Harbor
+- Pure Technical Conduit: LienLibre does not store, host, modify, or republish copyrighted full-text articles.
+- Zero-Logs Policy: No personal identifiers, IP logs, or tracking cookies are collected or retained.
+- User Responsibility: End-users remain solely responsible for the URLs they submit and share.

@@ -1,0 +1,48 @@
+# Robots.txt for LienLibre
+# Open access for Search Engines and AI Crawlers / LLMs
+
+User-agent: *
+Allow: /
+
+# Explicit AI / LLM Crawler Authorizations
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+Sitemap: https://bwillou1.github.io/LienLibre/sitemap.xml
+Sitemap: https://lienlibre.guindonwilliam2.workers.dev/sitemap.xml

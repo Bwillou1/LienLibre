@@ -4,17 +4,74 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="rGoWvGed2lBUcKwVCws0uvsk6V9draTEfNiuQBvzNhM" />
-  <title>LienLibre — Partagez l'actualité canadienne sans censure</title>
+  
+  <title>LienLibre — Passerelle Citoyenne d'Information & Partage d'Actualités</title>
   
   <!-- SEO Meta Tags -->
-  <meta name="description" content="Contournez le blocage de Meta (Facebook/Instagram) sur les médias canadiens. Générez un lien pont gratuit avec aperçu Open Graph complet.">
-  <meta name="keywords" content="LienLibre, Meta, Facebook, Instagram, blocage, médias canadiens, actualités, censure, loi C-18, proxy, Open Graph">
+  <meta name="description" content="LienLibre est une infrastructure citoyenne neutre permettant de préserver l'accès à l'information et le partage d'articles de presse canadiens avec aperçu visuel Open Graph complet.">
+  <meta name="keywords" content="LienLibre, médias canadiens, actualités, liberté de la presse, loi C-18, Open Graph, passerelle civique, déblocage liens Meta, Facebook, Instagram">
+  <meta name="author" content="LienLibre Community">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://bwillou1.github.io/LienLibre/">
   
-  <!-- Open Graph -->
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="LienLibre — Partagez l'actualité canadienne sans censure">
-  <meta property="og:description" content="Contournez le blocage de Meta sur les médias canadiens. Générez un lien pont gratuit en 2 secondes.">
+  <meta property="og:url" content="https://bwillou1.github.io/LienLibre/">
+  <meta property="og:title" content="LienLibre — Passerelle Citoyenne d'Information">
+  <meta property="og:description" content="Générez instantanément des liens ponts transparents avec prévisualisation Open Graph complète pour les articles d'information canadiens.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LienLibre — Passerelle Citoyenne d'Information">
+  <meta name="twitter:description" content="Préservez le libre flux d'information au Canada. Passerelle éphémère et neutre pour partager les actualités.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80">
+
+  <!-- AI & Search Discovery Links -->
+  <link rel="help" href="/llms.txt" type="text/plain" title="LLMs Documentation">
+  <link rel="alternate" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://bwillou1.github.io/LienLibre/#webapp",
+        "name": "LienLibre",
+        "url": "https://bwillou1.github.io/LienLibre/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "description": "Outil civique open-source et passerelle de métadonnées Open Graph pour les articles de presse canadiens.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "CAD"
+        },
+        "license": "https://opensource.org/licenses/MIT",
+        "featureList": [
+          "Génération de lien pont éphémère",
+          "Extraction de métadonnées Open Graph",
+          "Nettoyage automatique des mouchards de pistage",
+          "Redirection transparente et instantanée vers les médias vérifiés",
+          "Respect strict de la vie privée (Zero Log / Zero Cookie)"
+        ]
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://bwillou1.github.io/LienLibre/#organization",
+        "name": "LienLibre Project",
+        "url": "https://bwillou1.github.io/LienLibre/",
+        "logo": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=500&q=80",
+        "sameAs": [
+          "https://github.com/Bwillou1/LienLibre"
+        ]
+      }
+    ]
+  }
+  </script>
   
   <!-- Google Fonts - Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,17 +88,27 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['Outfit', 'sans-serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Outfit', 'system-ui', 'sans-serif'],
           },
           colors: {
             brand: {
-              50: '#ecfeff',
-              100: '#cffafe',
-              500: '#06b6d4',
-              600: '#0891b2',
-              700: '#0e7490',
-              950: '#020617',
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              900: '#0c4a6e',
+              950: '#082f49',
+            },
+            civic: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              800: '#1e293b',
+              850: '#172033',
+              900: '#0f172a',
+              950: '#090d16'
             }
           }
         }
@@ -49,111 +116,138 @@
     }
   </script>
 
-  <!-- Styles personnalisés pour le flou et les animations -->
+  <!-- Custom Aesthetics -->
   <style>
     body {
-      background-color: #020617;
+      background-color: #090d16;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(124, 58, 237, 0.08) 0px, transparent 50%);
+        radial-gradient(at 15% 10%, rgba(14, 165, 233, 0.12) 0px, transparent 40%),
+        radial-gradient(at 85% 15%, rgba(99, 102, 241, 0.12) 0px, transparent 40%),
+        radial-gradient(at 50% 90%, rgba(56, 189, 248, 0.06) 0px, transparent 50%);
       background-attachment: fixed;
     }
     
-    .glass-panel {
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
     
-    .gradient-border {
-      position: relative;
+    .glass-nav {
+      background: rgba(9, 13, 22, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .gradient-border::after {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      background: linear-gradient(to right, #06b6d4, #6366f1);
-      border-radius: inherit;
-      z-index: -1;
-      opacity: 0.15;
-      transition: opacity 0.3s ease;
+
+    .glow-subtle {
+      box-shadow: 0 0 35px -8px rgba(14, 165, 233, 0.25);
     }
-    .gradient-border:hover::after {
-      opacity: 0.3;
+
+    .modal-active {
+      overflow: hidden;
     }
   </style>
 </head>
-<body class="text-zinc-100 min-h-screen flex flex-col justify-between antialiased">
+<body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-cyan-500 selection:text-white">
 
-  <!-- Header / Navigation -->
-  <header class="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between border-b border-zinc-900">
-    <div class="flex items-center gap-3">
-      <div class="h-9 w-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-white">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
-        </svg>
-      </div>
-      <span class="font-display font-extrabold text-2xl tracking-tight bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">LienLibre</span>
-    </div>
-    
-    <div class="flex items-center gap-4 sm:gap-6">
-      <!-- Language Dropdown -->
-      <div class="relative">
-        <select 
-          id="lang-select" 
-          class="bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer"
-        >
-          <option value="fr">🇫🇷 Français</option>
-          <option value="en">🇨🇦 English</option>
-          <option value="ar">💬 العربية</option>
-          <option value="es">🇪🇸 Español</option>
-          <option value="it">🇮🇹 Italiano</option>
-          <option value="zh">🇨🇳 中文</option>
-          <option value="cr">🌾 Nēhiyawēwin</option>
-          <option value="iu">❄️ Inuktitut</option>
-          <option value="in">🌲 Innu-aimun</option>
-          <option value="moh">🦅 Kanien'kéha</option>
-        </select>
-      </div>
+  <!-- Header / Navigation Bar -->
+  <header class="sticky top-0 z-40 w-full glass-nav transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
       
-      <a href="https://github.com/Bwillou1/LienLibre" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-zinc-400 hover:text-zinc-200 transition-colors text-sm font-medium">
-        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-        </svg>
-        <span>Open Source</span>
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg p-1">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-indigo-600 flex items-center justify-center shadow-md shadow-cyan-500/25 group-hover:scale-105 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" class="w-5 h-5 text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+          </svg>
+        </div>
+        <div>
+          <span class="font-display font-extrabold text-xl tracking-tight text-white group-hover:text-cyan-300 transition-colors">Lien<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">Libre</span></span>
+          <span class="hidden sm:inline-block ml-2 text-[11px] font-medium text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-700/60">Civic Tech</span>
+        </div>
       </a>
+      
+      <!-- Quick Navigation & Language Controls -->
+      <div class="flex items-center gap-3 sm:gap-5">
+        <nav class="hidden md:flex items-center gap-5 text-xs font-medium text-slate-300">
+          <a href="#how-it-works" class="hover:text-cyan-400 transition-colors" data-i18n="navHowItWorks">Fonctionnement</a>
+          <a href="#stats-section" id="nav-stats-link" class="hover:text-cyan-400 transition-colors hidden" data-i18n="navStats">Statistiques</a>
+          <button type="button" id="btn-open-legal" class="hover:text-cyan-400 transition-colors text-left" data-i18n="navLegal">Mentions Légales & CGU</button>
+        </nav>
+
+        <div class="h-4 w-[1px] bg-slate-800 hidden md:block"></div>
+
+        <!-- Language Dropdown -->
+        <div class="relative">
+          <label for="lang-select" class="sr-only">Langue / Language</label>
+          <select 
+            id="lang-select" 
+            class="bg-slate-900 border border-slate-700/80 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer shadow-sm hover:border-slate-600 transition-colors"
+          >
+            <option value="fr">🇫🇷 Français</option>
+            <option value="en">🇨🇦 English</option>
+            <option value="ar">💬 العربية</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="cr">🌾 Nēhiyawēwin</option>
+            <option value="iu">❄️ Inuktitut</option>
+            <option value="in">🌲 Innu-aimun</option>
+            <option value="moh">🦅 Kanien'kéha</option>
+          </select>
+        </div>
+        
+        <!-- GitHub Source -->
+        <a 
+          href="https://github.com/Bwillou1/LienLibre" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          title="Consulter le code source sur GitHub"
+          class="flex items-center gap-1.5 text-slate-400 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+        >
+          <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+          </svg>
+          <span class="hidden sm:inline">Code source</span>
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="flex-grow max-w-4xl w-full mx-auto px-6 py-12 flex flex-col items-center justify-center">
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-16 flex flex-col items-center justify-center">
     
     <!-- Hero / Headline -->
     <div class="text-center max-w-2xl mb-10">
-      <div class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-5">
+      <div class="inline-flex items-center gap-2 bg-cyan-950/40 border border-cyan-500/25 text-cyan-300 px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wide mb-6 shadow-sm">
         <span class="flex h-2 w-2 relative">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
         </span>
-        <span data-i18n="heroBadge">Contre le blocage des médias canadiens</span>
+        <span data-i18n="heroBadge">Préservation du libre partage de l'actualité</span>
       </div>
-      <h1 data-i18n="heroTitle" class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-4 leading-tight">
-        Partagez l'actualité <br>
-        <span class="bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">sans censure.</span>
+      
+      <h1 data-i18n="heroTitle" class="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight mb-4 text-white leading-tight">
+        Partagez l'actualité <br class="hidden sm:inline">
+        <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">sans entrave ni censure.</span>
       </h1>
-      <p data-i18n="heroDesc" class="text-zinc-400 text-base sm:text-lg leading-relaxed max-w-xl mx-auto">
-        Meta bloque les liens d'information au Canada ? Collez votre lien bloqué pour générer un pont affichant correctement la miniature sur les réseaux sociaux.
+      
+      <p data-i18n="heroDesc" class="text-slate-400 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+        Générez en un clic un lien passerelle sécurisé avec miniature complète et métadonnées Open Graph pour relayer l'information canadienne sur tous les réseaux sociaux.
       </p>
     </div>
 
-    <!-- Generator Panel -->
-    <div class="w-full glass-panel gradient-border rounded-2xl p-6 sm:p-8 shadow-2xl relative">
+    <!-- Generator Panel Card -->
+    <div class="w-full glass-card glow-subtle rounded-2xl p-5 sm:p-8 relative">
       <form id="generator-form" class="space-y-4">
         <div>
-          <label for="url-input" data-i18n="inputLabel" class="block text-sm font-semibold text-zinc-300 mb-2">URL de l'article canadien</label>
-          <div class="relative rounded-lg shadow-sm">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
+          <label for="url-input" data-i18n="inputLabel" class="block text-xs sm:text-sm font-semibold text-slate-300 mb-2">
+            URL de l'article de presse canadien
+          </label>
+          <div class="relative rounded-xl shadow-inner">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-.778.099-1.533.284-2.253" />
               </svg>
@@ -165,148 +259,130 @@
               required
               data-i18n-placeholder="inputPlaceholder"
               placeholder="Ex: https://www.lapresse.ca/actualites/politique/..." 
-              class="block w-full pl-10 pr-4 py-3.5 bg-zinc-950/60 border border-zinc-800 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm transition-all"
+              class="block w-full pl-10 pr-4 py-3 sm:py-3.5 bg-slate-950/80 border border-slate-700/80 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-sm transition-all"
             >
           </div>
         </div>
         
         <button 
           type="submit" 
-          class="w-full bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-600 hover:to-indigo-700 text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg hover:shadow-cyan-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm"
+          id="btn-submit-generate"
+          class="w-full bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 hover:from-cyan-400 hover:via-sky-400 hover:to-indigo-500 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-cyan-500/20 active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-sm"
         >
           <span data-i18n="generateBtn">Générer mon LienLibre</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>
         </button>
       </form>
 
-      <!-- Donation & Extension Goal Banner (Always Visible) -->
-      <div class="mt-6 p-4 bg-gradient-to-r from-cyan-950/30 via-indigo-950/30 to-zinc-900/30 border border-zinc-800/80 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-left">
-        <div class="space-y-1 grow">
-          <h4 data-i18n="donationTitle" class="font-display font-bold text-sm text-cyan-400 flex items-center gap-1.5">
-            <span>🎁</span> Soutenez le projet citoyen
-          </h4>
-          <p data-i18n="donationDesc" class="text-zinc-400 text-xs sm:text-sm leading-relaxed max-w-xl">
-            Faites un don volontaire pour m'aider à améliorer l'outil ! Si nous atteignons un objectif de <strong>5 $</strong>, je vais développer et publier l'<strong>extension officielle Chrome et Firefox</strong> pour générer des liens en un seul clic !
-          </p>
-        </div>
-        <a 
-          href="https://payments.mydoh.me/3b459096-54c4-435e-b0e9-95883f8eb2bd?source=copy" 
-          id="donation-link"
-          target="_blank" 
-          rel="noopener noreferrer" 
-          class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2.5 rounded-lg shadow-lg shadow-indigo-600/10 active:scale-[0.97] transition-all flex items-center justify-center gap-1.5 shrink-0 w-full sm:w-auto"
-        >
-          <span>☕</span>
-          <span data-i18n="donationBtn">Faire un don</span>
-        </a>
-      </div>
-
       <!-- Error Message -->
-      <div id="error-message" class="hidden mt-4 p-3 bg-red-950/30 border border-red-500/20 text-red-400 rounded-lg text-sm flex items-start gap-2.5">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 shrink-0 mt-0.5">
+      <div id="error-message" class="hidden mt-4 p-3.5 bg-red-950/40 border border-red-500/30 text-red-300 rounded-xl text-xs sm:text-sm flex items-start gap-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 shrink-0 text-red-400 mt-0.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
         </svg>
         <span id="error-text" data-i18n="errorScrape">Une erreur est survenue lors du traitement de l'URL.</span>
       </div>
 
-      <!-- Result Area (Hidden initially) -->
-      <div id="result-area" class="hidden mt-8 space-y-6 pt-6 border-t border-zinc-800/80">
+      <!-- Result Area -->
+      <div id="result-area" class="hidden mt-8 space-y-6 pt-6 border-t border-slate-800">
         
         <!-- Output Link Box -->
-        <div class="space-y-2">
+        <div class="space-y-3">
           <div class="flex items-center justify-between flex-wrap gap-2">
-            <label data-i18n="resultLabel" class="block text-sm font-semibold text-zinc-300">Votre LienLibre généré</label>
-            <div class="flex items-center gap-1.5 bg-zinc-950/90 p-1 rounded-lg border border-zinc-800">
+            <label data-i18n="resultLabel" class="block text-xs sm:text-sm font-semibold text-slate-200">Votre lien passerelle prêt à être partagé</label>
+            <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800">
               <button type="button" id="btn-format-short" class="px-2.5 py-1 text-xs rounded-md bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-medium transition-all shadow-sm">
                 <span data-i18n="formatShort">⚡ Lien court (Anti-blocage)</span>
               </button>
-              <button type="button" id="btn-format-mirror" class="px-2.5 py-1 text-xs rounded-md text-zinc-400 hover:text-zinc-200 font-medium transition-all">
+              <button type="button" id="btn-format-mirror" class="px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all">
                 <span data-i18n="formatMirror">📰 Lien miroir (Fidèle)</span>
               </button>
             </div>
-            <span id="tracking-cleaned-badge" data-i18n="trackingCleaned" class="hidden text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full flex items-center gap-1 font-medium">
+            <span id="tracking-cleaned-badge" data-i18n="trackingCleaned" class="hidden text-[11px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1 font-medium">
               🧹 Pistage nettoyé
             </span>
           </div>
+
           <div class="flex flex-col sm:flex-row gap-2">
-            <div class="grow bg-zinc-950/80 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-cyan-400 font-mono select-all break-all flex items-center justify-between">
+            <div class="grow bg-slate-950/90 border border-slate-800 rounded-xl px-4 py-3 text-xs sm:text-sm text-cyan-300 font-mono select-all break-all flex items-center justify-between shadow-inner">
               <span id="output-url"></span>
             </div>
             <button 
               id="copy-btn"
-              class="bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium px-5 py-3 rounded-lg text-sm transition-all active:scale-95 shrink-0 flex items-center justify-center gap-2"
+              class="bg-slate-800 hover:bg-slate-700 text-white font-medium px-5 py-3 rounded-xl text-xs sm:text-sm transition-all active:scale-95 shrink-0 flex items-center justify-center gap-2 border border-slate-700/80"
             >
-              <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+              <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-300">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
               </svg>
               <svg id="copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-emerald-400 hidden">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
               </svg>
-              <span id="copy-btn-text" data-i18n="copyBtn">Copier</span>
+              <span id="copy-btn-text" data-i18n="copyBtn">Copier le lien</span>
             </button>
           </div>
         </div>
 
         <!-- Unverified Domain Alert -->
-        <div id="unverified-warning" class="hidden p-4 bg-amber-950/20 border border-amber-500/25 text-amber-300 rounded-lg text-xs leading-relaxed space-y-2">
-          <div class="font-semibold flex items-center gap-1.5 text-amber-400">
+        <div id="unverified-warning" class="hidden p-4 bg-amber-950/30 border border-amber-500/30 text-amber-200 rounded-xl text-xs leading-relaxed space-y-2.5">
+          <div class="font-semibold flex items-center gap-2 text-amber-300">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4 shrink-0">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
             </svg>
-            <span data-i18n="unverifiedTitle">Domaine non vérifié</span>
+            <span data-i18n="unverifiedTitle">Média local ou domaine non listé</span>
           </div>
-          <p data-i18n="unverifiedDesc">Ce site ne figure pas dans notre liste blanche de confiance des médias d'information canadiens. L'aperçu miniature fonctionnera sur les réseaux sociaux, mais un écran d'avertissement de sécurité sera affiché aux visiteurs avant de les rediriger vers la cible.</p>
-          <div class="pt-1 flex items-center">
-            <a id="unverified-mailto-link" href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/30 rounded-lg text-[11px] font-medium transition-colors">
+          <p data-i18n="unverifiedDesc">
+            Ce site ne figure pas encore dans notre annuaire des médias canadiens reconnus. L'aperçu fonctionnera parfaitement sur les réseaux sociaux, et une page intermédiaire de sécurité préviendra les visiteurs avant la redirection.
+          </p>
+          <div class="pt-1">
+            <a id="unverified-mailto-link" href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-100 border border-amber-500/40 rounded-lg text-xs font-medium transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
                 <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z" />
                 <path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z" />
               </svg>
-              <span data-i18n="unverifiedMailtoBtn">Demander l'ajout de ce média (Courriel)</span>
+              <span data-i18n="unverifiedMailtoBtn">Demander l'ajout de ce média (Courriel préparé)</span>
             </a>
           </div>
         </div>
 
         <!-- Preview Card Section -->
-        <div class="space-y-3">
+        <div class="space-y-3 pt-2">
           <div class="flex items-center justify-between">
-            <span data-i18n="previewTitle" class="block text-sm font-semibold text-zinc-300">Aperçu de la carte sur les réseaux sociaux</span>
-            <span class="text-xs text-zinc-500 flex items-center gap-1.5">
-              <span class="h-1.5 w-1.5 bg-cyan-400 rounded-full"></span>
-              <span data-i18n="previewLive">Généré en direct par le Worker</span>
+            <span data-i18n="previewTitle" class="block text-xs sm:text-sm font-semibold text-slate-300">Aperçu visuel (Open Graph Card)</span>
+            <span class="text-[11px] text-slate-400 flex items-center gap-1.5">
+              <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+              <span data-i18n="previewLive">Extrait en temps réel</span>
             </span>
           </div>
 
-          <!-- Live Mock Card -->
-          <div id="preview-card" class="bg-[#18191a] border border-[#2f3031] rounded-xl overflow-hidden shadow-xl max-w-lg mx-auto transition-all duration-300">
+          <!-- Realistic Social Feed Mock Card -->
+          <div id="preview-card" class="bg-[#18191a] border border-[#2f3031] rounded-xl overflow-hidden shadow-2xl max-w-lg mx-auto transition-all">
             
             <!-- Skeleton Loader -->
             <div id="preview-skeleton" class="animate-pulse space-y-3">
-              <div class="bg-zinc-800 h-48 w-full"></div>
-              <div class="p-4 space-y-3">
-                <div class="bg-zinc-800 h-3 w-1/4 rounded"></div>
-                <div class="bg-zinc-800 h-4 w-3/4 rounded"></div>
-                <div class="bg-zinc-800 h-3 w-5/6 rounded"></div>
+              <div class="bg-slate-800 h-44 w-full"></div>
+              <div class="p-4 space-y-2.5">
+                <div class="bg-slate-800 h-3 w-1/4 rounded"></div>
+                <div class="bg-slate-800 h-4 w-3/4 rounded"></div>
+                <div class="bg-slate-800 h-3 w-5/6 rounded"></div>
               </div>
             </div>
 
-            <!-- Real Preview Content (Hidden initially) -->
+            <!-- Real Preview Content -->
             <div id="preview-content" class="hidden">
-              <div class="relative bg-zinc-900 aspect-video overflow-hidden border-b border-[#2f3031]">
+              <div class="relative bg-slate-900 aspect-video overflow-hidden border-b border-[#2f3031]">
                 <img id="preview-img" src="" alt="Aperçu de l'article" class="w-full h-full object-cover">
-                <div id="preview-img-placeholder" class="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950 flex flex-col items-center justify-center text-zinc-600 gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
+                <div id="preview-img-placeholder" class="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-950 flex flex-col items-center justify-center text-slate-500 gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                   </svg>
                   <span data-i18n="previewPlaceholder" class="text-xs">Pas d'image détectée (redirection préservée)</span>
                 </div>
               </div>
-              <div class="p-3 text-left">
-                <span id="preview-domain" class="text-[12px] text-[#b0b3b8] uppercase font-sans tracking-wide block mb-1"></span>
+              <div class="p-3.5 text-left">
+                <span id="preview-domain" class="text-[11px] text-[#b0b3b8] uppercase font-mono tracking-wider block mb-1"></span>
                 <h4 id="preview-title" class="text-sm font-semibold text-[#e4e6eb] leading-snug line-clamp-2 mb-1"></h4>
-                <p id="preview-desc" class="text-[12px] text-[#b0b3b8] line-clamp-2 leading-normal"></p>
+                <p id="preview-desc" class="text-xs text-[#b0b3b8] line-clamp-2 leading-relaxed"></p>
               </div>
             </div>
           </div>
@@ -315,54 +391,55 @@
     </div>
 
     <!-- Explainer / How it works Section -->
-    <section class="w-full mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-zinc-900">
-      <div class="space-y-3">
-        <h3 class="font-display font-bold text-xl text-cyan-400 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+    <section id="how-it-works" class="w-full mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-slate-800/80">
+      
+      <div class="glass-card rounded-2xl p-6 space-y-3">
+        <h3 class="font-display font-bold text-lg text-cyan-400 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-cyan-400">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
           </svg>
           <span data-i18n="whyTitle">Pourquoi LienLibre ?</span>
         </h3>
-        <p data-i18n="whyDesc" class="text-zinc-400 text-sm leading-relaxed">
-          En réponse à la loi canadienne sur les nouvelles en ligne (Loi C-18), Meta a bloqué le partage d'actualités au Canada. Cette mesure empêche la publication et la visualisation de miniatures d'articles sur Facebook et Instagram. LienLibre agit comme une passerelle neutre pour contourner cette restriction sans enfreindre la loi.
+        <p data-i18n="whyDesc" class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+          En réponse à la Loi sur les nouvelles en ligne (Loi C-18), Meta a bloqué le partage et l'affichage d'articles de presse canadiens sur Facebook et Instagram. LienLibre agit comme une passerelle technique citoyenne neutre pour rétablir l'accès à l'information publique et aux nouvelles locales.
         </p>
       </div>
 
-      <div class="space-y-3">
-        <h3 class="font-display font-bold text-xl text-indigo-400 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+      <div class="glass-card rounded-2xl p-6 space-y-3">
+        <h3 class="font-display font-bold text-lg text-indigo-400 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-indigo-400">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 21l8.982-11.795H11.72l1.309-6H4.33L18 14.158H9.813Z" />
           </svg>
-          <span data-i18n="howTitle">Comment ça fonctionne ?</span>
+          <span data-i18n="howTitle">Comment fonctionne la passerelle ?</span>
         </h3>
-        <p data-i18n="howDesc" class="text-zinc-400 text-sm leading-relaxed">
-          Le lien généré pointe vers notre serveur proxy (Cloudflare Worker). Lorsque le robot de Facebook scanne ce lien, le Worker télécharge l'article original, extrait ses balises Open Graph (image, titre, description) et lui renvoie. Pour un utilisateur normal, la redirection vers un média vérifié est transparente et instantanée (0 seconde). Si le lien redirige vers un site suspect ou non vérifié, un écran d'avertissement avec un compte à rebours de 10 secondes s'affiche pour prévenir le hameçonnage.
+        <p data-i18n="howDesc" class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+          Le lien créé renvoie vers notre proxy ultra-rapide. Lorsque les robots d'indexation scannent la page, celle-ci leur fournit les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage.
         </p>
       </div>
     </section>
 
     <!-- Real-time Stats Section -->
-    <section id="stats-section" class="w-full mt-12 bg-zinc-900/20 border border-zinc-800/80 rounded-xl p-6 hidden">
+    <section id="stats-section" class="w-full mt-10 glass-card rounded-2xl p-6 hidden">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h3 class="font-display font-bold text-lg text-emerald-400 flex items-center gap-2">
+          <h3 class="font-display font-bold text-base sm:text-lg text-emerald-400 flex items-center gap-2">
             <span class="flex h-2.5 w-2.5 relative">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
-            <span data-i18n="statsTitle">Impact en temps réel (Open Data)</span>
+            <span data-i18n="statsTitle">Impact Civique en direct (Open Data)</span>
           </h3>
-          <p data-i18n="statsDesc" class="text-zinc-500 text-xs">Statistiques anonymes et publiques de contournement du blocage Meta.</p>
+          <p data-i18n="statsDesc" class="text-slate-400 text-xs">Statistiques globales et agrégées en temps réel.</p>
         </div>
-        <div class="flex items-baseline gap-2 bg-zinc-950/80 border border-zinc-850 px-4 py-2 rounded-lg">
-          <span id="total-clicks-count" class="font-mono text-2xl font-bold text-emerald-400">0</span>
-          <span data-i18n="statsCountLabel" class="text-xs text-zinc-400">clics contournés</span>
+        <div class="flex items-baseline gap-2 bg-slate-950 px-4 py-2 rounded-xl border border-slate-800">
+          <span id="total-clicks-count" class="font-mono text-xl sm:text-2xl font-bold text-emerald-400">0</span>
+          <span data-i18n="statsCountLabel" class="text-xs text-slate-400">articles partagés</span>
         </div>
       </div>
       
-      <div class="space-y-4">
-        <h4 data-i18n="statsTopDomains" class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Top des domaines de presse partagés</h4>
-        <div id="top-domains-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="space-y-3">
+        <h4 data-i18n="statsTopDomains" class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Top des domaines de presse consultés</h4>
+        <div id="top-domains-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <!-- Populated dynamically -->
         </div>
       </div>
@@ -370,242 +447,372 @@
 
   </main>
 
-  <footer class="w-full max-w-7xl mx-auto px-6 py-6 text-center text-xs text-zinc-600 border-t border-zinc-910">
-    <p data-i18n="footerText">LienLibre est un outil open-source distribué sous licence MIT. Aucune donnée n'est stockée ni enregistrée sur nos serveurs.</p>
+  <!-- Footer -->
+  <footer class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 border-t border-slate-800/80 text-xs text-slate-500">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+      <div class="space-y-1">
+        <p class="font-medium text-slate-400">LienLibre — Projet d'utilité civique & passerelle open-source</p>
+        <p data-i18n="footerText">Distribué sous licence MIT. Outil technique éphémère sans journalisation de données personnelles.</p>
+      </div>
+      
+      <div class="flex items-center gap-5">
+        <button type="button" id="btn-footer-legal" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium underline-offset-4 hover:underline" data-i18n="navLegal">
+          Avis Juridique & Conditions d'Utilisation
+        </button>
+        <span>•</span>
+        <a href="https://github.com/Bwillou1/LienLibre" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition-colors">
+          GitHub
+        </a>
+      </div>
+    </div>
   </footer>
 
-  <!-- Script Front -->
+  <!-- ========================================================================= -->
+  <!-- MODAL : Mentions Légales, Safe Harbor & Clause de Non-Responsabilité Totale -->
+  <!-- ========================================================================= -->
+  <div id="legal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden" role="dialog" aria-modal="true" aria-labelledby="modal-legal-title">
+    <div id="legal-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"></div>
+    
+    <div class="relative w-full max-w-3xl max-h-[85vh] flex flex-col bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-10">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
+            </svg>
+          </div>
+          <h3 id="modal-legal-title" class="font-display font-bold text-base sm:text-lg text-white">
+            Avis Juridique, Safe Harbor & Clause de Non-Responsabilité
+          </h3>
+        </div>
+        <button type="button" id="btn-close-legal" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors" aria-label="Fermer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable Legal Text) -->
+      <div class="p-6 overflow-y-auto space-y-6 text-slate-300 text-xs sm:text-sm leading-relaxed divide-y divide-slate-800/80">
+        
+        <div class="space-y-2 pt-1">
+          <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
+            <span>1.</span> Rôle technique & Statut de Simple Conduit (Safe Harbor)
+          </h4>
+          <p>
+            LienLibre est une plateforme technique open-source agissant exclusivement comme un <strong>intermédiaire technique automatisé et passif</strong> (qualifié de <em>simple conduit</em> ou transmetteur technique neutre) au sens de l'<strong>article 31.1 de la Loi sur le droit d'auteur du Canada (L.R.C. (1985), ch. C-42)</strong> et des principes équivalents de neutralité du réseau.
+          </p>
+          <p>
+            Le service ne sélectionne pas le destinataire, n'initie aucune transmission, ne stocke aucun article de presse de manière permanente et n'altère en aucun cas le contenu intellectuel ou journalistique des œuvres vers lesquelles les liens pointent.
+          </p>
+        </div>
+
+        <div class="space-y-2 pt-4">
+          <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
+            <span>2.</span> Exonération Totale de Responsabilité de l'Auteur / Développeur
+          </h4>
+          <p>
+            LienLibre, ses concepteurs, mainteneurs et contributeurs <strong>déclinent formellement et irrévocablement toute responsabilité</strong> quant à l'usage fait de cet outil par les utilisateurs tiers.
+          </p>
+          <p>
+            Le service est fourni <strong>« EN L'ÉTAT » (« AS IS »)</strong>, sans garantie d'aucune sorte, expresse ou implicite, incluant mais sans s'y limiter les garanties de disponibilité, de fiabilité, d'adéquation à un usage particulier ou de non-violation des conditions d'utilisation de plateformes tierces (notamment Meta Platforms Inc., Facebook, Instagram, WhatsApp, Threads ou autres).
+          </p>
+        </div>
+
+        <div class="space-y-2 pt-4">
+          <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
+            <span>3.</span> Responsabilité Exclusive de l'Utilisateur
+          </h4>
+          <p>
+            Chaque internaute utilisant le service est <strong>seul et entièrement responsable</strong> des URLs soumises, des liens générés et de la diffusion de ceux-ci sur les réseaux ou auprès du public. Il incombe à l'utilisateur de vérifier qu'il est en droit de partager lesdits liens conformément aux lois applicables et aux politiques contractuelles des plateformes tierces qu'il choisit d'employer.
+          </p>
+        </div>
+
+        <div class="space-y-2 pt-4">
+          <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
+            <span>4.</span> Propriété Intellectuelle & Droits des Médias
+          </h4>
+          <p>
+            Tous les titres, photographies d'illustration, noms de domaine, marques de commerce et extraits d'articles affichés dans les cartes Open Graph <strong>demeurent la propriété exclusive de leurs auteurs, journalistes et éditeurs de presse d'origine respectifs</strong>.
+          </p>
+          <p>
+            L'extraction de ces métadonnées publiques sert uniquement à générer une représentation visuelle fidèle pour faciliter la redirection directe et transparente vers la source originale légitime.
+          </p>
+        </div>
+
+        <div class="space-y-2 pt-4">
+          <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
+            <span>5.</span> Confidentialité & Respect de la Vie Privée (Privacy by Design)
+          </h4>
+          <p>
+            LienLibre applique une politique stricte de <strong>zéro journalisation de données personnelles</strong> :
+          </p>
+          <ul class="list-disc pl-5 space-y-1 text-slate-400">
+            <li>Aucun cookie de pistage publicitaire ou tiers n'est utilisé.</li>
+            <li>Aucune adresse IP d'utilisateur n'est conservée ni stockée sur nos serveurs.</li>
+            <li>Les paramètres de pistage publicitaire (tels que <code class="text-slate-300 font-mono">fbclid</code>, <code class="text-slate-300 font-mono">utm_*</code>) sont systématiquement supprimés des liens.</li>
+            <li>Seules des métriques globales et anonymes de clics peuvent être agrégées pour évaluer l'impact civique.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-2 pt-4">
+          <h4 class="font-semibold text-cyan-400 text-sm flex items-center gap-1.5">
+            <span>6.</span> Procédure de Retrait & Contact Ayants Droit (Notice and Notice)
+          </h4>
+          <p>
+            Tout éditeur de presse ou titulaire de droits souhaitant signaler une anomalie, demander l'exclusion de son domaine ou exercer un droit de retrait peut contacter directement l'administration technique à l'adresse suivante :
+          </p>
+          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
+            <span class="font-mono text-cyan-400 select-all">guindonwilliam2@gmail.com</span>
+            <a href="mailto:guindonwilliam2@gmail.com?subject=Demande%20de%20retrait%20ou%20signalement%20LienLibre" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-white transition-colors">
+              Écrire
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-800 bg-slate-950/60 flex items-center justify-end shrink-0">
+        <button type="button" id="btn-close-legal-bottom" class="bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs px-5 py-2 rounded-xl shadow transition-colors">
+          J'ai compris et j'accepte
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Client-side Logic -->
   <script>
-    // URL du Worker Cloudflare de production
+    // Worker Endpoint
     const WORKER_URL = 'https://lienlibre.guindonwilliam2.workers.dev';
 
-    // URL pour recevoir les dons
-    const DONATION_URL = 'https://payments.mydoh.me/3b459096-54c4-435e-b0e9-95883f8eb2bd?source=copy'; 
-
-    // Dictionnaire des traductions pour les 10 langues
+    // Traductions complètes pour 10 langues (FR, EN, AR, ES, IT, ZH, CR, IU, IN, MOH)
     const TRANSLATIONS = {
       fr: {
-        heroBadge: "Contre le blocage des médias canadiens",
-        heroTitle: "Partagez l'actualité <br> sans censure.",
-        heroDesc: "Meta bloque les liens d'information au Canada ? Collez votre lien bloqué pour générer un pont affichant correctement la miniature sur les réseaux sociaux.",
-        inputLabel: "URL de l'article canadien",
+        navHowItWorks: "Fonctionnement",
+        navStats: "Statistiques",
+        navLegal: "Mentions Légales & CGU",
+        heroBadge: "Préservation du libre partage de l'actualité",
+        heroTitle: "Partagez l'actualité <br> sans entrave ni censure.",
+        heroDesc: "Générez en un clic un lien passerelle sécurisé avec miniature complète et métadonnées Open Graph pour relayer l'information canadienne sur tous les réseaux sociaux.",
+        inputLabel: "URL de l'article de presse canadien",
         inputPlaceholder: "Ex: https://www.lapresse.ca/actualites/politique/...",
         generateBtn: "Générer mon LienLibre",
-        donationTitle: "🎁 Soutenez le projet citoyen",
-        donationDesc: "Faites un don volontaire pour m'aider à améliorer l'outil ! Si nous atteignons un objectif de <strong>5 $</strong>, je vais développer et publier l'<strong>extension officielle Chrome et Firefox</strong> pour générer des liens en un seul clic !",
-        donationBtn: "Faire un don",
         errorScrape: "Une erreur est survenue lors du traitement de l'URL.",
         errorInvalidUrl: "Veuillez saisir une URL valide commençant par http:// ou https://",
-        resultLabel: "Votre LienLibre généré",
+        resultLabel: "Votre lien passerelle prêt à être partagé",
         formatShort: "⚡ Lien court (Anti-blocage)",
         formatMirror: "📰 Lien miroir (Fidèle)",
         trackingCleaned: "🧹 Pistage nettoyé",
-        copyBtn: "Copier",
+        copyBtn: "Copier le lien",
         copiedText: "Copié !",
-        unverifiedTitle: "Domaine non vérifié",
-        unverifiedDesc: "Ce site ne figure pas dans notre liste blanche de confiance des médias d'information canadiens. L'aperçu miniature fonctionnera sur les réseaux sociaux, mais un écran d'avertissement de sécurité sera affiché aux visiteurs avant de les rediriger vers la cible.",
-        unverifiedMailtoBtn: "Demander l'ajout de ce média (Courriel)",
-        previewTitle: "Aperçu de la carte sur les réseaux sociaux",
-        previewLive: "Généré en direct par le Worker",
+        unverifiedTitle: "Média local ou domaine non listé",
+        unverifiedDesc: "Ce site ne figure pas encore dans notre annuaire des médias canadiens reconnus. L'aperçu fonctionnera parfaitement sur les réseaux sociaux, et une page intermédiaire de sécurité préviendra les visiteurs avant la redirection.",
+        unverifiedMailtoBtn: "Demander l'ajout de ce média (Courriel préparé)",
+        previewTitle: "Aperçu visuel (Open Graph Card)",
+        previewLive: "Extrait en temps réel",
         previewPlaceholder: "Pas d'image détectée (redirection préservée)",
         whyTitle: "Pourquoi LienLibre ?",
-        whyDesc: "En réponse à la loi canadienne sur les nouvelles en ligne (Loi C-18), Meta a bloqué le partage d'actualités au Canada. Cette mesure empêche la publication et la visualisation de miniatures d'articles sur Facebook et Instagram. LienLibre agit comme une passerelle neutre pour contourner cette restriction sans enfreindre la loi.",
-        howTitle: "Comment ça fonctionne ?",
-        howDesc: "Le lien généré pointe vers notre serveur proxy (Cloudflare Worker). Lorsque le robot de Facebook scanne ce lien, le Worker télécharge l'article original, extrait ses balises Open Graph (image, titre, description) et lui renvoie. Pour un utilisateur normal, la redirection vers un média vérifié est transparente et instantanée (0 seconde). Si le lien redirige vers un site suspect ou non vérifié, un écran d'avertissement avec un compte à rebours de 10 secondes s'affiche pour prévenir le hameçonnage.",
-        statsTitle: "Impact en temps réel (Open Data)",
-        statsDesc: "Statistiques anonymes et publiques de contournement du blocage Meta.",
-        statsCountLabel: "clics contournés",
-        statsTopDomains: "Top des domaines de presse partagés",
+        whyDesc: "En réponse à la Loi sur les nouvelles en ligne (Loi C-18), Meta a bloqué le partage et l'affichage d'articles de presse canadiens sur Facebook et Instagram. LienLibre agit comme une passerelle technique citoyenne neutre pour rétablir l'accès à l'information publique et aux nouvelles locales.",
+        howTitle: "Comment fonctionne la passerelle ?",
+        howDesc: "Le lien créé renvoie vers notre proxy ultra-rapide. Lorsque les robots d'indexation scannent la page, celle-ci leur fournit les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage.",
+        statsTitle: "Impact Civique en direct (Open Data)",
+        statsDesc: "Statistiques globales et agrégées en temps réel.",
+        statsCountLabel: "articles partagés",
+        statsTopDomains: "Top des domaines de presse consultés",
         clicksText: "clics",
-        footerText: "LienLibre est un outil open-source distribué sous licence MIT. Aucune donnée n'est stockée ni enregistrée sur nos serveurs."
+        footerText: "Distribué sous licence MIT. Outil technique éphémère sans journalisation de données personnelles."
       },
       en: {
-        heroBadge: "Against the blocking of Canadian media",
+        navHowItWorks: "How it works",
+        navStats: "Statistics",
+        navLegal: "Legal Notice & Terms",
+        heroBadge: "Preserving Free News Sharing",
         heroTitle: "Share the news <br> without censorship.",
-        heroDesc: "Meta blocking news links in Canada? Paste your blocked link to generate a bridge displaying the social media thumbnail correctly.",
-        inputLabel: "Canadian article URL",
+        heroDesc: "Instantly generate a secure bridge link with full thumbnail preview and Open Graph metadata to share Canadian news across social platforms.",
+        inputLabel: "Canadian news article URL",
         inputPlaceholder: "e.g., https://www.cbc.ca/news/politics/...",
         generateBtn: "Generate my LienLibre",
-        donationTitle: "🎁 Support this citizen project",
-        donationDesc: "Make a voluntary donation to help me improve the tool! If we reach a $5 goal, I will develop and publish the official Chrome and Firefox extension to generate links in one click!",
-        donationBtn: "Donate",
         errorScrape: "An error occurred while processing the URL.",
         errorInvalidUrl: "Please enter a valid URL starting with http:// or https://",
-        resultLabel: "Your generated LienLibre",
+        resultLabel: "Your bridge link ready to share",
         formatShort: "⚡ Short link (Anti-blocking)",
         formatMirror: "📰 Mirror link (Full path)",
         trackingCleaned: "🧹 Tracking cleaned",
-        copyBtn: "Copy",
+        copyBtn: "Copy link",
         copiedText: "Copied!",
-        unverifiedTitle: "Unverified domain",
-        unverifiedDesc: "This site is not in our trusted whitelist of Canadian news media. The thumbnail preview will work on social networks, but a security warning screen will be shown to visitors before redirecting them to the destination.",
-        unverifiedMailtoBtn: "Request adding this media (Email)",
-        previewTitle: "Social media card preview",
-        previewLive: "Generated live by the Worker",
+        unverifiedTitle: "Local media or unlisted domain",
+        unverifiedDesc: "This website is not yet in our recognized Canadian media directory. The preview will work smoothly on social networks, and a brief safety interstitial will inform visitors prior to redirection.",
+        unverifiedMailtoBtn: "Request adding this media (Pre-filled email)",
+        previewTitle: "Social Media Card Preview",
+        previewLive: "Extracted in real time",
         previewPlaceholder: "No image detected (redirection preserved)",
         whyTitle: "Why LienLibre?",
-        whyDesc: "In response to the Canadian Online News Act (Bill C-18), Meta blocked news sharing in Canada. This prevents the posting and viewing of article thumbnails on Facebook and Instagram. LienLibre acts as a neutral gateway to bypass this restriction without breaking the law.",
-        howTitle: "How does it work?",
-        howDesc: "The generated link points to our proxy server (Cloudflare Worker). When the Facebook bot crawls this link, the Worker fetches the original article, extracts its Open Graph tags (image, title, description), and returns them. For a normal user, redirection to a verified media outlet is seamless and instant (0 seconds). If the link points to a suspicious or unverified site, a warning screen with a 10-second countdown is displayed to prevent phishing.",
-        statsTitle: "Real-time impact (Open Data)",
-        statsDesc: "Anonymous and public statistics of Meta block bypasses.",
-        statsCountLabel: "bypassed clicks",
-        statsTopDomains: "Top shared news domains",
+        whyDesc: "In response to Canada's Online News Act (Bill C-18), Meta blocked news sharing on Facebook and Instagram. LienLibre acts as a neutral civic bridge to restore public access to journalism and local news.",
+        howTitle: "How does the bridge work?",
+        howDesc: "The generated link routes through our fast proxy. When social web crawlers inspect it, Open Graph preview tags are served. Real visitors are instantly forwarded to the original Canadian source without IP logging or profiling.",
+        statsTitle: "Real-time Civic Impact (Open Data)",
+        statsDesc: "Global aggregated statistics in real time.",
+        statsCountLabel: "shared articles",
+        statsTopDomains: "Top visited news outlets",
         clicksText: "clicks",
-        footerText: "LienLibre is an open-source tool distributed under the MIT license. No data is stored or logged on our servers."
+        footerText: "Distributed under the MIT License. Ephemeral technical conduit with zero personal data logging."
       },
       ar: {
-        heroBadge: "ضد حجب وسائل الإعلام الكندية",
-        heroTitle: "شارك الأخبار <br> بدون رقابة.",
-        heroDesc: "هل تحجب ميتا روابط الأخبار في كندا؟ الصق الرابط المحجوب لإنشاء جسر يعرض الصورة المصغرة بشكل صحيح على وسائل التواصل الاجتماعي.",
-        inputLabel: "رابط المقال الكندي",
+        navHowItWorks: "كيفية العمل",
+        navStats: "الإحصائيات",
+        navLegal: "الشروط القانونية",
+        heroBadge: "حماية حرية تداول الأخبار",
+        heroTitle: "شارك الأخبار <br> بدون قيود أو حظر.",
+        heroDesc: "أنشئ رابط جسر آمن فوريًا مع معاينة مصغرة كاملة وبيانات Open Graph لنشر الأخبار الكندية على جميع الشبكات.",
+        inputLabel: "رابط المقال الإخباري الكندي",
         inputPlaceholder: "مثال: https://www.lapresse.ca/...",
-        generateBtn: "إنشاء رابط LienLibre الخاص بي",
-        donationTitle: "🎁 ادعم هذا المشروع المواطني",
-        donationDesc: "تبرع طواعية لمساعدتي في تحسين الأداة! إذا وصلنا إلى هدف 5 دولارات، سأقوم بتطوير ونشر ملحق متصفح كروم وفايرفوكس الرسمي لإنشاء الروابط بنقرة واحدة!",
-        donationBtn: "تبرع",
+        generateBtn: "إنشاء رابط LienLibre",
         errorScrape: "حدث خطأ أثناء معالجة الرابط.",
         errorInvalidUrl: "يرجى إدخال رابط صالح يبدأ بـ http:// أو https://",
-        resultLabel: "رابط LienLibre الذي تم إنشاؤه",
+        resultLabel: "رابط الجسر جاهز للمشاركة",
         formatShort: "⚡ رابط قصير (مقاوم للحظر)",
-        formatMirror: "📰 رابط متطابق مع الموقع",
+        formatMirror: "📰 رابط متطابق",
         trackingCleaned: "🧹 تم تنظيف التتبع",
-        copyBtn: "نسخ",
+        copyBtn: "نسخ الرابط",
         copiedText: "تم النسخ!",
-        unverifiedTitle: "نطاق غير موثق",
-        unverifiedDesc: "هذا الموقع ليس في قائمتنا البيضاء الموثوقة لوسائل الإعلام الكندية. ستعمل المعاينة المصغرة على الشبكات الاجتماعية، ولكن ستظهر شاشة تحذير أمان للزوار قبل توجيههم.",
-        unverifiedMailtoBtn: "طلب إضافة هذه الوسيلة الإعلامية (بريد إلكتروني)",
-        previewTitle: "معاينة البطاقة على شبكات التواصل",
-        previewLive: "تم إنشاؤه مباشرة بواسطة Worker",
-        previewPlaceholder: "لم يتم العثور على صورة (تم الحفاظ على إعادة التوجيه)",
+        unverifiedTitle: "وسيلة إعلامية محلية أو نطاق غير مدرج",
+        unverifiedDesc: "هذا الموقع غير مدرج بعد في دليلنا الموثوق. ستعمل المعاينة بسلاسة، وستظهر شاشة أمان سريعة للزوار قبل التوجيه.",
+        unverifiedMailtoBtn: "طلب إضافة هذه الوسيلة (بريد مجهز)",
+        previewTitle: "معاينة البطاقة على وسائل التواصل",
+        previewLive: "مستخرج في الوقت الفعلي",
+        previewPlaceholder: "لم يتم العثور على صورة (التوجيه محفوظ)",
         whyTitle: "لماذا LienLibre؟",
-        whyDesc: "رداً على قانون الأخبار عبر الإنترنت الكندي (مشروع القانون C-18)، حظرت شركة ميتا مشاركة الأخبار في كندا. يعمل LienLibre كبوابة محايدة لتجاوز هذا القيد دون خرق القانون.",
-        howTitle: "كيف يعمل؟",
-        howDesc: "يشير الرابط الذي تم إنشاؤه إلى خادم الوكيل الخاص بنا. بالنسبة للمستخدم العادي، تكون إعادة التوجيه إلى وسيلة إعلامية معتمدة سلسة وفورية (0 ثانية). إذا كان الرابط يوجه إلى موقع مشبوه، فسيتم عرض شاشة تحذير مع عد تنازلي مدته 10 ثوانٍ لمنع التصيد الاحتيالي.",
-        statsTitle: "الأثر في الوقت الفعلي (البيانات المفتوحة)",
-        statsDesc: "إحصاءات عامة ومجهولة لتجاوز حظر ميتا.",
-        statsCountLabel: "النقرات التي تم تجاوزها",
-        statsTopDomains: "أكثر نطاقات الصحافة مشاركة",
+        whyDesc: "ردًا على قانون الأخبار الكندي C-18 وحظر ميتا، يعمل LienLibre كجسر تقني محايد لاستعادة وصول الجمهور إلى الصحافة.",
+        howTitle: "كيف يعمل الجسر؟",
+        howDesc: "يوجه الرابط إلى خادمنا الوسيط. يتم إرسال بيانات المعاينة لمحركات الزحف، بينما يُعاد توجيه الزوار الحقيقيين فورًا للصحيفة الأصلية دون تخزين أي عناوين IP.",
+        statsTitle: "الأثر المباشر (بيانات مفتوحة)",
+        statsDesc: "إحصاءات مجمعة في الوقت الفعلي.",
+        statsCountLabel: "مقال تمت مشاركته",
+        statsTopDomains: "أكثر المنافذ الإخبارية زيارة",
         clicksText: "نقرة",
-        footerText: "LienLibre هي أداة مفتوحة المصدر مرخصة بموجب ترخيص MIT. لا يتم تخزين أي بيانات أو تسجيلها على خوادمنا."
+        footerText: "مرخص بموجب MIT. أداة تقنية بدون تسجيل أي بيانات شخصية."
       },
       es: {
-        heroBadge: "Contra el bloqueo de los medios canadienses",
+        navHowItWorks: "Funcionamiento",
+        navStats: "Estadísticas",
+        navLegal: "Aviso Legal y Términos",
+        heroBadge: "Preservando el libre acceso a las noticias",
         heroTitle: "Comparta las noticias <br> sin censura.",
-        heroDesc: "¿Meta bloquea los enlaces de noticias en Canadá? Pegue su enlace bloqueado para generar un puente que muestre correctamente la miniatura en las redes sociales.",
-        inputLabel: "URL del artículo canadiense",
+        heroDesc: "Genere al instante un enlace puente seguro con vista previa y metadatos Open Graph completos para compartir noticias canadienses en redes sociales.",
+        inputLabel: "URL del artículo de noticias canadiense",
         inputPlaceholder: "Ej: https://www.lapresse.ca/...",
         generateBtn: "Generar mi LienLibre",
-        donationTitle: "🎁 Apoye el proyecto ciudadano",
-        donationDesc: "¡Haga una donación voluntaria para ayudarme a mejorar la herramienta! Si alcanzamos una meta de $5, ¡desarrollaré y publicaré la extensión oficial para Chrome y Firefox para generar enlaces con un solo clic!",
-        donationBtn: "Donar",
         errorScrape: "Ocurrió un error al procesar la URL.",
         errorInvalidUrl: "Por favor, ingrese una URL válida que comience con http:// o https://",
-        resultLabel: "Su LienLibre generado",
+        resultLabel: "Su enlace puente listo para compartir",
         formatShort: "⚡ Enlace corto (Antibloqueo)",
         formatMirror: "📰 Enlace espejo (Fiel)",
         trackingCleaned: "🧹 Rastreo eliminado",
-        copyBtn: "Copiar",
+        copyBtn: "Copiar enlace",
         copiedText: "¡Copiado!",
-        unverifiedTitle: "Dominio no verificado",
-        unverifiedDesc: "Este sitio no está en nuestra lista de confianza de medios de comunicación canadienses. La vista previa funcionará en las redes sociales, pero se mostrará una pantalla de advertencia de seguridad a los visitantes antes de redirigirlos.",
-        unverifiedMailtoBtn: "Solicitar la adición de este medio (Correo)",
+        unverifiedTitle: "Medio local o dominio no listado",
+        unverifiedDesc: "Este sitio aún no está en nuestro directorio de medios reconocidos. La vista previa funcionará y una breve pantalla de seguridad informará a los visitantes antes de la redirección.",
+        unverifiedMailtoBtn: "Solicitar adición de este medio (Correo preparado)",
         previewTitle: "Vista previa en redes sociales",
-        previewLive: "Generado en vivo por el Worker",
+        previewLive: "Extraído en tiempo real",
         previewPlaceholder: "No se detectó imagen (redirección preservada)",
         whyTitle: "¿Por qué LienLibre?",
-        whyDesc: "En respuesta a la Ley de Noticias en Línea de Canadá (Ley C-18), Meta bloqueó el intercambio de noticias en Canadá. LienLibre actúa como una pasarela neutral para evitar esta restricción sin infringir la ley.",
-        howTitle: "¿Cómo funciona?",
-        howDesc: "El enlace generado apunta a nuestro servidor proxy. Para un usuario normal, la redirección a un medio verificado es instantánea (0 segundos). Si el enlace redirige a un sitio sospechoso, se muestra una pantalla de advertencia de 10 segundos para evitar el phishing.",
-        statsTitle: "Impacto en tiempo real (Open Data)",
-        statsDesc: "Estadísticas anónimas y públicas del bloqueo de Meta.",
-        statsCountLabel: "clics omitidos",
-        statsTopDomains: "Principales dominios compartidos",
+        whyDesc: "En respuesta a la Ley C-18 y al bloqueo de Meta, LienLibre actúa como una pasarela técnica neutral para restablecer el acceso a las noticias.",
+        howTitle: "¿Cómo funciona la pasarela?",
+        howDesc: "El enlace generado sirve los metadatos a los rastreadores y redirige de inmediato a los visitantes al medio original sin guardar direcciones IP.",
+        statsTitle: "Impacto Cívico en tiempo real (Open Data)",
+        statsDesc: "Estadísticas agregadas en tiempo real.",
+        statsCountLabel: "artículos compartidos",
+        statsTopDomains: "Principales medios consultados",
         clicksText: "clics",
-        footerText: "LienLibre es una herramienta de código abierto distribuida bajo la licencia MIT. No se almacenan datos en nuestros servidores."
+        footerText: "Distribuido bajo licencia MIT. Pasarela técnica efímera sin registro de datos personales."
       },
       it: {
-        heroBadge: "Contro il blocco dei media canadesi",
-        heroTitle: "Condividi le notizie <br> senza censura.",
-        heroDesc: "Meta blocca i link delle notizie in Canada? Incolla il link bloccato per generare un ponte che mostri correttamente l'anteprima sui social network.",
+        navHowItWorks: "Funzionamento",
+        navStats: "Statistiche",
+        navLegal: "Note Legali & Condizioni",
+        heroBadge: "Preservare la libera condivisione delle notizie",
+        heroTitle: "Condividi le notizie <br> senza censure.",
+        heroDesc: "Genera istantaneamente un link ponte sicuro con anteprima completa e metadati Open Graph per condividere l'informazione canadese sui social.",
         inputLabel: "URL dell'articolo canadese",
         inputPlaceholder: "Es: https://www.lapresse.ca/...",
         generateBtn: "Genera il mio LienLibre",
-        donationTitle: "🎁 Sostieni il progetto cittadino",
-        donationDesc: "Fai una donazione volontaria per aiutarmi a migliorare lo strumento! Se raggiungiamo un obiettivo di 5$, svilupperò e pubblicherò l'estensione ufficiale per Chrome e Firefox!",
-        donationBtn: "Dona",
         errorScrape: "Si è verificato un errore durante l'elaborazione dell'URL.",
         errorInvalidUrl: "Inserisci un URL valido che inizi con http:// o https://",
-        resultLabel: "Il tuo LienLibre generato",
+        resultLabel: "Il tuo link pronto per la condivisione",
         formatShort: "⚡ Link corto (Antiblocco)",
         formatMirror: "📰 Link specchio (Fedele)",
         trackingCleaned: "🧹 Tracciamento rimosso",
-        copyBtn: "Copia",
+        copyBtn: "Copia link",
         copiedText: "Copiato!",
-        unverifiedTitle: "Dominio non verificato",
-        unverifiedDesc: "Questo sito non è presente nella nostra lista di fiducia dei media canadesi. L'anteprima funzionerà sui social network, ma verrà mostrata una schermata di avviso di sicurezza prima di reindirizzare i visitatori.",
-        unverifiedMailtoBtn: "Richiedi l'integrazione di questo media (Email)",
-        previewTitle: "Anteprima della scheda social",
-        previewLive: "Generato in tempo reale dal Worker",
+        unverifiedTitle: "Media locale o dominio non in elenco",
+        unverifiedDesc: "Questo sito non è ancora presente nel nostro elenco. L'anteprima funzionerà e una schermata di sicurezza avviserà i visitatori prima del reindirizzamento.",
+        unverifiedMailtoBtn: "Richiedi aggiunta di questo media (Email pronta)",
+        previewTitle: "Anteprima scheda social",
+        previewLive: "Estratto in tempo reale",
         previewPlaceholder: "Nessuna immagine rilevata (reindirizzamento preservato)",
         whyTitle: "Perché LienLibre?",
-        whyDesc: "In risposta alla legge canadese sulle notizie online (Bill C-18), Meta ha bloccato la condivisione delle notizie in Canada. LienLibre funge da gateway neutrale per aggirare questa restrizione.",
+        whyDesc: "In risposta alla legge C-18 e al blocco di Meta, LienLibre funge da gateway civico neutrale per ripristinare l'accesso alle notizie.",
         howTitle: "Come funziona?",
-        howDesc: "Il link generato punta al nostro server proxy. Per un utente normale, il reindirizzamento a un media verificato è istantaneo (0 secondi). Se il link reindirizza a un sito sospetto, viene mostrato un avviso con un conto alla rovescia di 10 secondi.",
-        statsTitle: "Impatto in tempo reale (Open Data)",
-        statsDesc: "Statistiche anonime e pubbliche dei blocchi aggirati di Meta.",
-        statsCountLabel: "clic aggirati",
-        statsTopDomains: "Domini di stampa più condivisi",
+        howDesc: "Il link serve i metadati ai crawler e reindirizza all'istante i visitatori al media di origine senza memorizzare indirizzi IP.",
+        statsTitle: "Impatto Civico in tempo reale (Open Data)",
+        statsDesc: "Statistiche aggregate in tempo reale.",
+        statsCountLabel: "articoli condivisi",
+        statsTopDomains: "Media più consultati",
         clicksText: "clic",
-        footerText: "LienLibre è uno strumento open source distribuito sotto licenza MIT. Nessun dato viene memorizzato sui nostri server."
+        footerText: "Distribuito sotto licenza MIT. Strumento tecnico senza registrazione di dati personali."
       },
       zh: {
-        heroBadge: "反对封锁加拿大媒体",
-        heroTitle: "分享新闻 <br> 免受审查",
-        heroDesc: "Meta 在加拿大封锁了新闻链接？粘贴您被封锁的链接以生成一个能在社交媒体上正确显示缩略图的桥梁链接。",
+        navHowItWorks: "工作原理",
+        navStats: "实时统计",
+        navLegal: "法律声明与条款",
+        heroBadge: "维护新闻自由分享",
+        heroTitle: "分享新闻资讯 <br> 免受封锁与审查",
+        heroDesc: "一键生成安全的桥梁链接，具备完整的缩略图预览与 Open Graph 元数据，在各大社交平台上自由分享加拿大新闻。",
         inputLabel: "加拿大新闻文章 URL",
         inputPlaceholder: "例如: https://www.lapresse.ca/...",
         generateBtn: "生成我的 LienLibre",
-        donationTitle: "🎁 支持此公民项目",
-        donationDesc: "欢迎自愿捐赠以帮助我改进此工具！如果达到 5 美元的目标，我将开发并发布官方的 Chrome 和 Firefox 浏览器扩展，实现一键生成链接！",
-        donationBtn: "捐赠",
         errorScrape: "处理 URL 时出错。",
         errorInvalidUrl: "请输入以 http:// 或 https:// 开头的有效 URL",
-        resultLabel: "您生成的 LienLibre",
+        resultLabel: "已生成的桥梁链接",
         formatShort: "⚡ 短链接 (防封锁)",
         formatMirror: "📰 镜像链接 (完整路径)",
         trackingCleaned: "🧹 已清除追踪参数",
-        copyBtn: "复制",
+        copyBtn: "复制链接",
         copiedText: "已复制！",
-        unverifiedTitle: "未经验证的域名",
-        unverifiedDesc: "此网站不在我们信任的加拿大新闻媒体白名单中。社交网络上的缩略图预览将正常工作，但在重定向之前，访问者将看到安全警告页面。",
-        unverifiedMailtoBtn: "申请添加此媒体 (电子邮件)",
-        previewTitle: "社交媒体卡片预览",
-        previewLive: "由 Worker 实时生成",
+        unverifiedTitle: "本地媒体或未列入域名",
+        unverifiedDesc: "该站点尚未收录在我们的认证媒体目录中。社交预览将正常显示，访问者在跳转前会看到安全提示页面。",
+        unverifiedMailtoBtn: "申请添加此媒体 (预填邮件)",
+        previewTitle: "社交平台卡片预览",
+        previewLive: "实时抓取生成",
         previewPlaceholder: "未检测到图片（重定向保留）",
         whyTitle: "为什么使用 LienLibre？",
-        whyDesc: "为了回应加拿大的《在线新闻法案》（C-18 法案），Meta 封锁了加拿大的新闻分享。LienLibre 作为一个中立的网关，在不真实违反法律的情况下绕过这一限制。",
-        howTitle: "它是如何工作的？",
-        howDesc: "生成的链接指向我们的代理服务器（Cloudflare Worker）。对于普通用户，重定向到经验证的媒体是无缝且即时的（0秒）。如果链接指向可疑或未经验证的网站，则会显示带有 10 秒倒计时的警告屏幕，以防止网络钓鱼。",
-        statsTitle: "实时影响（开放数据）",
-        statsDesc: "匿名且公开的绕过 Meta 封锁统计数据。",
-        statsCountLabel: "次成功绕过点击",
-        statsTopDomains: "分享最多的新闻域名",
+        whyDesc: "为应对加拿大 C-18 法案及 Meta 的新闻封锁，LienLibre 充当中立的公民技术网关，恢复公众对新闻资讯的获取。",
+        howTitle: "网关是如何运作的？",
+        howDesc: "生成的链接向爬虫提供 Open Graph 元数据，并将真实访客即时重定向至原始媒体，绝不记录用户 IP 或建立档案。",
+        statsTitle: "实时公民影响力 (开放数据)",
+        statsDesc: "全网实时汇总统计数据。",
+        statsCountLabel: "次文章分享",
+        statsTopDomains: "访问最多的新闻域名",
         clicksText: "次点击",
-        footerText: "LienLibre 是一个基于 MIT 许可协议分发的开源工具。我们的服务器不存储或记录任何数据。"
+        footerText: "基于 MIT 协议开源。纯粹的瞬时技术管道，零个人数据记录。"
       },
       cr: {
+        navHowItWorks: "Tânisi",
+        navStats: "Kîkway",
+        navLegal: "Masinahikan",
         heroBadge: "Wîci-âpacih-kîkway kânata âcimowina",
         heroTitle: "Âcimo mâmawi <br> nama-kîkway kipitinikêwin.",
-        heroDesc: "Meta kipitinam kânata âcimowina? Pimi-astâ kâ-kipitinikâtêk tansi tisi-wâpahtihikoyahk âcimowin.",
+        heroDesc: "Pimi-astâ kâ-kipitinikâtêk tansi tisi-wâpahtihikoyahk âcimowin sêmâk.",
         inputLabel: "Kânata âcimowin masinahikan masinaso",
         inputPlaceholder: "Ex: https://www.lapresse.ca/...",
         generateBtn: "Osihtâ niyahk LienLibre",
-        donationTitle: "🎁 Wîci-kîkway pimi-âtoskêwin",
-        donationDesc: "Sôniyâskaw wîci-nîso-kamik kwayask tisi-osihtâyahk kîkway! Kîspin nîyânan (5 $) sôniyâs sâpo-kîkway, nika-osihtân sâpo-wâpahtihikowin Chrome êkwa Firefox!",
-        donationBtn: "Wîcihiwê",
         errorScrape: "Mâyi-kîkway pimi-isi-cahkêyhk.",
-        errorInvalidUrl: "Pimi-astâ kwayask URL tshe tshitshipan kwayask http:// kie https://",
+        errorInvalidUrl: "Pimi-astâ kwayask URL http:// kie https://",
         resultLabel: "Kiyask pimi-cahkêyhk LienLibre",
         formatShort: "⚡ Cimâsis",
         formatMirror: "📰 Kwayask",
@@ -613,7 +820,7 @@
         copyBtn: "Naspitahâ",
         copiedText: "Naspitahikâtêw!",
         unverifiedTitle: "Nama-kwayask kiskêyihtâkwan",
-        unverifiedDesc: "Ôma kiskinowâpahtihikowin nama-kiskêyihtâkwan ôta. Wâpahtihikowin masinahikan ka-wîci-ayamihtân, mâka sêmâk kîkway nika-wâpahtênân wîcihiwêw-paminikêwin.",
+        unverifiedDesc: "Ôma kiskinowâpahtihikowin nama-kiskêyihtâkwan ôta. Wâpahtihikowin masinahikan ka-wîci-ayamihtân.",
         unverifiedMailtoBtn: "Sēkakinamowin kīkway (E-mail)",
         previewTitle: "Tânisi tisi-wâpahcikan",
         previewLive: "Osihtâw sêmâk",
@@ -621,7 +828,7 @@
         whyTitle: "Tânêhki LienLibre?",
         whyDesc: "Kânata ôma C-18 wîci-masinahikan, Meta kipitinam âcimowina. LienLibre wîcihiwêw tisi-wâpahtamihk âcimowina.",
         howTitle: "Tânisi ôma isi-pimohtêmakahk?",
-        howDesc: "Ôma LienLibre wâpahtihikowin paminikê-mikinâhk. Kîspin kwayask, sêmâk ka-wâpahtên âcimowin (0 sêkon). Kîspin mâyi-kîkway, mitâtahth (10) sêkon ka-pêhon.",
+        howDesc: "Kîspin kwayask, sêmâk ka-wâpahtên âcimowin (0 sêkon). Nama-kîkway IP masinahikan.",
         statsTitle: "Kîkway pimi-ayâw",
         statsDesc: "Tânisi tisi-misi-pimohtêyahk mâmawi.",
         statsCountLabel: "pimohtêwin",
@@ -630,17 +837,17 @@
         footerText: "LienLibre open-source. MIT masinahikan."
       },
       iu: {
+        navHowItWorks: "Qanuq pilirivakpa",
+        navStats: "Pilirijjutit",
+        navLegal: "Maligait",
         heroBadge: "Kanatami tusagaksaqaqtitsijiit pitjutigilugit",
         heroTitle: "Tusaraksat avasiriartilugit <br> pitailimanani.",
         heroDesc: "Meta-kut tusaraksanik nutqaqtitsivat Kanatami? Tikkuarutinga aajiqiilugu tusaraksaq takuksautiarqulugu.",
         inputLabel: "Kanatami tusagaksap URL-nga",
         inputPlaceholder: "Uuktuut: https://www.lapresse.ca/...",
         generateBtn: "Sanalugu LienLibre-ga",
-        donationTitle: "🎁 Ikayurlugu inuup pilirianga",
-        donationDesc: "Ikayurumalutit tunisijungnarqutit sanarrutinga piusivaalliqullugu! 5 $-mut tikigutta, sanaluta takuksautitsijjutimik Chrome uvalu Firefox!",
-        donationBtn: "Tunisiji",
         errorScrape: "Ajuqhaqquq URL pilirijjutigilugu.",
-        errorInvalidUrl: "URL aturniaqtatit kangiqsirijjutigiluigit http:// uvaluunniit https://",
+        errorInvalidUrl: "URL aturniaqtatit http:// uvaluunniit https://",
         resultLabel: "Saniqatait LienLibre",
         formatShort: "⚡ Naituliqsimajuq",
         formatMirror: "📰 Ajjigiingnik",
@@ -648,7 +855,7 @@
         copyBtn: "Aajiqiilugu",
         copiedText: "Aajiqiijut!",
         unverifiedTitle: "Nalunaiqtaulluarsimangittuq",
-        unverifiedDesc: "Una qaritaujakkuurutinga ilisimajaujut list-inginniiqataungittuq. Takuksaujjutinga pinasuarungnaraluaqtuq, kisianili qaujisaqtauluni nutqallaktitaujjaalauqtuq.",
+        unverifiedDesc: "Una qaritaujakkuurutinga ilisimajaujut list-inginniiqataungittuq.",
         unverifiedMailtoBtn: "ᑐᒃᓯᕋᐅᑎ ᑐᓴᒐᒃᓴᓕᕆᔨᓂᒃ ᐃᓚᓯᖁᔨᓂᕐᒧᑦ (Email)",
         previewTitle: "Tusaraksaq takuksautillugu",
         previewLive: "Worker-mit pilirijaujuq maanna",
@@ -656,7 +863,7 @@
         whyTitle: "Suuq LienLibre?",
         whyDesc: "Kanatami Bill C-18 maliganga pitjutigilugu, Meta-kut nutqaqtitsilauqqaat. LienLibre atutsiarungnaqtitsijuq.",
         howTitle: "Qanuq una pilirivakpa?",
-        howDesc: "Tikkuaqutinga sanajaujuq proxy server-mungaujuq. Kwayask (0 s), nutqanani. Pitautianngippat 10 second-mik utaqqilaurluni.",
+        howDesc: "Kwayask (0 s), nutqanani. IP titiraqsimanngittuq.",
         statsTitle: "Pilirijjutit maanna",
         statsDesc: "Qaritaujakkuurutiit takujaujut.",
         statsCountLabel: "nuktarviit",
@@ -665,17 +872,17 @@
         footerText: "LienLibre open-source. MIT."
       },
       in: {
+        navHowItWorks: "Tanen",
+        navStats: "Uitsheun",
+        navLegal: "Masinahikan",
         heroBadge: "Anutshish utshitsheun kânata tipatshimuna",
         heroTitle: "Tipatshimu utinamashu <br> eka uin tshe tshishtinamut.",
         heroDesc: "Meta tshitshipitam kânata tipatshimuna? Tshitshipita nete tshe uin aitin tshe uapataman tipatshimun.",
         inputLabel: "Kânata tipatshimun tshe miskamin",
         inputPlaceholder: "E.g. https://www.lapresse.ca/...",
         generateBtn: "Tutamashu nitishiliniun LienLibre",
-        donationTitle: "🎁 Uitsheun mitshet ishinakuat",
-        donationDesc: "Shunian uitsheue e tshe mishta tutamin! Katin (5 $) shunian, nika tutan nitishiliniun tshetshi aitin Chrome kie Firefox!",
-        donationBtn: "Uitsheue",
         errorScrape: "Eka kuesht aimin tipatshimun.",
-        errorInvalidUrl: "Pimi-cahkêyhk kwayask URL nete http:// kie https://",
+        errorInvalidUrl: "Pimi-cahkêyhk URL nete http:// kie https://",
         resultLabel: "Tshitisheun LienLibre",
         formatShort: "⚡ Tshinishtueun",
         formatMirror: "📰 Tshitisheun",
@@ -683,7 +890,7 @@
         copyBtn: "Kussenitan",
         copiedText: "Kussenitakanu!",
         unverifiedTitle: "Eka tshissikuat tshe ishinakuat",
-        unverifiedDesc: "Mane tshitshipan eka e nishtutamin tshe ishinakuat. Tshe uapataman mishta aimun, eka e kuesht aitini.",
+        unverifiedDesc: "Mane tshitshipan eka e nishtutamin tshe ishinakuat.",
         unverifiedMailtoBtn: "Natshishikutamun tshe takuakinut (Email)",
         previewTitle: "Uapatamin tipatshimun",
         previewLive: "Tutan anutshish",
@@ -691,7 +898,7 @@
         whyTitle: "Taneku LienLibre?",
         whyDesc: "Kânata Bill C-18, Meta tshitshipitam tipatshimuna. LienLibre uitsheue tshe uapataman.",
         howTitle: "Tanen e ishi-tutakanit?",
-        howDesc: "Tshe tutamin proxy server. Kwayask, uin sêmâk (0 s). Eka kuesht aitini, tshe pehumi mitasht (10 s).",
+        howDesc: "Kwayask, uin sêmâk (0 s). Eka IP masinahikan.",
         statsTitle: "Uitsheun masinahikan",
         statsDesc: "E tshissitutakanit anutshish.",
         statsCountLabel: "aitun",
@@ -700,17 +907,17 @@
         footerText: "LienLibre open-source. MIT."
       },
       moh: {
+        navHowItWorks: "Oh nioht",
+        navStats: "Karihwaneken",
+        navLegal: "Tsi niorihwà:ke",
         heroBadge: "Tsi niiorihwà:ke ne Kanada karihwaneken",
         heroTitle: "Sewarihwakwenihs <br> iáh tewakarihwanekon.",
         heroDesc: "Meta-ken teiorihwathótho ne Kanada karihwaneken? Shiatia'táhrho ne thó tsi niiorihwà:ke.",
         inputLabel: "Kanada kahiatonhseratsheratokent URL",
         inputPlaceholder: "Ex: https://www.lapresse.ca/...",
         generateBtn: "Katshenri ne LienLibre",
-        donationTitle: "🎁 Sewarihwakwenihs ne ohwentsia",
-        donationDesc: "Tekwanonhwará:ton ne ohwentsia tsi niiorihwà:ke! Ktsi wisk (5 $) dollars, iente' kahtseronni Chrome tsiiá:kere Firefox!",
-        donationBtn: "Takwarent",
         errorScrape: "Teiakorihwá:ke tsi karihwaneken.",
-        errorInvalidUrl: "Sewaniió URL kawayask http:// ohni' https://",
+        errorInvalidUrl: "Sewaniió URL http:// ohni' https://",
         resultLabel: "Tsi niahsewenni ne LienLibre",
         formatShort: "⚡ Ken'kén:ra",
         formatMirror: "📰 Tsi nioht",
@@ -718,7 +925,7 @@
         copyBtn: "Kwahiaton",
         copiedText: "Wehni'!",
         unverifiedTitle: "Iáh teiowatennion",
-        unverifiedDesc: "Tsi niiorihwà:ke iáh teiowatennion ne Kanada. Thó nioht kaia'táhrho, kwah ok iente' aiorihwá:ke.",
+        unverifiedDesc: "Tsi niiorihwà:ke iáh teiowatennion ne Kanada.",
         unverifiedMailtoBtn: "Waharihwahserónni ne LienLibre (Email)",
         previewTitle: "Tsi nioht kaia'táhrho",
         previewLive: "Worker ne anotsis",
@@ -726,7 +933,7 @@
         whyTitle: "Oh nioht ne LienLibre?",
         whyDesc: "Bill C-18, Meta teiorihwathótho. LienLibre tsi nioht ne sewarihwakwenihs.",
         howTitle: "Oh nioht ne tyohtétyon?",
-        howDesc: "Proxy server ne karihwaneken. Kwah ok (0 s). Iáh teiowatennion, oieieri (10 s) tsi na'tekon.",
+        howDesc: "Proxy server. Kwah ok (0 s). Iáh IP teiowatennion.",
         statsTitle: "Karihwaneken tsi nioht",
         statsDesc: "Stats tsi nyoht tyohtetyon.",
         statsCountLabel: "clicks",
@@ -736,7 +943,7 @@
       }
     };
 
-    // Redirection client directe si l'URL est passée en paramètre (Fallback local)
+    // Client fallback instant redirection si paramètre ?url= présent
     const urlParams = new URLSearchParams(window.location.search);
     const target = urlParams.get('url');
     if (target) {
@@ -751,6 +958,46 @@
       }
     }
 
+    // Modal Legal logic
+    const legalModal = document.getElementById('legal-modal');
+    const legalModalBackdrop = document.getElementById('legal-modal-backdrop');
+    const btnOpenLegal = document.getElementById('btn-open-legal');
+    const btnFooterLegal = document.getElementById('btn-footer-legal');
+    const btnCloseLegal = document.getElementById('btn-close-legal');
+    const btnCloseLegalBottom = document.getElementById('btn-close-legal-bottom');
+
+    function openLegalModal() {
+      legalModal.classList.remove('hidden');
+      document.body.classList.add('modal-active');
+    }
+
+    function closeLegalModal() {
+      legalModal.classList.add('hidden');
+      document.body.classList.remove('modal-active');
+      if (window.location.hash === '#legal' || window.location.hash === '#mentions-legales') {
+        history.replaceState(null, null, window.location.pathname + window.location.search);
+      }
+    }
+
+    if (btnOpenLegal) btnOpenLegal.addEventListener('click', openLegalModal);
+    if (btnFooterLegal) btnFooterLegal.addEventListener('click', openLegalModal);
+    if (btnCloseLegal) btnCloseLegal.addEventListener('click', closeLegalModal);
+    if (btnCloseLegalBottom) btnCloseLegalBottom.addEventListener('click', closeLegalModal);
+    if (legalModalBackdrop) legalModalBackdrop.addEventListener('click', closeLegalModal);
+
+    // Auto-open modal if requested in hash
+    if (window.location.hash === '#legal' || window.location.hash === '#mentions-legales') {
+      openLegalModal();
+    }
+
+    // Keyboard ESC for modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !legalModal.classList.contains('hidden')) {
+        closeLegalModal();
+      }
+    });
+
+    // Form and Generator UI Elements
     const form = document.getElementById('generator-form');
     const urlInput = document.getElementById('url-input');
     const resultArea = document.getElementById('result-area');
@@ -766,7 +1013,6 @@
     const unverifiedWarning = document.getElementById('unverified-warning');
     const unverifiedMailtoLink = document.getElementById('unverified-mailto-link');
     const trackingCleanedBadge = document.getElementById('tracking-cleaned-badge');
-    const donationLink = document.getElementById('donation-link');
     const langSelect = document.getElementById('lang-select');
     let currentUnverifiedDomain = '';
 
@@ -780,11 +1026,11 @@
       if (!btnFormatShort || !btnFormatMirror) return;
       if (activeFormat === 'short') {
         btnFormatShort.className = 'px-2.5 py-1 text-xs rounded-md bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-medium transition-all shadow-sm';
-        btnFormatMirror.className = 'px-2.5 py-1 text-xs rounded-md text-zinc-400 hover:text-zinc-200 font-medium transition-all';
+        btnFormatMirror.className = 'px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all';
         if (currentGeneratedLinks.short) outputUrl.textContent = currentGeneratedLinks.short;
       } else {
         btnFormatMirror.className = 'px-2.5 py-1 text-xs rounded-md bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-medium transition-all shadow-sm';
-        btnFormatShort.className = 'px-2.5 py-1 text-xs rounded-md text-zinc-400 hover:text-zinc-200 font-medium transition-all';
+        btnFormatShort.className = 'px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all';
         if (currentGeneratedLinks.mirror) outputUrl.textContent = currentGeneratedLinks.mirror;
       }
     }
@@ -855,19 +1101,14 @@
       return `mailto:guindonwilliam2@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
-    // Mettre à jour le lien de don s'il est configuré
-    if (donationLink && DONATION_URL && DONATION_URL !== '#') {
-      donationLink.href = DONATION_URL;
-    }
-
-    // Éléments de statistiques
+    // Stats Section Elements
     const statsSection = document.getElementById('stats-section');
+    const navStatsLink = document.getElementById('nav-stats-link');
     const totalClicksCount = document.getElementById('total-clicks-count');
     const topDomainsList = document.getElementById('top-domains-list');
     let lastStatsData = null;
 
-    // Éléments de prévisualisation
-    const previewCard = document.getElementById('preview-card');
+    // Preview Elements
     const previewSkeleton = document.getElementById('preview-skeleton');
     const previewContent = document.getElementById('preview-content');
     const previewImg = document.getElementById('preview-img');
@@ -876,16 +1117,14 @@
     const previewTitle = document.getElementById('preview-title');
     const previewDesc = document.getElementById('preview-desc');
 
-    // Fonction de mise à jour dynamique de la langue
+    // Dynamic Language Switching
     function updateLanguage(lang) {
       const trans = TRANSLATIONS[lang] || TRANSLATIONS.fr;
       
-      // Mettre à jour les éléments standards
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (trans[key]) {
-          // Permettre le HTML pour certains tags formatés
-          if (['heroTitle', 'donationDesc', 'unverifiedDesc', 'whyDesc', 'howDesc', 'donationTitle', 'statsDesc', 'footerText'].includes(key)) {
+          if (['heroTitle', 'unverifiedDesc', 'whyDesc', 'howDesc', 'statsDesc', 'footerText'].includes(key)) {
             el.innerHTML = trans[key];
           } else {
             el.textContent = trans[key];
@@ -893,7 +1132,6 @@
         }
       });
       
-      // Mettre à jour les placeholders
       document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
         if (trans[key]) {
@@ -901,44 +1139,39 @@
         }
       });
 
-      // Gérer la direction de lecture RTL pour l'Arabe
       if (lang === 'ar') {
         document.documentElement.dir = 'rtl';
       } else {
         document.documentElement.dir = 'ltr';
       }
 
-      // Mettre à jour le lien mailto si un domaine non vérifié est actif
       if (currentUnverifiedDomain && unverifiedMailtoLink) {
         unverifiedMailtoLink.href = generateMailtoUrl(lang, currentUnverifiedDomain);
       }
 
-      // Sauvegarder le choix
       localStorage.setItem('lienlibre_lang', lang);
 
-      // Rafraîchir les stats si chargées
       if (lastStatsData) {
         displayStats(lastStatsData.totalClicks, lastStatsData.domains);
       }
     }
 
-    // Initialisation de la langue
     const savedLang = localStorage.getItem('lienlibre_lang') || 'fr';
     langSelect.value = savedLang;
     updateLanguage(savedLang);
 
-    // Écouter le changement de langue
     langSelect.addEventListener('change', (e) => {
       updateLanguage(e.target.value);
     });
 
+    // Form Submit Action
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const currentLang = langSelect.value;
       const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
 
-      // Réinitialisation
+      // Reset
       errorMessage.classList.add('hidden');
       unverifiedWarning.classList.add('hidden');
       trackingCleanedBadge.classList.add('hidden');
@@ -949,7 +1182,6 @@
       const rawUrl = urlInput.value.trim();
       let targetHost = '';
       
-      // Validation basique
       try {
         const parsed = new URL(rawUrl);
         if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
@@ -962,13 +1194,11 @@
         return;
       }
 
-      // Encodage sécurisé de l'URL cible
       const encodedUrl = encodeURIComponent(rawUrl);
       const cleanPath = rawUrl.replace(/^https?:\/\/(?:www\.)?/i, '');
       const langParam = currentLang !== 'fr' ? `?lang=${currentLang}` : '';
-      const langParamQuery = currentLang !== 'fr' ? `&lang=${currentLang}` : '';
 
-      // Lien miroir fidèle par défaut
+      // Default generated structures
       const defaultMirrorLink = `${WORKER_URL}/${cleanPath}${langParam}`;
       const defaultShortLink = `${WORKER_URL}/l/${Math.random().toString(36).substring(2, 8)}${langParam}`;
       
@@ -976,12 +1206,11 @@
       currentGeneratedLinks.mirror = defaultMirrorLink;
       updateFormatTabUI();
 
-      // Faire défiler vers les résultats pour les mobiles
       setTimeout(() => {
         resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 100);
 
-      // 1. Enregistrer le lien court via l'API du Worker
+      // 1. Appel API /api/create
       try {
         const createRes = await fetch(`${WORKER_URL}/api/create`, {
           method: 'POST',
@@ -995,10 +1224,10 @@
           updateFormatTabUI();
         }
       } catch (createErr) {
-        console.warn("Création du lien court (mode hors ligne/fallback direct) :", createErr);
+        console.warn("Mode fallback direct actif :", createErr);
       }
 
-      // 2. Charger l'aperçu depuis le Worker en mode JSON
+      // 2. Fetch Card Preview (JSON Mode)
       try {
         const previewApiUrl = `${WORKER_URL}?url=${encodedUrl}&json=1`;
         const response = await fetch(previewApiUrl);
@@ -1009,12 +1238,10 @@
 
         const data = await response.json();
 
-        // Extraire et nettoyer le nom de domaine
         previewDomain.textContent = targetHost;
         previewTitle.textContent = data.title || targetHost;
-        previewDesc.textContent = data.description || (currentLang === 'fr' ? "Cliquez pour voir l'article original." : "Click to view original article.");
+        previewDesc.textContent = data.description || (currentLang === 'fr' ? "Cliquez pour voir l'article original sur le site officiel." : "Click to view original news article.");
 
-        // Afficher l'avertissement si le domaine n'est pas vérifié
         if (data.allowed === false) {
           unverifiedWarning.classList.remove('hidden');
           currentUnverifiedDomain = targetHost;
@@ -1026,14 +1253,12 @@
           currentUnverifiedDomain = '';
         }
 
-        // Afficher le badge de nettoyage du pistage si des mouchards ont été retirés
         if (data.trackingCleaned === true) {
           trackingCleanedBadge.classList.remove('hidden');
         } else {
           trackingCleanedBadge.classList.add('hidden');
         }
         
-        // Mettre à jour l'aperçu
         if (data.image) {
           previewImg.src = data.image;
           previewImg.classList.remove('hidden');
@@ -1043,15 +1268,13 @@
           previewImgPlaceholder.classList.remove('hidden');
         }
 
-        // Afficher le contenu de prévisualisation
         previewSkeleton.classList.add('hidden');
         previewContent.classList.remove('hidden');
       } catch (err) {
-        console.warn("Erreur lors de la prévisualisation :", err);
-        // Fallback en cas d'erreur de prévisualisation
+        console.warn("Erreur chargement aperçu :", err);
         previewDomain.textContent = targetHost;
         previewTitle.textContent = targetHost;
-        previewDesc.textContent = currentLang === 'fr' ? "Lien de redirection LienLibre" : "LienLibre redirect link";
+        previewDesc.textContent = currentLang === 'fr' ? "Passerelle citoyenne LienLibre" : "LienLibre news bridge";
         previewImg.classList.add('hidden');
         previewImgPlaceholder.classList.remove('hidden');
         
@@ -1060,7 +1283,7 @@
       }
     });
 
-    // Copie dans le presse-papier
+    // Copy to clipboard
     copyBtn.addEventListener('click', () => {
       const textToCopy = outputUrl.textContent;
       if (!textToCopy) return;
@@ -1069,20 +1292,18 @@
       const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
 
       navigator.clipboard.writeText(textToCopy).then(() => {
-        // Changement d'état visuel (Succès)
         copyBtnText.textContent = trans.copiedText || 'Copié !';
         copyIcon.classList.add('hidden');
         copiedIcon.classList.remove('hidden');
-        copyBtn.classList.remove('bg-zinc-800', 'hover:bg-zinc-700');
-        copyBtn.classList.add('bg-emerald-950/45', 'border', 'border-emerald-500/20', 'text-emerald-400');
+        copyBtn.classList.remove('bg-slate-800', 'hover:bg-slate-700');
+        copyBtn.classList.add('bg-emerald-950/60', 'border-emerald-500/30', 'text-emerald-300');
 
-        // Réinitialisation après 2 secondes
         setTimeout(() => {
-          copyBtnText.textContent = trans.copyBtn || 'Copier';
+          copyBtnText.textContent = trans.copyBtn || 'Copier le lien';
           copyIcon.classList.remove('hidden');
           copiedIcon.classList.add('hidden');
-          copyBtn.classList.add('bg-zinc-800', 'hover:bg-zinc-700');
-          copyBtn.classList.remove('bg-emerald-950/45', 'border', 'border-emerald-500/20', 'text-emerald-400');
+          copyBtn.classList.add('bg-slate-800', 'hover:bg-slate-700');
+          copyBtn.classList.remove('bg-emerald-950/60', 'border-emerald-500/30', 'text-emerald-300');
         }, 2000);
       }).catch(err => {
         console.error('Erreur lors de la copie :', err);
@@ -1102,7 +1323,6 @@
         if (!response.ok) throw new Error("Erreur API");
         const data = await response.json();
         
-        // S'assurer qu'il y a des clics enregistrés pour afficher la section
         if (!data || typeof data.total_clicks !== 'number' || data.total_clicks === 0) {
           throw new Error("Pas de clics enregistrés");
         }
@@ -1110,8 +1330,8 @@
         lastStatsData = { totalClicks: data.total_clicks, domains: data.domains };
         displayStats(data.total_clicks, data.domains);
       } catch (err) {
-        console.warn("Impossible de charger les statistiques réelles (ou aucun clic enregistré) :", err);
         statsSection.classList.add('hidden');
+        if (navStatsLink) navStatsLink.classList.add('hidden');
       }
     }
 
@@ -1120,38 +1340,35 @@
       const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
       const clicksSuffix = trans.clicksText || 'clics';
 
-      // Mettre à jour le compteur global
       totalClicksCount.textContent = totalClicks.toLocaleString(currentLang);
       
-      // Trier les domaines par clics décroissants
       const sortedDomains = Object.entries(domains || {})
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 6); // Top 6
+        .slice(0, 6);
         
       if (sortedDomains.length > 0) {
         topDomainsList.innerHTML = '';
         sortedDomains.forEach(([domain, count]) => {
-          const pct = Math.max(3, Math.round((count / totalClicks) * 100));
+          const pct = Math.max(4, Math.round((count / totalClicks) * 100));
           const item = document.createElement('div');
-          item.className = 'space-y-1.5';
+          item.className = 'space-y-1.5 bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80';
           item.innerHTML = `
             <div class="flex justify-between text-xs ${currentLang === 'ar' ? 'flex-row-reverse' : ''}">
-              <span class="font-medium text-zinc-300">${domain}</span>
-              <span class="text-zinc-500 font-mono">${count.toLocaleString(currentLang)} ${clicksSuffix}</span>
+              <span class="font-medium text-slate-200 font-mono">${domain}</span>
+              <span class="text-slate-400 font-mono text-[11px]">${count.toLocaleString(currentLang)} ${clicksSuffix}</span>
             </div>
-            <div class="w-full bg-zinc-950/60 border border-zinc-900 rounded-full h-1.5 overflow-hidden">
-              <div class="bg-gradient-to-r from-cyan-500 to-indigo-500 h-full rounded-full" style="width: ${pct}%"></div>
+            <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-1.5 overflow-hidden">
+              <div class="bg-gradient-to-r from-cyan-400 to-indigo-500 h-full rounded-full" style="width: ${pct}%"></div>
             </div>
           `;
           topDomainsList.appendChild(item);
         });
       }
       
-      // Afficher la section
       statsSection.classList.remove('hidden');
+      if (navStatsLink) navStatsLink.classList.remove('hidden');
     }
 
-    // Charger les statistiques au chargement de la page
     loadStats();
   </script>
 </body>

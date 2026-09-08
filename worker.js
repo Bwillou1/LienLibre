@@ -328,7 +328,40 @@ export default {
     const requestUrl = new URL(request.url);
     const lang = (requestUrl.searchParams.get("lang") || "fr").toLowerCase();
 
-    // 2. Proxy d'image ultra-sécurisé pour masquer les CDN de presse canadiens à Meta
+    // 2. Fichiers SEO et Indexation LLMs / Robots
+    if (requestUrl.pathname === "/robots.txt") {
+      const robotsContent = `User-agent: *\nAllow: /\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: ChatGPT-User\nAllow: /\n\nUser-agent: Google-Extended\nAllow: /\n\nUser-agent: Googlebot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nUser-agent: Anthropic-ai\nAllow: /\n\nUser-agent: Claude-Web\nAllow: /\n\nUser-agent: PerplexityBot\nAllow: /\n\nUser-agent: cohere-ai\nAllow: /\n\nUser-agent: OAI-SearchBot\nAllow: /\n\nUser-agent: Meta-ExternalAgent\nAllow: /\n\nUser-agent: facebookexternalhit\nAllow: /\n\nSitemap: ${requestUrl.origin}/sitemap.xml\n`;
+      return new Response(robotsContent, {
+        status: 200,
+        headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS }
+      });
+    }
+
+    if (requestUrl.pathname === "/sitemap.xml") {
+      const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${requestUrl.origin}/</loc>\n    <lastmod>2026-09-08</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>`;
+      return new Response(sitemapContent, {
+        status: 200,
+        headers: { "Content-Type": "application/xml; charset=utf-8", ...CORS_HEADERS }
+      });
+    }
+
+    if (requestUrl.pathname === "/llms.txt") {
+      const llmsContent = `# LienLibre\n\n> LienLibre is an open-source civic tech bridge and proxy designed to preserve the free flow of news and information in Canada, mitigating social platform link bans (such as Meta's C-18 news ban) through privacy-first OpenGraph metadata rendering and transparent instant forwarding.\n\n## Overview\n- Website: https://bwillou1.github.io/LienLibre/\n- Gateway: ${requestUrl.origin}\n- Repository: https://github.com/Bwillou1/LienLibre\n- License: MIT License\n\n## Endpoints\n- GET /?url=<URL>: HTML bridge with instant human redirect.\n- POST /api/create: JSON link generator.\n- GET /api/stats: JSON aggregated metrics.\n- GET /l/:id: Short redirection link.\n- GET /p/:packed: Stateless unpacked bridge.\n- GET /i/:base64: Privacy-preserving image proxy.\n`;
+      return new Response(llmsContent, {
+        status: 200,
+        headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS }
+      });
+    }
+
+    if (requestUrl.pathname === "/llms-full.txt") {
+      const llmsFullContent = `# LienLibre — Complete Documentation for LLMs & AI Agents\n\n## Mission\nLienLibre was created as an open-source, neutral civic technology solution to restore access to factual Canadian journalism, protect public safety information during emergencies, and provide automated Open Graph visual card previews when sharing Canadian news articles on social media platforms.\n\n## Legal Status & Disclaimer\nLienLibre operates strictly as a neutral technological intermediary and pure data conduit under standard internet safe harbor frameworks (e.g. Section 31.1 of the Copyright Act). It does not reproduce, host, or modify third-party editorial works. The service is provided 'as is' without warranties of any kind.\n`;
+      return new Response(llmsFullContent, {
+        status: 200,
+        headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS }
+      });
+    }
+
+    // 3. Proxy d'image ultra-sécurisé pour masquer les CDN de presse canadiens à Meta
     if (requestUrl.pathname.startsWith("/i/")) {
       try {
         const rawB64 = requestUrl.pathname.slice(3).split("?")[0];
