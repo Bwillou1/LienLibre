@@ -7,40 +7,50 @@
   
   <title>LienLibre — Passerelle Citoyenne d'Information & Recherche Open Graph</title>
   
+  <!-- Favicons & Icons -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="favicon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+
   <!-- PWA & Mobile Web App Meta Tags -->
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/svg+xml" href="icon.svg">
   <meta name="theme-color" content="#090d16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="LienLibre">
-  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="application-name" content="LienLibre">
 
   <!-- SEO Meta Tags -->
-  <meta name="description" content="LienLibre est un outil civique et éducatif pour l'interopérabilité des métadonnées Open Graph, l'utilisation équitable (art. 29 LDA) et le libre accès aux informations publiques canadiennes.">
-  <meta name="keywords" content="LienLibre, interopérabilité Open Graph, utilisation équitable, recherche éducative, médias canadiens, actualités, métadonnées web, passerelle civique, intérêt public">
-  <meta name="author" content="LienLibre Research & Civic Tech">
+  <meta name="description" content="LienLibre est une infrastructure civique et éducative pour l'interopérabilité des métadonnées Open Graph, l'utilisation équitable (art. 29 LDA) et le libre accès aux informations publiques canadiennes.">
+  <meta name="keywords" content="LienLibre, interopérabilité Open Graph, utilisation équitable, recherche éducative, médias canadiens, actualités, métadonnées web, passerelle civique, intérêt public, Canada">
+  <meta name="author" content="LienLibre Civic Tech & Research Community">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://bwillou1.github.io/LienLibre/">
   
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph / Facebook / Messenger Meta Tags -->
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LienLibre">
   <meta property="og:url" content="https://bwillou1.github.io/LienLibre/">
-  <meta property="og:title" content="LienLibre — Passerelle Citoyenne d'Information">
-  <meta property="og:description" content="Outil d'interopérabilité des protocoles Open Graph et de préservation du libre accès aux actualités d'intérêt public.">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80">
+  <meta property="og:title" content="LienLibre — Passerelle Citoyenne d'Information & Recherche Open Graph">
+  <meta property="og:description" content="Outil civique et éducatif pour l'interopérabilité des métadonnées Open Graph et le libre partage d'articles d'intérêt public au Canada.">
+  <meta property="og:image" content="https://bwillou1.github.io/LienLibre/og-image.svg">
+  <meta property="og:image:type" content="image/svg+xml">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="LienLibre — Passerelle Citoyenne d'Information">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@LienLibre">
   <meta name="twitter:title" content="LienLibre — Passerelle Citoyenne d'Information">
   <meta name="twitter:description" content="Projet civique et éducatif pour le partage d'actualités et l'interopérabilité des métadonnées web.">
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80">
+  <meta name="twitter:image" content="https://bwillou1.github.io/LienLibre/og-image.svg">
 
   <!-- AI & Search Discovery Links -->
   <link rel="help" href="/llms.txt" type="text/plain" title="LLMs Documentation">
   <link rel="alternate" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
-  <!-- JSON-LD Structured Data -->
+  <!-- JSON-LD Structured Data for Google Rich Snippets -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -49,11 +59,13 @@
         "@type": "WebApplication",
         "@id": "https://bwillou1.github.io/LienLibre/#webapp",
         "name": "LienLibre",
+        "alternateName": "LienLibre Civic Tech",
         "url": "https://bwillou1.github.io/LienLibre/",
         "applicationCategory": "EducationalApplication",
         "operatingSystem": "All",
         "browserRequirements": "Requires JavaScript. Requires HTML5.",
         "description": "Outil civique et éducatif pour l'étude et l'interopérabilité des métadonnées Open Graph pour les articles d'information canadiens.",
+        "image": "https://bwillou1.github.io/LienLibre/og-image.svg",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -74,7 +86,7 @@
         "@id": "https://bwillou1.github.io/LienLibre/#organization",
         "name": "LienLibre Civic Tech",
         "url": "https://bwillou1.github.io/LienLibre/",
-        "logo": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=500&q=80",
+        "logo": "https://bwillou1.github.io/LienLibre/icon.svg",
         "sameAs": [
           "https://github.com/Bwillou1/LienLibre"
         ]
@@ -183,6 +195,7 @@
       <div class="flex items-center gap-3 sm:gap-4">
         <nav class="hidden md:flex items-center gap-5 text-xs font-medium text-slate-300">
           <a href="#how-it-works" class="hover:text-cyan-400 transition-colors" data-i18n="navHowItWorks">Fonctionnement</a>
+          <a href="#share-project-section" class="hover:text-cyan-400 transition-colors" data-i18n="navShare">Partager LienLibre</a>
           <a href="#stats-section" id="nav-stats-link" class="hover:text-cyan-400 transition-colors hidden" data-i18n="navStats">Statistiques</a>
           <button type="button" id="btn-open-legal" class="hover:text-cyan-400 transition-colors text-left" data-i18n="navLegal">Mentions Légales & CGU</button>
         </nav>
@@ -441,6 +454,143 @@
       </div>
     </section>
 
+    <!-- Share Project Section (Social & Model Text) -->
+    <section id="share-project-section" class="w-full mt-12 glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+      <div class="text-center sm:text-left space-y-1">
+        <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+          </svg>
+          <span data-i18n="shareSectionBadge">Faire connaître l'initiative</span>
+        </div>
+        <h3 data-i18n="shareSectionTitle" class="font-display font-bold text-xl sm:text-2xl text-white">
+          Partager le projet LienLibre
+        </h3>
+        <p data-i18n="shareSectionDesc" class="text-slate-400 text-xs sm:text-sm">
+          Aidez vos proches, collègues et concitoyens à découvrir cette passerelle civique pour préserver l'accès à l'information.
+        </p>
+      </div>
+
+      <!-- Quick Action Buttons Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+        
+        <!-- Facebook Button -->
+        <a 
+          id="share-btn-facebook"
+          href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="bg-[#1877F2]/15 hover:bg-[#1877F2]/25 text-[#4267B2] dark:text-[#4599FF] border border-[#1877F2]/30 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group"
+        >
+          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+          <span>Facebook</span>
+        </a>
+
+        <!-- Messenger Button -->
+        <a 
+          id="share-btn-messenger"
+          href="fb-messenger://share/?link=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="bg-[#0084FF]/15 hover:bg-[#0084FF]/25 text-[#0084FF] border border-[#0084FF]/30 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group"
+        >
+          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0C5.373 0 0 4.974 0 11.111c0 3.498 1.744 6.614 4.469 8.654V24l4.088-2.242c1.092.302 2.246.464 3.443.464 6.627 0 12-4.975 12-11.111C24 4.974 18.627 0 12 0zm1.191 14.963l-3.056-3.26-5.963 3.26L10.8 8.441l3.056 3.26 5.963-3.26-6.628 6.522z"/>
+          </svg>
+          <span>Messenger</span>
+        </a>
+
+        <!-- WhatsApp Button -->
+        <a 
+          id="share-btn-whatsapp"
+          href="https://api.whatsapp.com/send?text=D%C3%A9couvrez%20LienLibre%20%E2%80%94%20Passerelle%20citoyenne%20et%20%C3%A9ducative%20pour%20l%27acc%C3%A8s%20%C3%A0%20l%27information%20canadienne%20%3A%20https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] border border-[#25D366]/30 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group"
+        >
+          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span>WhatsApp</span>
+        </a>
+
+        <!-- X / Twitter Button -->
+        <a 
+          id="share-btn-x"
+          href="https://twitter.com/intent/tweet?text=D%C3%A9couvrez%20LienLibre%2C%20une%20passerelle%20citoyenne%20et%20%C3%A9ducative%20open-source%20pour%20l%27interop%C3%A9rabilit%C3%A9%20des%20m%C3%A9tadonn%C3%A9es%20web%20et%20le%20libre%20acc%C3%A8s%20%C3%A0%20l%27information%20canadienne%20%3A%20https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="bg-white/10 hover:bg-white/15 text-white border border-white/20 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group"
+        >
+          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          <span>X (Twitter)</span>
+        </a>
+
+        <!-- LinkedIn Button -->
+        <a 
+          id="share-btn-linkedin"
+          href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="bg-[#0A66C2]/15 hover:bg-[#0A66C2]/25 text-[#0A66C2] dark:text-[#58A6FF] border border-[#0A66C2]/30 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group"
+        >
+          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+          </svg>
+          <span>LinkedIn</span>
+        </a>
+
+        <!-- Native Share / Copy URL Button -->
+        <button 
+          type="button" 
+          id="share-btn-project-copy"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group cursor-pointer"
+        >
+          <svg class="w-5 h-5 group-hover:scale-110 transition-transform text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+          </svg>
+          <span id="share-project-btn-label" data-i18n="shareCopyLinkBtn">Copier le lien</span>
+        </button>
+
+      </div>
+
+      <!-- Pre-formatted Neutral Model Text Box for Facebook / Social posts -->
+      <div class="space-y-2.5 pt-2">
+        <label for="share-model-textarea" data-i18n="shareModelTextLabel" class="block text-xs font-semibold text-slate-300">
+          📝 Texte modèle suggéré pour vos publications Facebook, Messenger et réseaux sociaux :
+        </label>
+        
+        <div class="relative">
+          <textarea 
+            id="share-model-textarea" 
+            readonly 
+            rows="3" 
+            class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-3.5 text-xs sm:text-sm text-slate-300 font-sans leading-relaxed focus:outline-none focus:ring-1 focus:ring-cyan-500 select-all resize-none shadow-inner"
+          >Découvrez LienLibre (https://bwillou1.github.io/LienLibre/), une initiative citoyenne et éducative open-source pour explorer les métadonnées web et préserver le partage transparent des actualités et alertes d'intérêt public au Canada.</textarea>
+          
+          <button 
+            type="button" 
+            id="btn-copy-share-model" 
+            class="absolute bottom-3 right-3 bg-cyan-600 hover:bg-cyan-500 active:scale-95 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow flex items-center gap-1.5 transition-all"
+          >
+            <svg id="copy-share-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
+            </svg>
+            <span id="copy-share-model-text" data-i18n="shareCopyModelBtn">Copier le texte</span>
+          </button>
+        </div>
+        
+        <p class="text-[11px] text-slate-500">
+          💡 Vous pouvez copier ce texte neutre et le coller directement lors de la publication sur Facebook, Messenger, vos groupes de discussion ou vos courriels.
+        </p>
+      </div>
+
+    </section>
+
     <!-- Real-time Stats Section -->
     <section id="stats-section" class="w-full mt-10 glass-card rounded-2xl p-6 hidden">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -623,6 +773,7 @@
     const TRANSLATIONS = {
       fr: {
         navHowItWorks: "Fonctionnement",
+        navShare: "Partager LienLibre",
         navStats: "Statistiques",
         navLegal: "Mentions Légales & CGU",
         pwaInstallBtn: "Installer l'app",
@@ -650,6 +801,14 @@
         whyDesc: "Dans le cadre de la recherche sur l'interopérabilité des métadonnées web et la sécurité civile (alertes météo, urgences sanitaires), LienLibre agit comme une passerelle technique neutre et éducative fondée sur l'utilisation équitable (art. 29 LDA) pour maintenir l'accès aux sources d'information canadiennes.",
         howTitle: "Comment fonctionne la passerelle ?",
         howDesc: "Le lien généré extrait dynamiquement les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage commercial.",
+        shareSectionBadge: "Faire connaître l'initiative",
+        shareSectionTitle: "Partager le projet LienLibre",
+        shareSectionDesc: "Aidez vos proches, collègues et concitoyens à découvrir cette passerelle civique pour préserver l'accès à l'information.",
+        shareModelTextLabel: "📝 Texte modèle suggéré pour vos publications Facebook, Messenger et réseaux sociaux :",
+        shareModelTextContent: "Découvrez LienLibre (https://bwillou1.github.io/LienLibre/), une initiative citoyenne et éducative open-source pour explorer les métadonnées web et préserver le partage transparent des actualités et alertes d'intérêt public au Canada.",
+        shareCopyModelBtn: "Copier le texte",
+        shareCopyModelSuccess: "Copié ! À coller sur Facebook",
+        shareCopyLinkBtn: "Copier le lien",
         statsTitle: "Impact Civique en direct (Open Data)",
         statsDesc: "Statistiques globales et agrégées en temps réel.",
         statsCountLabel: "articles consultés",
@@ -659,6 +818,7 @@
       },
       en: {
         navHowItWorks: "How it works",
+        navShare: "Share LienLibre",
         navStats: "Statistics",
         navLegal: "Legal Notice & Terms",
         pwaInstallBtn: "Install App",
@@ -686,6 +846,14 @@
         whyDesc: "In the context of metadata research and public safety communication (weather alerts, emergency notices), LienLibre operates as a neutral educational gateway under Fair Dealing (s. 29 Copyright Act) to preserve access to factual Canadian journalism.",
         howTitle: "How does the bridge work?",
         howDesc: "The generated link serves Open Graph metadata to social feeds and forwards visitors directly to original verified media outlets without storing IP addresses or user profiles.",
+        shareSectionBadge: "Spread the Word",
+        shareSectionTitle: "Share the LienLibre Project",
+        shareSectionDesc: "Help friends, colleagues, and community members discover this civic bridge for open public news access.",
+        shareModelTextLabel: "📝 Suggested neutral model text for your Facebook, Messenger & social posts:",
+        shareModelTextContent: "Check out LienLibre (https://bwillou1.github.io/LienLibre/), an open-source civic and educational tool to explore web metadata interoperability and preserve transparent sharing of Canadian public interest news and safety alerts.",
+        shareCopyModelBtn: "Copy text",
+        shareCopyModelSuccess: "Copied! Ready to paste",
+        shareCopyLinkBtn: "Copy link",
         statsTitle: "Real-time Civic Impact (Open Data)",
         statsDesc: "Global aggregated statistics in real time.",
         statsCountLabel: "articles viewed",
@@ -695,6 +863,7 @@
       },
       ar: {
         navHowItWorks: "كيفية العمل",
+        navShare: "مشاركة المشروع",
         navStats: "الإحصائيات",
         navLegal: "الشروط القانونية",
         pwaInstallBtn: "تثبيت التطبيق",
@@ -722,6 +891,14 @@
         whyDesc: "في إطار البحث في التشغيل البيني للبيانات والسلامة العامة، يعمل LienLibre كجسر تقني محايد وتعليمي قائم على مبدأ الاستخدام العادل للحفاظ على وصول الجمهور إلى الصحافة.",
         howTitle: "كيف يعمل الجسر؟",
         howDesc: "يوفر الرابط بيانات المعاينة لمحركات الشبكات الاجتماعية ويعيد توجيه الزوار الحقيقيين فورًا للمصدر الأصلي دون جمع أي عناوين IP.",
+        shareSectionBadge: "نشر المبادرة",
+        shareSectionTitle: "مشاركة مشروع LienLibre",
+        shareSectionDesc: "ساعد أصدقاءك في التعرف على هذا الجسر المدني للحفاظ على حرية تداول الأخبار.",
+        shareModelTextLabel: "📝 نص مقترح لمنشورات فيسبوك ومسنجر:",
+        shareModelTextContent: "اكتشف LienLibre (https://bwillou1.github.io/LienLibre/)، مبادرة مدنية وتعليمية مفتوحة المصدر لاستكشاف بيانات الويب وتسهيل الوصول إلى الأخبار الكندية ذات المنفعة العامة.",
+        shareCopyModelBtn: "نسخ النص",
+        shareCopyModelSuccess: "تم النسخ!",
+        shareCopyLinkBtn: "نسخ الرابط",
         statsTitle: "الأثر المباشر (بيانات مفتوحة)",
         statsDesc: "إحصاءات مجمعة في الوقت الفعلي.",
         statsCountLabel: "مقال تم الاطلاع عليه",
@@ -731,6 +908,7 @@
       },
       es: {
         navHowItWorks: "Funcionamiento",
+        navShare: "Compartir LienLibre",
         navStats: "Estadísticas",
         navLegal: "Aviso Legal y Términos",
         pwaInstallBtn: "Instalar App",
@@ -758,6 +936,14 @@
         whyDesc: "En el marco de la investigación de metadatos y la seguridad pública (alertas climáticas, salud), LienLibre actúa como una pasarela técnica neutral y educativa basada en el uso legítimo (Fair Dealing).",
         howTitle: "¿Cómo funciona la pasarela?",
         howDesc: "El enlace generado sirve los metadatos Open Graph y redirige de inmediato a los visitantes al medio original sin guardar direcciones IP.",
+        shareSectionBadge: "Difundir la iniciativa",
+        shareSectionTitle: "Compartir el proyecto LienLibre",
+        shareSectionDesc: "Ayude a sus conocidos a descubrir esta pasarela cívica para preservar el libre acceso a la información.",
+        shareModelTextLabel: "📝 Texto modelo sugerido para publicar en Facebook y redes sociales:",
+        shareModelTextContent: "Conoce LienLibre (https://bwillou1.github.io/LienLibre/), una iniciativa cívica y educativa de código abierto para explorar metadatos web y preservar el acceso a las noticias de interés público en Canadá.",
+        shareCopyModelBtn: "Copiar texto",
+        shareCopyModelSuccess: "¡Copiado!",
+        shareCopyLinkBtn: "Copiar enlace",
         statsTitle: "Impacto Cívico en tiempo real (Open Data)",
         statsDesc: "Estadísticas agregadas en tiempo real.",
         statsCountLabel: "artículos consultados",
@@ -767,6 +953,7 @@
       },
       it: {
         navHowItWorks: "Funzionamento",
+        navShare: "Condividi LienLibre",
         navStats: "Statistiche",
         navLegal: "Note Legali & Condizioni",
         pwaInstallBtn: "Installa App",
@@ -794,6 +981,14 @@
         whyDesc: "Nel contesto della ricerca sui metadati e della sicurezza pubblica (allerte meteo, comunicazioni d'emergenza), LienLibre funge da gateway educativo neutrale basato sul Fair Dealing.",
         howTitle: "Come funziona?",
         howDesc: "Il link serve i metadati Open Graph e reindirizza all'istante i visitatori al media originale senza memorizzare indirizzi IP.",
+        shareSectionBadge: "Diffondi l'iniziativa",
+        shareSectionTitle: "Condividi il progetto LienLibre",
+        shareSectionDesc: "Aiuta amici e colleghi a scoprire questo gateway civico per l'accesso alle notizie.",
+        shareModelTextLabel: "📝 Testo suggerito per i tuoi post su Facebook, Messenger e social:",
+        shareModelTextContent: "Scopri LienLibre (https://bwillou1.github.io/LienLibre/), un'iniziativa civica ed educativa open source per esplorare i metadati web e preservare l'accesso alle notizie di pubblico interesse in Canada.",
+        shareCopyModelBtn: "Copia testo",
+        shareCopyModelSuccess: "Copiato!",
+        shareCopyLinkBtn: "Copia link",
         statsTitle: "Impatto Civico in tempo reale (Open Data)",
         statsDesc: "Statistiche aggregate in tempo reale.",
         statsCountLabel: "articoli consultati",
@@ -803,6 +998,7 @@
       },
       zh: {
         navHowItWorks: "工作原理",
+        navShare: "分享本项目",
         navStats: "实时统计",
         navLegal: "法律声明与条款",
         pwaInstallBtn: "安装应用",
@@ -830,6 +1026,14 @@
         whyDesc: "在元数据互操作性与公共安全信息（如天气预警、突发公卫事件）研究框架下，LienLibre 依据《加拿大版权法》合理使用条款（Fair Dealing）充当中立的教育网关。",
         howTitle: "网关是如何运作的？",
         howDesc: "生成的链接向社交平台提供 Open Graph 预览元数据，并将真实访客即时重定向至原始媒体，绝不记录用户 IP 或建立档案。",
+        shareSectionBadge: "传播与推广",
+        shareSectionTitle: "分享 LienLibre 项目",
+        shareSectionDesc: "让更多人了解这一公民技术网关，保障公共新闻资讯的自由流通。",
+        shareModelTextLabel: "📝 建议用于 Facebook / Messenger 的中立分享文案：",
+        shareModelTextContent: "推荐探索 LienLibre (https://bwillou1.github.io/LienLibre/)，这是一个开源的公民教育项目，致力于研究 Web 元数据互操作性，维护加拿大公共利益新闻与应急资讯的透明分享。",
+        shareCopyModelBtn: "复制文案",
+        shareCopyModelSuccess: "已复制！可直接粘贴至社交平台",
+        shareCopyLinkBtn: "复制链接",
         statsTitle: "实时公民影响力 (开放数据)",
         statsDesc: "全网实时汇总统计数据。",
         statsCountLabel: "次文章查阅",
@@ -839,6 +1043,7 @@
       },
       cr: {
         navHowItWorks: "Tânisi",
+        navShare: "Mîkiw LienLibre",
         navStats: "Kîkway",
         navLegal: "Masinahikan",
         pwaInstallBtn: "Osihtâ app",
@@ -866,6 +1071,14 @@
         whyDesc: "Kiskinwahamâkêwin êkwa wîcihiwêwin tisi-wâpahtamihk âcimowina kwayask.",
         howTitle: "Tânisi ôma isi-pimohtêmakahk?",
         howDesc: "Kîspin kwayask, sêmâk ka-wâpahtên âcimowin (0 sêkon). Nama-kîkway IP masinahikan.",
+        shareSectionBadge: "Wîcihiwê",
+        shareSectionTitle: "Mîkiw LienLibre paminikêwin",
+        shareSectionDesc: "Wîcih kiwîcêwâkanak tisi-kiskêyihtahkik ōma LienLibre.",
+        shareModelTextLabel: "📝 Masinahikan kâ-naspitahikâtêk Facebook:",
+        shareModelTextContent: "Wâpahta LienLibre (https://bwillou1.github.io/LienLibre/), wîci-paminikêwin tisi-wâpahtamihk kânata âcimowina.",
+        shareCopyModelBtn: "Naspitahâ masinahikan",
+        shareCopyModelSuccess: "Naspitahikâtêw!",
+        shareCopyLinkBtn: "Naspitahâ link",
         statsTitle: "Kîkway pimi-ayâw",
         statsDesc: "Tânisi tisi-misi-pimohtêyahk mâmawi.",
         statsCountLabel: "pimohtêwin",
@@ -875,6 +1088,7 @@
       },
       iu: {
         navHowItWorks: "Qanuq pilirivakpa",
+        navShare: "Avasiriartitsiniq",
         navStats: "Pilirijjutit",
         navLegal: "Maligait",
         pwaInstallBtn: "Sanajaujuq App",
@@ -902,6 +1116,14 @@
         whyDesc: "Ilisarniq pitjutigilugu LienLibre atutsiarungnaqtitsijuq.",
         howTitle: "Qanuq una pilirivakpa?",
         howDesc: "Kwayask (0 s), nutqanani. IP titiraqsimanngittuq.",
+        shareSectionBadge: "Tusagaksat avasiriallugit",
+        shareSectionTitle: "Avasirilugu LienLibre",
+        shareSectionDesc: "Ikayurlugit inuit qaujisarlutik LienLibre-mik.",
+        shareModelTextLabel: "📝 Titiraqsimajuq uuktuut Facebook-mut:",
+        shareModelTextContent: "Takulugu LienLibre (https://bwillou1.github.io/LienLibre/), ilisarnirmut pilirijjuti Kanatami tusagaksanik takuksaulirlutik.",
+        shareCopyModelBtn: "Aajiqiilugu titiraqsimajuq",
+        shareCopyModelSuccess: "Aajiqiijut!",
+        shareCopyLinkBtn: "Aajiqiilugu link-inga",
         statsTitle: "Pilirijjutit maanna",
         statsDesc: "Qaritaujakkuurutiit takujaujut.",
         statsCountLabel: "nuktarviit",
@@ -911,6 +1133,7 @@
       },
       in: {
         navHowItWorks: "Tanen",
+        navShare: "Takuatashu LienLibre",
         navStats: "Uitsheun",
         navLegal: "Masinahikan",
         pwaInstallBtn: "Tutan App",
@@ -938,6 +1161,14 @@
         whyDesc: "Tshissitun mak uitsheun tshe uapataman tipatshimuna.",
         howTitle: "Tanen e ishi-tutakanit?",
         howDesc: "Kwayask, uin sêmâk (0 s). Eka IP masinahikan.",
+        shareSectionBadge: "Uitsheue",
+        shareSectionTitle: "Takuatashu LienLibre",
+        shareSectionDesc: "Uitsheue tshitshet nikanishak tshetshi nishtutamiki LienLibre.",
+        shareModelTextLabel: "📝 Tipatshimun e tshi tutamin Facebook:",
+        shareModelTextContent: "Uapat LienLibre (https://bwillou1.github.io/LienLibre/), uitsheun kânata tipatshimuna tshetshi uapataman.",
+        shareCopyModelBtn: "Kussenitan",
+        shareCopyModelSuccess: "Kussenitakanu!",
+        shareCopyLinkBtn: "Kussenitan link",
         statsTitle: "Uitsheun masinahikan",
         statsDesc: "E tshissitutakanit anutshish.",
         statsCountLabel: "aitun",
@@ -947,6 +1178,7 @@
       },
       moh: {
         navHowItWorks: "Oh nioht",
+        navShare: "Sewarihwakwenihs",
         navStats: "Karihwaneken",
         navLegal: "Tsi niorihwà:ke",
         pwaInstallBtn: "Katshenri App",
@@ -974,6 +1206,14 @@
         whyDesc: "Karihwaneken tsi nioht ne sewarihwakwenihs.",
         howTitle: "Oh nioht ne tyohtétyon?",
         howDesc: "Proxy server. Kwah ok (0 s). Iáh IP teiowatennion.",
+        shareSectionBadge: "Sewarihwakwenihs",
+        shareSectionTitle: "Sewarihwakwenihs LienLibre",
+        shareSectionDesc: "Katshenri LienLibre ne skennen'kówa tsi niiorihwà:ke.",
+        shareModelTextLabel: "📝 Kahiatonhsera ne Facebook:",
+        shareModelTextContent: "Katshenri LienLibre (https://bwillou1.github.io/LienLibre/), open-source civic tech ne Kanada karihwaneken.",
+        shareCopyModelBtn: "Kwahiaton",
+        shareCopyModelSuccess: "Wehni'!",
+        shareCopyLinkBtn: "Kwahiaton link",
         statsTitle: "Karihwaneken tsi nioht",
         statsDesc: "Stats tsi nyoht tyohtetyon.",
         statsCountLabel: "clicks",
@@ -1189,6 +1429,62 @@
       return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
+    // Share Project Logic
+    const shareModelTextarea = document.getElementById('share-model-textarea');
+    const btnCopyShareModel = document.getElementById('btn-copy-share-model');
+    const copyShareModelText = document.getElementById('copy-share-model-text');
+    const shareBtnProjectCopy = document.getElementById('share-btn-project-copy');
+    const shareProjectBtnLabel = document.getElementById('share-project-btn-label');
+
+    if (btnCopyShareModel && shareModelTextarea) {
+      btnCopyShareModel.addEventListener('click', () => {
+        const text = shareModelTextarea.value;
+        const currentLang = langSelect.value;
+        const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+
+        navigator.clipboard.writeText(text).then(() => {
+          copyShareModelText.textContent = trans.shareCopyModelSuccess || "Copié !";
+          btnCopyShareModel.classList.remove('bg-cyan-600', 'hover:bg-cyan-500');
+          btnCopyShareModel.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+          setTimeout(() => {
+            copyShareModelText.textContent = trans.shareCopyModelBtn || "Copier le texte";
+            btnCopyShareModel.classList.add('bg-cyan-600', 'hover:bg-cyan-500');
+            btnCopyShareModel.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
+          }, 2500);
+        });
+      });
+    }
+
+    if (shareBtnProjectCopy) {
+      shareBtnProjectCopy.addEventListener('click', async () => {
+        const projectUrl = "https://bwillou1.github.io/LienLibre/";
+        const currentLang = langSelect.value;
+        const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'LienLibre — Passerelle Citoyenne d\'Information',
+              text: shareModelTextarea ? shareModelTextarea.value : 'LienLibre',
+              url: projectUrl
+            });
+            return;
+          } catch (err) {
+            // Fallback to clipboard if dismissed or failed
+          }
+        }
+
+        navigator.clipboard.writeText(projectUrl).then(() => {
+          if (shareProjectBtnLabel) shareProjectBtnLabel.textContent = trans.copiedText || "Lien copié !";
+          shareBtnProjectCopy.classList.add('bg-emerald-950/60', 'border-emerald-500/40', 'text-emerald-300');
+          setTimeout(() => {
+            if (shareProjectBtnLabel) shareProjectBtnLabel.textContent = trans.shareCopyLinkBtn || "Copier le lien";
+            shareBtnProjectCopy.classList.remove('bg-emerald-950/60', 'border-emerald-500/40', 'text-emerald-300');
+          }, 2000);
+        });
+      });
+    }
+
     // Stats Section Elements
     const statsSection = document.getElementById('stats-section');
     const navStatsLink = document.getElementById('nav-stats-link');
@@ -1226,6 +1522,10 @@
           el.placeholder = trans[key];
         }
       });
+
+      if (shareModelTextarea && trans.shareModelTextContent) {
+        shareModelTextarea.value = trans.shareModelTextContent;
+      }
 
       if (lang === 'ar') {
         document.documentElement.dir = 'rtl';
