@@ -238,18 +238,24 @@ function cleanTrackingParameters(urlStr) {
 
 /**
  * Enregistre un clic de manière 100% anonyme dans le stockage Cloudflare KV.
+ * Uniquement pour les médias journalistiques officiels et vérifiés.
  */
-async function recordClick(env, hostname) {
-  if (!env || !env.LIENLIBRE_KV) return;
+async function recordClick(env, hostname, isVerified = false) {
+  if (!env || !env.LIENLIBRE_KV || !isVerified) return;
   try {
     const cleanHost = hostname.toLowerCase().replace(/^www\./, "");
     
-    // 1. Incrémenter le total global
+    // Filtre strict : Ne jamais enregistrer de site non vérifié ou non autorisé
+    if (!isDomainAllowed(cleanHost)) {
+      return;
+    }
+
+    // 1. Incrémenter le total global des médias vérifiés
     const totalKey = "stats:total_clicks";
     let total = parseInt(await env.LIENLIBRE_KV.get(totalKey) || "0");
     await env.LIENLIBRE_KV.put(totalKey, (total + 1).toString());
 
-    // 2. Incrémenter la statistique du domaine
+    // 2. Incrémenter la statistique du domaine vérifié
     const domainKey = `stats:domain:${cleanHost}`;
     let domainTotal = parseInt(await env.LIENLIBRE_KV.get(domainKey) || "0");
     await env.LIENLIBRE_KV.put(domainKey, (domainTotal + 1).toString());
@@ -260,23 +266,28 @@ async function recordClick(env, hostname) {
 
 /**
  * Récupère les statistiques agrégées depuis le stockage Cloudflare KV.
+ * Filtre STRICTEMENT pour n'exposer que les médias journalistiques officiels vérifiés.
  */
 async function getStats(env) {
   if (!env || !env.LIENLIBRE_KV) {
-    // Fallback si KV n'est pas configuré pour éviter de faire planter le site
     return { total_clicks: 0, domains: {} };
   }
   try {
-    const totalClicks = parseInt(await env.LIENLIBRE_KV.get("stats:total_clicks") || "0");
-    
-    // Lister toutes les clés de domaine
     const listResult = await env.LIENLIBRE_KV.list({ prefix: "stats:domain:" });
     const domains = {};
+    let totalClicks = 0;
     
     for (const key of listResult.keys) {
-      const val = await env.LIENLIBRE_KV.get(key.name) || "0";
-      const domainName = key.name.replace("stats:domain:", "");
-      domains[domainName] = parseInt(val);
+      const domainName = key.name.replace("stats:domain:", "").toLowerCase();
+      
+      // Filtre absolu : seuls les médias de la liste officielle sont comptabilisés et affichés
+      if (isDomainAllowed(domainName)) {
+        const val = parseInt(await env.LIENLIBRE_KV.get(key.name) || "0");
+        if (val > 0) {
+          domains[domainName] = val;
+          totalClicks += val;
+        }
+      }
     }
     
     return { total_clicks: totalClicks, domains };
@@ -989,11 +1000,6 @@ export default {
       });
     }
 
-    // Enregistrer le clic réel de manière asynchrone (pour les vrais visiteurs, pas pour les prévisualisations JSON)
-    if (!isJsonRequested) {
-      ctx.waitUntil(recordClick(env, targetUrl.hostname));
-    }
-
     // 5. Extraire les métadonnées de la page cible
     const meta = {
       title: "",
@@ -1152,6 +1158,9 @@ export default {
 
     // 1. Si le domaine est dans la liste blanche ou validé par le Mini-Bot (Score >= 80) -> Redirection immédiate
     if (isAllowed || botAudit.isValidated) {
+      if (!isJsonRequested && !isCrawler && ctx && typeof ctx.waitUntil === "function") {
+        ctx.waitUntil(recordClick(env, targetUrl.hostname, true));
+      }
       return new Response(
         generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang, requestUrl.href, isCrawler),
         {

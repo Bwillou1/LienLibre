@@ -2758,30 +2758,48 @@
       const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
       const clicksSuffix = trans.clicksText || 'clics';
 
-      totalClicksCount.textContent = totalClicks.toLocaleString(currentLang);
+      // Filtre de sécurité : n'afficher que les domaines valides avec un compte positif
+      const validEntries = Object.entries(domains || {})
+        .filter(([domain, count]) => {
+          if (!domain || typeof count !== 'number' || count <= 0) return false;
+          const d = domain.toLowerCase();
+          // Exclusion des TLDs suspects, raccourcisseurs ou adresses IP
+          if (/\b(bit\.ly|tinyurl|t\.me|mega\.nz|discord|pastebin|gofile|anonfiles)\b/i.test(d)) return false;
+          if (/^(\d{1,3}\.){3}\d{1,3}$/.test(d)) return false;
+          if (/\.(tk|ml|ga|cf|gq|xyz|top|click|link|rest|ru|su|zip|mov)$/i.test(d)) return false;
+          return true;
+        });
+
+      if (validEntries.length === 0) {
+        statsSection.classList.add('hidden');
+        if (navStatsLink) navStatsLink.classList.add('hidden');
+        return;
+      }
+
+      // Recalculer le total strict des médias vérifiés
+      const verifiedTotal = validEntries.reduce((acc, curr) => acc + curr[1], 0);
+      totalClicksCount.textContent = verifiedTotal.toLocaleString(currentLang);
       
-      const sortedDomains = Object.entries(domains || {})
+      const sortedDomains = validEntries
         .sort((a, b) => b[1] - a[1])
         .slice(0, 6);
         
-      if (sortedDomains.length > 0) {
-        topDomainsList.innerHTML = '';
-        sortedDomains.forEach(([domain, count]) => {
-          const pct = Math.max(4, Math.round((count / totalClicks) * 100));
-          const item = document.createElement('div');
-          item.className = 'space-y-1.5 bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80';
-          item.innerHTML = `
-            <div class="flex justify-between text-xs ${currentLang === 'ar' ? 'flex-row-reverse' : ''}">
-              <span class="font-medium text-slate-200 font-mono">${domain}</span>
-              <span class="text-slate-400 font-mono text-[11px]">${count.toLocaleString(currentLang)} ${clicksSuffix}</span>
-            </div>
-            <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-1.5 overflow-hidden">
-              <div class="bg-gradient-to-r from-cyan-400 to-indigo-500 h-full rounded-full" style="width: ${pct}%"></div>
-            </div>
-          `;
-          topDomainsList.appendChild(item);
-        });
-      }
+      topDomainsList.innerHTML = '';
+      sortedDomains.forEach(([domain, count]) => {
+        const pct = Math.max(4, Math.round((count / (verifiedTotal || 1)) * 100));
+        const item = document.createElement('div');
+        item.className = 'space-y-1.5 bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80';
+        item.innerHTML = `
+          <div class="flex justify-between text-xs ${currentLang === 'ar' ? 'flex-row-reverse' : ''}">
+            <span class="font-medium text-slate-200 font-mono">${domain}</span>
+            <span class="text-slate-400 font-mono text-[11px]">${count.toLocaleString(currentLang)} ${clicksSuffix}</span>
+          </div>
+          <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-1.5 overflow-hidden">
+            <div class="bg-gradient-to-r from-cyan-400 to-indigo-500 h-full rounded-full" style="width: ${pct}%"></div>
+          </div>
+        `;
+        topDomainsList.appendChild(item);
+      });
       
       statsSection.classList.remove('hidden');
       if (navStatsLink) navStatsLink.classList.remove('hidden');
