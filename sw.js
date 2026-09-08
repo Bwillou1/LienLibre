@@ -1,10 +1,11 @@
 // LienLibre Service Worker (PWA)
-const CACHE_NAME = 'lienlibre-pwa-v1';
+const CACHE_NAME = 'lienlibre-pwa-v2';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon.svg'
+  './icon.svg',
+  './favicon.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -36,10 +37,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Pour les requêtes de navigation HTML, privilégier le réseau (Network-First avec Fallback Cache)
+  if (event.request.mode === 'navigate' || requestUrl.pathname.endsWith('.html') || requestUrl.pathname.endsWith('/')) {
+    event.respondWith(
+      fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+        }
+        return networkResponse;
+      }).catch(() => {
+        return caches.match('./index.html');
+      })
+    );
+    return;
+  }
+
+  // Pour les autres ressources statiques (icônes, manifest), stratégie Stale-While-Revalidate
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Retourner le cache et rafraîchir en arrière-plan (Stale-While-Revalidate)
         fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
@@ -58,7 +75,6 @@ self.addEventListener('fetch', (event) => {
         });
         return networkResponse;
       }).catch(() => {
-        // Fallback offline
         if (event.request.mode === 'navigate') {
           return caches.match('./index.html');
         }
