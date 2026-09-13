@@ -386,7 +386,7 @@ async function checkDnsFamilyShield(hostname) {
 
     const fetchDoh = async (url) => {
       const ctrl = new AbortController();
-      const tId = setTimeout(() => ctrl.abort(), 1800);
+      const tId = setTimeout(() => ctrl.abort(), 2000);
       try {
         const res = await fetch(url, {
           headers: { "Accept": "application/dns-json" },
@@ -401,51 +401,41 @@ async function checkDnsFamilyShield(hostname) {
       }
     };
 
-    // Requêtes simultanées vers NextDNS (profil 8d3993) et Cloudflare 1.1.1.3
-    const nextDnsUrl = `https://dns.nextdns.io/8d3993/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
+    // Requêtes vers Cloudflare Famille 1.1.1.3 (Malware + Adultes) et NextDNS
     const cfUrl = `https://family.cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
+    const nextDnsUrl = `https://dns.nextdns.io/8d3993/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
 
-    const [nextData, cfData] = await Promise.all([
-      fetchDoh(nextDnsUrl),
-      fetchDoh(cfUrl)
+    const [cfData, nextData] = await Promise.all([
+      fetchDoh(cfUrl),
+      fetchDoh(nextDnsUrl)
     ]);
 
-    // 1. Vérification NextDNS
-    if (nextData) {
-      if (nextData.Answer && Array.isArray(nextData.Answer)) {
-        const isBlockedNext = nextData.Answer.some(a => 
-          a.data === "0.0.0.0" || 
-          a.data === "::" || 
-          a.data === "127.0.0.1" || 
-          (typeof a.data === "string" && a.data.startsWith("0.0.0."))
-        );
-        if (isBlockedNext) {
-          return {
-            isBlocked: true,
-            reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
-          };
-        }
-      }
-      if (nextData.Status === 3) {
-        return { isBlocked: true, reason: "Ce nom de domaine est inexistant ou non attribué (NXDOMAIN)." };
+    // 1. Vérification Cloudflare Famille (0.0.0.0 ou 127.0.0.1 = blocage sécurité/adulte explicite)
+    if (cfData && cfData.Answer && Array.isArray(cfData.Answer)) {
+      const isBlockedCf = cfData.Answer.some(a => 
+        a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1"
+      );
+      if (isBlockedCf) {
+        return {
+          isBlocked: true,
+          reason: "Ce domaine est bloqué par le bouclier Cloudflare Sécurité & Famille (site malveillant ou contenu explicite)."
+        };
       }
     }
 
-    // 2. Vérification Cloudflare Famille (Secours illimité)
-    if (cfData) {
-      if (cfData.Answer && Array.isArray(cfData.Answer)) {
-        const isBlockedCf = cfData.Answer.some(a => 
-          a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1"
-        );
-        if (isBlockedCf) {
-          return {
-            isBlocked: true,
-            reason: "Ce domaine est bloqué par le bouclier Cloudflare Sécurité & Famille (site malveillant ou contenu explicite)."
-          };
-        }
-      }
-      if (cfData.Status === 3) {
-        return { isBlocked: true, reason: "Ce nom de domaine est inexistant ou non attribué (NXDOMAIN)." };
+    // 2. Vérification NextDNS (0.0.0.0 ou 127.0.0.1 = blocage sécurité explicite)
+    if (nextData && nextData.Answer && Array.isArray(nextData.Answer)) {
+      const isBlockedNext = nextData.Answer.some(a => 
+        a.data === "0.0.0.0" || 
+        a.data === "::" || 
+        a.data === "127.0.0.1" || 
+        (typeof a.data === "string" && a.data.startsWith("0.0.0."))
+      );
+      if (isBlockedNext) {
+        return {
+          isBlocked: true,
+          reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité ou contenu prohibé détecté)."
+        };
       }
     }
 
@@ -455,6 +445,7 @@ async function checkDnsFamilyShield(hostname) {
 
   return { isBlocked: false, reason: "" };
 }
+
 /**
  * Mini-Bot Sentinel : Analyse heuristique et sémantique automatique gratuite.
  * Évalue la crédibilité journalistique et l'intégrité d'une source web sans intervention humaine et sans frais.
@@ -522,11 +513,11 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
     };
   }
 
-  let score = 20; // Base score
+  let score = 30; // Score de base pour tout site accessible
   const signals = [];
 
   if (urlObj.protocol === "https:") {
-    score += 15;
+    score += 20;
     signals.push("Protocole sécurisé HTTPS");
   }
 
@@ -536,22 +527,26 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
   const path = urlObj.pathname.toLowerCase();
 
   // Extension de domaine réputée
-  if (/\.(ca|qc\.ca|org|com|net|info|news|press|media|tv|fm)$/i.test(hostname)) {
-    score += 10;
+  if (/\.(ca|qc\.ca|org|com|net|info|news|press|media|tv|fm|io|app|dev|fr|be|ch|eu|gov|gouv\.qc\.ca|gc\.ca)$/i.test(hostname)) {
+    score += 15;
     signals.push("Nom de domaine et TLD conformes");
   }
 
   // Type Open Graph
   if (meta.ogType && meta.ogType.toLowerCase().includes("article")) {
-    score += 25;
+    score += 20;
     signals.push("Format Open Graph 'article' authentifié");
   } else if (meta.ogType && meta.ogType.toLowerCase().includes("website")) {
-    score += 5;
+    score += 10;
+    signals.push("Format Open Graph 'website' authentifié");
+  } else if (meta.title || meta.standardTitle) {
+    score += 10;
+    signals.push("Métadonnées de page détectées");
   }
 
   // Schema.org ou données structurées NewsArticle
   if (meta.schemaType && (meta.schemaType.includes("NewsArticle") || meta.schemaType.includes("Article") || meta.schemaType.includes("ReportageNewsArticle"))) {
-    score += 25;
+    score += 20;
     signals.push("Schéma sémantique de presse (NewsArticle / Schema.org)");
   }
 
@@ -562,34 +557,17 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
   }
 
   // Mot-clés de chemin journalistique
-  const newsRegex = /\/(actualites?|nouvelles?|news|articles?|reportages?|politique|societe|regions?|nation|monde|opinions?|editorial|chroniques?|journal|en-direct|faits-divers)\b/i;
+  const newsRegex = /\/(actualites?|nouvelles?|news|articles?|reportages?|politique|societe|regions?|nation|monde|opinions?|editorial|chroniques?|journal|en-direct|faits-divers|post|blog|story)\b/i;
   if (newsRegex.test(path)) {
     score += 15;
-    signals.push("Structure d'URL de rubrique journalistique");
+    signals.push("Structure d'URL de rubrique journalistique / éditoriale");
   }
 
   score = Math.max(0, Math.min(100, score));
   
-  // SEUIL ÉLIMINATOIRE STRICT : 
-  // 1. Si score < 60 et que le domaine n'est pas dans ALLOWED_DOMAINS -> Blocage pur et simple (403)
-  // 2. Si score >= 80 -> Validation automatique comme média journalistique
-  // 3. Si 60 <= score < 80 -> Contenu non répertorié autorisé uniquement avec avertissement statique et clic volontaire
-  const isBlockedByScore = !isAllowed && score < 60;
-  const isJournalistic = score >= 80;
+  // Un site valide non répertorié n'est PAS bloqué (isBlocked = false), mais classé pour information
+  const isJournalistic = score >= 70;
   const isValidated = isJournalistic;
-
-  if (isBlockedByScore) {
-    return {
-      score,
-      isJournalistic: false,
-      isValidated: false,
-      isBlocked: true,
-      blockReason: `Score de fiabilité insuffisant (${score}/100 - seuil minimal éliminatoire : 60/100). Ce domaine non répertorié ne présente pas les garanties minimales de publication journalistique ou de sécurité.`,
-      category: "insufficient_score",
-      badgeText: `Source Bloquée (Score insuffisant : ${score}/100)`,
-      signals: ["⚠️ Score d'intégrité inférieur au seuil de 60/100", ...signals]
-    };
-  }
 
   return {
     score,
