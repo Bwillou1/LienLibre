@@ -88,12 +88,21 @@ async function syncLiveWhitelistFromGitHub() {
 }
 
 /**
- * Vérifie si le domaine cible fait partie des médias canadiens de confiance.
+ * Vérifie si le domaine cible fait partie des médias canadiens de confiance ou de la liste blanche.
  */
 function isDomainAllowed(hostname) {
   const cleanHost = (hostname || "").toLowerCase().replace(/^www\./, "");
+  if (!cleanHost) return false;
   const currentList = dynamicAllowedDomains || ALLOWED_DOMAINS;
-  return currentList.some(domain => cleanHost === domain || cleanHost.endsWith("." + domain));
+  const currentNames = dynamicMediaNames || MEDIA_NAMES;
+  
+  if (currentList.some(domain => cleanHost === domain || cleanHost.endsWith("." + domain))) {
+    return true;
+  }
+  if (Object.keys(currentNames).some(domain => cleanHost === domain || cleanHost.endsWith("." + domain))) {
+    return true;
+  }
+  return false;
 }
 
 function getMediaSiteName(hostname) {

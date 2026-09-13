@@ -1005,7 +1005,8 @@ export const ALLOWED_DOMAINS = [
   "worldjournal.com",                   // World Journal
   "xtra.ca",                            // Xtra Magazine
   "xtramagazine.com",                   // Xtra Magazine
-  "linkedin.com"                        // LinkedIn
+  "linkedin.com",                       // LinkedIn
+  "williamguindon.me"                   // William Guindon
 ];
 
 // Noms officiels (utilisés pour l'affichage sur les cartes Open Graph)
