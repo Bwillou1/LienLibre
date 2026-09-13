@@ -2083,15 +2083,15 @@ function getContactEmail(env) {
  */
 function generateMailtoUrl(lang, domain, env) {
   const email = getContactEmail(env);
-  const randomId = Math.floor(100000 + Math.random() * 900000).toString();
   const domainClean = (domain || "").replace(/^www\./i, "");
+  const repo = (env && env.GITHUB_REPO) || "Bwillou1/LienLibre";
 
   if (!email) {
-    const repo = (env && env.GITHUB_REPO) || "Bwillou1/LienLibre";
-    return `https://github.com/${repo}/issues/new?title=${encodeURIComponent(`[Signalement] ${domainClean}`)}&body=${encodeURIComponent(`Dossier: LL-${randomId}\nDomaine: ${domainClean}\nMotif: `)}`;
+    return `https://github.com/${repo}/issues/new?template=signalement-abus.yml&title=${encodeURIComponent(`[Signalement Abus] : ${domainClean}`)}`;
   }
 
   const t = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
+  const randomId = Math.floor(100000 + Math.random() * 900000).toString();
   const subject = t.subject.replace("{domain}", domainClean).replace("{caseId}", randomId);
   const body = t.body.replace("{domain}", domainClean).replace(/{caseId}/g, randomId);
   return "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);

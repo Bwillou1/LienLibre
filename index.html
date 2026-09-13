@@ -2251,18 +2251,12 @@
     const legalContactEmailBtn = document.getElementById('legal-contact-email-btn');
 
     function initLegalContact() {
-      const email = getContactEmail();
       if (legalContactEmailText) {
-        legalContactEmailText.textContent = email || "GitHub Issues (Bwillou1/LienLibre)";
+        legalContactEmailText.textContent = "Guichet GitHub (Issues & Pull Requests)";
       }
       if (legalContactEmailBtn) {
-        if (email) {
-          legalContactEmailBtn.href = `mailto:${email}?subject=Demande%20de%20retrait%20ou%20signalement%20LienLibre`;
-          legalContactEmailBtn.removeAttribute('target');
-        } else {
-          legalContactEmailBtn.href = "https://github.com/Bwillou1/LienLibre/issues";
-          legalContactEmailBtn.target = "_blank";
-        }
+        legalContactEmailBtn.href = "https://github.com/Bwillou1/LienLibre/issues/new?template=signalement-abus.yml";
+        legalContactEmailBtn.target = "_blank";
       }
     }
     initLegalContact();
@@ -2654,18 +2648,8 @@
     };
 
     function generateMailtoUrl(lang, domain) {
-      const email = getContactEmail();
       const domainClean = (domain || "").replace(/^www\./i, '');
-      const randomId = Math.floor(100000 + Math.random() * 900000).toString();
-
-      if (!email) {
-        return `https://github.com/Bwillou1/LienLibre/issues/new?title=${encodeURIComponent(`[Signalement / Demande d'ajout] ${domainClean}`)}&body=${encodeURIComponent(`Dossier: LL-${randomId}\nDomaine: ${domainClean}\nMotif:`)}`;
-      }
-
-      const t = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
-      const subject = t.subject.replace('{domain}', domainClean).replace('{caseId}', randomId);
-      const body = t.body.replace('{domain}', domainClean).replace(/{caseId}/g, randomId);
-      return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return `https://github.com/Bwillou1/LienLibre/issues/new?template=demande-ajout-media.yml&title=${encodeURIComponent(`[Ajout Média] : ${domainClean}`)}`;
     }
 
     // Share Project Logic
@@ -2797,18 +2781,9 @@
 
     // Report Abuse handler (Header, Footer, Mobile)
     function triggerReportAbuse() {
-      const email = getContactEmail();
-      const currentLang = (document.getElementById('lang-select') && document.getElementById('lang-select').value) || 'fr';
-      const isEn = currentLang === 'en';
-      const subject = isEn ? "Abuse / Illegal Content Report - LienLibre" : "Signalement d'abus / Contenu illicite - LienLibre";
-      const body = isEn 
-        ? "Hello,\n\nI would like to report an abuse or illicit content on LienLibre:\n\n- Suspicious URL:\n- Reason for report:\n\nThank you.\n\nDate: " + new Date().toISOString()
-        : "Bonjour,\n\nJe souhaite signaler un lien abusif ou du contenu illicite sur LienLibre :\n\n- URL concernée :\n- Motif du signalement :\n\nMerci.\n\nDate : " + new Date().toISOString();
-      if (email) {
-        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      } else {
-        window.open(`https://github.com/Bwillou1/LienLibre/issues/new?title=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
-      }
+      const currentDomain = (currentUnverifiedDomain || (urlInput && urlInput.value.trim().replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0]) || '');
+      const url = `https://github.com/Bwillou1/LienLibre/issues/new?template=signalement-abus.yml&title=${encodeURIComponent('[Signalement Abus] : ' + currentDomain)}`;
+      window.open(url, '_blank');
     }
 
     const btnNavReport = document.getElementById('btn-nav-report');

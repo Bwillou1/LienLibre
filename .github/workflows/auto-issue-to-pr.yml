@@ -1,0 +1,169 @@
+name: 🤖 Automated Issue to Pull Request
+
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  process-issue:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'auto-whitelist-pr') || contains(github.event.issue.labels.*.name, 'auto-blocklist-pr')
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Process Whitelist Request (Auto PR)
+        if: contains(github.event.issue.labels.*.name, 'auto-whitelist-pr')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          node -e "
+            const fs = require('fs');
+            const body = process.env.ISSUE_BODY || '';
+            const issueNum = process.env.ISSUE_NUMBER;
+            
+            // Extract domain
+            const domainMatch = body.match(/### Nom de domaine du média\s*\n\s*([^\r\n]+)/i) || body.match(/([a-z0-9-]+\.[a-z0-9.-]+)/i);
+            const nameMatch = body.match(/### Nom officiel du média \/ Publication\s*\n\s*([^\r\n]+)/i);
+            
+            if (!domainMatch) {
+              console.log('No domain found.');
+              process.exit(0);
+            }
+            
+            const rawDomain = domainMatch[1].trim().toLowerCase().replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0];
+            const mediaName = (nameMatch && nameMatch[1].trim()) || rawDomain;
+            
+            console.log('Target domain to whitelist:', rawDomain, 'Media Name:', mediaName);
+            
+            // Update whitelist.js
+            let content = fs.readFileSync('whitelist.js', 'utf8');
+            if (content.includes('\"' + rawDomain + '\"')) {
+              console.log('Domain already in whitelist.');
+              process.exit(0);
+            }
+            
+            // 1. Insert in WHITELISTED_DOMAINS
+            content = content.replace('export const WHITELISTED_DOMAINS = [', 'export const WHITELISTED_DOMAINS = [\n  \"' + rawDomain + '\",');
+            
+            // 2. Insert in MEDIA_SITE_NAMES
+            content = content.replace('export const MEDIA_SITE_NAMES = {', 'export const MEDIA_SITE_NAMES = {\n  \"' + rawDomain + '\" : \"' + mediaName.replace(/\"/g, '\\\"') + '\",');
+            
+            fs.writeFileSync('whitelist.js', content, 'utf8');
+            fs.writeFileSync('/tmp/pr_info.json', JSON.stringify({ domain: rawDomain, mediaName, issueNum, type: 'whitelist' }));
+          "
+          
+          if [ -f /tmp/pr_info.json ]; then
+            DOMAIN=$(node -p "require('/tmp/pr_info.json').domain")
+            NAME=$(node -p "require('/tmp/pr_info.json').mediaName")
+            BRANCH="auto/whitelist-$DOMAIN"
+            
+            git config --global user.name "LienLibre Community Bot"
+            git config --global user.email "bot@lienlibre.local"
+            
+            git checkout -b "$BRANCH"
+            git add whitelist.js
+            git commit -m "feat(whitelist): add $NAME ($DOMAIN) from Issue #${ISSUE_NUMBER}"
+            git push -f origin "$BRANCH"
+            
+            gh pr create --base main --head "$BRANCH" \
+              --title "📰 Ajout Média : $NAME ($DOMAIN)" \
+              --body "Cette Pull Request a été générée automatiquement suite à la demande d'ajout dans l'Issue #${ISSUE_NUMBER}.
+
+### 📋 Média proposé :
+- **Domaine** : \`$DOMAIN\`
+- **Nom du média** : \`$NAME\`
+- **Issue liée** : #${ISSUE_NUMBER}
+
+*Pour valider l'ajout, fusionnez simplement cette PR (Squash & Merge).* Closes #${ISSUE_NUMBER}."
+            
+            gh issue comment "$ISSUE_NUMBER" --body "🤖 **Bot LienLibre** : Une Pull Request automatique a été créée pour ajouter \`$DOMAIN\` à la liste blanche ! Voir la PR associée."
+          fi
+
+      - name: Process Blocklist Report (Auto PR)
+        if: contains(github.event.issue.labels.*.name, 'auto-blocklist-pr')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          node -e "
+            const fs = require('fs');
+            const body = process.env.ISSUE_BODY || '';
+            const issueNum = process.env.ISSUE_NUMBER;
+            
+            const domainMatch = body.match(/### Nom de domaine ou URL concernée\s*\n\s*([^\r\n]+)/i) || body.match(/([a-z0-9-]+\.[a-z0-9.-]+)/i);
+            const reasonMatch = body.match(/### Motif du signalement\s*\n\s*([^\r\n]+)/i);
+            
+            if (!domainMatch) {
+              console.log('No domain found.');
+              process.exit(0);
+            }
+            
+            const rawDomain = domainMatch[1].trim().toLowerCase().replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0];
+            const reason = (reasonMatch && reasonMatch[1].trim()) || 'Signalé par un utilisateur';
+            const today = new Date().toISOString().split('T')[0];
+            
+            console.log('Target domain to block:', rawDomain, 'Reason:', reason);
+            
+            // 1. Update blocklist.json
+            let jsonList = [];
+            try {
+              jsonList = JSON.parse(fs.readFileSync('blocklist.json', 'utf8'));
+            } catch (_) {}
+            
+            if (!jsonList.some(item => item.domain === rawDomain)) {
+              jsonList.push({ domain: rawDomain, reason, date: today, issue: issueNum });
+              fs.writeFileSync('blocklist.json', JSON.stringify(jsonList, null, 2), 'utf8');
+            }
+            
+            // 2. Update blocklist.js
+            let jsContent = fs.readFileSync('blocklist.js', 'utf8');
+            if (!jsContent.includes('\"' + rawDomain + '\"')) {
+              jsContent = jsContent.replace('export const BLOCKED_DOMAINS = [', 'export const BLOCKED_DOMAINS = [\n  \"' + rawDomain + '\",');
+              fs.writeFileSync('blocklist.js', jsContent, 'utf8');
+            }
+            
+            fs.writeFileSync('/tmp/pr_block_info.json', JSON.stringify({ domain: rawDomain, reason, issueNum, type: 'blocklist' }));
+          "
+          
+          if [ -f /tmp/pr_block_info.json ]; then
+            DOMAIN=$(node -p "require('/tmp/pr_block_info.json').domain")
+            REASON=$(node -p "require('/tmp/pr_block_info.json').reason")
+            BRANCH="auto/block-$DOMAIN"
+            
+            git config --global user.name "LienLibre Sentinel Bot"
+            git config --global user.email "bot@lienlibre.local"
+            
+            git checkout -b "$BRANCH"
+            git add blocklist.json blocklist.js
+            git commit -m "security(blocklist): block $DOMAIN from Issue #${ISSUE_NUMBER}"
+            git push -f origin "$BRANCH"
+            
+            gh pr create --base main --head "$BRANCH" \
+              --title "🛑 Quarantaine / Blocage : $DOMAIN" \
+              --body "Cette Pull Request a été générée automatiquement suite au signalement dans l'Issue #${ISSUE_NUMBER}.
+
+### 🛡️ Détails du blocage :
+- **Domaine** : \`$DOMAIN\`
+- **Motif** : \`$REASON\`
+- **Issue liée** : #${ISSUE_NUMBER}
+
+*Pour appliquer immédiatement le blocage, fusionnez cette PR.* Closes #${ISSUE_NUMBER}."
+            
+            gh issue comment "$ISSUE_NUMBER" --body "🛡️ **Sentinel Bot** : Une Pull Request automatique a été créée pour bloquer et mettre en quarantaine \`$DOMAIN\` ! Voir la PR associée."
+          fi

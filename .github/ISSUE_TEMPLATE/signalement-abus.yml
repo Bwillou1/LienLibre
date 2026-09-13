@@ -1,0 +1,38 @@
+name: "🚩 Signalement d'Abus ou Contenu Inapproprié"
+description: "Signaler un nom de domaine ou une URL pour contenu malveillant, illicite ou frauduleux."
+title: "[Signalement Abus] : "
+labels: ["signalement", "securite", "auto-blocklist-pr"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci d'aider à maintenir l'intégrité et la sécurité du réseau LienLibre.
+        Ce signalement créera automatiquement une analyse et une proposition de mise en quarantaine (Pull Request).
+  - type: input
+    id: domain
+    attributes:
+      label: "Nom de domaine ou URL concernée"
+      description: "Exemple: example-malware.com ou https://site-frauduleux.com/page"
+      placeholder: "site-frauduleux.com"
+    validations:
+      required: true
+  - type: dropdown
+    id: reason_type
+    attributes:
+      label: "Motif du signalement"
+      options:
+        - "Logiciel malveillant / Phishing / Hameçonnage"
+        - "Contenu adulte / Non sollicité"
+        - "Désinformation grave / Fraude financière"
+        - "Atteinte aux droits d'auteur / Demande de retrait par l'éditeur (Notice and Notice)"
+        - "Autre"
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: "Détails complémentaires (Optionnel)"
+      description: "Précisions ou liens de contexte."
+      placeholder: "Description du problème constaté..."
+    validations:
+      required: false

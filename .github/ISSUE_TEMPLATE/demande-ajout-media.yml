@@ -1,0 +1,34 @@
+name: "📰 Demande d'Ajout d'un Média ou Journal (Liste Blanche)"
+description: "Demander l'ajout officiel d'un journal régional, média indépendant ou source publique légitime."
+title: "[Ajout Média] : "
+labels: ["ajout-media", "whitelist", "auto-whitelist-pr"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Proposez un média ou une source journalistique légitime pour inclusion officielle dans la liste blanche de LienLibre.
+        Une Pull Request automatisée sera automatiquement créée pour intégrer le média après vérification de son DNS et SSL.
+  - type: input
+    id: domain
+    attributes:
+      label: "Nom de domaine du média"
+      description: "Exemple: monjournalregional.ca"
+      placeholder: "monjournalregional.ca"
+    validations:
+      required: true
+  - type: input
+    id: media_name
+    attributes:
+      label: "Nom officiel du média / Publication"
+      description: "Exemple: Le Courrier du Sud"
+      placeholder: "Le Journal Régional"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description / Type de média"
+      description: "Précisez la région couverte, le type de publication (presse écrite, radio, numérique, etc.)."
+      placeholder: "Média d'information locale couvrant la région de..."
+    validations:
+      required: false
