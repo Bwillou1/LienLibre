@@ -2412,6 +2412,11 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
     
     <div class="disclaimer-box">
       ⚖️ ${escapeHtml(trans.disclaimerText)}
+      <div style="margin-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 0.45rem;">
+        <a href="https://bwillou1.github.io/LienLibre/politiques.html#4-securite-airlock" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline; font-size: 0.76rem; font-weight: 600;">
+          📜 Consulter les Politiques officielles du Sas & Sécurité (Loi 25, art. 31.1 LDA) ↗
+        </a>
+      </div>
     </div>
 
     <div style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 0.6rem; text-align: center;">
@@ -2596,7 +2601,7 @@ function getWelcomeHTML() {
     </div>
 
     <div class="legal-notice">
-      ⚖️ <strong>Cadre légal :</strong> Conforme à l'utilisation équitable (art. 29 <em>Loi sur le droit d'auteur du Canada</em>) et au statut de simple conduit technique (art. 31.1 LDA). Aucun cookie publicitaire, zéro conservation de données personnelles. <a href="https://bwillou1.github.io/LienLibre/POLICIES.md" style="color: #38bdf8; text-decoration: underline;" target="_blank" rel="noopener noreferrer">Consulter les politiques complètes (Loi 25, LPRPDE, Sécurité) ↗</a>
+      ⚖️ <strong>Cadre légal :</strong> Conforme à l'utilisation équitable (art. 29 <em>Loi sur le droit d'auteur du Canada</em>) et au statut de simple conduit technique (art. 31.1 LDA). Aucun cookie publicitaire, zéro conservation de données personnelles. <a href="https://bwillou1.github.io/LienLibre/politiques.html" style="color: #38bdf8; text-decoration: underline;" target="_blank" rel="noopener noreferrer">Consulter les politiques complètes (Loi 25, LPRPDE, Sécurité) ↗</a>
     </div>
   </div>
 </body>

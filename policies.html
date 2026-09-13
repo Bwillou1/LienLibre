@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Politiques Juridiques, Confidentialité & Sécurité — LienLibre</title>
+  
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="favicon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#090d16">
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Politiques juridiques, de confidentialité (Loi 25, LPRPDE) et protocole de sécurité (Security Airlock) de LienLibre.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bwillou1.github.io/LienLibre/politiques.html">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              900: '#0c4a6e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .prose-custom h2 {
+      scroll-margin-top: 5rem;
+    }
+    .prose-custom h3 {
+      scroll-margin-top: 5rem;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Background Aura -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-cyan-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 -right-40 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Sticky Navbar -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800/80">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2 text-white font-extrabold text-lg hover:opacity-85 transition-opacity">
+          <span class="p-2 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/20">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          </span>
+          <span>Lien<span class="text-cyan-400">Libre</span></span>
+        </a>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 hidden sm:inline-block">
+          ⚖️ Politiques Officielles v1.0
+        </span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700/80 text-xs sm:text-sm font-medium text-slate-200 transition-colors">
+          <span>←</span> <span>Retour à l'accueil</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="relative z-10 flex-grow max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14 w-full">
+    
+    <!-- Hero Header -->
+    <div class="mb-10 text-center sm:text-left border-b border-slate-800/80 pb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-4">
+        🛡️ Cadre Juridique, Vie Privée & Cybersécurité
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        Politiques Juridiques, de Confidentialité et de Sécurité
+      </h1>
+      <p class="mt-3 text-slate-400 text-sm sm:text-base max-w-3xl leading-relaxed">
+        Ce document officiel définit les conditions d'utilisation, la politique de protection des renseignements personnels (Loi 25 / LPRPDE), l'application du droit d'auteur (art. 29 & 31.1 LDA) et le protocole de sécurité active de <strong>LienLibre</strong>.
+      </p>
+      <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+        <span class="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-md"><strong>Date d'entrée en vigueur :</strong> 13 septembre 2026</span>
+        <span class="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-md"><strong>Droit applicable :</strong> Canada & Québec</span>
+        <span class="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-md"><strong>Statut :</strong> Simple Intermédiaire Technique (Conduit Pur)</span>
+      </div>
+    </div>
+
+    <!-- Layout: Summary Box + Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      
+      <!-- Table of contents (Sidebar) -->
+      <aside class="lg:col-span-1">
+        <div class="sticky top-24 p-5 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-xl space-y-3">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Sommaire rapide</h2>
+          <nav class="space-y-1 text-xs">
+            <a href="#1-conditions-generales" class="block py-1.5 px-2 rounded hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition-colors">1. CGU & Mentions Légales</a>
+            <a href="#2-confidentialite" class="block py-1.5 px-2 rounded hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition-colors">2. Politique de Confidentialité</a>
+            <a href="#3-droit-auteur" class="block py-1.5 px-2 rounded hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition-colors">3. Droit d'auteur & Médias</a>
+            <a href="#4-securite-airlock" class="block py-1.5 px-2 rounded hover:bg-slate-800 text-cyan-400 font-semibold hover:text-cyan-300 transition-colors">4. Sas de Sécurité (Airlock)</a>
+            <a href="#5-coordonnees" class="block py-1.5 px-2 rounded hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition-colors">5. Coordonnées & Retrait</a>
+            <a href="#6-annexes" class="block py-1.5 px-2 rounded hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition-colors">6. Annexes & Définitions</a>
+          </nav>
+          <div class="pt-3 border-t border-slate-800 text-[11px] text-slate-500">
+            Fichier machine : <a href=".well-known/security.txt" class="text-cyan-400 underline hover:text-cyan-300">security.txt</a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Policy Body -->
+      <div class="lg:col-span-3 space-y-12 prose-custom">
+        
+        <!-- Warning Alert -->
+        <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs sm:text-sm leading-relaxed">
+          <strong>⚠️ Avertissement liminaire :</strong> Le présent document constitue un cadre contractuel et informationnel transparent. Il ne crée pas de relation avocat-client avec les utilisateurs. LienLibre est un outil citoyen, bénévole, éducatif et à but non lucratif.
+        </div>
+
+        <!-- SECTION 1 -->
+        <section id="1-conditions-generales" class="space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+            <span class="text-xl">📜</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white">1. Conditions Générales d’Utilisation et Mentions Légales</h2>
+          </div>
+
+          <div class="space-y-3 text-sm text-slate-300 leading-relaxed">
+            <h3 class="font-semibold text-white text-base">1.1 Identification de l'éditeur et du service</h3>
+            <p><strong>Dénomination :</strong> LienLibre</p>
+            <p><strong>Description :</strong> LienLibre est une passerelle technique citoyenne permettant de faciliter le <em>partage de liens</em> vers des médias d’information canadiens. Le service :</p>
+            <ul class="list-disc pl-5 space-y-1 text-slate-400">
+              <li>Reçoit une URL d’article de presse en paramètre ;</li>
+              <li>Valide le nom de domaine au regard d’une liste blanche de médias canadiens vérifiés et d’un protocole de sécurité (sas / <em>airlock</em>) ;</li>
+              <li>Effectue, le cas échéant, une <strong>redirection technique directe</strong> vers le site de l’éditeur d’origine ;</li>
+              <li><strong>Invite activement</strong> l’utilisateur à s’abonner au média source.</li>
+            </ul>
+            <p class="text-xs bg-slate-900 p-3 rounded-lg border border-slate-800 text-slate-400">
+              LienLibre <strong>n’est pas</strong> un agrégateur de contenus, <strong>n’est pas</strong> un moteur de recherche d’articles intégraux, <strong>n’est pas</strong> un service de contournement de paywall, et <strong>n’est pas</strong> un intermédiaire éditorial.
+            </p>
+
+            <h3 class="font-semibold text-white text-base pt-2">1.4 Statut de simple intermédiaire technique — Conduit pur (art. 31.1 LDA)</h3>
+            <p>
+              LienLibre agit exclusivement en qualité de <strong>simple intermédiaire technique</strong> et de <strong>conduit pur</strong> (<em>mere conduit</em>). Conformément à l'<strong>article 31.1 de la Loi sur le droit d'auteur du Canada</strong> (L.R.C. (1985), ch. C-42), un fournisseur de services réseau n'enfreint pas le droit d'auteur du seul fait qu'il fournit les moyens de télécommunication nécessaires pour que l'œuvre soit transmise.
+            </p>
+            <p>
+              Toute copie technique éventuelle est transitoire, accessoire et automatique. LienLibre ne modifie pas le contenu de la transmission et n'exerce aucun contrôle éditorial sur les sites tiers.
+            </p>
+          </div>
+        </section>
+
+        <!-- SECTION 2 -->
+        <section id="2-confidentialite" class="space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+            <span class="text-xl">🔒</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white">2. Politique de Confidentialité (Loi 25 Québec & LPRPDE)</h2>
+          </div>
+
+          <div class="space-y-3 text-sm text-slate-300 leading-relaxed">
+            <div class="p-4 rounded-xl bg-cyan-950/40 border border-cyan-800/40 text-cyan-200 text-xs sm:text-sm">
+              <strong>🛡️ Principe Zero-Log & Minimisation :</strong> LienLibre ne conserve AUCUNE base de données d'utilisateurs, ne crée AUCUN compte, n'installe AUCUN cookie de traçage publicitaire et ne vend aucune donnée.
+            </div>
+
+            <h3 class="font-semibold text-white text-base pt-2">2.1 Responsable de la protection des renseignements personnels (RPRP)</h3>
+            <p>
+              Conformément à la <em>Loi 25</em> du Québec, un Responsable de la protection des renseignements personnels est désigné pour veiller au respect des données. Pour toute question, utilisez l'étiquette <code>privacy</code> sur les issues du dépôt GitHub ou les canaux de contact officiels.
+            </p>
+
+            <h3 class="font-semibold text-white text-base pt-2">2.4 Traitement de l'adresse IP</h3>
+            <p>
+              L'adresse IP publique de l'utilisateur <strong>n'est pas enregistrée dans une base de données applicative</strong>. Elle est traitée en mémoire vive (RAM) de manière éphémère par le CDN Cloudflare aux seules fins d'acheminement réseau, de prévention des attaques DDoS et de filtrage d'abus techniques.
+            </p>
+          </div>
+        </section>
+
+        <!-- SECTION 3 -->
+        <section id="3-droit-auteur" class="space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+            <span class="text-xl">⚖️</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white">3. Conformité au Droit d’Auteur et Soutien aux Médias</h2>
+          </div>
+
+          <div class="space-y-3 text-sm text-slate-300 leading-relaxed">
+            <p>
+              LienLibre soutient activement le journalisme d'information au Canada. Le service redirige les lecteurs directement sur les sites des éditeurs originaux et affiche des bannières encourageant l'abonnement direct.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800">
+                <span class="text-emerald-400 font-bold block mb-1">✓ Ce que fait LienLibre</span>
+                <span class="text-xs text-slate-400">Transmission technique neutre, redirection vers l'article d'origine, promotion de l'abonnement payant aux médias locaux.</span>
+              </div>
+              <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800">
+                <span class="text-rose-400 font-bold block mb-1">✗ Ce que LienLibre NE fait PAS</span>
+                <span class="text-xs text-slate-400">Aucune reproduction d'articles intégraux, aucun contournement de paywall (verrous numériques), aucune modification de contenu.</span>
+              </div>
+            </div>
+
+            <h3 class="font-semibold text-white text-base pt-3">3.5 Procédure d'Avis et Retrait (Notice & Takedown)</h3>
+            <p>
+              Tout éditeur de presse ou titulaire de droits peut demander le retrait de son nom de domaine de la liste blanche par simple avis écrit via nos issues GitHub (étiquette <code>takedown</code>). Le traitement conservatoire est effectué sous 72 heures.
+            </p>
+          </div>
+        </section>
+
+        <!-- SECTION 4 -->
+        <section id="4-securite-airlock" class="space-y-4">
+          <div class="flex items-center gap-2 border-b border-cyan-500/40 pb-3">
+            <span class="text-xl">🛡️</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-cyan-300">4. Protocole Officiel de Sécurité du Sas (Security Airlock Protocol)</h2>
+          </div>
+
+          <div class="space-y-4 text-sm text-slate-300 leading-relaxed">
+            <p>
+              Pour prévenir le hameçonnage (phishing), les maliciels et l'usurpation d'identité de médias, LienLibre applique une <strong>architecture de défense en profondeur à 3 lignes étanches</strong> :
+            </p>
+
+            <!-- Line 1: DNS -->
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-white text-sm">Ligne 1 : Double Filtrage DNS Protecteur</h4>
+                <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded font-mono">DNS-over-HTTPS</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                Tout domaine soumis est validé via <strong>NextDNS Anti-Malware / Anti-Phishing (ID durci <code>8d3993</code>)</strong> avec repli automatique sur <strong>Cloudflare <code>1.1.1.3</code></strong> (Security & Malware Protection). Tout domaine malveillant est bloqué immédiatement en <code>HTTP 403</code>.
+              </p>
+            </div>
+
+            <!-- Line 2: Mini-Bot -->
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-white text-sm">Ligne 2 : Sentinelle Mini-Bot (Audit Heuristique)</h4>
+                <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded font-mono">Score / 100</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                Audit en temps réel des signaux de confiance (HTTPS, absence d'adresses IP directes, détection des extensions malveillantes <code>.exe</code>, <code>.scr</code>, <code>.bat</code>). Le score attribué est purement indicatif et ne dispense jamais du sas pour un site non vérifié.
+              </p>
+            </div>
+
+            <!-- Line 3: Sas Airlock -->
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-white text-sm">Ligne 3 : Sas de Sécurité Actif & Interdiction des Images</h4>
+                <span class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-mono">Quarantaine</span>
+              </div>
+              <ul class="list-disc pl-5 space-y-1 text-xs text-slate-400">
+                <li><strong>Aucune redirection automatique :</strong> L'utilisateur est arrêté sur une page de mise en garde.</li>
+                <li><strong>Interdiction formelle des images tierces :</strong> Aucun proxying d'images ou hotlinking pour les sites non répertoriés (prévention des fuites d'IP et failles SVG).</li>
+                <li><strong>Bouton officiel Canada.ca :</strong> Possibilité de quitter à tout moment en sécurité vers <a href="https://www.canada.ca/" target="_blank" class="text-emerald-400 underline">Canada.ca</a>.</li>
+                <li><strong>Action manuelle explicite :</strong> L'utilisateur doit cliquer volontairement « Quitter à mes risques ».</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5 -->
+        <section id="5-coordonnees" class="space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+            <span class="text-xl">📞</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white">5. Coordonnées, Avis & Signalements</h2>
+          </div>
+
+          <div class="space-y-3 text-sm text-slate-300 leading-relaxed">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <a href="https://github.com/Bwillou1/LienLibre/security/advisories/new" target="_blank" class="p-3 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-colors">
+                <strong class="text-cyan-400 block mb-1">🛡️ Signaler une vulnérabilité</strong>
+                <span class="text-slate-400">GitHub Security Advisories (Divulgation responsable RFC 9116)</span>
+              </a>
+              <a href="https://www.antifraudcentre-centreantifraude.ca/" target="_blank" class="p-3 rounded-lg bg-slate-900 border border-slate-800 hover:border-red-500 transition-colors">
+                <strong class="text-red-400 block mb-1">🚩 Centre antifraude du Canada</strong>
+                <span class="text-slate-400">Signaler une tentative de fraude ou d'escroquerie en ligne</span>
+              </a>
+              <a href="https://www.cyber.gc.ca/" target="_blank" class="p-3 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-colors">
+                <strong class="text-cyan-300 block mb-1">🇨🇦 Centre canadien pour la cybersécurité</strong>
+                <span class="text-slate-400">Alertes nationales de cybersécurité et signalements d'incidents</span>
+              </a>
+              <a href="https://www.cai.gouv.qc.ca" target="_blank" class="p-3 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500 transition-colors">
+                <strong class="text-indigo-400 block mb-1">⚜️ Commission d'accès à l'information (CAI)</strong>
+                <span class="text-slate-400">Autorité québécoise de protection de la vie privée (Loi 25)</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6 -->
+        <section id="6-annexes" class="space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+            <span class="text-xl">📚</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white">6. Annexes & Références Normatives</h2>
+          </div>
+
+          <div class="space-y-2 text-xs text-slate-400 leading-relaxed">
+            <p>• <em>Loi sur le droit d’auteur</em>, L.R.C. (1985), ch. C-42, art. 29, 29.1, 29.2, 31.1, 41 et s.</p>
+            <p>• <em>Loi sur la protection des renseignements personnels dans le secteur privé</em>, RLRQ c. P-39.1 (Loi 25, Québec).</p>
+            <p>• <em>Loi sur la protection des renseignements personnels et les documents électroniques</em> (LPRPDE / PIPEDA, Canada).</p>
+            <p>• <em>Code civil du Québec</em> (notamment art. 1457, 1470, 1474).</p>
+            <p>• Standard RFC 9116 (<code>security.txt</code>).</p>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="mt-16 pt-8 border-t border-slate-800 text-center flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <p>© 2026 LienLibre — Projet d'utilité civique & recherche. Document de conformité v1.0.</p>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="text-cyan-400 hover:underline font-medium">Accueil LienLibre</a>
+        <a href="POLICIES.md" class="text-slate-400 hover:underline">Format Markdown brut (POLICIES.md)</a>
+        <a href=".well-known/security.txt" class="text-slate-400 hover:underline">security.txt</a>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
