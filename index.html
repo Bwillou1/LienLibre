@@ -713,6 +713,14 @@
                     <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
                     <span id="qr-copy-image-text" data-i18n="qrCopyImageBtn">Copier l'image QR</span>
                   </button>
+                  <button type="button" id="btn-share-meshtastic-home" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer" title="Copier au format broadcast radio Meshtastic (GPL-3.0)">
+                    <span>📻</span>
+                    <span>Paquet Meshtastic</span>
+                  </button>
+                  <button type="button" id="btn-play-audio-ggwave-home" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer" title="Transmettre par signal sonore WebAudio (ggwave MIT)">
+                    <span>🔊</span>
+                    <span>Son (ggwave)</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -908,152 +916,27 @@
           Le lien généré extrait dynamiquement les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage commercial.
         </p>
       </div>
-    <!-- Public Safety & Emergency Alerts Hub (Environnement Canada, SOPFEU, Santé Publique) -->
-    <section id="alerts-section" class="w-full mt-12 glass-card rounded-2xl p-6 sm:p-8 space-y-6">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">
-            <span class="flex h-2.5 w-2.5 relative">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-            </span>
-            <span data-i18n="alertsBadge">Flux Officiels d'Urgence & Sécurité Civile</span>
-          </div>
-          <h3 data-i18n="alertsTitle" class="font-display font-bold text-xl sm:text-2xl text-slate-900 dark:text-white">
-            Alertes d'Urgence Publique en Direct
-          </h3>
-          <p data-i18n="alertsDesc" class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
-            Accédez aux avis urgents d'Environnement Canada, de la SOPFEU et de la Santé Publique et convertissez-les en LienLibre partageable en 1 clic.
-          </p>
+
+    <!-- Hub des Alertes de Sécurité Civile (Portail Dédié) -->
+    <section class="w-full mt-10 p-6 rounded-2xl bg-gradient-to-r from-red-500/10 via-amber-500/10 to-indigo-500/10 border border-red-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-md">
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+          </span>
+          <span>🚨 Hub Officiel des Alertes & Urgences Civiles</span>
         </div>
-        <button type="button" id="btn-refresh-rss-alerts" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer shrink-0">
-          <svg class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          <span data-i18n="alertsRefreshBtn">Actualiser</span>
-        </button>
+        <h3 class="font-display font-bold text-base sm:text-xl text-slate-900 dark:text-white">
+          Avis Météo Extrêmes, Feux de Forêt & Rappels Sanitaires
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+          Consultez et convertissez les alertes d'Environnement Canada, de la SOPFEU et de la Santé Publique sur notre page dédiée.
+        </p>
       </div>
-
-      <!-- Alert Filters -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs custom-scrollbar">
-        <button type="button" class="alert-filter-btn active px-3 py-1.5 rounded-lg bg-red-600 text-white font-semibold transition-all shadow-xs" data-filter="all">
-          🔥 Tout afficher
-        </button>
-        <button type="button" class="alert-filter-btn px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium transition-all" data-filter="meteo">
-          🌪️ Météo (Env. Canada)
-        </button>
-        <button type="button" class="alert-filter-btn px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium transition-all" data-filter="sopfeu">
-          🌲 Feux de Forêt (SOPFEU)
-        </button>
-        <button type="button" class="alert-filter-btn px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium transition-all" data-filter="sante">
-          🏥 Santé & Rappels
-        </button>
-      </div>
-
-      <!-- Emergency Alerts Dynamic List -->
-      <div id="emergency-alerts-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-        <!-- Item 1: Environnement Canada -->
-        <div class="alert-card p-4 rounded-2xl bg-red-500/10 border border-red-500/25 flex flex-col justify-between space-y-3" data-category="meteo">
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="px-2 py-0.5 rounded-full font-bold bg-red-500/20 text-red-700 dark:text-red-300 border border-red-500/30">
-                🔴 Alerte Météo
-              </span>
-              <span class="text-slate-500 dark:text-slate-400 font-mono">Environnement Canada</span>
-            </div>
-            <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
-              Avis de Tempête & Vents Violents — Québec & Maritimes
-            </h4>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Conditions hivernales difficiles, rafales violentes et visibilité réduite prévues sur plusieurs régions. Consultez les mises à jour officielles.
-            </p>
-          </div>
-          <div class="flex items-center gap-2 pt-1">
-            <button type="button" class="btn-convert-alert grow px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer" data-url="https://meteo.gc.ca/warnings/index_f.html">
-              <span>⚡ Convertir en LienLibre</span>
-            </button>
-            <button type="button" class="btn-share-alert px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1 transition-all cursor-pointer" data-url="https://meteo.gc.ca/warnings/index_f.html" data-title="Alerte Environnement Canada">
-              <span>📲 Partager</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Item 2: SOPFEU -->
-        <div class="alert-card p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex flex-col justify-between space-y-3" data-category="sopfeu">
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                🟠 Indice d'Incendie Élevé
-              </span>
-              <span class="text-slate-500 dark:text-slate-400 font-mono">SOPFEU</span>
-            </div>
-            <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
-              Interdiction de Feux à Ciel Ouvert en Forêt
-            </h4>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Indices de danger d'incendie de forêt élevés à très élevés. Restrictions en vigueur pour la protection de la sécurité civile et des communautés.
-            </p>
-          </div>
-          <div class="flex items-center gap-2 pt-1">
-            <button type="button" class="btn-convert-alert grow px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer" data-url="https://sopfeu.qc.ca/">
-              <span>⚡ Convertir en LienLibre</span>
-            </button>
-            <button type="button" class="btn-share-alert px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1 transition-all cursor-pointer" data-url="https://sopfeu.qc.ca/" data-title="Alerte Incendie SOPFEU">
-              <span>📲 Partager</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Item 3: Santé Publique / MAPAQ -->
-        <div class="alert-card p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/25 flex flex-col justify-between space-y-3" data-category="sante">
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="px-2 py-0.5 rounded-full font-bold bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30">
-                🔵 Rappel Alimentaire & Santé
-              </span>
-              <span class="text-slate-500 dark:text-slate-400 font-mono">Santé Canada</span>
-            </div>
-            <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
-              Avis de Sécurité Publique & Rappel d'Aliments
-            </h4>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Mises en garde officielles et rappels sanitaires d'intérêt public pour préserver la santé des familles et des consommateurs.
-            </p>
-          </div>
-          <div class="flex items-center gap-2 pt-1">
-            <button type="button" class="btn-convert-alert grow px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer" data-url="https://recalls-rappels.canada.ca/fr">
-              <span>⚡ Convertir en LienLibre</span>
-            </button>
-            <button type="button" class="btn-share-alert px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1 transition-all cursor-pointer" data-url="https://recalls-rappels.canada.ca/fr" data-title="Rappel Santé Canada">
-              <span>📲 Partager</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Item 4: Sécurité Publique Québec -->
-        <div class="alert-card p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/25 flex flex-col justify-between space-y-3" data-category="sante">
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="px-2 py-0.5 rounded-full font-bold bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30">
-                🛡️ Sécurité Civile
-              </span>
-              <span class="text-slate-500 dark:text-slate-400 font-mono">Gouv. du Québec</span>
-            </div>
-            <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
-              Veille sur les Crues & Inondations Printanières
-            </h4>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Surveillance continue du niveau des cours d'eau et consignes d'urgence pour les résidents des zones inondables.
-            </p>
-          </div>
-          <div class="flex items-center gap-2 pt-1">
-            <button type="button" class="btn-convert-alert grow px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer" data-url="https://www.quebec.ca/securite-situations-urgence">
-              <span>⚡ Convertir en LienLibre</span>
-            </button>
-            <button type="button" class="btn-share-alert px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1 transition-all cursor-pointer" data-url="https://www.quebec.ca/securite-situations-urgence" data-title="Sécurité Publique Québec">
-              <span>📲 Partager</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <a href="./alertes.html" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-semibold text-xs shadow-md transition-all shrink-0 flex items-center gap-1.5">
+        <span>🚨 Ouvrir le Hub Alertes ↗</span>
+      </a>
     </section>
 
     <!-- Share Project Section (Social & Model Text) -->
@@ -4201,6 +4084,55 @@
             showError(currentLang === 'fr' ? "Copie d'image non prise en charge sur ce navigateur (utilisez Télécharger PNG)." : "Direct image copy not supported on this browser (use Download PNG).");
           }
         });
+      });
+    }
+
+    const btnShareMeshtasticHome = document.getElementById('btn-share-meshtastic-home');
+    if (btnShareMeshtasticHome) {
+      btnShareMeshtasticHome.addEventListener('click', () => {
+        const link = (outputUrl && outputUrl.textContent) || window.location.href;
+        const payload = `[LienLibre Mesh] ${link} #radio #p2p`;
+        navigator.clipboard.writeText(payload).then(() => {
+          const originalHtml = btnShareMeshtasticHome.innerHTML;
+          btnShareMeshtasticHome.innerHTML = `<span>✓</span> <span>Paquet copié !</span>`;
+          setTimeout(() => { btnShareMeshtasticHome.innerHTML = originalHtml; }, 2000);
+        });
+      });
+    }
+
+    const btnPlayAudioGgwaveHome = document.getElementById('btn-play-audio-ggwave-home');
+    if (btnPlayAudioGgwaveHome) {
+      btnPlayAudioGgwaveHome.addEventListener('click', () => {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const freqs = [1764, 2205, 2646, 3087, 3528, 3969, 4410];
+          let now = ctx.currentTime;
+          
+          const originalHtml = btnPlayAudioGgwaveHome.innerHTML;
+          btnPlayAudioGgwaveHome.innerHTML = `<span>🔊</span> <span>Émission...</span>`;
+          
+          const seq = [0, 2, 4, 1, 3, 5, 0, 4, 2, 6, 1, 5];
+          seq.forEach((idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.frequency.setValueAtTime(freqs[idx % freqs.length], now);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.12);
+            now += 0.13;
+          });
+
+          setTimeout(() => {
+            btnPlayAudioGgwaveHome.innerHTML = originalHtml;
+          }, 2000);
+        } catch (err) {
+          console.warn("Audio non supporté:", err);
+        }
       });
     }
 

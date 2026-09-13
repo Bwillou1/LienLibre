@@ -1,8 +1,9 @@
-// LienLibre Service Worker (PWA) - Version 6 (Emergency Hub, Federation & Ultra-Lite Mode)
-const CACHE_NAME = 'lienlibre-pwa-v6';
+// LienLibre Service Worker (PWA) - Version 7 (Emergency Hub, Federation & Ultra-Lite Mode)
+const CACHE_NAME = 'lienlibre-pwa-v7';
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './alertes.html',
   './lite.html',
   './manifest.json',
   './icon.svg',
