@@ -26,61 +26,70 @@
     <div id="source-domain" class="source-domain">...</div>
   </div>
 
-  <!-- Format Switcher -->
-  <div class="format-tabs">
-    <button type="button" id="tab-short" class="tab-btn active">⚡ Lien court</button>
-    <button type="button" id="tab-mirror" class="tab-btn">📰 Lien miroir</button>
-  </div>
+  <!-- Manual Generate Button (Zero background network request) -->
+  <button type="button" id="btn-generate" class="btn btn-primary" style="width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 700;">
+    <span>⚡</span>
+    <span>Créer mon LienLibre pour cette page</span>
+  </button>
 
-  <!-- Output Box -->
-  <div id="output-url" class="output-box">...</div>
-
-  <!-- Action Buttons -->
-  <div class="actions-row">
-    <button type="button" id="btn-copy" class="btn btn-primary">
-      <svg id="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-      </svg>
-      <span id="copy-text">Copier</span>
-    </button>
-    <button type="button" id="btn-share" class="btn btn-secondary" title="Partager via le menu natif">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="18" cy="5" r="3"/>
-        <circle cx="6" cy="12" r="3"/>
-        <circle cx="18" cy="19" r="3"/>
-        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-      </svg>
-      <span>Partager</span>
-    </button>
-    <button type="button" id="btn-qr" class="btn btn-secondary" title="Afficher le Code QR">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect width="5" height="5" x="3" y="3" rx="1"/>
-        <rect width="5" height="5" x="16" y="3" rx="1"/>
-        <rect width="5" height="5" x="3" y="16" rx="1"/>
-        <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
-        <path d="M21 21v.01"/>
-        <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
-        <path d="M3 12h.01"/>
-        <path d="M12 3h.01"/>
-        <path d="M12 16v.01"/>
-        <path d="M16 12h1"/>
-        <path d="M21 12v.01"/>
-        <path d="M12 21v-1"/>
-      </svg>
-      <span>QR</span>
-    </button>
-  </div>
-
-  <!-- QR Code Section (collapsible) -->
-  <div id="qr-section" class="qr-section hidden">
-    <div class="qr-canvas-wrap">
-      <canvas id="qr-canvas" width="160" height="160"></canvas>
+  <!-- Result Container (Hidden until user clicks generate button) -->
+  <div id="result-section" class="hidden" style="display: flex; flex-direction: column; gap: 10px;">
+    <!-- Format Switcher -->
+    <div class="format-tabs">
+      <button type="button" id="tab-short" class="tab-btn active">⚡ Lien court</button>
+      <button type="button" id="tab-mirror" class="tab-btn">📰 Lien miroir</button>
     </div>
-    <button type="button" id="btn-download-qr" class="btn btn-secondary" style="width:100%; font-size:11px; padding:6px 10px;">
-      💾 Télécharger l'image QR (PNG)
-    </button>
+
+    <!-- Output Box -->
+    <div id="output-url" class="output-box">...</div>
+
+    <!-- Action Buttons -->
+    <div class="actions-row">
+      <button type="button" id="btn-copy" class="btn btn-primary">
+        <svg id="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+        </svg>
+        <span id="copy-text">Copier</span>
+      </button>
+      <button type="button" id="btn-share" class="btn btn-secondary" title="Partager via le menu natif">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"/>
+          <circle cx="6" cy="12" r="3"/>
+          <circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+        <span>Partager</span>
+      </button>
+      <button type="button" id="btn-qr" class="btn btn-secondary" title="Afficher le Code QR">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="5" height="5" x="3" y="3" rx="1"/>
+          <rect width="5" height="5" x="16" y="3" rx="1"/>
+          <rect width="5" height="5" x="3" y="16" rx="1"/>
+          <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+          <path d="M21 21v.01"/>
+          <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+          <path d="M3 12h.01"/>
+          <path d="M12 3h.01"/>
+          <path d="M12 16v.01"/>
+          <path d="M16 12h1"/>
+          <path d="M21 12v.01"/>
+          <path d="M12 21v-1"/>
+        </svg>
+        <span>QR</span>
+      </button>
+    </div>
+
+    <!-- QR Code Section (collapsible) -->
+    <div id="qr-section" class="qr-section hidden">
+      <div class="qr-canvas-wrap">
+        <canvas id="qr-canvas" width="160" height="160"></canvas>
+      </div>
+      <button type="button" id="btn-download-qr" class="btn btn-secondary" style="width:100%; font-size:11px; padding:6px 10px;">
+        💾 Télécharger l'image QR (PNG)
+      </button>
+    </div>
   </div>
 
   <!-- Footer -->
