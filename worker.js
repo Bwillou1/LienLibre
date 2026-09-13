@@ -817,20 +817,22 @@ export default {
           });
         }
 
-        // 3. Bouclier DNS Famille Cloudflare 1.1.1.3
-        const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname);
-        if (dnsShield.isBlocked) {
-          return new Response(JSON.stringify({
-            error: true,
-            blocked: true,
-            message: dnsShield.reason
-          }), {
-            status: 403,
-            headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
-          });
-        }
-
         const isAllowed = isDomainAllowed(parsedTarget.hostname);
+
+        // 3. Bouclier DNS Famille Cloudflare 1.1.1.3 (Ignoré pour les domaines dans la liste blanche)
+        if (!isAllowed) {
+          const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname);
+          if (dnsShield.isBlocked) {
+            return new Response(JSON.stringify({
+              error: true,
+              blocked: true,
+              message: dnsShield.reason
+            }), {
+              status: 403,
+              headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+            });
+          }
+        }
         const randomId = Math.random().toString(36).substring(2, 10);
         const packedSlug = encodePackedUrl(parsedTarget.href);
 
@@ -1027,25 +1029,28 @@ export default {
       });
     }
 
-    // 3. Bouclier DNS Protection Famille Cloudflare 1.1.1.3
-    const dnsThreat = await checkDnsFamilyShield(targetUrl.hostname);
-    if (dnsThreat.isBlocked) {
-      if (isJsonRequested) {
-        return new Response(JSON.stringify({
-          error: true,
-          blocked: true,
-          title: "Source Bloquée (Bouclier DNS)",
-          description: dnsThreat.reason,
-          allowed: false
-        }), {
+    // 3. Bouclier DNS Protection Famille Cloudflare 1.1.1.3 (Ignoré totalement pour les médias vérifiés de la liste blanche)
+    let dnsThreat = { isBlocked: false, reason: "" };
+    if (!isAllowed) {
+      dnsThreat = await checkDnsFamilyShield(targetUrl.hostname);
+      if (dnsThreat.isBlocked) {
+        if (isJsonRequested) {
+          return new Response(JSON.stringify({
+            error: true,
+            blocked: true,
+            title: "Source Bloquée (Bouclier DNS)",
+            description: dnsThreat.reason,
+            allowed: false
+          }), {
+            status: 403,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+          });
+        }
+        return new Response(generateBlockedHTML(targetUrl.href, dnsThreat.reason, lang, requestUrl.origin), {
           status: 403,
-          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+          headers: { ...CORS_HEADERS, ...SECURITY_HEADERS, "Content-Type": "text/html; charset=utf-8" }
         });
       }
-      return new Response(generateBlockedHTML(targetUrl.href, dnsThreat.reason, lang, requestUrl.origin), {
-        status: 403,
-        headers: { ...CORS_HEADERS, ...SECURITY_HEADERS, "Content-Type": "text/html; charset=utf-8" }
-      });
     }
 
     // 5. Extraire les métadonnées de la page cible
