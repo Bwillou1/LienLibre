@@ -1967,5 +1967,6 @@ export const MEDIA_NAMES = {
   "yourlocaljournal.ca": "Your Local Journal",
   "yukon-news.com": "Yukon News",
   "yukoner.com": "Yukoner Magazine"
+  "linkedin.com": "LinledIn" 
 
 };
