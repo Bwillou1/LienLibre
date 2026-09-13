@@ -2794,12 +2794,13 @@
       const cleanPath = rawUrl.replace(/^https?:\/\/(?:www\.)?/i, '');
       const langParam = currentLang !== 'fr' ? `?lang=${currentLang}` : '';
 
-      // Default generated structures
-      const defaultMirrorLink = `${WORKER_URL}/${cleanPath}${langParam}`;
-      const defaultShortLink = `${WORKER_URL}/l/${Math.random().toString(36).substring(2, 8)}${langParam}`;
-      
-      currentGeneratedLinks.short = defaultShortLink;
-      currentGeneratedLinks.mirror = defaultMirrorLink;
+      // Base du projet GitHub Pages (Neutre & sans nom personnel)
+      const GITHUB_PROJECT_URL = 'https://bwillou1.github.io/LienLibre';
+      const cleanProjectLink = `${GITHUB_PROJECT_URL}/?url=${encodedUrl}${currentLang !== 'fr' ? '&lang=' + currentLang : ''}`;
+
+      // Liens générés par défaut sous le domaine neutre du projet
+      currentGeneratedLinks.short = cleanProjectLink;
+      currentGeneratedLinks.mirror = cleanProjectLink;
       updateFormatTabUI();
 
       setTimeout(() => {
