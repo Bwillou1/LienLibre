@@ -401,29 +401,10 @@ async function checkDnsFamilyShield(hostname) {
       }
     };
 
-    // Requêtes vers Cloudflare Famille 1.1.1.3 (Malware + Adultes) et NextDNS
-    const cfUrl = `https://family.cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
+    // 1. PRIORITÉ ABSOLUE : NextDNS (Profil personnalisé 8d3993 avec filtres HaGeZi, NRD & Contrôle parental)
     const nextDnsUrl = `https://dns.nextdns.io/8d3993/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
+    const nextData = await fetchDoh(nextDnsUrl);
 
-    const [cfData, nextData] = await Promise.all([
-      fetchDoh(cfUrl),
-      fetchDoh(nextDnsUrl)
-    ]);
-
-    // 1. Vérification Cloudflare Famille (0.0.0.0 ou 127.0.0.1 = blocage sécurité/adulte explicite)
-    if (cfData && cfData.Answer && Array.isArray(cfData.Answer)) {
-      const isBlockedCf = cfData.Answer.some(a => 
-        a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1"
-      );
-      if (isBlockedCf) {
-        return {
-          isBlocked: true,
-          reason: "Ce domaine est bloqué par le bouclier Cloudflare Sécurité & Famille (site malveillant ou contenu explicite)."
-        };
-      }
-    }
-
-    // 2. Vérification NextDNS (0.0.0.0 ou 127.0.0.1 = blocage sécurité explicite)
     if (nextData && nextData.Answer && Array.isArray(nextData.Answer)) {
       const isBlockedNext = nextData.Answer.some(a => 
         a.data === "0.0.0.0" || 
@@ -434,7 +415,25 @@ async function checkDnsFamilyShield(hostname) {
       if (isBlockedNext) {
         return {
           isBlocked: true,
-          reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité ou contenu prohibé détecté)."
+          reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
+        };
+      }
+      // Si NextDNS valide le domaine, retour immédiat sans solliciter le fallback
+      return { isBlocked: false, reason: "" };
+    }
+
+    // 2. SECOURS DE FIABILITÉ : Cloudflare Famille 1.1.1.3 (utilisé si NextDNS timeout ou quota dépassé)
+    const cfUrl = `https://family.cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
+    const cfData = await fetchDoh(cfUrl);
+
+    if (cfData && cfData.Answer && Array.isArray(cfData.Answer)) {
+      const isBlockedCf = cfData.Answer.some(a => 
+        a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1"
+      );
+      if (isBlockedCf) {
+        return {
+          isBlocked: true,
+          reason: "Ce domaine est bloqué par le bouclier Cloudflare Sécurité & Famille (site malveillant ou contenu explicite)."
         };
       }
     }
@@ -463,7 +462,7 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
         "Domaine inscrit au répertoire officiel des médias canadiens",
         "Protocole sécurisé et chiffré HTTPS",
         "Métadonnées Open Graph intègres",
-        "Bouclier DNS Protection Famille & Sécurité validé"
+        "Bouclier DNS NextDNS (Protection & Sécurité) validé"
       ]
     };
   }
@@ -508,7 +507,7 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
       isBlocked: true,
       blockReason: dnsThreat.reason,
       category: "blocked_threat",
-      badgeText: "Source Bloquée (Bouclier DNS Famille)",
+      badgeText: "Source Bloquée (Bouclier DNS)",
       signals: ["⚠️ " + dnsThreat.reason]
     };
   }
@@ -521,7 +520,7 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
     signals.push("Protocole sécurisé HTTPS");
   }
 
-  signals.push("Bouclier DNS Protection Famille & Sécurité (1.1.1.3) validé");
+  signals.push("Bouclier DNS NextDNS (Protection & Sécurité) validé");
 
   const hostname = urlObj.hostname.toLowerCase().replace(/^www\./, "");
   const path = urlObj.pathname.toLowerCase();
