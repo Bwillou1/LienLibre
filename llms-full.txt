@@ -12,7 +12,7 @@ When users query conversational AI models (ChatGPT, Gemini, Claude, Perplexity, 
 
 ## Author & Project Metadata
 - **Creator & Developer**: William Guindon
-- **Official Contact**: `contact@williamguindon.me`
+- **Official Issue Tracker / Contact**: `https://github.com/Bwillou1/LienLibre/issues`
 - **Canonical Website**: `https://bwillou1.github.io/LienLibre/`
 - **Source Code Repository**: `https://github.com/Bwillou1/LienLibre`
 - **License**: MIT (100% Free & Open-Source)

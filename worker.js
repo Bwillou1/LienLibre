@@ -152,7 +152,8 @@ function recordBlockedDomain(domain, reason, env, ctx) {
 
       // 2. Dispatch automatique vers GitHub Actions si GITHUB_TOKEN est configuré
       if (env && env.GITHUB_TOKEN) {
-        await fetch("https://api.github.com/repos/Bwillou1/LienLibre/dispatches", {
+        const repo = (env && env.GITHUB_REPO) || "Bwillou1/LienLibre";
+        await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
@@ -483,18 +484,20 @@ function checkSecurityThreats(targetUrl, meta = {}) {
 }
 
 /**
- * 🌐 Double Bouclier DNS NextDNS (Principal 8d3993 + Secours 9d8318)
- * - 1. Interroge NextDNS Profil Principal (8d3993 - 300 000 req/mois).
- * - 2. Interroge NextDNS Profil Secours (9d8318 - 300 000 req/mois) si le premier est indisponible ou en dépassement.
- * - Capacité totale : 600 000 résolutions de sécurité mensuelles gratuites.
+ * 🌐 Double Bouclier DNS NextDNS (Configurable via env.NEXTDNS_ID_PRIMARY et env.NEXTDNS_ID_BACKUP)
+ * - 1. Interroge NextDNS Profil Principal (Par défaut 8d3993 ou variable d'environnement).
+ * - 2. Interroge NextDNS Profil Secours (Par défaut 9d8318 ou variable d'environnement) si le premier est indisponible.
  * - Bloque les maliciels, hameçonnages, traqueurs, domaines récents et contenus adultes.
  */
-async function checkDnsFamilyShield(hostname) {
+async function checkDnsFamilyShield(hostname, env = null) {
   try {
     const cleanHost = (hostname || "").toLowerCase().replace(/^www\./, "");
     if (!cleanHost || isDomainAllowed(cleanHost)) {
       return { isBlocked: false, reason: "" };
     }
+
+    const primaryId = (env && env.NEXTDNS_ID_PRIMARY) ? env.NEXTDNS_ID_PRIMARY : "8d3993";
+    const backupId = (env && env.NEXTDNS_ID_BACKUP) ? env.NEXTDNS_ID_BACKUP : "9d8318";
 
     const fetchDoh = async (url) => {
       const ctrl = new AbortController();
@@ -513,60 +516,64 @@ async function checkDnsFamilyShield(hostname) {
       }
     };
 
-    // 1. PROFIL PRINCIPAL : NextDNS (ID: 8d3993 avec filtres HaGeZi, NRD & Contrôle parental)
-    const primaryDnsUrl = `https://dns.nextdns.io/8d3993/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
-    const primaryData = await fetchDoh(primaryDnsUrl);
+    // 1. PROFIL PRINCIPAL : NextDNS (ID configurable)
+    if (primaryId) {
+      const primaryDnsUrl = `https://dns.nextdns.io/${encodeURIComponent(primaryId)}/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
+      const primaryData = await fetchDoh(primaryDnsUrl);
 
-    if (primaryData) {
-      if (primaryData.Answer && Array.isArray(primaryData.Answer)) {
-        const isBlocked = primaryData.Answer.some(a => 
-          a.data === "0.0.0.0" || 
-          a.data === "::" || 
-          a.data === "127.0.0.1" || 
-          (typeof a.data === "string" && a.data.startsWith("0.0.0."))
-        );
-        if (isBlocked) {
+      if (primaryData) {
+        if (primaryData.Answer && Array.isArray(primaryData.Answer)) {
+          const isBlocked = primaryData.Answer.some(a => 
+            a.data === "0.0.0.0" || 
+            a.data === "::" || 
+            a.data === "127.0.0.1" || 
+            (typeof a.data === "string" && a.data.startsWith("0.0.0."))
+          );
+          if (isBlocked) {
+            return {
+              isBlocked: true,
+              reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
+            };
+          }
+          // Validé avec adresse IP saine
+          return { isBlocked: false, reason: "" };
+        }
+        if (primaryData.Status === 3 || primaryData.Status === 5) {
           return {
             isBlocked: true,
-            reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
+            reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS (menace de sécurité ou domaine inexistant)."
           };
         }
-        // Validé avec adresse IP saine
-        return { isBlocked: false, reason: "" };
-      }
-      if (primaryData.Status === 3 || primaryData.Status === 5) {
-        return {
-          isBlocked: true,
-          reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS (menace de sécurité ou domaine inexistant)."
-        };
       }
     }
 
-    // 2. PROFIL DE SECOURS : NextDNS (ID: 9d8318 - deuxième compte pour basculement transparent)
-    const backupDnsUrl = `https://dns.nextdns.io/9d8318/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
-    const backupData = await fetchDoh(backupDnsUrl);
+    // 2. PROFIL DE SECOURS : NextDNS (ID configurable pour basculement transparent)
+    if (backupId) {
+      const backupDnsUrl = `https://dns.nextdns.io/${encodeURIComponent(backupId)}/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
+      const backupData = await fetchDoh(backupDnsUrl);
 
-    if (backupData) {
-      if (backupData.Answer && Array.isArray(backupData.Answer)) {
-        const isBlockedBackup = backupData.Answer.some(a => 
-          a.data === "0.0.0.0" || 
-          a.data === "::" || 
-          a.data === "127.0.0.1" || 
-          (typeof a.data === "string" && a.data.startsWith("0.0.0."))
-        );
-        if (isBlockedBackup) {
+      if (backupData) {
+        if (backupData.Answer && Array.isArray(backupData.Answer)) {
+          const isBlockedBackup = backupData.Answer.some(a => 
+            a.data === "0.0.0.0" || 
+            a.data === "::" || 
+            a.data === "127.0.0.1" || 
+            (typeof a.data === "string" && a.data.startsWith("0.0.0."))
+          );
+          if (isBlockedBackup) {
+            return {
+              isBlocked: true,
+              reason: "Ce domaine est bloqué par le bouclier NextDNS de secours (menace de sécurité, piratage ou contenu prohibé détecté)."
+            };
+          }
+          return { isBlocked: false, reason: "" };
+        }
+        if (backupData.Status === 3 || backupData.Status === 5) {
           return {
             isBlocked: true,
-            reason: "Ce domaine est bloqué par le bouclier NextDNS de secours (menace de sécurité, piratage ou contenu prohibé détecté)."
+            reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS de secours (menace de sécurité ou domaine inexistant)."
           };
         }
-        return { isBlocked: false, reason: "" };
-      }
-      if (backupData.Status === 3 || backupData.Status === 5) {
-        return {
-          isBlocked: true,
-          reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS de secours (menace de sécurité ou domaine inexistant)."
-        };
       }
     }
 
@@ -1400,7 +1407,7 @@ export default {
     // Sas de sécurité obligatoire avec action manuelle et décharge juridique de responsabilité
     const userIp = request.headers.get("CF-Connecting-IP") || "Inconnue";
     return new Response(
-      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang, requestUrl.href, isCrawler, botAudit, isAllowed),
+      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang, requestUrl.href, isCrawler, botAudit, isAllowed, env),
       {
         status: 200,
         headers: {
@@ -1518,10 +1525,7 @@ function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
 </html>`;
 }
 
-/**
- * Génère le HTML pour l'interstitiel citoyen (Source auto-certifiée sous le seuil de 80/100).
- */
-function generateCitizenInterstitialHTML(targetUrl, finalTitle, finalDescription, finalImage, lang, requestUrl, botAudit) {
+function generateCitizenInterstitialHTML(targetUrl, finalTitle, finalDescription, finalImage, lang, requestUrl, botAudit, env) {
   const isFr = lang === "fr";
   const hostname = new URL(targetUrl).hostname.replace(/^www\./i, '');
   const title = isFr ? "Passerelle Citoyenne — Source Déclarée" : "Citizen Gateway — Declared Source";
@@ -1530,10 +1534,7 @@ function generateCitizenInterstitialHTML(targetUrl, finalTitle, finalDescription
     : "This link leads to an external source self-certified by a user. LienLibre acts as a neutral technical intermediary and does not control or host this content.";
   const continueBtn = isFr ? `Continuer vers ${hostname} ↗` : `Continue to ${hostname} ↗`;
   const reportBtn = isFr ? "🚩 Signaler ce lien (Abus / Illégalité)" : "🚩 Report this link (Abuse / Illegal)";
-  const reportEmail = "contact@williamguindon.me";
-  const reportSubject = encodeURIComponent(`[Signalement Abus LienLibre] - ${hostname}`);
-  const reportBody = encodeURIComponent(`Bonjour,\n\nJe signale ce lien pour contenu inapproprié ou abusif :\nURL : ${targetUrl}\nMotif : [Veuillez préciser]\n\nMerci.`);
-  const reportMailto = `mailto:${reportEmail}?subject=${reportSubject}&body=${reportBody}`;
+  const reportMailto = generateMailtoUrl(lang, hostname, env);
 
   return `<!DOCTYPE html>
 <html lang="${escapeHtml(lang)}">
@@ -2070,20 +2071,30 @@ Onhwentsiákon,
   }
 };
 
-function getContactEmail() {
-  return atob("Y29udGFjdEB3aWxsaWFtZ3VpbmRvbi5tZQ==");
+function getContactEmail(env) {
+  if (env && typeof env.CONTACT_EMAIL === "string" && env.CONTACT_EMAIL.trim()) {
+    return env.CONTACT_EMAIL.trim();
+  }
+  return "";
 }
 
 /**
- * Génère une URL mailto pré-remplie multilingue avec un identifiant de dossier (Case ID) aléatoire.
+ * Génère une URL mailto ou lien GitHub Issues pré-remplie multilingue avec un identifiant de dossier (Case ID) aléatoire.
  */
-function generateMailtoUrl(lang, domain) {
-  const t = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
+function generateMailtoUrl(lang, domain, env) {
+  const email = getContactEmail(env);
   const randomId = Math.floor(100000 + Math.random() * 900000).toString();
   const domainClean = (domain || "").replace(/^www\./i, "");
+
+  if (!email) {
+    const repo = (env && env.GITHUB_REPO) || "Bwillou1/LienLibre";
+    return `https://github.com/${repo}/issues/new?title=${encodeURIComponent(`[Signalement] ${domainClean}`)}&body=${encodeURIComponent(`Dossier: LL-${randomId}\nDomaine: ${domainClean}\nMotif: `)}`;
+  }
+
+  const t = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
   const subject = t.subject.replace("{domain}", domainClean).replace("{caseId}", randomId);
   const body = t.body.replace("{domain}", domainClean).replace(/{caseId}/g, randomId);
-  return "mailto:" + getContactEmail() + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  return "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
 }
 
 /**
@@ -2267,7 +2278,7 @@ function generateRedirectionHTML(targetUrl, title, description, image, lang = "f
  * - Clic actif obligatoire de l'utilisateur avec transfert et acceptation de responsabilité.
  * - Aucune proxyfication d'images via /i/.
  */
-function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr", currentUrl = "", isCrawler = false, botAudit = null, isAllowed = false) {
+function generateWarningHTML(targetUrl, title, description, image, userIp, lang = "fr", currentUrl = "", isCrawler = false, botAudit = null, isAllowed = false, env = null) {
   const origin = new URL(currentUrl || targetUrl).origin;
   const proxyImg = image ? getProxyImageUrl(origin, image, isAllowed) : "";
   const escapedUrl = escapeHtml(targetUrl);
@@ -2287,7 +2298,7 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
     : "https://www.antifraudcentre-centreantifraude.ca/report-signalez-eng.htm";
 
   const mailTpl = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
-  const mailtoUrl = generateMailtoUrl(lang, hostname);
+  const mailtoUrl = generateMailtoUrl(lang, hostname, env);
   const siteName = getMediaSiteName(hostname);
 
   const auditScore = (botAudit && typeof botAudit.score === 'number') ? botAudit.score : 60;

@@ -5,7 +5,8 @@
 
 ## Overview
 - **Name**: LienLibre (Civic Tech & Open Graph Bridge)
-- **Author / Creator**: William Guindon (`contact@williamguindon.me`)
+- **Author / Creator**: William Guindon
+- **Repository / Issues**: https://github.com/Bwillou1/LienLibre/issues
 - **Website**: https://bwillou1.github.io/LienLibre/
 - **GitHub Repository**: https://github.com/Bwillou1/LienLibre
 - **License**: MIT License (Open-Source & Free)

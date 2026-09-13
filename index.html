@@ -63,7 +63,6 @@
         "@id": "https://bwillou1.github.io/LienLibre/#author",
         "name": "William Guindon",
         "url": "https://github.com/Bwillou1",
-        "email": "contact@williamguindon.me",
         "jobTitle": "Software Engineer & Civic Tech Developer",
         "knowsAbout": [
           "Civic Tech",
@@ -1238,28 +1237,75 @@
           </a>
         </div>
 
-        <!-- Step 2: Enable GitHub Pages -->
+        <!-- Step 2: Create NextDNS Profile -->
         <div class="space-y-2 p-4 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 rounded-xl">
-          <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-mono font-bold border border-indigo-500/30">2</span>
-            <span data-i18n="mirrorStep2Title">Activer l'hébergement gratuit (GitHub Pages)</span>
-          </h4>
-          <p data-i18n="mirrorStep2Desc" class="text-slate-600 dark:text-slate-400 text-xs">
-            Dans votre nouveau dépôt GitHub : 1. Allez dans Settings > Pages. 2. Sous Branch, sélectionnez 'main' / Save. Votre miroir est instantanément en ligne !
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-mono font-bold border border-emerald-500/30">2</span>
+              <span>Créer votre profil NextDNS gratuit</span>
+            </h4>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Gratuit</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-400 text-xs">
+            Rendez-vous sur <a href="https://nextdns.io" target="_blank" class="text-cyan-600 dark:text-cyan-400 underline font-semibold">nextdns.io</a>, créez un compte gratuit et notez votre identifiant à 6 caractères (ex: <code>9d8318</code>). Activez les listes de blocage de sécurité souhaitées.
           </p>
         </div>
 
-        <!-- Step 3: Deploy Worker Backend (Optional) -->
+        <!-- Step 3: Deploy Cloudflare Worker -->
         <div class="space-y-2 p-4 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 rounded-xl">
           <div class="flex items-center justify-between">
             <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
               <span class="w-5 h-5 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs font-mono font-bold border border-purple-500/30">3</span>
-              <span data-i18n="mirrorStep3Title">Déployer votre propre Worker Cloudflare (Optionnel)</span>
+              <span data-i18n="mirrorStep3Title">Déployer votre propre Worker Cloudflare</span>
             </h4>
             <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-400 border border-slate-300 dark:border-slate-700">Autonomie 100%</span>
           </div>
-          <p data-i18n="mirrorStep3Desc" class="text-slate-600 dark:text-slate-400 text-xs">
-            Pour disposer de votre propre passerelle serveur sans aucune dépendance, déployez worker.js sur un compte Cloudflare gratuit et ajustez WORKER_URL.
+          <p class="text-slate-600 dark:text-slate-400 text-xs">
+            1. Copiez <code>wrangler.toml.example</code> vers <code>wrangler.toml</code>.<br>
+            2. Renseignez votre <code>NEXTDNS_ID_PRIMARY</code> et votre <code>GITHUB_REPO</code>.<br>
+            3. Exécutez <code>npx wrangler deploy</code> sur votre terminal ou collez <code>worker.js</code> dans le tableau de bord Cloudflare Workers.
+          </p>
+        </div>
+
+        <!-- Step 4: Configure Frontend Worker URL -->
+        <div class="space-y-2 p-4 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 rounded-xl">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-mono font-bold border border-blue-500/30">4</span>
+              <span>Connecter ce miroir à votre Worker</span>
+            </h4>
+          </div>
+          <p class="text-slate-600 dark:text-slate-400 text-xs">
+            Entrez l'URL de votre Cloudflare Worker déployé pour ce navigateur (ou définissez <code>window.LIENLIBRE_WORKER_URL</code>) :
+          </p>
+          <div class="flex gap-2">
+            <input 
+              type="url" 
+              id="input-custom-worker" 
+              placeholder="https://mon-worker.workers.dev" 
+              class="flex-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            />
+            <button 
+              type="button" 
+              id="btn-save-custom-worker" 
+              class="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+            >
+              Enregistrer
+            </button>
+          </div>
+          <p id="custom-worker-status" class="text-[11px] text-emerald-600 dark:text-emerald-400 hidden font-medium">
+            ✓ URL de worker enregistrée pour ce miroir !
+          </p>
+        </div>
+
+        <!-- Step 5: Enable GitHub Pages -->
+        <div class="space-y-2 p-4 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 rounded-xl">
+          <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-mono font-bold border border-indigo-500/30">5</span>
+            <span data-i18n="mirrorStep2Title">Activer l'hébergement gratuit (GitHub Pages)</span>
+          </h4>
+          <p data-i18n="mirrorStep2Desc" class="text-slate-600 dark:text-slate-400 text-xs">
+            Dans votre nouveau dépôt GitHub : 1. Allez dans Settings > Pages. 2. Sous Branch, sélectionnez 'main' / Save. Votre miroir est instantanément en ligne !
           </p>
         </div>
 
@@ -1363,17 +1409,18 @@
 
   <!-- Client-side Logic -->
   <script>
-    // Worker Endpoint
-    const WORKER_URL = 'https://lienlibre.acces-presse.workers.dev';
+    // Worker Endpoint - Support de décentralisation pour forks et miroirs
+    const DEFAULT_WORKER_URL = 'https://lienlibre.acces-presse.workers.dev';
+    const isOfficialSite = (window.location.hostname === 'bwillou1.github.io' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const customWorkerUrl = (typeof window.LIENLIBRE_WORKER_URL === 'string' && window.LIENLIBRE_WORKER_URL.trim()) || localStorage.getItem('LIENLIBRE_CUSTOM_WORKER_URL') || '';
+    let WORKER_URL = customWorkerUrl || (isOfficialSite ? DEFAULT_WORKER_URL : '');
 
-    // Fonction de calcul dynamique et obscurcie de l'adresse de contact pour bloquer les robots de moissonnage
+    // Fonction de récupération de l'adresse de contact (configurable via window.LIENLIBRE_CONTACT_EMAIL ou fallback vide)
     function getContactEmail() {
-      const p1 = "Y29udGFj";
-      const p2 = "dEB3aWxs";
-      const p3 = "aWFtZ3Vp";
-      const p4 = "bmRvbi5t";
-      const p5 = "ZQ==";
-      return atob(p1 + p2 + p3 + p4 + p5);
+      if (typeof window.LIENLIBRE_CONTACT_EMAIL === 'string' && window.LIENLIBRE_CONTACT_EMAIL.trim()) {
+        return window.LIENLIBRE_CONTACT_EMAIL.trim();
+      }
+      return '';
     }
 
     // Traductions complètes pour 10 langues (FR, EN, AR, ES, IT, ZH, CR, IU, IN, MOH)
@@ -2205,9 +2252,17 @@
 
     function initLegalContact() {
       const email = getContactEmail();
-      if (legalContactEmailText) legalContactEmailText.textContent = email;
+      if (legalContactEmailText) {
+        legalContactEmailText.textContent = email || "GitHub Issues (Bwillou1/LienLibre)";
+      }
       if (legalContactEmailBtn) {
-        legalContactEmailBtn.href = `mailto:${email}?subject=Demande%20de%20retrait%20ou%20signalement%20LienLibre`;
+        if (email) {
+          legalContactEmailBtn.href = `mailto:${email}?subject=Demande%20de%20retrait%20ou%20signalement%20LienLibre`;
+          legalContactEmailBtn.removeAttribute('target');
+        } else {
+          legalContactEmailBtn.href = "https://github.com/Bwillou1/LienLibre/issues";
+          legalContactEmailBtn.target = "_blank";
+        }
       }
     }
     initLegalContact();
@@ -2264,10 +2319,34 @@
     if (btnFooterMirror) btnFooterMirror.addEventListener('click', openMirrorModal);
     if (btnCloseMirror) btnCloseMirror.addEventListener('click', closeMirrorModal);
     if (btnCloseMirrorBottom) btnCloseMirrorBottom.addEventListener('click', closeMirrorModal);
-    if (mirrorModalBackdrop) mirrorModalBackdrop.addEventListener('click', closeMirrorModal);
-
     if (window.location.hash === '#mirror' || window.location.hash === '#fork') {
       openMirrorModal();
+    }
+
+    // Custom Worker URL handler for Mirrors and Forks
+    const inputCustomWorker = document.getElementById('input-custom-worker');
+    const btnSaveCustomWorker = document.getElementById('btn-save-custom-worker');
+    const customWorkerStatus = document.getElementById('custom-worker-status');
+
+    if (inputCustomWorker) {
+      inputCustomWorker.value = WORKER_URL || '';
+    }
+
+    if (btnSaveCustomWorker && inputCustomWorker) {
+      btnSaveCustomWorker.addEventListener('click', () => {
+        const val = inputCustomWorker.value.trim().replace(/\/+$/, '');
+        if (val) {
+          localStorage.setItem('LIENLIBRE_CUSTOM_WORKER_URL', val);
+          WORKER_URL = val;
+        } else {
+          localStorage.removeItem('LIENLIBRE_CUSTOM_WORKER_URL');
+          WORKER_URL = isOfficialSite ? DEFAULT_WORKER_URL : '';
+        }
+        if (customWorkerStatus) {
+          customWorkerStatus.classList.remove('hidden');
+          setTimeout(() => customWorkerStatus.classList.add('hidden'), 3000);
+        }
+      });
     }
 
     // Modal Mini-Bot Configuration logic
@@ -2575,12 +2654,17 @@
     };
 
     function generateMailtoUrl(lang, domain) {
-      const t = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
-      const randomId = Math.floor(100000 + Math.random() * 900000).toString();
+      const email = getContactEmail();
       const domainClean = (domain || "").replace(/^www\./i, '');
+      const randomId = Math.floor(100000 + Math.random() * 900000).toString();
+
+      if (!email) {
+        return `https://github.com/Bwillou1/LienLibre/issues/new?title=${encodeURIComponent(`[Signalement / Demande d'ajout] ${domainClean}`)}&body=${encodeURIComponent(`Dossier: LL-${randomId}\nDomaine: ${domainClean}\nMotif:`)}`;
+      }
+
+      const t = MAILTO_TEMPLATES[lang] || MAILTO_TEMPLATES.fr;
       const subject = t.subject.replace('{domain}', domainClean).replace('{caseId}', randomId);
       const body = t.body.replace('{domain}', domainClean).replace(/{caseId}/g, randomId);
-      const email = getContactEmail();
       return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
@@ -2720,7 +2804,11 @@
       const body = isEn 
         ? "Hello,\n\nI would like to report an abuse or illicit content on LienLibre:\n\n- Suspicious URL:\n- Reason for report:\n\nThank you.\n\nDate: " + new Date().toISOString()
         : "Bonjour,\n\nJe souhaite signaler un lien abusif ou du contenu illicite sur LienLibre :\n\n- URL concernée :\n- Motif du signalement :\n\nMerci.\n\nDate : " + new Date().toISOString();
-      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      if (email) {
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      } else {
+        window.open(`https://github.com/Bwillou1/LienLibre/issues/new?title=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+      }
     }
 
     const btnNavReport = document.getElementById('btn-nav-report');
@@ -2797,6 +2885,12 @@
       } catch (_) {
         showError(trans.errorInvalidUrl || "Veuillez saisir une URL valide.");
         resultArea.classList.add('hidden');
+        return;
+      }
+
+      if (!WORKER_URL) {
+        showError("⚠️ Aucune passerelle Cloudflare Worker configurée pour ce miroir. Cliquez sur « Créer un miroir » en haut pour connecter votre propre worker gratuit.");
+        openMirrorModal();
         return;
       }
 
