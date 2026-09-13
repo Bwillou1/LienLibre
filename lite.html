@@ -141,12 +141,42 @@
     <a href="./index.html" class="switch-link">Mode Complet ↗</a>
   </header>
 
+  <!-- Indicateur Hors-Ligne Automatique -->
+  <div id="offline-status-banner" class="hidden alert-item" style="border-left-color: #f59e0b; background: var(--box); margin-bottom: 12px;">
+    <div style="font-size: 0.8rem; font-weight: 600; color: #d97706;">🛰️ Mode Hors-Ligne actif</div>
+    <div style="font-size: 0.75rem;">Vos liens et capsules d'actualité sont créés localement sans Wi-Fi ni réseau mobile.</div>
+  </div>
+
+  <!-- Lecteur de Capsule Hors-Ligne Reçue -->
+  <div id="offline-capsule-viewer" class="hidden card" style="border: 2px solid #f59e0b; background: var(--box); margin-bottom: 14px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+      <span style="font-size: 0.75rem; font-weight: 700; color: #d97706; text-transform: uppercase;">🛰️ Capsule Reçue Sans Wi-Fi</span>
+      <span id="capsule-domain" class="badge" style="font-family: monospace;"></span>
+    </div>
+    <h2 id="capsule-title" style="font-size: 1rem; font-weight: 700; margin-bottom: 6px;"></h2>
+    <p id="capsule-summary" style="font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px;"></p>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--border); padding-top: 8px;">
+      <span style="font-size: 0.7rem; color: var(--text);">🕒 Créée : <span id="capsule-timestamp"></span></span>
+      <div class="btn-group">
+        <a id="capsule-orig-link" href="#" target="_blank" rel="noopener noreferrer" class="btn sec" style="padding: 4px 8px; font-size: 0.75rem;">🌐 Ouvrir si connecté</a>
+        <button type="button" id="btn-capsule-copy" style="padding: 4px 8px; font-size: 0.75rem; background: #d97706;">📋 Copier le résumé</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Générateur Rapide -->
   <main class="card">
     <form id="lite-form">
-      <label for="url-in">URL de l'article de presse ou d'alerte :</label>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <label for="url-in">URL de l'article de presse ou d'alerte :</label>
+      </div>
       <input type="url" id="url-in" placeholder="https://www.lapresse.ca/..." required autofocus>
       
+      <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+        <button type="button" id="btn-tab-gateway" class="btn" style="padding: 4px 10px; font-size: 0.75rem;">⚡ Passerelle (Court)</button>
+        <button type="button" id="btn-tab-offline" class="btn sec" style="padding: 4px 10px; font-size: 0.75rem;">🛰️ Hors-Ligne (Sans Wi-Fi)</button>
+      </div>
+
       <div class="btn-group">
         <button type="submit" id="btn-submit">⚡ Générer le Lien</button>
         <button type="button" class="sec" id="btn-paste">Coller</button>
@@ -154,7 +184,7 @@
     </form>
 
     <div id="lite-result" class="hidden" style="margin-top: 12px;">
-      <label>Lien passerelle prêt :</label>
+      <label id="lite-result-label">Lien passerelle prêt :</label>
       <div id="lite-output" class="result-box"></div>
       
       <div class="btn-group" style="margin-top: 8px;">
@@ -219,15 +249,102 @@
     const form = document.getElementById('lite-form');
     const urlIn = document.getElementById('url-in');
     const resultBox = document.getElementById('lite-result');
+    const resultLabel = document.getElementById('lite-result-label');
     const output = document.getElementById('lite-output');
     const btnCopy = document.getElementById('btn-copy');
     const btnShare = document.getElementById('btn-share');
     const btnPaste = document.getElementById('btn-paste');
+    const btnTabGateway = document.getElementById('btn-tab-gateway');
+    const btnTabOffline = document.getElementById('btn-tab-offline');
     const nodeBadge = document.getElementById('node-badge');
+
+    let activeTab = 'gateway';
+    let generatedLinks = { gateway: '', offline: '' };
+
+    // Offline Capsule Codec (Zero-Network Autonomous Payload)
+    const OfflineCapsule = {
+      encode(data) {
+        try {
+          const u = data.u || '';
+          const d = data.d || '';
+          const t = (data.t || '').slice(0, 140);
+          const s = (data.s || '').slice(0, 320);
+          const e = data.e ? '1' : '0';
+          const ts = data.ts || Math.floor(Date.now() / 1000);
+          const packed = [u, d, t, s, e, ts].join('§');
+          const utf8Bytes = new TextEncoder().encode(packed);
+          let binStr = '';
+          for (let i = 0; i < utf8Bytes.length; i++) {
+            binStr += String.fromCharCode(utf8Bytes[i]);
+          }
+          return btoa(binStr).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        } catch (_) {
+          return '';
+        }
+      },
+      decode(str) {
+        try {
+          let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+          while (b64.length % 4) b64 += '=';
+          const binStr = atob(b64);
+          const bytes = new Uint8Array(binStr.length);
+          for (let i = 0; i < binStr.length; i++) {
+            bytes[i] = binStr.charCodeAt(i);
+          }
+          const text = new TextDecoder().decode(bytes);
+          const parts = text.split('§');
+          if (parts.length < 6) return null;
+          return {
+            u: parts[0],
+            d: parts[1],
+            t: parts[2],
+            s: parts[3],
+            e: parts[4] === '1',
+            ts: parseInt(parts[5], 10) || Math.floor(Date.now() / 1000)
+          };
+        } catch (_) {
+          return null;
+        }
+      }
+    };
 
     // Détection du nœud fédéré
     const host = window.location.hostname;
     nodeBadge.textContent = '🌐 Nœud Réseau : ' + (host.endsWith('.github.io') ? host.split('.')[0] + '/LienLibre' : host || 'Local');
+
+    function updateTabUI() {
+      if (activeTab === 'gateway') {
+        btnTabGateway.className = 'btn';
+        btnTabOffline.className = 'btn sec';
+        if (resultLabel) resultLabel.textContent = '⚡ Lien passerelle prêt :';
+        if (generatedLinks.gateway) {
+          output.textContent = generatedLinks.gateway;
+          updateShareLinks(generatedLinks.gateway);
+        }
+      } else {
+        btnTabOffline.className = 'btn';
+        btnTabGateway.className = 'btn sec';
+        if (resultLabel) resultLabel.textContent = '🛰️ Capsule hors-ligne prête (Sans Wi-Fi) :';
+        if (generatedLinks.offline) {
+          output.textContent = generatedLinks.offline;
+          updateShareLinks(generatedLinks.offline);
+        }
+      }
+    }
+
+    if (btnTabGateway) {
+      btnTabGateway.addEventListener('click', () => {
+        activeTab = 'gateway';
+        updateTabUI();
+      });
+    }
+
+    if (btnTabOffline) {
+      btnTabOffline.addEventListener('click', () => {
+        activeTab = 'offline';
+        updateTabUI();
+      });
+    }
 
     // Paste helper
     if (btnPaste) {
@@ -262,7 +379,9 @@
 
     // Update share links
     function updateShareLinks(url) {
-      const msg = "Lien d'actualité partagé avec LienLibre Lite :";
+      const msg = activeTab === 'offline' 
+        ? "Consultez cette capsule d'actualité autonome LienLibre (lisible sans connexion) :"
+        : "Lien d'actualité partagé avec LienLibre Lite :";
       document.getElementById('sh-sms').href = `sms:?&body=${encodeURIComponent(msg + ' ' + url)}`;
       document.getElementById('sh-wa').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg + ' ' + url)}`;
       document.getElementById('sh-tg').href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`;
@@ -277,10 +396,26 @@
       const raw = urlIn.value.trim();
       if (!raw) return;
       const cleaned = cleanUrl(raw);
-      const generated = `${WORKER_URL}/?url=${encodeURIComponent(cleaned)}`;
+      let domain = '';
+      try { domain = new URL(cleaned).hostname.replace(/^www\./i, ''); } catch (_) { domain = cleaned; }
+
+      const gatewayUrl = `${WORKER_URL}/?url=${encodeURIComponent(cleaned)}`;
       
-      output.textContent = generated;
-      updateShareLinks(generated);
+      const payload = OfflineCapsule.encode({
+        u: cleaned,
+        d: domain,
+        t: domain,
+        s: '',
+        e: false,
+        ts: Math.floor(Date.now() / 1000)
+      });
+      const baseUrl = window.location.origin + window.location.pathname.replace(/\/lite\.html$/i, '') + '/';
+      const offlineUrl = `${baseUrl}#o=${payload}`;
+
+      generatedLinks.gateway = gatewayUrl;
+      generatedLinks.offline = offlineUrl;
+
+      updateTabUI();
       resultBox.classList.remove('hidden');
     });
 
@@ -317,6 +452,72 @@
         }
       });
     });
+
+    // Offline Capsule Reader Logic (#o=... in hash)
+    function checkAndRenderOfflineCapsule() {
+      const hash = window.location.hash || '';
+      const viewer = document.getElementById('offline-capsule-viewer');
+      if (!viewer) return;
+
+      if (hash.startsWith('#o=')) {
+        const rawPayload = hash.substring(3);
+        const capsule = OfflineCapsule.decode(rawPayload);
+        if (capsule && capsule.u) {
+          const capTitle = document.getElementById('capsule-title');
+          const capSummary = document.getElementById('capsule-summary');
+          const capDomain = document.getElementById('capsule-domain');
+          const capTimestamp = document.getElementById('capsule-timestamp');
+          const capOrigLink = document.getElementById('capsule-orig-link');
+          const btnCapsuleCopy = document.getElementById('btn-capsule-copy');
+
+          if (capTitle) capTitle.textContent = capsule.t || capsule.u;
+          if (capSummary) capSummary.textContent = capsule.s || "Capsule autonome LienLibre transmise hors-ligne sans connexion réseau.";
+          if (capDomain) capDomain.textContent = capsule.d || (capsule.u.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0]);
+          if (capTimestamp) {
+            const date = new Date(capsule.ts * 1000);
+            capTimestamp.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          }
+          if (capOrigLink) {
+            capOrigLink.href = capsule.u;
+          }
+          if (btnCapsuleCopy) {
+            btnCapsuleCopy.onclick = () => {
+              const text = `${capsule.t || 'Information'}\n\n${capsule.s || ''}\n\nSource : ${capsule.u}`;
+              navigator.clipboard.writeText(text).then(() => {
+                const origText = btnCapsuleCopy.textContent;
+                btnCapsuleCopy.textContent = "✓ Résumé copié !";
+                setTimeout(() => { btnCapsuleCopy.textContent = origText; }, 2000);
+              });
+            };
+          }
+          viewer.classList.remove('hidden');
+          viewer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+      }
+      viewer.classList.add('hidden');
+    }
+
+    // Offline status detection
+    function updateOnlineStatus() {
+      const banner = document.getElementById('offline-status-banner');
+      if (!banner) return;
+      if (!navigator.onLine) {
+        banner.classList.remove('hidden');
+        if (activeTab !== 'offline' && !generatedLinks.gateway) {
+          activeTab = 'offline';
+          updateTabUI();
+        }
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+
+    window.addEventListener('DOMContentLoaded', checkAndRenderOfflineCapsule);
+    window.addEventListener('hashchange', checkAndRenderOfflineCapsule);
   </script>
 </body>
 </html>

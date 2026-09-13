@@ -531,6 +531,47 @@
 
     <!-- Generator Panel Card -->
     <div class="w-full glass-card glow-subtle rounded-2xl p-5 sm:p-8 relative">
+      
+      <!-- Bannière Indicateur Hors-Ligne Détecté -->
+      <div id="offline-status-banner" class="hidden mb-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-medium flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-base">🛰️</span>
+          <span data-i18n="offlineStatusText">Mode Hors-Ligne actif — Vos liens & capsules sont créés localement sans Wi-Fi ni données mobiles.</span>
+        </div>
+        <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 font-bold uppercase tracking-wider">Hors-Ligne</span>
+      </div>
+
+      <!-- Lecteur de Capsule Hors-Ligne Décodée (Sans Wi-Fi) -->
+      <div id="offline-capsule-viewer" class="hidden mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-rose-500/10 to-indigo-500/15 border-2 border-amber-500/30 shadow-lg space-y-3 animate-in fade-in zoom-in-95 duration-200">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-300 font-bold text-xs uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+            <span data-i18n="capsuleReceivedTitle">🛰️ Capsule Reçue Hors-Ligne (Sans Wi-Fi)</span>
+          </span>
+          <span id="capsule-domain-badge" class="px-2.5 py-0.5 rounded-lg bg-slate-900/80 text-cyan-300 font-mono text-xs font-semibold border border-slate-700"></span>
+        </div>
+
+        <div class="space-y-1">
+          <h3 id="capsule-title" class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-snug"></h3>
+          <p id="capsule-summary" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <div class="pt-2 flex items-center justify-between flex-wrap gap-2 border-t border-amber-500/20">
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+            <span>🕒 Créée :</span>
+            <span id="capsule-timestamp"></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <a id="capsule-orig-link" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 text-slate-900 dark:text-white text-xs font-semibold transition-all">
+              🌐 Ouvrir si connecté
+            </a>
+            <button type="button" id="btn-capsule-copy" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer">
+              📋 Copier le résumé
+            </button>
+          </div>
+        </div>
+      </div>
+
       <form id="generator-form" class="space-y-4">
         <div>
           <label for="url-input" data-i18n="inputLabel" class="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
@@ -596,6 +637,9 @@
               </button>
               <button type="button" id="btn-format-mirror" class="px-2.5 py-1 text-xs rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition-all cursor-pointer">
                 <span data-i18n="formatMirror">📰 Lien miroir (Fidèle)</span>
+              </button>
+              <button type="button" id="btn-format-offline" class="px-2.5 py-1 text-xs rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition-all cursor-pointer">
+                <span data-i18n="formatOffline">🛰️ Hors-Ligne (Sans Wi-Fi)</span>
               </button>
             </div>
             <span id="tracking-cleaned-badge" data-i18n="trackingCleaned" class="hidden text-[11px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1 font-medium">
@@ -2060,7 +2104,10 @@
         navFederationMobile: "Statut Réseau Fédéré & Nœud",
         federationModalTitle: "Réseau Fédéré & Inaltérabilité Citoyenne",
         federationModalDesc: "Chaque instance ou fork de LienLibre constitue un nœud autonome, souverain et inaltérable du maillage citoyen. Même en cas de panne ou de censure d'un hébergeur, le réseau persiste grâce aux miroirs décentralisés.",
-        nodeStatusTitle: "Nœud Actif Détecté"
+        nodeStatusTitle: "Nœud Actif Détecté",
+        formatOffline: "🛰️ Hors-Ligne (Sans Wi-Fi)",
+        offlineStatusText: "Mode Hors-Ligne actif — Vos liens & capsules sont créés localement sans Wi-Fi ni données mobiles.",
+        capsuleReceivedTitle: "🛰️ Capsule Reçue Hors-Ligne (Sans Wi-Fi)"
       },
       en: {
         navHowItWorks: "How it works",
@@ -2169,7 +2216,10 @@
         navFederationMobile: "Federated Network & Node Status",
         federationModalTitle: "Federated Network & Civic Inalterability",
         federationModalDesc: "Every instance or fork of LienLibre constitutes an autonomous, sovereign and inalterable node in the civic mesh network. Even during hosting outages, the network persists via decentralized mirrors.",
-        nodeStatusTitle: "Active Node Detected"
+        nodeStatusTitle: "Active Node Detected",
+        formatOffline: "🛰️ Offline (Zero Wi-Fi)",
+        offlineStatusText: "Offline Mode active — Links & capsules are generated locally with zero Wi-Fi or mobile data.",
+        capsuleReceivedTitle: "🛰️ Offline Capsule Received (Zero Wi-Fi)"
       },
       ar: {
         navHowItWorks: "كيفية العمل",
@@ -2278,7 +2328,10 @@
         navFederationMobile: "حالة الشبكة الفيدرالية والعقدة",
         federationModalTitle: "الشبكة الفيدرالية واستمرارية الخدمة",
         federationModalDesc: "تشكل كل نسخة أو تفريع من LienLibre عقدة مستقلة وصامدة في الشبكة المدنية اللامركزية.",
-        nodeStatusTitle: "تم اكتشاف عقدة نشطة"
+        nodeStatusTitle: "تم اكتشاف عقدة نشطة",
+        formatOffline: "🛰️ بدون إنترنت (بدون واي فاي)",
+        offlineStatusText: "الوضع بدون اتصال مفعل — يتم إنشاء الروابط محلياً بدون واي فاي أو بيانات.",
+        capsuleReceivedTitle: "🛰️ تم استلام كبسولة بدون إنترنت"
       },
       es: {
         navHowItWorks: "Funcionamiento",
@@ -2330,7 +2383,7 @@
         whyDesc: "En el marco de la investigación de metadatos y la seguridad pública (alertas climáticas, salud), LienLibre actúa como una pasarela técnica neutral y educativa basada en el uso legítimo (Fair Dealing).",
         howTitle: "¿Cómo funciona la pasarela?",
         howDesc: "El enlace generado sirve los metadatos Open Graph y redirige de inmediato a los visitantes al medio original sin guardar direcciones IP.",
-        shareSectionBadge: "Difundir la iniciativa",
+        shareSectionBadge: "Difundir la initiative",
         shareSectionTitle: "Compartir el proyecto LienLibre",
         shareSectionDesc: "Ayude a sus conocidos a descubrir esta pasarela cívica para preservar el libre acceso a la información.",
         shareModelTextLabel: "📝 Texto modelo sugerido para publicar en Facebook y redes sociales:",
@@ -2387,7 +2440,10 @@
         navFederationMobile: "Estado de Red Federada y Nodo",
         federationModalTitle: "Red Federada e Inalterabilidad Cívica",
         federationModalDesc: "Cada copia o fork de LienLibre constituye un nodo autónomo e inalterable de la red cívica descentralizada.",
-        nodeStatusTitle: "Nodo Activo Detectado"
+        nodeStatusTitle: "Nodo Activo Detectado",
+        formatOffline: "🛰️ Sin Conexión (Sin Wi-Fi)",
+        offlineStatusText: "Modo Sin Conexión activo — Sus enlaces y cápsulas se generan localmente sin Wi-Fi ni datos.",
+        capsuleReceivedTitle: "🛰️ Cápsula Recibida Sin Conexión (Sin Wi-Fi)"
       },
       it: {
         navHowItWorks: "Funzionamento",
@@ -2481,7 +2537,10 @@
         navFederationMobile: "Stato Rete Federata & Nodo",
         federationModalTitle: "Rete Federata & Inalterabilità Civica",
         federationModalDesc: "Ogni copia o fork di LienLibre costituisce un nodo autonomo e resiliente della rete civica decentralizzata.",
-        nodeStatusTitle: "Nodo Attivo Rilevato"
+        nodeStatusTitle: "Nodo Attivo Rilevato",
+        formatOffline: "🛰️ Offline (Senza Wi-Fi)",
+        offlineStatusText: "Modalità Offline attiva — Link e capsule creati localmente senza Wi-Fi.",
+        capsuleReceivedTitle: "🛰️ Capsula Ricevuta Offline (Senza Wi-Fi)"
       },
       zh: {
         navHowItWorks: "工作原理",
@@ -2575,7 +2634,10 @@
         navFederationMobile: "联邦网络与节点状态",
         federationModalTitle: "联邦去中心化网络与抗审查保障",
         federationModalDesc: "LienLibre 的每一个 Fork 分支均为去中心化公民网络中的自治防篡改节点。",
-        nodeStatusTitle: "已检测到活跃节点"
+        nodeStatusTitle: "已检测到活跃节点",
+        formatOffline: "🛰️ 完全离线 (免Wi-Fi)",
+        offlineStatusText: "离线模式已激活 — 胶囊与链接在本地生成，无需 Wi-Fi 或移动数据流量。",
+        capsuleReceivedTitle: "🛰️ 已解析免网离线胶囊 (无需Wi-Fi)"
       },
       cr: {
         navHowItWorks: "Tânisi",
@@ -3287,6 +3349,7 @@
     const outputUrl = document.getElementById('output-url');
     const btnFormatShort = document.getElementById('btn-format-short');
     const btnFormatMirror = document.getElementById('btn-format-mirror');
+    const btnFormatOffline = document.getElementById('btn-format-offline');
     const copyBtn = document.getElementById('copy-btn');
     const copyBtnText = document.getElementById('copy-btn-text');
     const copyIcon = document.getElementById('copy-icon');
@@ -3299,6 +3362,53 @@
     const langSelect = document.getElementById('lang-select');
     let currentUnverifiedDomain = '';
 
+    // Offline Capsule Codec (Zero-Network Autonomous Payload)
+    const OfflineCapsule = {
+      encode(data) {
+        try {
+          const u = data.u || '';
+          const d = data.d || '';
+          const t = (data.t || '').slice(0, 140);
+          const s = (data.s || '').slice(0, 320);
+          const e = data.e ? '1' : '0';
+          const ts = data.ts || Math.floor(Date.now() / 1000);
+          const packed = [u, d, t, s, e, ts].join('§');
+          const utf8Bytes = new TextEncoder().encode(packed);
+          let binStr = '';
+          for (let i = 0; i < utf8Bytes.length; i++) {
+            binStr += String.fromCharCode(utf8Bytes[i]);
+          }
+          return btoa(binStr).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        } catch (_) {
+          return '';
+        }
+      },
+      decode(str) {
+        try {
+          let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+          while (b64.length % 4) b64 += '=';
+          const binStr = atob(b64);
+          const bytes = new Uint8Array(binStr.length);
+          for (let i = 0; i < binStr.length; i++) {
+            bytes[i] = binStr.charCodeAt(i);
+          }
+          const text = new TextDecoder().decode(bytes);
+          const parts = text.split('§');
+          if (parts.length < 6) return null;
+          return {
+            u: parts[0],
+            d: parts[1],
+            t: parts[2],
+            s: parts[3],
+            e: parts[4] === '1',
+            ts: parseInt(parts[5], 10) || Math.floor(Date.now() / 1000)
+          };
+        } catch (_) {
+          return null;
+        }
+      }
+    };
+
     // Mini-Bot Sentinel & Self-Certification Elements
     const botAuditScore = document.getElementById('bot-audit-score');
     const botAuditBadge = document.getElementById('bot-audit-badge');
@@ -3310,7 +3420,8 @@
     let activeFormat = 'short';
     let currentGeneratedLinks = {
       short: '',
-      mirror: ''
+      mirror: '',
+      offline: ''
     };
 
     // QR Code & Web Share UI Elements
@@ -3340,15 +3451,23 @@
 
     function updateFormatTabUI() {
       if (!btnFormatShort || !btnFormatMirror) return;
-      if (activeFormat === 'short') {
-        btnFormatShort.className = 'px-2.5 py-1 text-xs rounded-md bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-medium transition-all shadow-sm';
-        btnFormatMirror.className = 'px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all';
-        if (currentGeneratedLinks.short) outputUrl.textContent = currentGeneratedLinks.short;
-      } else {
-        btnFormatMirror.className = 'px-2.5 py-1 text-xs rounded-md bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-medium transition-all shadow-sm';
-        btnFormatShort.className = 'px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all';
-        if (currentGeneratedLinks.mirror) outputUrl.textContent = currentGeneratedLinks.mirror;
+      const activeBtnClass = 'px-2.5 py-1 text-xs rounded-md bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-medium transition-all shadow-sm';
+      const inactiveBtnClass = 'px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all';
+
+      btnFormatShort.className = (activeFormat === 'short') ? activeBtnClass : inactiveBtnClass;
+      btnFormatMirror.className = (activeFormat === 'mirror') ? activeBtnClass : inactiveBtnClass;
+      if (btnFormatOffline) {
+        btnFormatOffline.className = (activeFormat === 'offline') ? activeBtnClass : inactiveBtnClass;
       }
+
+      if (activeFormat === 'short' && currentGeneratedLinks.short) {
+        outputUrl.textContent = currentGeneratedLinks.short;
+      } else if (activeFormat === 'mirror' && currentGeneratedLinks.mirror) {
+        outputUrl.textContent = currentGeneratedLinks.mirror;
+      } else if (activeFormat === 'offline' && currentGeneratedLinks.offline) {
+        outputUrl.textContent = currentGeneratedLinks.offline;
+      }
+
       if (outputUrl && outputUrl.textContent) {
         updateDirectShareLinks(outputUrl.textContent);
       }
@@ -3523,6 +3642,13 @@
     if (btnFormatMirror) {
       btnFormatMirror.addEventListener('click', () => {
         activeFormat = 'mirror';
+        updateFormatTabUI();
+      });
+    }
+
+    if (btnFormatOffline) {
+      btnFormatOffline.addEventListener('click', () => {
+        activeFormat = 'offline';
         updateFormatTabUI();
       });
     }
@@ -3798,9 +3924,22 @@
       const defaultDirectLink = `${WORKER_URL}/?url=${encodedUrl}${currentLang !== 'fr' ? '&lang=' + currentLang : ''}`;
       const defaultMirrorLink = `${WORKER_URL}/${cleanPath}${langParam}`;
 
+      // Capsule autonome hors-ligne auto-portée (Zero-Network)
+      const offlinePayloadInitial = OfflineCapsule.encode({
+        u: rawUrl,
+        d: targetHost,
+        t: targetHost,
+        s: '',
+        e: false,
+        ts: Math.floor(Date.now() / 1000)
+      });
+      const offlineBaseUrl = window.location.origin + window.location.pathname.replace(/\/index\.html$/i, '') + '/';
+      const defaultOfflineLink = `${offlineBaseUrl}#o=${offlinePayloadInitial}`;
+
       // Liens générés par défaut sous le domaine sécurisé acces-presse
       currentGeneratedLinks.short = defaultDirectLink;
       currentGeneratedLinks.mirror = defaultMirrorLink;
+      currentGeneratedLinks.offline = defaultOfflineLink;
       updateFormatTabUI();
 
       setTimeout(() => {
@@ -3874,6 +4013,20 @@
         previewDomain.textContent = targetHost;
         previewTitle.textContent = data.title || targetHost;
         previewDesc.textContent = data.description || (currentLang === 'fr' ? "Cliquez pour voir l'article original sur le site officiel." : "Click to view original news article.");
+
+        // Mettre à jour la capsule hors-ligne avec le résumé et titre extrait
+        const offlinePayloadFinal = OfflineCapsule.encode({
+          u: rawUrl,
+          d: targetHost,
+          t: data.title || targetHost,
+          s: data.description || '',
+          e: false,
+          ts: Math.floor(Date.now() / 1000)
+        });
+        currentGeneratedLinks.offline = `${offlineBaseUrl}#o=${offlinePayloadFinal}`;
+        if (activeFormat === 'offline') {
+          updateFormatTabUI();
+        }
 
         if (data.allowed === false) {
           unverifiedWarning.classList.remove('hidden');
@@ -4148,6 +4301,72 @@
     }
 
     loadStats();
+
+    // Offline Capsule Reader Logic (#o=... in hash)
+    function checkAndRenderOfflineCapsule() {
+      const hash = window.location.hash || '';
+      const viewer = document.getElementById('offline-capsule-viewer');
+      if (!viewer) return;
+
+      if (hash.startsWith('#o=')) {
+        const rawPayload = hash.substring(3);
+        const capsule = OfflineCapsule.decode(rawPayload);
+        if (capsule && capsule.u) {
+          const capTitle = document.getElementById('capsule-title');
+          const capSummary = document.getElementById('capsule-summary');
+          const capDomain = document.getElementById('capsule-domain');
+          const capTimestamp = document.getElementById('capsule-timestamp');
+          const capOrigLink = document.getElementById('capsule-orig-link');
+          const btnCapsuleCopy = document.getElementById('btn-capsule-copy');
+
+          if (capTitle) capTitle.textContent = capsule.t || capsule.u;
+          if (capSummary) capSummary.textContent = capsule.s || "Capsule autonome LienLibre transmise hors-ligne sans connexion réseau.";
+          if (capDomain) capDomain.textContent = capsule.d || (capsule.u.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0]);
+          if (capTimestamp) {
+            const date = new Date(capsule.ts * 1000);
+            capTimestamp.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          }
+          if (capOrigLink) {
+            capOrigLink.href = capsule.u;
+          }
+          if (btnCapsuleCopy) {
+            btnCapsuleCopy.onclick = () => {
+              const text = `${capsule.t || 'Information'}\n\n${capsule.s || ''}\n\nSource : ${capsule.u}`;
+              navigator.clipboard.writeText(text).then(() => {
+                const origText = btnCapsuleCopy.textContent;
+                btnCapsuleCopy.textContent = "✓ Résumé copié !";
+                setTimeout(() => { btnCapsuleCopy.textContent = origText; }, 2000);
+              });
+            };
+          }
+          viewer.classList.remove('hidden');
+          viewer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+      }
+      viewer.classList.add('hidden');
+    }
+
+    // Offline network status indicator
+    function updateOnlineStatus() {
+      const banner = document.getElementById('offline-status-banner');
+      if (!banner) return;
+      if (!navigator.onLine) {
+        banner.classList.remove('hidden');
+        if (activeFormat !== 'offline' && !currentGeneratedLinks.short) {
+          activeFormat = 'offline';
+          updateFormatTabUI();
+        }
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+
+    window.addEventListener('DOMContentLoaded', checkAndRenderOfflineCapsule);
+    window.addEventListener('hashchange', checkAndRenderOfflineCapsule);
   </script>
 
   <!-- Sienna Accessibility Widget (Open Source - Benny Luk - MIT License) -->
