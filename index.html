@@ -249,7 +249,22 @@
       color-scheme: light dark;
     }
     
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+    
     body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
+      position: relative;
       background-color: #f8fafc;
       color: #0f172a;
       background-image: 
@@ -307,22 +322,22 @@
     }
   </style>
 </head>
-<body class="text-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-cyan-500 selection:text-white">
+<body class="text-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-cyan-500 selection:text-white overflow-x-hidden">
 
   <!-- Header / Navigation Bar -->
   <header class="sticky top-0 z-40 w-full glass-nav transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2">
       
       <!-- Brand Logo -->
-      <a href="#" class="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg p-1">
-        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-indigo-600 flex items-center justify-center shadow-md shadow-cyan-500/25 group-hover:scale-105 transition-transform">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" class="w-5 h-5 text-white">
+      <a href="#" class="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg p-0.5 shrink-0">
+        <div class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-indigo-600 flex items-center justify-center shadow-md shadow-cyan-500/25 group-hover:scale-105 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5 text-white">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
           </svg>
         </div>
         <div>
-          <span class="font-display font-extrabold text-xl tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors">Lien<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-indigo-500 dark:from-cyan-400 dark:to-indigo-400">Libre</span></span>
-          <span class="hidden sm:inline-block ml-2 text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700/60">Civic Tech</span>
+          <span class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors">Lien<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-indigo-500 dark:from-cyan-400 dark:to-indigo-400">Libre</span></span>
+          <span class="hidden sm:inline-block ml-1.5 text-[10px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700/60">Civic Tech</span>
         </div>
       </a>
       
@@ -334,7 +349,7 @@
       </nav>
 
       <!-- Right Action Toolbar -->
-      <div class="flex items-center gap-2 sm:gap-2.5">
+      <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         
         <!-- Mirror 1-Click Button -->
         <button 
@@ -352,18 +367,18 @@
           <label for="lang-select" class="sr-only">Langue / Language</label>
           <select 
             id="lang-select" 
-            class="bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer shadow-xs hover:border-slate-400 dark:hover:border-slate-600 transition-colors"
+            class="max-w-[100px] sm:max-w-none truncate bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80 text-slate-800 dark:text-slate-200 text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer shadow-xs hover:border-slate-400 dark:hover:border-slate-600 transition-colors"
           >
-            <option value="fr">🇫🇷 Français</option>
-            <option value="en">🇨🇦 English</option>
-            <option value="ar">💬 العربية</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="it">🇮🇹 Italiano</option>
-            <option value="zh">🇨🇳 中文</option>
-            <option value="cr">🌾 Nēhiyawēwin</option>
-            <option value="iu">❄️ Inuktitut</option>
-            <option value="in">🌲 Innu-aimun</option>
-            <option value="moh">🦅 Kanien'kéha</option>
+            <option value="fr">🇫🇷 FR</option>
+            <option value="en">🇨🇦 EN</option>
+            <option value="ar">💬 AR</option>
+            <option value="es">🇪🇸 ES</option>
+            <option value="it">🇮🇹 IT</option>
+            <option value="zh">🇨🇳 ZH</option>
+            <option value="cr">🌾 Cri</option>
+            <option value="iu">❄️ Inuk</option>
+            <option value="in">🌲 Innu</option>
+            <option value="moh">🦅 Moh</option>
           </select>
         </div>
 
@@ -371,7 +386,10 @@
         <button 
           type="button" 
           id="theme-toggle-btn" 
-          class="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-300 transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer"
+          class="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-300 transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer shrink-0"
+          title="Thème : Automatique (Appareil)"
+          aria-label="Changer le thème"
+        >
           title="Thème : Automatique (Appareil)"
           aria-label="Changer le thème"
         >
@@ -442,24 +460,24 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-16 flex flex-col items-center justify-center">
+  <main class="flex-grow max-w-4xl w-full mx-auto px-3.5 sm:px-6 py-6 sm:py-16 flex flex-col items-center justify-center overflow-x-hidden">
     
     <!-- Hero / Headline -->
-    <div class="text-center max-w-2xl mb-10">
-      <div class="inline-flex items-center gap-2 bg-cyan-500/10 dark:bg-cyan-950/40 border border-cyan-500/20 dark:border-cyan-500/25 text-cyan-700 dark:text-cyan-300 px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wide mb-6 shadow-xs">
-        <span class="flex h-2 w-2 relative">
+    <div class="text-center max-w-2xl mb-8 sm:mb-10 w-full px-1">
+      <div class="inline-flex max-w-full items-center gap-1.5 sm:gap-2 bg-cyan-500/10 dark:bg-cyan-950/40 border border-cyan-500/20 dark:border-cyan-500/25 text-cyan-700 dark:text-cyan-300 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-medium tracking-wide mb-4 sm:mb-6 shadow-xs text-center">
+        <span class="flex h-2 w-2 relative shrink-0">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
         </span>
-        <span data-i18n="heroBadge">Projet Éducatif & Recherche d'Interopérabilité Web</span>
+        <span data-i18n="heroBadge" class="truncate sm:whitespace-normal">Projet Éducatif & Recherche d'Interopérabilité Web</span>
       </div>
       
-      <h1 data-i18n="heroTitle" class="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight mb-4 text-slate-900 dark:text-white leading-tight">
+      <h1 data-i18n="heroTitle" class="font-display font-extrabold text-2xl sm:text-5xl lg:text-6xl tracking-tight mb-3 sm:mb-4 text-slate-900 dark:text-white leading-tight break-words">
         Partagez l'actualité <br class="hidden sm:inline">
         <span class="bg-gradient-to-r from-cyan-600 via-sky-600 to-indigo-600 dark:from-cyan-400 dark:via-sky-400 dark:to-indigo-400 bg-clip-text text-transparent">en toute fluidité et transparence.</span>
       </h1>
       
-      <p data-i18n="heroDesc" class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+      <p data-i18n="heroDesc" class="text-slate-600 dark:text-slate-400 text-xs sm:text-base leading-relaxed max-w-xl mx-auto">
         Outil d'étude et passerelle technique permettant d'extraire les métadonnées Open Graph et de faciliter l'accès aux nouvelles canadiennes d'intérêt public.
       </p>
     </div>
