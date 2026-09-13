@@ -1,0 +1,41 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "LienLibre — Passerelle Citoyenne d'Information",
+  "home_page_url": "https://bwillou1.github.io/LienLibre/",
+  "feed_url": "https://bwillou1.github.io/LienLibre/feed.json",
+  "description": "Flux officiel du projet civique LienLibre pour l'accès aux nouvelles canadiennes.",
+  "icon": "https://bwillou1.github.io/LienLibre/icon.svg",
+  "favicon": "https://bwillou1.github.io/LienLibre/favicon.svg",
+  "authors": [
+    {
+      "name": "William Guindon",
+      "url": "https://github.com/Bwillou1"
+    }
+  ],
+  "items": [
+    {
+      "id": "https://bwillou1.github.io/LienLibre/#civic-gateway",
+      "url": "https://bwillou1.github.io/LienLibre/",
+      "title": "LienLibre : La passerelle citoyenne d'accès aux nouvelles canadiennes",
+      "content_html": "<p>Plateforme open-source pour le libre partage de nouvelles canadiennes sur Facebook, Messenger et Instagram.</p>",
+      "summary": "Partagez des liens de presse avec prévisualisation Open Graph complète et redirection immédiate.",
+      "date_published": "2026-09-13T16:00:00Z"
+    },
+    {
+      "id": "https://bwillou1.github.io/LienLibre/alertes.html",
+      "url": "https://bwillou1.github.io/LienLibre/alertes.html",
+      "title": "Hub Officiel des Alertes & Urgences Civiles",
+      "content_html": "<p>Agrégateur temps réel de sécurité civile : météo extrême, feux de forêt et rappels sanitaires.</p>",
+      "summary": "Alertes publiques officielles Environnement Canada et SOPFEU.",
+      "date_published": "2026-09-13T16:00:00Z"
+    },
+    {
+      "id": "https://bwillou1.github.io/LienLibre/liseuse.html",
+      "url": "https://bwillou1.github.io/LienLibre/liseuse.html",
+      "title": "Mode Liseuse E-Ink & Appairage 4 Chiffres",
+      "content_html": "<p>Lecture monochrome sur Kobo, Kindle et reMarkable avec appairage par code à 4 chiffres.</p>",
+      "summary": "Envoyez des articles instantanément sur votre liseuse.",
+      "date_published": "2026-09-13T16:00:00Z"
+    }
+  ]
+}

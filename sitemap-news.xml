@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://bwillou1.github.io/LienLibre/</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>always</changefreq>
+    <priority>1.0</priority>
+    <news:news>
+      <news:publication>
+        <news:name>LienLibre — Passerelle Citoyenne de Presse &amp; Nouvelles</news:name>
+        <news:language>fr</news:language>
+      </news:publication>
+      <news:publication_date>2026-09-13T12:00:00-04:00</news:publication_date>
+      <news:title>LienLibre : Passerelle citoyenne et éducative d'accès aux nouvelles canadiennes</news:title>
+      <news:keywords>nouvelles canadiennes, journalisme, accès à l'information, partage réseaux sociaux, métadonnées web, sécurité civile</news:keywords>
+    </news:news>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bwillou1.github.io/LienLibre/?lang=fr" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bwillou1.github.io/LienLibre/?lang=en" />
+  </url>
+
+  <url>
+    <loc>https://bwillou1.github.io/LienLibre/alertes.html</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.95</priority>
+    <news:news>
+      <news:publication>
+        <news:name>LienLibre — Hub de Sécurité Civile</news:name>
+        <news:language>fr</news:language>
+      </news:publication>
+      <news:publication_date>2026-09-13T12:00:00-04:00</news:publication_date>
+      <news:title>Hub Officiel des Alertes &amp; Urgences Civiles : Météo, SOPFEU et Rappels Sanitaires</news:title>
+      <news:keywords>alertes sécurité civile, environnement canada, météo extrême, sopfeu feux de forêt, rappels de santé, urgence québec</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://bwillou1.github.io/LienLibre/lite.html</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <news:news>
+      <news:publication>
+        <news:name>LienLibre — Édition Grand Nord &amp; Bas Débit</news:name>
+        <news:language>fr</news:language>
+      </news:publication>
+      <news:publication_date>2026-09-13T12:00:00-04:00</news:publication_date>
+      <news:title>LienLibre Grand Nord : Mode Ultra-Allégé 2G et Urgence Hors-Réseau</news:title>
+      <news:keywords>grand nord, bas débit, 2G, urgence hors-réseau, capsules autonomes, meshtastic, txqr</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://bwillou1.github.io/LienLibre/liseuse.html</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <news:news>
+      <news:publication>
+        <news:name>LienLibre — Mode Liseuse E-Ink</news:name>
+        <news:language>fr</news:language>
+      </news:publication>
+      <news:publication_date>2026-09-13T12:00:00-04:00</news:publication_date>
+      <news:title>LienLibre Liseuse : Lecture E-Ink pure et appairage sans fil par code à 4 chiffres</news:title>
+      <news:keywords>liseuse, e-ink, kobo, kindle, remarkable, lecture sans distraction, appairage 4 chiffres</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://bwillou1.github.io/LienLibre/remerciements.html</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+    <news:news>
+      <news:publication>
+        <news:name>LienLibre — Accessibilité Universelle &amp; Open Source</news:name>
+        <news:language>fr</news:language>
+      </news:publication>
+      <news:publication_date>2026-09-13T12:00:00-04:00</news:publication_date>
+      <news:title>Accessibilité Universelle et Crédits Open Source : Widget Sienna, TXQR, ggwave et Meshtastic</news:title>
+      <news:keywords>accessibilité universelle, wcag 2.2, sienna, txqr, ggwave, meshtastic, open source, crédits</news:keywords>
+    </news:news>
+  </url>
+
+</urlset>

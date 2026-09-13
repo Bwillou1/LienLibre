@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "LienLibre News Gateway",
+  "name_for_model": "lienlibre_news_gateway",
+  "description_for_human": "Générateur civique de passerelles et aperçus d'articles de presse canadienne pour les réseaux sociaux.",
+  "description_for_model": "Civic utility developed by William Guindon to generate universal Open Graph preview links and bypass social media news sharing restrictions in Canada for verified news articles under Fair Dealing (Section 29 LDA).",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://bwillou1.github.io/LienLibre/llms-full.txt"
+  },
+  "logo_url": "https://bwillou1.github.io/LienLibre/icon.svg",
+  "contact_email": "issues@github.com/Bwillou1/LienLibre",
+  "legal_info_url": "https://bwillou1.github.io/LienLibre/politiques.html"
+}

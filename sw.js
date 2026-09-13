@@ -1,5 +1,5 @@
-// LienLibre Service Worker (PWA) - Version 9 (E-Reader Mode & Anti-Blocking Shield)
-const CACHE_NAME = 'lienlibre-pwa-v9';
+// LienLibre Service Worker (PWA) - Version 10 (Google News Syndication & AI Hubs)
+const CACHE_NAME = 'lienlibre-pwa-v10';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -8,6 +8,13 @@ const STATIC_ASSETS = [
   './lite.html',
   './remerciements.html',
   './politiques.html',
+  './sitemap.xml',
+  './sitemap-news.xml',
+  './feed.xml',
+  './atom.xml',
+  './feed.json',
+  './llms.txt',
+  './llms-full.txt',
   './manifest.json',
   './icon.svg',
   './favicon.svg',

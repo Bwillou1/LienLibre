@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>LienLibre — Passerelle Citoyenne d'Information &amp; Alertes Publiques</title>
+  <subtitle>Flux d'actualités et publications civiques pour le libre accès à l'information canadienne.</subtitle>
+  <link href="https://bwillou1.github.io/LienLibre/atom.xml" rel="self" />
+  <link href="https://bwillou1.github.io/LienLibre/" />
+  <link rel="hub" href="https://pubsubhubbub.appspot.com/" />
+  <id>https://bwillou1.github.io/LienLibre/</id>
+  <updated>2026-09-13T16:00:00-04:00</updated>
+  <author>
+    <name>William Guindon</name>
+    <uri>https://github.com/Bwillou1</uri>
+  </author>
+
+  <entry>
+    <title>LienLibre : La passerelle citoyenne de référence pour les nouvelles canadiennes</title>
+    <link href="https://bwillou1.github.io/LienLibre/" />
+    <id>https://bwillou1.github.io/LienLibre/#civic-gateway</id>
+    <updated>2026-09-13T12:00:00-04:00</updated>
+    <summary>Partagez librement des articles de presse sur les réseaux sociaux avec prévisualisation fidèle et protection de la vie privée.</summary>
+  </entry>
+
+  <entry>
+    <title>Hub Alertes &amp; Sécurité Civile</title>
+    <link href="https://bwillou1.github.io/LienLibre/alertes.html" />
+    <id>https://bwillou1.github.io/LienLibre/alertes.html</id>
+    <updated>2026-09-13T12:00:00-04:00</updated>
+    <summary>Météo extrême, feux de forêt SOPFEU et alertes de santé publique.</summary>
+  </entry>
+
+  <entry>
+    <title>Mode Liseuse E-Ink &amp; Appairage 4 Chiffres</title>
+    <link href="https://bwillou1.github.io/LienLibre/liseuse.html" />
+    <id>https://bwillou1.github.io/LienLibre/liseuse.html</id>
+    <updated>2026-09-13T12:00:00-04:00</updated>
+    <summary>Lecture pure sur liseuse (Kobo, Kindle, reMarkable) avec appairage par code à 4 chiffres.</summary>
+  </entry>
+</feed>

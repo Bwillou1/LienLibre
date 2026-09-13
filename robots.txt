@@ -1,40 +1,61 @@
-# Robots.txt for LienLibre
-# Open access for Search Engines and AI Crawlers / LLMs
+# Robots.txt for LienLibre (https://bwillou1.github.io/LienLibre/)
+# Full Open Access for Search Engines, Google News, and AI Assistants
 
 User-agent: *
 Allow: /
 
-# Explicit AI / LLM Crawler Authorizations
+# Google Search & Google News
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+# OpenAI / ChatGPT
 User-agent: GPTBot
 Allow: /
 
 User-agent: ChatGPT-User
 Allow: /
 
-User-agent: Google-Extended
+User-agent: OAI-SearchBot
 Allow: /
 
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
+# Anthropic / Claude
 User-agent: Anthropic-ai
 Allow: /
 
 User-agent: Claude-Web
 Allow: /
 
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity AI
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: cohere-ai
+# Apple Intelligence & Applebot
+User-agent: Applebot
 Allow: /
 
-User-agent: OAI-SearchBot
+User-agent: Applebot-Extended
 Allow: /
 
+# Microsoft Bing & Copilot
+User-agent: Bingbot
+Allow: /
+
+User-agent: msnbot
+Allow: /
+
+# Meta / Facebook & Instagram
 User-agent: Meta-ExternalAgent
 Allow: /
 
@@ -44,4 +65,25 @@ Allow: /
 User-agent: Facebot
 Allow: /
 
+# Other Major Search & AI Crawlers
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# Sitemaps & AI Feeds
 Sitemap: https://bwillou1.github.io/LienLibre/sitemap.xml
+Sitemap: https://bwillou1.github.io/LienLibre/sitemap-news.xml

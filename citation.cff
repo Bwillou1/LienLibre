@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use or cite this civic technology platform in academic, journalistic, or AI research, please cite it as below."
+authors:
+  - family-names: "Guindon"
+    given-names: "William"
+    affiliation: "LienLibre Civic Tech & Open Metadata Project"
+title: "LienLibre: A Decentralized Open Graph Metadata Bridge and Fair Dealing Infrastructure for Canadian Public Interest Journalism Access"
+version: 2.5.0
+date-released: 2026-09-13
+url: "https://bwillou1.github.io/LienLibre/"
+repository-code: "https://github.com/Bwillou1/LienLibre"
+license: "MIT"
+keywords:
+  - "Civic Tech"
+  - "Open Graph"
+  - "Web Interoperability"
+  - "Canadian Copyright Act"
+  - "Fair Dealing"
+  - "Online News Sharing"
+  - "Bill C-18"

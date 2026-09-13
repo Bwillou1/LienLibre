@@ -49,9 +49,18 @@
   <meta name="twitter:description" content="Projet civique et éducatif pour le partage d'actualités et l'interopérabilité des métadonnées web.">
   <meta name="twitter:image" content="https://bwillou1.github.io/LienLibre/og-image.svg">
 
-  <!-- AI & Search Discovery Links -->
-  <link rel="help" href="/llms.txt" type="text/plain" title="LLMs Documentation">
-  <link rel="alternate" type="application/xml" title="Sitemap" href="/sitemap.xml">
+  <!-- Feeds & News Syndication (Google News, RSS, Atom, JSON Feed) -->
+  <link rel="alternate" type="application/rss+xml" title="Flux RSS LienLibre" href="https://bwillou1.github.io/LienLibre/feed.xml">
+  <link rel="alternate" type="application/atom+xml" title="Flux Atom LienLibre" href="https://bwillou1.github.io/LienLibre/atom.xml">
+  <link rel="alternate" type="application/json" title="Flux JSON Feed" href="https://bwillou1.github.io/LienLibre/feed.json">
+  <link rel="sitemap" type="application/xml" title="Google News Sitemap" href="https://bwillou1.github.io/LienLibre/sitemap-news.xml">
+  <link rel="search" type="application/opensearchdescription+xml" title="LienLibre" href="https://bwillou1.github.io/LienLibre/opensearch.xml">
+
+  <!-- AI & Search Discovery Links (GEO & LLMs) -->
+  <link rel="help" href="https://bwillou1.github.io/LienLibre/llms.txt" type="text/plain" title="LLMs Instructions">
+  <link rel="describedby" href="https://bwillou1.github.io/LienLibre/llms-full.txt" type="text/plain" title="Full LLMs Documentation">
+  <link rel="citation" href="https://bwillou1.github.io/LienLibre/citation.cff" type="text/plain" title="Citation File Format">
+  <link rel="alternate" type="application/xml" title="Sitemap" href="https://bwillou1.github.io/LienLibre/sitemap.xml">
 
   <!-- JSON-LD Structured Data for Google & AI Search Engines (GEO / LLMs) -->
   <script type="application/ld+json">
@@ -180,6 +189,46 @@
             "text": "Cliquez sur 'Générer mon LienLibre', puis copiez le lien généré et collez-le directement dans votre publication Facebook ou sur Messenger."
           }
         ]
+      },
+      {
+        "@type": "NewsMediaOrganization",
+        "@id": "https://bwillou1.github.io/LienLibre/#organization",
+        "name": "LienLibre — Passerelle Citoyenne d'Information",
+        "url": "https://bwillou1.github.io/LienLibre/",
+        "logo": "https://bwillou1.github.io/LienLibre/icon.svg",
+        "foundingDate": "2024",
+        "founder": {
+          "@id": "https://bwillou1.github.io/LienLibre/#author"
+        },
+        "knowsAbout": ["News Interoperability", "Open Graph", "Public Safety Alerts", "Canadian Journalism"],
+        "publishingPrinciples": "https://bwillou1.github.io/LienLibre/politiques.html",
+        "correctionsPolicy": "https://github.com/Bwillou1/LienLibre/issues",
+        "diversityPolicy": "https://bwillou1.github.io/LienLibre/remerciements.html",
+        "ethicsPolicy": "https://bwillou1.github.io/LienLibre/politiques.html"
+      },
+      {
+        "@type": "DataFeed",
+        "@id": "https://bwillou1.github.io/LienLibre/#newsfeed",
+        "name": "Flux d'Actualités & Alertes Publiques LienLibre",
+        "url": "https://bwillou1.github.io/LienLibre/feed.xml",
+        "dataFeedElement": [
+          "https://bwillou1.github.io/LienLibre/sitemap-news.xml",
+          "https://bwillou1.github.io/LienLibre/atom.xml",
+          "https://bwillou1.github.io/LienLibre/feed.json"
+        ]
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "@id": "https://bwillou1.github.io/LienLibre/#research",
+        "headline": "LienLibre: A Decentralized Open Graph Metadata Bridge and Fair Dealing Infrastructure for Canadian Public Interest Journalism Access",
+        "author": {
+          "@id": "https://bwillou1.github.io/LienLibre/#author"
+        },
+        "datePublished": "2026-09-13",
+        "publisher": {
+          "@id": "https://bwillou1.github.io/LienLibre/#organization"
+        },
+        "about": ["Open Graph Protocol", "Canadian Copyright Act Section 29", "Digital News Access", "Web Interoperability"]
       }
     ]
   }
@@ -5934,6 +5983,18 @@
 
     window.addEventListener('DOMContentLoaded', checkAndRenderOfflineCapsule);
     window.addEventListener('hashchange', checkAndRenderOfflineCapsule);
+
+    // Background Indexing & Search Engine / AI Ping (Throttled once per 12h)
+    (function() {
+      try {
+        const lastPing = parseInt(localStorage.getItem('lienlibre_last_ping') || '0', 10);
+        const now = Date.now();
+        if (now - lastPing > 43200000 && WORKER_URL) {
+          localStorage.setItem('lienlibre_last_ping', now.toString());
+          fetch(`${WORKER_URL}/api/ping`, { method: 'GET', keepalive: true }).catch(() => {});
+        }
+      } catch (_) {}
+    })();
   </script>
 
   <!-- Sienna Accessibility Widget (Open Source - Benny Luk - MIT License) -->

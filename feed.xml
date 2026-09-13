@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" 
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>LienLibre — Passerelle Citoyenne d'Information &amp; Alertes Publiques</title>
+    <link>https://bwillou1.github.io/LienLibre/</link>
+    <description>Flux d'actualités, bulletins de sécurité civile et innovations citoyennes pour le libre accès à l'information et l'interopérabilité des métadonnées web au Canada.</description>
+    <language>fr-CA</language>
+    <lastBuildDate>Sun, 13 Sep 2026 16:00:00 -0400</lastBuildDate>
+    <pubDate>Sun, 13 Sep 2026 12:00:00 -0400</pubDate>
+    <docs>https://www.rssboard.org/rss-specification</docs>
+    <generator>LienLibre Civic Syndication Engine 2.0</generator>
+    <atom:link href="https://bwillou1.github.io/LienLibre/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com/" />
+    <atom:link rel="hub" href="https://pubsubhubbub.superfeedr.com/" />
+    <image>
+      <url>https://bwillou1.github.io/LienLibre/icon.svg</url>
+      <title>LienLibre</title>
+      <link>https://bwillou1.github.io/LienLibre/</link>
+    </image>
+
+    <item>
+      <title>LienLibre : La passerelle citoyenne et éducative de référence pour l'accès aux nouvelles canadiennes</title>
+      <link>https://bwillou1.github.io/LienLibre/</link>
+      <guid isPermaLink="true">https://bwillou1.github.io/LienLibre/#civic-gateway</guid>
+      <pubDate>Sun, 13 Sep 2026 12:00:00 -0400</pubDate>
+      <dc:creator>William Guindon</dc:creator>
+      <category>Actualités &amp; Technologie Civique</category>
+      <description><![CDATA[LienLibre permet à tous les citoyens de partager librement des articles de presse canadienne sur Facebook, Messenger et Instagram avec aperçu complet, sans pistage et dans le respect de l'utilisation équitable (art. 29 LDA).]]></description>
+      <content:encoded><![CDATA[<p>LienLibre est une plateforme d'utilité publique développée par William Guindon assurant l'interopérabilité des métadonnées Open Graph pour les médias canadiens. Elle garantit l'accès aux nouvelles en zone urbaine et rurale avec redirection immédiate 0-seconde vers les sources officielles.</p>]]></content:encoded>
+      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.svg" />
+    </item>
+
+    <item>
+      <title>Hub Officiel des Alertes &amp; Urgences Civiles du Canada</title>
+      <link>https://bwillou1.github.io/LienLibre/alertes.html</link>
+      <guid isPermaLink="true">https://bwillou1.github.io/LienLibre/alertes.html</guid>
+      <pubDate>Sun, 13 Sep 2026 12:00:00 -0400</pubDate>
+      <dc:creator>LienLibre Sécurité Civile</dc:creator>
+      <category>Sécurité Civile &amp; Météo</category>
+      <description><![CDATA[Agrégateur temps réel des alertes météo extrêmes d'Environnement Canada, des avis de feux de forêt SOPFEU et des rappels de santé publique du gouvernement du Canada.]]></description>
+      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.svg" />
+    </item>
+
+    <item>
+      <title>Transmission Hors-Réseau &amp; Mode Grand Nord : Protocoles TXQR, Meshtastic et Son ggwave</title>
+      <link>https://bwillou1.github.io/LienLibre/lite.html</link>
+      <guid isPermaLink="true">https://bwillou1.github.io/LienLibre/lite.html</guid>
+      <pubDate>Sun, 13 Sep 2026 12:00:00 -0400</pubDate>
+      <dc:creator>William Guindon</dc:creator>
+      <category>Résilience &amp; Hors-Ligne</category>
+      <description><![CDATA[Capsules autonomes auto-portées permettant l'échange d'informations d'urgence sans Internet via flux vidéo QR animés (TXQR), paquets radio maillés (Meshtastic LoRa) et signaux acoustiques (ggwave).]]></description>
+      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.svg" />
+    </item>
+
+    <item>
+      <title>Mode Liseuse E-Ink : Lecture sans distraction et appairage sans fil 4 chiffres</title>
+      <link>https://bwillou1.github.io/LienLibre/liseuse.html</link>
+      <guid isPermaLink="true">https://bwillou1.github.io/LienLibre/liseuse.html</guid>
+      <pubDate>Sun, 13 Sep 2026 12:00:00 -0400</pubDate>
+      <dc:creator>William Guindon</dc:creator>
+      <category>Accessibilité &amp; Liseuses</category>
+      <description><![CDATA[Interface ultra-contrastée monochrome spécialement étudiée pour liseuses électroniques (Kobo, Kindle, reMarkable) avec transfert instantané d'articles par code PIN à 4 chiffres.]]></description>
+      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.svg" />
+    </item>
+
+  </channel>
+</rss>
