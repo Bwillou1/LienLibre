@@ -1306,7 +1306,7 @@ function generateCitizenInterstitialHTML(targetUrl, finalTitle, finalDescription
     : "This link leads to an external source self-certified by a user. LienLibre acts as a neutral technical intermediary and does not control or host this content.";
   const continueBtn = isFr ? `Continuer vers ${hostname} ↗` : `Continue to ${hostname} ↗`;
   const reportBtn = isFr ? "🚩 Signaler ce lien (Abus / Illégalité)" : "🚩 Report this link (Abuse / Illegal)";
-  const reportEmail = "guindonwilliam2@gmail.com";
+  const reportEmail = "contact@williamguindon.me";
   const reportSubject = encodeURIComponent(`[Signalement Abus LienLibre] - ${hostname}`);
   const reportBody = encodeURIComponent(`Bonjour,\n\nJe signale ce lien pour contenu inapproprié ou abusif :\nURL : ${targetUrl}\nMotif : [Veuillez préciser]\n\nMerci.`);
   const reportMailto = `mailto:${reportEmail}?subject=${reportSubject}&body=${reportBody}`;
@@ -1837,7 +1837,7 @@ Onhwentsiákon,
 };
 
 function getContactEmail() {
-  return atob("Z3VpbmRvd2lsbGlhbTJAZ21haWwuY29t");
+  return atob("Y29udGFjdEB3aWxsaWFtZ3VpbmRvbi5tZQ==");
 }
 
 /**
