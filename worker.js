@@ -296,7 +296,10 @@ const DANGEROUS_EXTENSIONS_REGEX = /\.(exe|scr|bat|cmd|apk|dmg|iso|zip|rar|7z|ta
 // 5. Adresses IP brutes (IPv4 & IPv6)
 const IP_ADDRESS_REGEX = /^(\d{1,3}\.){3}\d{1,3}$|^([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}$/;
 
-// 6. Filtrage sémantique de toxicité / arnaque / phishing / substances illicites
+// 6. Filtrage de contenus pour adultes, pornographie ou services non conformes
+const ADULT_CONTENT_REGEX = /\b(porn|xxx|adult|sex|nsfw|onlyfans|cams|escort|hentai|erotic|xvideos|pornhub|redtube|youporn|xnxx|chaturbate|stripchat)\b/i;
+
+// 7. Filtrage sémantique de toxicité / arnaque / phishing / substances illicites
 const TOXIC_SEMANTIC_REGEX = /\b(crypto\s*(giveaway|airdrop|doubler|investment|mining|presale)|free\s*bitcoin|wallet\s*connect|verify\s*your\s*wallet|metamask\s*update|claim\s*tokens?|suspended\s*account|account\s*blocked|verify\s*bank|banking\s*security\s*alert|urgent\s*password|viagra|cialis|casino\s*bonus|warez|crack\s*download|keygen|darkweb|tor\s*mirror|drugs\s*online|buy\s*weapons?|phishing|stealer|malware)\b/i;
 
 /**
@@ -308,7 +311,7 @@ function checkSecurityThreats(targetUrl, meta = {}) {
     try {
       urlObj = new URL(targetUrl);
     } catch (e) {
-      return { isBlocked: true, reason: "URL invalide ou malformée." };
+      return { isBlocked: true, reason: "Lien bloqué : URL invalide ou malformée." };
     }
   }
   const hostname = urlObj.hostname.toLowerCase().replace(/^www\./, "");
@@ -320,7 +323,7 @@ function checkSecurityThreats(targetUrl, meta = {}) {
   if (IP_ADDRESS_REGEX.test(hostname)) {
     return {
       isBlocked: true,
-      reason: "Les adresses IP directes sont formellement interdites pour prévenir les vecteurs d'attaque."
+      reason: "Lien bloqué : Adresse IP directe détectée (" + hostname + "). L'accès par adresse IP brute est formellement interdit pour empêcher l'usurpation et les attaques directes."
     };
   }
 
@@ -328,7 +331,7 @@ function checkSecurityThreats(targetUrl, meta = {}) {
   if (BLOCKED_URL_SHORTENERS.some(s => hostname === s || hostname.endsWith("." + s))) {
     return {
       isBlocked: true,
-      reason: "Les raccourcisseurs d'URL (ex: bit.ly, tinyurl) sont interdits afin d'empêcher le masquage de destinations malveillantes."
+      reason: "Lien bloqué : Raccourcisseur d'URL interdit (" + hostname + "). Ces services masquent la destination finale et présentent un risque de sécurité élevé."
     };
   }
 
@@ -336,7 +339,7 @@ function checkSecurityThreats(targetUrl, meta = {}) {
   if (BLOCKED_CLOUD_AND_ANON_SERVICES.some(s => hostname === s || hostname.endsWith("." + s))) {
     return {
       isBlocked: true,
-      reason: "Les plateformes de stockage chiffré, d'hébergement anonyme de fichiers et de canaux de messagerie privée ne sont pas des organes de presse et sont exclues."
+      reason: "Lien bloqué : Plateforme de stockage cloud ou de messagerie privée (" + hostname + "). LienLibre est réservé aux articles de presse publiés et vérifiables."
     };
   }
 
@@ -345,23 +348,33 @@ function checkSecurityThreats(targetUrl, meta = {}) {
     const matchedTld = BLOCKED_TLDS.find(tld => hostname.endsWith(tld)) || "";
     return {
       isBlocked: true,
-      reason: `L'extension de domaine (${matchedTld}) est classée à haut risque d'abus et n'est pas autorisée.`
+      reason: `Lien bloqué : L'extension de domaine (${matchedTld}) est classée à haut risque d'abus, de spam et de maliciels.`
     };
   }
 
   // 5. Fichiers dangereux / exécutables
   if (DANGEROUS_EXTENSIONS_REGEX.test(path)) {
+    const extMatch = path.match(DANGEROUS_EXTENSIONS_REGEX);
+    const ext = extMatch ? extMatch[0] : "";
     return {
       isBlocked: true,
-      reason: "Le lien pointe vers un fichier exécutable, une archive ou un binaire potentiellement dangereux."
+      reason: `Lien bloqué : Fichier exécutable ou binaire dangereux détecté (${ext}). Le téléchargement de fichiers exécutables est strictement interdit pour votre sécurité.`
     };
   }
 
-  // 6. Toxicité sémantique / Scam / Phishing
+  // 6. Contenu adulte / pornographique
+  if (ADULT_CONTENT_REGEX.test(hostname) || ADULT_CONTENT_REGEX.test(path)) {
+    return {
+      isBlocked: true,
+      reason: "Lien bloqué : Site classé pour adultes ou contenu explicite interdit. LienLibre est exclusivement réservé à l'information d'intérêt public."
+    };
+  }
+
+  // 7. Toxicité sémantique / Scam / Phishing
   if (TOXIC_SEMANTIC_REGEX.test(fullText) || TOXIC_SEMANTIC_REGEX.test(path) || TOXIC_SEMANTIC_REGEX.test(search)) {
     return {
       isBlocked: true,
-      reason: "Des marqueurs de sécurité critiques (phishing, fraude, malware ou contenu illicite) ont été détectés."
+      reason: "Lien bloqué : Marqueurs critiques de sécurité détectés (tentative d'hameçonnage, fraude financière, maliciel ou contenu illicite)."
     };
   }
 

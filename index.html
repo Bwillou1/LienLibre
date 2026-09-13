@@ -491,13 +491,13 @@
         </div>
 
         <!-- Clickwrap Legal Agreement Notice -->
-        <div class="p-2.5 rounded-xl bg-slate-100/70 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 leading-snug flex items-center gap-2">
-          <span class="text-sm shrink-0">⚖️</span>
+        <a href="politiques.html" target="_blank" class="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-950/60 hover:bg-slate-200/80 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300 leading-snug flex items-center gap-2.5 transition-colors group cursor-pointer">
+          <span class="text-base shrink-0 group-hover:scale-110 transition-transform">⚖️</span>
           <span>
             <span data-i18n="legalCheckboxLabel">En cliquant sur « Générer mon LienLibre », vous certifiez partager une source d'information légitime et vous acceptez sans réserve les</span>
-            <button type="button" id="btn-open-legal-from-check" class="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold cursor-pointer" data-i18n="legalCheckboxLink">Conditions d'Utilisation et la Décharge Juridique</button>.
+            <strong class="text-cyan-600 dark:text-cyan-400 underline font-semibold" data-i18n="legalCheckboxLink">Conditions d'Utilisation & Politiques Juridiques (Loi 25, art. 31.1 LDA) ↗</strong>.
           </span>
-        </div>
+        </a>
         
         <button 
           type="submit" 
@@ -2855,7 +2855,8 @@
         
         if (response.status === 403) {
           const blockData = await response.json().catch(() => ({}));
-          showError(trans.sourceBlockedAlert || ("🛑 " + (blockData.message || "Ce contenu est interdit.")));
+          const explicitReason = blockData.description || blockData.message || (blockData.botAudit && blockData.botAudit.blockReason) || "Ce lien a été bloqué par mesure de sécurité.";
+          showError("🛑 " + explicitReason);
           resultArea.classList.add('hidden');
           return;
         }
@@ -2867,7 +2868,8 @@
         const data = await response.json();
 
         if (data.blocked === true) {
-          showError(trans.sourceBlockedAlert || ("🛑 " + (data.message || "Ce domaine est interdit.")));
+          const explicitReason = data.description || data.message || (data.botAudit && data.botAudit.blockReason) || "Ce domaine a été bloqué par mesure de sécurité.";
+          showError("🛑 " + explicitReason);
           resultArea.classList.add('hidden');
           return;
         }
