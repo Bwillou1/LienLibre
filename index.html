@@ -917,28 +917,6 @@
         </p>
       </div>
 
-    <!-- Hub des Alertes de Sécurité Civile (Portail Dédié) -->
-    <section class="w-full mt-10 p-6 rounded-2xl bg-gradient-to-r from-red-500/10 via-amber-500/10 to-indigo-500/10 border border-red-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-md">
-      <div class="space-y-1">
-        <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">
-          <span class="flex h-2 w-2 relative">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-          </span>
-          <span>🚨 Hub Officiel des Alertes & Urgences Civiles</span>
-        </div>
-        <h3 class="font-display font-bold text-base sm:text-xl text-slate-900 dark:text-white">
-          Avis Météo Extrêmes, Feux de Forêt & Rappels Sanitaires
-        </h3>
-        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-          Consultez et convertissez les alertes d'Environnement Canada, de la SOPFEU et de la Santé Publique sur notre page dédiée.
-        </p>
-      </div>
-      <a href="./alertes.html" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-semibold text-xs shadow-md transition-all shrink-0 flex items-center gap-1.5">
-        <span>🚨 Ouvrir le Hub Alertes ↗</span>
-      </a>
-    </section>
-
     <!-- Share Project Section (Social & Model Text) -->
     <section id="share-project-section" class="w-full mt-12 glass-card rounded-2xl p-6 sm:p-8 space-y-6">
       <div class="text-center sm:text-left space-y-1">
@@ -3400,82 +3378,6 @@
         setTimeout(() => {
           navigator.clipboard.writeText(shareMsg).catch(() => {});
         }, 300);
-      });
-    }
-
-    // Public Safety & Emergency Alerts Hub Listeners
-    const alertFilterBtns = document.querySelectorAll('.alert-filter-btn');
-    const alertFeedCards = document.querySelectorAll('.alert-feed-card');
-
-    alertFilterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const filter = btn.getAttribute('data-filter') || 'all';
-        
-        alertFilterBtns.forEach(b => {
-          if (b === btn) {
-            b.classList.remove('bg-slate-100', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-300', 'border-slate-300', 'dark:border-slate-800');
-            b.classList.add('bg-rose-600', 'text-white', 'border-rose-500', 'shadow-xs');
-          } else {
-            b.classList.remove('bg-rose-600', 'text-white', 'border-rose-500', 'shadow-xs');
-            b.classList.add('bg-slate-100', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-300', 'border-slate-300', 'dark:border-slate-800');
-          }
-        });
-
-        alertFeedCards.forEach(card => {
-          const cat = card.getAttribute('data-category');
-          if (filter === 'all' || cat === filter) {
-            card.classList.remove('hidden');
-          } else {
-            card.classList.add('hidden');
-          }
-        });
-      });
-    });
-
-    document.querySelectorAll('.btn-convert-alert').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const alertUrl = btn.getAttribute('data-alert-url');
-        if (alertUrl && urlInput && form) {
-          urlInput.value = alertUrl;
-          urlInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          form.dispatchEvent(new Event('submit', { cancelable: true }));
-        }
-      });
-    });
-
-    document.querySelectorAll('.btn-share-alert').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const alertUrl = btn.getAttribute('data-alert-url') || '';
-        const alertTitle = btn.getAttribute('data-alert-title') || 'Alerte de Sécurité Civile';
-        
-        if (navigator.share) {
-          try {
-            await navigator.share({
-              title: alertTitle,
-              text: `🚨 ${alertTitle} — Alerte officielle :`,
-              url: alertUrl
-            });
-            return;
-          } catch (_) {}
-        }
-        
-        navigator.clipboard.writeText(`${alertTitle} : ${alertUrl}`).then(() => {
-          const originalHtml = btn.innerHTML;
-          btn.innerHTML = `<span class="text-emerald-400 font-bold">✓ Copié</span>`;
-          setTimeout(() => {
-            btn.innerHTML = originalHtml;
-          }, 2000);
-        });
-      });
-    });
-
-    const btnRefreshAlerts = document.getElementById('btn-refresh-alerts');
-    if (btnRefreshAlerts) {
-      btnRefreshAlerts.addEventListener('click', () => {
-        btnRefreshAlerts.classList.add('animate-spin');
-        setTimeout(() => {
-          btnRefreshAlerts.classList.remove('animate-spin');
-        }, 800);
       });
     }
 
