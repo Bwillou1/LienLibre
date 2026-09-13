@@ -1,0 +1,7 @@
+[
+  { "domain": "bit.ly", "reason": "Raccourcisseur d'URL interdit", "date": "2026-09-13" },
+  { "domain": "tinyurl.com", "reason": "Raccourcisseur d'URL interdit", "date": "2026-09-13" },
+  { "domain": "doubleclick.net", "reason": "Bouclier NextDNS / Réseau de tracking", "date": "2026-09-13" },
+  { "domain": "mega.nz", "reason": "Stockage de fichiers anonyme", "date": "2026-09-13" },
+  { "domain": "anonfiles.com", "reason": "Hébergement anonyme de fichiers", "date": "2026-09-13" }
+]

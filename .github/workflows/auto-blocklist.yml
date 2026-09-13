@@ -1,0 +1,78 @@
+name: 🛡️ Automatic Blocklist Synchronizer
+
+on:
+  repository_dispatch:
+    types: [blocked_domain]
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'Nom de domaine à bloquer'
+        required: true
+        type: string
+      reason:
+        description: 'Raison du blocage'
+        required: false
+        default: 'Score Mini-Bot < 75 ou Bouclier DNS NextDNS'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-blocklist:
+    name: 🔒 Add Domain to Blocklist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Add Domain to blocklist.json and blocklist.js
+        run: |
+          DOMAIN="${{ github.event.client_payload.domain || github.event.inputs.domain }}"
+          REASON="${{ github.event.client_payload.reason || github.event.inputs.reason }}"
+          
+          if [ -z "$DOMAIN" ]; then
+            echo "No domain provided."
+            exit 1
+          fi
+
+          echo "Adding $DOMAIN with reason: $REASON"
+
+          node -e "
+            const fs = require('fs');
+            const domain = '$DOMAIN'.toLowerCase().trim().replace(/^www\./, '');
+            const reason = '$REASON' || 'Bloqué automatiquement par LienLibre';
+            const today = new Date().toISOString().split('T')[0];
+
+            // 1. Update blocklist.json
+            let jsonList = [];
+            try {
+              jsonList = JSON.parse(fs.readFileSync('blocklist.json', 'utf8'));
+            } catch (_) {}
+
+            if (!jsonList.some(item => item.domain === domain)) {
+              jsonList.push({ domain, reason, date: today });
+              fs.writeFileSync('blocklist.json', JSON.stringify(jsonList, null, 2), 'utf8');
+              console.log('Updated blocklist.json');
+            }
+
+            // 2. Update blocklist.js
+            let jsContent = fs.readFileSync('blocklist.js', 'utf8');
+            if (!jsContent.includes('\"' + domain + '\"')) {
+              jsContent = jsContent.replace('export const BLOCKED_DOMAINS = [', 'export const BLOCKED_DOMAINS = [\n  \"' + domain + '\",');
+              fs.writeFileSync('blocklist.js', jsContent, 'utf8');
+              console.log('Updated blocklist.js');
+            }
+          "
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "LienLibre Sentinel Bot"
+          git config --global user.email "bot@lienlibre.local"
+          git add blocklist.json blocklist.js
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(blocklist): automatically add $DOMAIN to blocklist" && git push)

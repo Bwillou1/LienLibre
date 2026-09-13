@@ -1,4 +1,5 @@
 import { ALLOWED_DOMAINS, MEDIA_NAMES } from "./whitelist.js";
+import { BLOCKED_DOMAINS } from "./blocklist.js";
 
 /**
  * LIENLIBRE - BACKEND (Cloudflare Worker)
@@ -48,10 +49,12 @@ const SECURITY_HEADERS = {
   "Referrer-Policy": "strict-origin-when-cross-origin"
 };
 
-// Mémoire cache dynamique pour la liste blanche synchronisée en direct depuis GitHub
+// Mémoire cache dynamique pour la liste blanche et la liste noire synchronisées depuis GitHub
 let dynamicAllowedDomains = null;
 let dynamicMediaNames = null;
+let dynamicBlockedDomains = new Set(BLOCKED_DOMAINS);
 let lastWhitelistFetch = 0;
+let lastBlocklistFetch = 0;
 const WHITELIST_SYNC_INTERVAL = 300000; // 5 minutes
 
 /**
@@ -70,7 +73,6 @@ async function syncLiveWhitelistFromGitHub() {
     });
     if (resp.ok) {
       const text = await resp.text();
-      // Extraction sécurisée des domaines depuis les chaînes du fichier whitelist.js
       const matches = text.match(/"([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"/g);
       if (matches && matches.length > 50) {
         const parsedDomains = matches.map(m => m.replace(/"/g, '').toLowerCase());
@@ -85,6 +87,97 @@ async function syncLiveWhitelistFromGitHub() {
   }
 
   return { domains: ALLOWED_DOMAINS, names: MEDIA_NAMES };
+}
+
+/**
+ * Synchronise et charge la dernière version de la blocklist depuis le dépôt GitHub officiel.
+ */
+async function syncLiveBlocklistFromGitHub() {
+  const now = Date.now();
+  if (dynamicBlockedDomains.size > 0 && (now - lastBlocklistFetch < WHITELIST_SYNC_INTERVAL)) {
+    return dynamicBlockedDomains;
+  }
+
+  try {
+    const rawUrl = 'https://raw.githubusercontent.com/Bwillou1/LienLibre/main/blocklist.json';
+    const resp = await fetch(rawUrl, {
+      cf: { cacheTtl: 300, cacheEverything: true }
+    });
+    if (resp.ok) {
+      const list = await resp.json();
+      if (Array.isArray(list)) {
+        list.forEach(item => {
+          if (item && item.domain) {
+            dynamicBlockedDomains.add(item.domain.toLowerCase().trim().replace(/^www\./, ''));
+          }
+        });
+      }
+      lastBlocklistFetch = now;
+    }
+  } catch (err) {
+    console.warn('Erreur de synchronisation live de blocklist.json :', err);
+  }
+  return dynamicBlockedDomains;
+}
+
+/**
+ * Vérifie si le domaine cible est interdit par la liste noire (Blocklist).
+ */
+function isDomainBlocked(hostname) {
+  if (!hostname) return false;
+  const cleanHost = hostname.toLowerCase().trim().replace(/^www\./, "");
+  if (dynamicBlockedDomains && dynamicBlockedDomains.has(cleanHost)) return true;
+  if (BLOCKED_DOMAINS.includes(cleanHost)) return true;
+  return false;
+}
+
+/**
+ * Enregistre un domaine bloqué et le propage de manière asynchrone (KV + GitHub dispatch).
+ */
+function recordBlockedDomain(domain, reason, env, ctx) {
+  if (!domain) return;
+  const clean = domain.toLowerCase().trim().replace(/^www\./, '');
+  dynamicBlockedDomains.add(clean);
+
+  const asyncTask = async () => {
+    try {
+      // 1. Sauvegarde KV Cloudflare si présent
+      if (env && env.LIENLIBRE_KV && typeof env.LIENLIBRE_KV.put === "function") {
+        await env.LIENLIBRE_KV.put("blocklist:" + clean, JSON.stringify({
+          domain: clean,
+          reason: reason || "Score < 75 ou Menace DNS",
+          date: new Date().toISOString()
+        }), { expirationTtl: 86400 * 30 });
+      }
+
+      // 2. Dispatch automatique vers GitHub Actions si GITHUB_TOKEN est configuré
+      if (env && env.GITHUB_TOKEN) {
+        await fetch("https://api.github.com/repos/Bwillou1/LienLibre/dispatches", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "LienLibre-Worker"
+          },
+          body: JSON.stringify({
+            event_type: "blocked_domain",
+            client_payload: {
+              domain: clean,
+              reason: reason || "Score < 75 ou Menace DNS"
+            }
+          })
+        });
+      }
+    } catch (e) {
+      console.warn("Erreur enregistrement domaine bloqué :", e);
+    }
+  };
+
+  if (ctx && typeof ctx.waitUntil === "function") {
+    ctx.waitUntil(asyncTask());
+  } else {
+    asyncTask();
+  }
 }
 
 /**
@@ -319,6 +412,14 @@ function checkSecurityThreats(targetUrl, meta = {}) {
   const search = urlObj.search.toLowerCase();
   const fullText = `${urlObj.href} ${meta.title || ""} ${meta.description || ""} ${meta.standardTitle || ""}`.toLowerCase();
 
+  // 0. Liste noire (Blocklist locale & GitHub)
+  if (isDomainBlocked(hostname)) {
+    return {
+      isBlocked: true,
+      reason: `Lien bloqué : Le domaine ${hostname} est formellement inscrit sur la liste noire (Blocklist) de LienLibre suite à une menace avérée ou un non-respect des règles de conformité.`
+    };
+  }
+
   // 1. IP brute
   if (IP_ADDRESS_REGEX.test(hostname)) {
     return {
@@ -413,7 +514,7 @@ async function checkDnsFamilyShield(hostname) {
     };
 
     // 1. PRIORITÉ ABSOLUE : NextDNS (Profil personnalisé 8d3993 avec filtres HaGeZi, NRD & Contrôle parental)
-    const nextDnsUrl = `https://dns.nextdns.io/8d3993/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
+    const nextDnsUrl = `https://dns.nextdns.io/8d3993/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
     const nextData = await fetchDoh(nextDnsUrl);
 
     if (nextData) {
@@ -633,11 +734,12 @@ export default {
       });
     }
 
-    // Synchroniser la liste blanche en direct depuis GitHub
+    // Synchroniser la liste blanche et la blocklist en direct depuis GitHub
     if (ctx && typeof ctx.waitUntil === "function") {
-      ctx.waitUntil(syncLiveWhitelistFromGitHub());
-    } else if (!dynamicAllowedDomains) {
-      await syncLiveWhitelistFromGitHub();
+      ctx.waitUntil(Promise.all([syncLiveWhitelistFromGitHub(), syncLiveBlocklistFromGitHub()]));
+    } else {
+      if (!dynamicAllowedDomains) await syncLiveWhitelistFromGitHub();
+      if (dynamicBlockedDomains.size === 0) await syncLiveBlocklistFromGitHub();
     }
 
     const requestUrl = new URL(request.url);
@@ -835,6 +937,7 @@ export default {
         // 2. Vérification statique des menaces
         const threat = checkSecurityThreats(parsedTarget);
         if (threat.isBlocked) {
+          recordBlockedDomain(parsedTarget.hostname, threat.reason, env, ctx);
           return new Response(JSON.stringify({
             error: true,
             blocked: true,
@@ -847,10 +950,11 @@ export default {
 
         const isAllowed = isDomainAllowed(parsedTarget.hostname);
 
-        // 3. Bouclier DNS Famille Cloudflare 1.1.1.3 (Ignoré pour les domaines dans la liste blanche)
+        // 3. Bouclier DNS Famille NextDNS 8d3993 / Cloudflare 1.1.1.3 (Ignoré pour les domaines dans la liste blanche)
         if (!isAllowed) {
           const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname);
           if (dnsShield.isBlocked) {
+            recordBlockedDomain(parsedTarget.hostname, dnsShield.reason, env, ctx);
             return new Response(JSON.stringify({
               error: true,
               blocked: true,
@@ -1039,6 +1143,7 @@ export default {
     // 2. Vérification préventive immédiate des menaces statiques
     const initialThreat = checkSecurityThreats(targetUrl);
     if (initialThreat.isBlocked) {
+      recordBlockedDomain(targetUrl.hostname, initialThreat.reason, env, ctx);
       if (isJsonRequested) {
         return new Response(JSON.stringify({
           error: true,
@@ -1057,11 +1162,12 @@ export default {
       });
     }
 
-    // 3. Bouclier DNS Protection Famille Cloudflare 1.1.1.3 (Ignoré totalement pour les médias vérifiés de la liste blanche)
+    // 3. Bouclier DNS Protection Famille NextDNS 8d3993 / Cloudflare 1.1.1.3 (Ignoré totalement pour les médias vérifiés de la liste blanche)
     let dnsThreat = { isBlocked: false, reason: "" };
     if (!isAllowed) {
       dnsThreat = await checkDnsFamilyShield(targetUrl.hostname);
       if (dnsThreat.isBlocked) {
+        recordBlockedDomain(targetUrl.hostname, dnsThreat.reason, env, ctx);
         if (isJsonRequested) {
           return new Response(JSON.stringify({
             error: true,
@@ -1194,6 +1300,7 @@ export default {
     // 7. Renvoyer la réponse selon le format demandé
     if (isJsonRequested) {
       if (botAudit.isBlocked) {
+        recordBlockedDomain(targetUrl.hostname, botAudit.blockReason, env, ctx);
         return new Response(
           JSON.stringify({
             error: true,
@@ -1235,6 +1342,7 @@ export default {
 
     // Si la source est bloquée pour menace de sécurité -> Erreur 403
     if (botAudit.isBlocked) {
+      recordBlockedDomain(targetUrl.hostname, botAudit.blockReason, env, ctx);
       return new Response(
         generateBlockedHTML(targetUrl.href, botAudit.blockReason, lang, requestUrl.origin),
         {
