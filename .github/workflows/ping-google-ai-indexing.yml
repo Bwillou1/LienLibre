@@ -1,0 +1,46 @@
+name: 🚀 Ping Google, Google Actualités, Bing & Indexation IA
+
+on:
+  schedule:
+    # Exécution automatique toutes les 6 heures (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Raison du déclenchement manuel'
+        required: false
+        default: 'Mise à jour manuelle des sitemaps et flux d actualités'
+
+concurrency:
+  group: ping-indexing-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ping-search-engines-and-ai:
+    name: 📡 Notification Google News, Bing & Moteurs IA
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Cloner le dépôt
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🚀 Exécuter les pings réels (Google, Bing, IndexNow, WebSub & Archives)
+        run: |
+          node scripts/ping-google-news-ai.js
+
+      - name: 🔍 Ping direct de secours via curl (Google & Bing)
+        run: |
+          echo "Envoi des pings de confirmation via cURL..."
+          curl -s -A "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" "https://www.google.com/ping?sitemap=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2Fsitemap.xml" || true
+          curl -s -A "Mozilla/5.0 (compatible; Googlebot-News; +http://www.google.com/bot.html)" "https://www.google.com/ping?sitemap=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2Fsitemap-news.xml" || true
+          curl -s "https://www.bing.com/ping?sitemap=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2Fsitemap.xml" || true
+          echo "Terminé avec succès."

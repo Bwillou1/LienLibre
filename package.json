@@ -1,0 +1,24 @@
+{
+  "name": "lienlibre",
+  "version": "2.5.0",
+  "description": "Passerelle citoyenne, éducative et de recherche pour l'interopérabilité des métadonnées Open Graph au Canada",
+  "author": "William Guindon",
+  "license": "MIT",
+  "scripts": {
+    "ping": "node scripts/ping-google-news-ai.js",
+    "test": "node -c worker.js sw.js extension/popup.js js/qr.js js/txqr.js scripts/ping-google-news-ai.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bwillou1/LienLibre.git"
+  },
+  "keywords": [
+    "civic-tech",
+    "open-graph",
+    "google-news",
+    "indexnow",
+    "fair-dealing",
+    "canada",
+    "llms"
+  ]
+}
