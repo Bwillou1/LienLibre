@@ -483,11 +483,11 @@ function checkSecurityThreats(targetUrl, meta = {}) {
 }
 
 /**
- * 🌐 Double Bouclier DNS Infaillible (NextDNS 8d3993 + Cloudflare 1.1.1.3)
- * - Interroge NextDNS (listes HaGeZi, 1Hosts, NRD, Contrôle parental).
- * - Interroge Cloudflare Famille 1.1.1.3 (Illimité, bloque malwares et contenus adultes).
- * - Si l'un des deux signale un blocage (0.0.0.0, ::, NXDOMAIN), le lien est rejeté.
- * - Si NextDNS dépasse son quota mensuel gratuit de 300 000 requêtes, Cloudflare protège le relais sans interruption.
+ * 🌐 Double Bouclier DNS NextDNS (Principal 8d3993 + Secours 9d8318)
+ * - 1. Interroge NextDNS Profil Principal (8d3993 - 300 000 req/mois).
+ * - 2. Interroge NextDNS Profil Secours (9d8318 - 300 000 req/mois) si le premier est indisponible ou en dépassement.
+ * - Capacité totale : 600 000 résolutions de sécurité mensuelles gratuites.
+ * - Bloque les maliciels, hameçonnages, traqueurs, domaines récents et contenus adultes.
  */
 async function checkDnsFamilyShield(hostname) {
   try {
@@ -513,29 +513,28 @@ async function checkDnsFamilyShield(hostname) {
       }
     };
 
-    // 1. PRIORITÉ ABSOLUE : NextDNS (Profil personnalisé 8d3993 avec filtres HaGeZi, NRD & Contrôle parental)
-    const nextDnsUrl = `https://dns.nextdns.io/8d3993/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
-    const nextData = await fetchDoh(nextDnsUrl);
+    // 1. PROFIL PRINCIPAL : NextDNS (ID: 8d3993 avec filtres HaGeZi, NRD & Contrôle parental)
+    const primaryDnsUrl = `https://dns.nextdns.io/8d3993/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
+    const primaryData = await fetchDoh(primaryDnsUrl);
 
-    if (nextData) {
-      if (nextData.Answer && Array.isArray(nextData.Answer)) {
-        const isBlockedNext = nextData.Answer.some(a => 
+    if (primaryData) {
+      if (primaryData.Answer && Array.isArray(primaryData.Answer)) {
+        const isBlocked = primaryData.Answer.some(a => 
           a.data === "0.0.0.0" || 
           a.data === "::" || 
           a.data === "127.0.0.1" || 
           (typeof a.data === "string" && a.data.startsWith("0.0.0."))
         );
-        if (isBlockedNext) {
+        if (isBlocked) {
           return {
             isBlocked: true,
             reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
           };
         }
-        // Si NextDNS valide le domaine avec des IPs valides, retour immédiat sans solliciter le fallback
+        // Validé avec adresse IP saine
         return { isBlocked: false, reason: "" };
       }
-      // Si NextDNS retourne un statut NXDOMAIN (3) ou REFUSED (5)
-      if (nextData.Status === 3 || nextData.Status === 5) {
+      if (primaryData.Status === 3 || primaryData.Status === 5) {
         return {
           isBlocked: true,
           reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS (menace de sécurité ou domaine inexistant)."
@@ -543,26 +542,30 @@ async function checkDnsFamilyShield(hostname) {
       }
     }
 
-    // 2. SECOURS DE FIABILITÉ : Cloudflare Famille 1.1.1.3 (utilisé si NextDNS timeout ou quota dépassé)
-    const cfUrl = `https://family.cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
-    const cfData = await fetchDoh(cfUrl);
+    // 2. PROFIL DE SECOURS : NextDNS (ID: 9d8318 - deuxième compte pour basculement transparent)
+    const backupDnsUrl = `https://dns.nextdns.io/9d8318/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
+    const backupData = await fetchDoh(backupDnsUrl);
 
-    if (cfData) {
-      if (cfData.Answer && Array.isArray(cfData.Answer)) {
-        const isBlockedCf = cfData.Answer.some(a => 
-          a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1"
+    if (backupData) {
+      if (backupData.Answer && Array.isArray(backupData.Answer)) {
+        const isBlockedBackup = backupData.Answer.some(a => 
+          a.data === "0.0.0.0" || 
+          a.data === "::" || 
+          a.data === "127.0.0.1" || 
+          (typeof a.data === "string" && a.data.startsWith("0.0.0."))
         );
-        if (isBlockedCf) {
+        if (isBlockedBackup) {
           return {
             isBlocked: true,
-            reason: "Ce domaine est bloqué par le bouclier Cloudflare Sécurité & Famille (site malveillant ou contenu explicite)."
+            reason: "Ce domaine est bloqué par le bouclier NextDNS de secours (menace de sécurité, piratage ou contenu prohibé détecté)."
           };
         }
+        return { isBlocked: false, reason: "" };
       }
-      if (cfData.Status === 3 || cfData.Status === 5) {
+      if (backupData.Status === 3 || backupData.Status === 5) {
         return {
           isBlocked: true,
-          reason: "Ce domaine est bloqué ou introuvable selon le bouclier Cloudflare Sécurité (menace de sécurité ou domaine inexistant)."
+          reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS de secours (menace de sécurité ou domaine inexistant)."
         };
       }
     }
@@ -950,7 +953,7 @@ export default {
 
         const isAllowed = isDomainAllowed(parsedTarget.hostname);
 
-        // 3. Bouclier DNS Famille NextDNS 8d3993 / Cloudflare 1.1.1.3 (Ignoré pour les domaines dans la liste blanche)
+        // 3. Double Bouclier DNS NextDNS (Principal 8d3993 + Secours 9d8318 - Ignoré pour les domaines dans la liste blanche)
         if (!isAllowed) {
           const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname);
           if (dnsShield.isBlocked) {
@@ -1162,7 +1165,7 @@ export default {
       });
     }
 
-    // 3. Bouclier DNS Protection Famille NextDNS 8d3993 / Cloudflare 1.1.1.3 (Ignoré totalement pour les médias vérifiés de la liste blanche)
+    // 3. Double Bouclier DNS NextDNS (Principal 8d3993 + Secours 9d8318 - Ignoré totalement pour les médias vérifiés de la liste blanche)
     let dnsThreat = { isBlocked: false, reason: "" };
     if (!isAllowed) {
       dnsThreat = await checkDnsFamilyShield(targetUrl.hostname);

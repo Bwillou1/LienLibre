@@ -40,7 +40,7 @@ LienLibre **n’est pas** un agrégateur de contenus, **n’est pas** un moteur 
 
 **Statut :** projet *open source*, bénévole, à but non lucratif, à vocation éducative et civique.
 
-**Hébergement et infrastructure (indicative) :** pages statiques GitHub Pages ; *edge workers* (Cloudflare Workers) ; résolution DNS via NextDNS (configuration durcie `8d3993`) et repli Cloudflare `1.1.1.3`.
+**Hébergement et infrastructure (indicative) :** pages statiques GitHub Pages ; *edge workers* (Cloudflare Workers) ; résolution DNS via NextDNS (configuration durcie principale `8d3993` et repli NextDNS `9d8318`).
 
 ## 1.2 Acceptation
 
@@ -333,7 +333,7 @@ Trois lignes de défense indépendantes : **DNS → Mini-Bot (heuristique) → S
     │
     ├── domaine ∈ liste blanche médias CA ──► redirection directe
     │         + invitation à l'abonnement
-    │         + OG limité autorisé
+    │         + OG limitado autorisé
     │
     └── domaine ∉ liste blanche ──► SAS DE SÉCURITÉ (airlock)
               │
@@ -347,8 +347,8 @@ Trois lignes de défense indépendantes : **DNS → Mini-Bot (heuristique) → S
 
 | Priorité | Résolveur | Rôle |
 |---|---|---|
-| **1** | **NextDNS Anti-Malware / Anti-Phishing**, configuration durcie **ID `8d3993`**, via **DNS-over-HTTPS (DoH)** | Blocage maliciel, hameçonnage, domaines newly-registered à risque selon politiques NextDNS |
-| **2 (repli)** | **Cloudflare `1.1.1.3`** (DNS *Security & Malware Protection*, famille / maliciel) | Disponibilité si NextDNS indisponible |
+| **1 (principal)** | **NextDNS Anti-Malware / Anti-Phishing**, configuration durcie **ID `8d3993`**, via **DNS-over-HTTPS (DoH)** | Blocage maliciel, hameçonnage, domaines newly-registered à risque selon politiques NextDNS |
+| **2 (secours)** | **NextDNS Anti-Malware / Anti-Phishing**, configuration durcie **ID `9d8318`**, via **DNS-over-HTTPS (DoH)** | Disponibilité et basculement automatique si profil principal saturé ou indisponible |
 
 **Règle dure.** Tout nom de domaine identifié comme malveillant par le résolveur retenu est **immédiatement bloqué** avec une réponse **HTTP 403 Forbidden**. Aucune redirection. Aucun sas cliquable vers la cible. Message d’erreur explicite + liens vers `canada.ca` et le signalement.
 
@@ -508,4 +508,4 @@ Sauf mention contraire, le présent texte de politiques est publié pour usage d
 
 **Fin du document — LienLibre POLICIES.md v1.0 — 2026-09-13**
 
-*Rédigé dans un esprit de conformité Loi 25 / LPRPDE, d’exonération 31.1 LDA, d’utilisation équitable art. 29, de procédure d’avis et retrait volontaire, et de défense en profondeur (NextDNS 8d3993 / Cloudflare 1.1.1.3 / Mini-Bot / Airlock).*
+*Rédigé dans un esprit de conformité Loi 25 / LPRPDE, d’exonération 31.1 LDA, d’utilisation équitable art. 29, de procédure d’avis et retrait volontaire, et de défense en profondeur (NextDNS 8d3993 / NextDNS 9d8318 / Mini-Bot / Airlock).*
