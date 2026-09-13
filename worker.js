@@ -1203,8 +1203,8 @@ export default {
     const userAgent = request.headers.get("User-Agent") || "";
     const isCrawler = /facebookexternalhit|Facebot|Meta-ExternalAgent|Instagram|WhatsApp|Twitterbot|LinkedInBot|Discordbot|TelegramBot|Slackbot/i.test(userAgent);
 
-    // 1. Si le domaine est dans la liste blanche ou validé par le Mini-Bot (Score >= 80) -> Redirection immédiate
-    if (isAllowed || botAudit.isValidated) {
+    // 1. SEULS les domaines de la liste blanche (whitelist.js) bénéficient d'une redirection automatique immédiate
+    if (isAllowed) {
       if (!isJsonRequested && !isCrawler && ctx && typeof ctx.waitUntil === "function") {
         ctx.waitUntil(recordClick(env, targetUrl.hostname, true));
       }
@@ -1221,10 +1221,11 @@ export default {
       );
     }
 
-    // 2. Si le lien est auto-certifié mais n'atteint pas 80/100 -> Interstitiel citoyen avec transfert de responsabilité
-    if (isSelfCertified) {
+    // Pour les robots de réseaux sociaux (Facebook, Messenger, etc.) sur les liens hors liste blanche,
+    // renvoyer les balises Open Graph pour générer l'aperçu visuel sans bloquer le crawler
+    if (isCrawler) {
       return new Response(
-        generateCitizenInterstitialHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang, requestUrl.href, botAudit),
+        generateRedirectionHTML(targetUrl.href, finalTitle, finalDescription, finalImage, lang, requestUrl.href, true),
         {
           status: 200,
           headers: {
@@ -1236,10 +1237,11 @@ export default {
       );
     }
 
-    // 3. Sinon -> Avertissement standard avec compte à rebours de 10s et audit
+    // 2. Pour TOUS les utilisateurs humains accédant à un site hors liste blanche :
+    // Sas de sécurité obligatoire avec action manuelle et décharge juridique de responsabilité
     const userIp = request.headers.get("CF-Connecting-IP") || "Inconnue";
     return new Response(
-      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang, requestUrl.href, isCrawler, botAudit),
+      generateWarningHTML(targetUrl.href, finalTitle, finalDescription, finalImage, userIp, lang, requestUrl.href, isCrawler, botAudit, isAllowed),
       {
         status: 200,
         headers: {
