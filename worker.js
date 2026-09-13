@@ -48,17 +48,58 @@ const SECURITY_HEADERS = {
   "Referrer-Policy": "strict-origin-when-cross-origin"
 };
 
+// Mémoire cache dynamique pour la liste blanche synchronisée en direct depuis GitHub
+let dynamicAllowedDomains = null;
+let dynamicMediaNames = null;
+let lastWhitelistFetch = 0;
+const WHITELIST_SYNC_INTERVAL = 300000; // 5 minutes
+
+/**
+ * Synchronise et charge la dernière version de la liste blanche depuis le dépôt GitHub officiel.
+ */
+async function syncLiveWhitelistFromGitHub() {
+  const now = Date.now();
+  if (dynamicAllowedDomains && (now - lastWhitelistFetch < WHITELIST_SYNC_INTERVAL)) {
+    return { domains: dynamicAllowedDomains, names: dynamicMediaNames || MEDIA_NAMES };
+  }
+
+  try {
+    const rawUrl = 'https://raw.githubusercontent.com/Bwillou1/LienLibre/main/whitelist.js';
+    const resp = await fetch(rawUrl, {
+      cf: { cacheTtl: 300, cacheEverything: true }
+    });
+    if (resp.ok) {
+      const text = await resp.text();
+      // Extraction sécurisée des domaines depuis les chaînes du fichier whitelist.js
+      const matches = text.match(/"([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"/g);
+      if (matches && matches.length > 50) {
+        const parsedDomains = matches.map(m => m.replace(/"/g, '').toLowerCase());
+        dynamicAllowedDomains = Array.from(new Set([...ALLOWED_DOMAINS, ...parsedDomains]));
+        dynamicMediaNames = { ...MEDIA_NAMES };
+        lastWhitelistFetch = now;
+        return { domains: dynamicAllowedDomains, names: dynamicMediaNames };
+      }
+    }
+  } catch (err) {
+    console.warn('Erreur de synchronisation live de whitelist.js, repli sur la liste intégrée :', err);
+  }
+
+  return { domains: ALLOWED_DOMAINS, names: MEDIA_NAMES };
+}
+
 /**
  * Vérifie si le domaine cible fait partie des médias canadiens de confiance.
  */
 function isDomainAllowed(hostname) {
-  const cleanHost = hostname.toLowerCase().replace(/^www\./, "");
-  return ALLOWED_DOMAINS.some(domain => cleanHost === domain || cleanHost.endsWith("." + domain));
+  const cleanHost = (hostname || "").toLowerCase().replace(/^www\./, "");
+  const currentList = dynamicAllowedDomains || ALLOWED_DOMAINS;
+  return currentList.some(domain => cleanHost === domain || cleanHost.endsWith("." + domain));
 }
 
 function getMediaSiteName(hostname) {
   const cleanHost = (hostname || "").toLowerCase().replace(/^www\./, "");
-  for (const [domain, name] of Object.entries(MEDIA_NAMES)) {
+  const currentNames = dynamicMediaNames || MEDIA_NAMES;
+  for (const [domain, name] of Object.entries(currentNames)) {
     if (cleanHost === domain || cleanHost.endsWith("." + domain)) {
       return name;
     }
@@ -562,6 +603,13 @@ export default {
         status: 204,
         headers: CORS_HEADERS
       });
+    }
+
+    // Synchroniser la liste blanche en direct depuis GitHub
+    if (ctx && typeof ctx.waitUntil === "function") {
+      ctx.waitUntil(syncLiveWhitelistFromGitHub());
+    } else if (!dynamicAllowedDomains) {
+      await syncLiveWhitelistFromGitHub();
     }
 
     const requestUrl = new URL(request.url);
