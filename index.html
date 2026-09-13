@@ -505,7 +505,7 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="flex-grow max-w-4xl w-full mx-auto px-3.5 sm:px-6 py-6 sm:py-16 flex flex-col items-center justify-center overflow-x-hidden">
+  <main class="flex-grow max-w-6xl w-full mx-auto px-3.5 sm:px-8 py-6 sm:py-16 flex flex-col items-center justify-center overflow-x-hidden">
     
     <!-- Hero / Headline -->
     <div class="text-center max-w-2xl mb-8 sm:mb-10 w-full px-1">
@@ -937,6 +937,7 @@
     </div>
 
     <!-- Explainer / How it works Section -->
+    <!-- Explainer / How it works Section -->
     <section id="how-it-works" class="w-full mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-slate-200 dark:border-slate-800/80">
       
       <div class="glass-card rounded-2xl p-6 space-y-3">
@@ -962,26 +963,27 @@
           Le lien généré extrait dynamiquement les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage commercial.
         </p>
       </div>
+    </section>
 
-    <!-- Share Project Section (Social & Model Text) -->
-    <section id="share-project-section" class="w-full mt-12 glass-card rounded-2xl p-6 sm:p-8 space-y-6">
-      <div class="text-center sm:text-left space-y-1">
-        <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-1">
+    <!-- Share Project Section (Social & Model Text) - Full Width Immersive Card -->
+    <section id="share-project-section" class="w-full mt-14 glass-card rounded-3xl p-6 sm:p-10 space-y-8 shadow-xl border border-slate-200/90 dark:border-slate-800">
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-2 text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider bg-cyan-500/10 dark:bg-cyan-950/40 px-3 py-1 rounded-full border border-cyan-500/20">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
           </svg>
           <span data-i18n="shareSectionBadge">Faire connaître l'initiative</span>
         </div>
-        <h3 data-i18n="shareSectionTitle" class="font-display font-bold text-xl sm:text-2xl text-slate-900 dark:text-white">
+        <h3 data-i18n="shareSectionTitle" class="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
           Partager le projet LienLibre
         </h3>
-        <p data-i18n="shareSectionDesc" class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
+        <p data-i18n="shareSectionDesc" class="text-slate-600 dark:text-slate-400 text-sm sm:text-base max-w-3xl leading-relaxed">
           Aidez vos proches, collègues et concitoyens à découvrir cette passerelle civique pour préserver l'accès à l'information.
         </p>
       </div>
 
-      <!-- Quick Action Buttons Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+      <!-- Quick Action Buttons Grid (Spacious & Modern) -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         
         <!-- Facebook Button -->
         <a 
@@ -989,9 +991,9 @@
           href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
           target="_blank" 
           rel="noopener noreferrer"
-          class="bg-[#1877F2]/10 hover:bg-[#1877F2]/20 dark:bg-[#1877F2]/15 dark:hover:bg-[#1877F2]/25 text-[#1877F2] dark:text-[#4599FF] border border-[#1877F2]/30 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group shadow-xs cursor-pointer"
+          class="bg-[#1877F2]/10 hover:bg-[#1877F2]/20 dark:bg-[#1877F2]/15 dark:hover:bg-[#1877F2]/25 text-[#1877F2] dark:text-[#4599FF] border border-[#1877F2]/30 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all text-xs sm:text-sm font-bold group shadow-xs cursor-pointer hover:scale-[1.02] active:scale-95"
         >
-          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
           </svg>
           <span>Facebook</span>
@@ -1003,9 +1005,9 @@
           href="fb-messenger://share/?link=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
           target="_blank" 
           rel="noopener noreferrer"
-          class="bg-[#0084FF]/10 hover:bg-[#0084FF]/20 dark:bg-[#0084FF]/15 dark:hover:bg-[#0084FF]/25 text-[#0084FF] border border-[#0084FF]/30 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group shadow-xs cursor-pointer"
+          class="bg-[#0084FF]/10 hover:bg-[#0084FF]/20 dark:bg-[#0084FF]/15 dark:hover:bg-[#0084FF]/25 text-[#0084FF] border border-[#0084FF]/30 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all text-xs sm:text-sm font-bold group shadow-xs cursor-pointer hover:scale-[1.02] active:scale-95"
         >
-          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 0C5.373 0 0 4.974 0 11.111c0 3.498 1.744 6.614 4.469 8.654V24l4.088-2.242c1.092.302 2.246.464 3.443.464 6.627 0 12-4.975 12-11.111C24 4.974 18.627 0 12 0zm1.191 14.963l-3.056-3.26-5.963 3.26L10.8 8.441l3.056 3.26 5.963-3.26-6.628 6.522z"/>
           </svg>
           <span>Messenger</span>
@@ -1017,9 +1019,9 @@
           href="https://api.whatsapp.com/send?text=D%C3%A9couvrez%20LienLibre%20%E2%80%94%20Passerelle%20citoyenne%20et%20%C3%A9ducative%20pour%20l%27acc%C3%A8s%20%C3%A0%20l%27information%20canadienne%20%3A%20https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
           target="_blank" 
           rel="noopener noreferrer"
-          class="bg-[#25D366]/10 hover:bg-[#25D366]/20 dark:bg-[#25D366]/15 dark:hover:bg-[#25D366]/25 text-[#128C7E] dark:text-[#25D366] border border-[#25D366]/30 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group shadow-xs cursor-pointer"
+          class="bg-[#25D366]/10 hover:bg-[#25D366]/20 dark:bg-[#25D366]/15 dark:hover:bg-[#25D366]/25 text-[#128C7E] dark:text-[#25D366] border border-[#25D366]/30 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all text-xs sm:text-sm font-bold group shadow-xs cursor-pointer hover:scale-[1.02] active:scale-95"
         >
-          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
           </svg>
           <span>WhatsApp</span>
@@ -1031,9 +1033,9 @@
           href="https://twitter.com/intent/tweet?text=D%C3%A9couvrez%20LienLibre%2C%20une%20passerelle%20citoyenne%20et%20%C3%A9ducative%20open-source%20pour%20l%27interop%C3%A9rabilit%C3%A9%20des%20m%C3%A9tadonn%C3%A9es%20web%20et%20le%20libre%20acc%C3%A8s%20%C3%A0%20l%27information%20canadienne%20%3A%20https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
           target="_blank" 
           rel="noopener noreferrer"
-          class="bg-slate-200/80 hover:bg-slate-300 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white border border-slate-300 dark:border-white/20 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group shadow-xs cursor-pointer"
+          class="bg-slate-200/80 hover:bg-slate-300 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white border border-slate-300 dark:border-white/20 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all text-xs sm:text-sm font-bold group shadow-xs cursor-pointer hover:scale-[1.02] active:scale-95"
         >
-          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
           </svg>
           <span>X (Twitter)</span>
@@ -1045,9 +1047,9 @@
           href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fbwillou1.github.io%2FLienLibre%2F" 
           target="_blank" 
           rel="noopener noreferrer"
-          class="bg-[#0A66C2]/10 hover:bg-[#0A66C2]/20 dark:bg-[#0A66C2]/15 dark:hover:bg-[#0A66C2]/25 text-[#0A66C2] dark:text-[#58A6FF] border border-[#0A66C2]/30 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group shadow-xs cursor-pointer"
+          class="bg-[#0A66C2]/10 hover:bg-[#0A66C2]/20 dark:bg-[#0A66C2]/15 dark:hover:bg-[#0A66C2]/25 text-[#0A66C2] dark:text-[#58A6FF] border border-[#0A66C2]/30 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all text-xs sm:text-sm font-bold group shadow-xs cursor-pointer hover:scale-[1.02] active:scale-95"
         >
-          <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
           </svg>
           <span>LinkedIn</span>
@@ -1057,9 +1059,9 @@
         <button 
           type="button" 
           id="share-btn-project-copy"
-          class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 p-3 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-semibold group cursor-pointer shadow-xs"
+          class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all text-xs sm:text-sm font-bold group cursor-pointer shadow-xs hover:scale-[1.02] active:scale-95"
         >
-          <svg class="w-5 h-5 group-hover:scale-110 transition-transform text-cyan-600 dark:text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <svg class="w-6 h-6 group-hover:scale-110 transition-transform text-cyan-600 dark:text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
           </svg>
           <span id="share-project-btn-label" data-i18n="shareCopyLinkBtn">Copier le lien</span>
@@ -1068,8 +1070,8 @@
       </div>
 
       <!-- Pre-formatted Neutral Model Text Box for Facebook / Social posts -->
-      <div class="space-y-2.5 pt-2">
-        <label for="share-model-textarea" data-i18n="shareModelTextLabel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+      <div class="space-y-3 pt-2">
+        <label for="share-model-textarea" data-i18n="shareModelTextLabel" class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
           📝 Texte modèle suggéré pour vos publications Facebook, Messenger et réseaux sociaux :
         </label>
         
@@ -1078,22 +1080,22 @@
             id="share-model-textarea" 
             readonly 
             rows="3" 
-            class="w-full bg-slate-50 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-700/80 rounded-xl p-3.5 text-xs sm:text-sm text-slate-800 dark:text-slate-300 font-sans leading-relaxed focus:outline-none focus:ring-1 focus:ring-cyan-500 select-all resize-none shadow-inner"
+            class="w-full bg-slate-50 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-700/80 rounded-2xl p-4 sm:p-5 text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-sans leading-relaxed focus:outline-none focus:ring-2 focus:ring-cyan-500 select-all resize-none shadow-inner"
           >Découvrez LienLibre (https://bwillou1.github.io/LienLibre/), une initiative citoyenne et éducative open-source pour explorer les métadonnées web et préserver le partage transparent des actualités et alertes d'intérêt public au Canada.</textarea>
           
           <button 
             type="button" 
             id="btn-copy-share-model" 
-            class="absolute bottom-3 right-3 bg-cyan-600 hover:bg-cyan-500 active:scale-95 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
+            class="absolute bottom-4 right-4 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 active:scale-95 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md flex items-center gap-1.5 transition-all cursor-pointer"
           >
-            <svg id="copy-share-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+            <svg id="copy-share-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
             </svg>
             <span id="copy-share-model-text" data-i18n="shareCopyModelBtn">Copier le texte</span>
           </button>
         </div>
         
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">
+        <p class="text-xs text-slate-500 dark:text-slate-400">
           💡 Vous pouvez copier ce texte neutre et le coller directement lors de la publication sur Facebook, Messenger, vos groupes de discussion ou vos courriels.
         </p>
       </div>
