@@ -2596,7 +2596,7 @@ function getWelcomeHTML() {
     </div>
 
     <div class="legal-notice">
-      ⚖️ <strong>Cadre légal :</strong> Conforme à l'utilisation équitable (art. 29 <em>Loi sur le droit d'auteur du Canada</em>) et au statut de simple conduit technique (art. 31.1 LDA). Aucun cookie publicitaire, zéro conservation de données personnelles.
+      ⚖️ <strong>Cadre légal :</strong> Conforme à l'utilisation équitable (art. 29 <em>Loi sur le droit d'auteur du Canada</em>) et au statut de simple conduit technique (art. 31.1 LDA). Aucun cookie publicitaire, zéro conservation de données personnelles. <a href="https://bwillou1.github.io/LienLibre/POLICIES.md" style="color: #38bdf8; text-decoration: underline;" target="_blank" rel="noopener noreferrer">Consulter les politiques complètes (Loi 25, LPRPDE, Sécurité) ↗</a>
     </div>
   </div>
 </body>

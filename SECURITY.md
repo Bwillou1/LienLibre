@@ -1,28 +1,35 @@
-# Politique de Sécurité — LienLibre
+# Politique de Sécurité — LienLibre (Security Policy)
 
-La sécurité et la protection de nos utilisateurs sont au cœur du projet LienLibre. L'application intègre plusieurs couches de protection pour éviter les détournements ou utilisations malveillantes.
+La sécurité et la protection de nos utilisateurs sont au cœur du projet **LienLibre**.
+
+L'ensemble de nos politiques officielles de sécurité (Security Airlock Protocol, défense en profondeur, filtrage NextDNS / Cloudflare, audit Mini-Bot Sentinel, conformité Loi 25 / LPRPDE et article 31.1 LDA) sont consultables dans le document maître :
+👉 **[POLICIES.md](./POLICIES.md)**
 
 ---
 
 ## 🛡️ Mesures de protection intégrées
 
-### 1. Protection contre les redirections ouvertes (Anti-Phishing)
-Afin d'empêcher les attaquants d'utiliser LienLibre comme couverture pour des campagnes de phishing (hameçonnage), le backend (Cloudflare Worker) n'autorise les redirections que vers une **liste blanche stricte de domaines de médias d'information canadiens reconnus**.
+1. **Défense en profondeur & Filtrage DNS Protecteur :**
+   - **Priorité 1 :** NextDNS Anti-Malware / Anti-Phishing avec ID de configuration durcie (`8d3993`) via DNS-over-HTTPS.
+   - **Priorité 2 (Fallback) :** Cloudflare `1.1.1.3` (DNS Security & Malware Protection).
+   - Tout domaine identifié comme malveillant est immédiatement bloqué avec un statut HTTP `403 Forbidden`.
 
-Toute tentative de redirection vers un domaine hors liste blanche renverra une page d'erreur `403 Forbidden` listant les domaines autorisés.
+2. **Sentinelle Mini-Bot & Sas de Sécurité (Airlock) :**
+   - Les liens vers des domaines non vérifiés sont obligatoirement stoppés dans un sas de sécurité avec score indicatif.
+   - **Interdiction stricte des images tierces** et hotlinking pour les domaines non vérifiés.
+   - Bouton d'annulation et de retour en lieu sûr vers [Canada.ca](https://www.canada.ca/).
+   - Liens de signalement direct vers le Centre antifraude du Canada et le Centre canadien pour la cybersécurité (CCCS).
 
-### 2. En-têtes de Sécurité HTTP
-Toutes les réponses générées par le backend contiennent des en-têtes HTTP restrictifs pour empêcher les failles de sécurité classiques :
-* **Content-Security-Policy (CSP)** : Bloque l'exécution de scripts tiers non autorisés.
-* **X-Frame-Options (DENY)** : Empêche l'intégration du site dans des frames (protection anti-Clickjacking).
-* **X-Content-Type-Options (nosniff)** : Empêche le reniflage de type MIME.
-* **Referrer-Policy** : Limite les informations de referer transmises lors des clics.
-
-### 3. Assainissement des données (Sanitization)
-Toutes les entrées transmises via les paramètres de requête URL sont nettoyées et échappées (`escapeHtml`) avant d'être réinjectées dans les réponses du serveur pour neutraliser toute tentative d'injection de script (XSS).
+3. **En-têtes de Sécurité HTTP & Assainissement :**
+   - `Content-Security-Policy` stricte.
+   - `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin`.
+   - Échappement systématique de toutes les données entrantes (`escapeHtml`) contre les failles XSS.
 
 ---
 
-## 📞 Signaler une vulnérabilité
+## 📞 Signaler une vulnérabilité (Divulgation responsable)
 
-Si vous découvrez une faille de sécurité ou si vous souhaitez suggérer l'ajout d'un média canadien légitime à la liste blanche, veuillez créer une *Issue* sur notre dépôt GitHub ou contacter le mainteneur du projet.
+Nous appliquons les principes de divulgation responsable (RFC 9116) :
+- **Security Advisory GitHub :** [Signaler une vulnérabilité en privé](https://github.com/Bwillou1/LienLibre/security/advisories/new)
+- **Fichier de sécurité :** [`.well-known/security.txt`](./.well-known/security.txt)
+- **Signalement d'abus / Avis et retrait :** Ouvrir une issue sur le dépôt GitHub avec l'étiquette `takedown` ou `privacy`.

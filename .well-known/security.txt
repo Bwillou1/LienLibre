@@ -1,0 +1,6 @@
+Contact: https://github.com/Bwillou1/LienLibre/security/advisories/new
+Expires: 2027-09-13T00:00:00.000Z
+Preferred-Languages: fr, en
+Canonical: https://bwillou1.github.io/LienLibre/.well-known/security.txt
+Policy: https://bwillou1.github.io/LienLibre/POLICIES.md
+Acknowledgments: https://github.com/Bwillou1/LienLibre/security/advisories
