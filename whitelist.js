@@ -1944,6 +1944,7 @@ export const MEDIA_NAMES = {
   "weyburnreview.com": "Weyburn Review",
   "weyburnthisweek.com": "Weyburn This Week",
   "whitecourtpress.com": "Whitecourt Press",
+  "williamguindon.me" : "William Guindon",
   "whitecourtstar.com": "Whitecourt Star",
   "whitehorsestar.com": "Whitehorse Daily Star",
   "whiterocksun.com": "White Rock Sun",
@@ -1966,4 +1967,5 @@ export const MEDIA_NAMES = {
   "yourlocaljournal.ca": "Your Local Journal",
   "yukon-news.com": "Yukon News",
   "yukoner.com": "Yukoner Magazine"
+
 };
