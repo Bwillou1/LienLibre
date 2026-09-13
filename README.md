@@ -29,6 +29,9 @@ Le projet permet d'étudier l'extraction de métadonnées visuelles et de prése
 
 - **Extraction Open Graph & Schema.org** : Rendu fidèle des miniatures et résumés pour les réseaux sociaux et moteurs de recherche.
 - **Redirection transparente et instantanée** vers les sources vérifiées.
+- **Bouton « 📲 Partage Natif » (Web Share API)** : Partagez directement via les applications natives de votre téléphone ou ordinateur en 1 clic.
+- **Générateur de Code QR Instantané** : Moteur QR autonome côté client pour scanner des liens depuis un mobile ou imprimer des tracts citoyens (téléchargement PNG haute résolution et copie d'image).
+- **Extension pour navigateurs Chromium (Manifest V3)** : Disponible empaquetée (`extension/lienlibre-extension.zip`) pour générer des liens en 1 clic depuis n'importe quel onglet.
 - **Application Web Progressive (PWA)** installable sur mobile et ordinateur avec support hors ligne via Service Worker.
 - **Protection Anti-Hameçonnage & Bouclier DNS** : Double validation par DNS-over-HTTPS (NextDNS) et règles heuristiques.
 - **Accessibilité Universelle** : Intégration complète du widget d'accessibilité Sienna (dyslexie, contraste élevé, zoom de texte).

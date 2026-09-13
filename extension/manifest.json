@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "LienLibre — Passerelle Presse & Actualités",
+  "version": "1.0.0",
+  "description": "Générez instantanément des liens passerelles d'accès à l'information sans pistage, avec prévisualisation, partage natif et code QR en 1 clic.",
+  "permissions": [
+    "activeTab",
+    "clipboardWrite"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "LienLibre — Partager cet article",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

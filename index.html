@@ -321,6 +321,7 @@
       overflow: hidden;
     }
   </style>
+  <script src="./js/qr.js"></script>
 </head>
 <body class="text-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-cyan-500 selection:text-white overflow-x-hidden">
 
@@ -351,6 +352,17 @@
       <!-- Right Action Toolbar -->
       <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         
+        <!-- Chrome Extension Button -->
+        <button 
+          type="button" 
+          id="btn-open-extension" 
+          class="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 hover:from-indigo-500/20 hover:to-pink-500/20 dark:from-indigo-500/15 dark:via-purple-500/15 dark:to-pink-500/15 dark:hover:from-indigo-500/25 dark:hover:to-pink-500/25 text-indigo-700 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200 border border-indigo-500/30 hover:border-indigo-400/50 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-xs group cursor-pointer"
+          title="Installer l'Extension Chrome LienLibre (1-clic)"
+        >
+          <span class="text-sm group-hover:scale-110 transition-transform">🧩</span>
+          <span data-i18n="navExtension">Extension</span>
+        </button>
+
         <!-- Mirror 1-Click Button -->
         <button 
           type="button" 
@@ -446,6 +458,9 @@
     <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md px-4 py-3 space-y-2.5 text-xs font-medium">
       <a href="#how-it-works" class="block py-1.5 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400" data-i18n="navHowItWorks">Fonctionnement</a>
       <a href="#share-project-section" class="block py-1.5 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400" data-i18n="navShare">Partager LienLibre</a>
+      <button type="button" id="btn-mobile-extension" class="w-full text-left py-1.5 text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1.5">
+        <span>🧩</span> <span data-i18n="navExtensionMobile">Extension Chrome (1-clic)</span>
+      </button>
       <button type="button" id="btn-mobile-mirror" class="w-full text-left py-1.5 text-cyan-600 dark:text-cyan-400 font-semibold flex items-center gap-1.5">
         <span>🪞</span> <span data-i18n="navMirror">Créer un miroir (Fork 1-clic)</span>
       </button>
@@ -557,18 +572,80 @@
             <div class="grow bg-slate-50 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs sm:text-sm text-cyan-700 dark:text-cyan-300 font-mono select-all break-all flex items-center justify-between shadow-inner">
               <span id="output-url"></span>
             </div>
-            <button 
-              id="copy-btn"
-              class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-medium px-5 py-3 rounded-xl text-xs sm:text-sm transition-all active:scale-95 shrink-0 flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700/80 cursor-pointer shadow-xs"
-            >
-              <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-600 dark:text-slate-300">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
-              </svg>
-              <svg id="copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 hidden">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-              </svg>
-              <span id="copy-btn-text" data-i18n="copyBtn">Copier le lien</span>
-            </button>
+            <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
+              <button 
+                id="copy-btn"
+                class="grow sm:grow-0 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-medium px-4 py-3 rounded-xl text-xs sm:text-sm transition-all active:scale-95 shrink-0 flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-700/80 cursor-pointer shadow-xs"
+              >
+                <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-600 dark:text-slate-300">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
+                </svg>
+                <svg id="copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-emerald-500 dark:text-emerald-400 hidden">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+                <span id="copy-btn-text" data-i18n="copyBtn">Copier le lien</span>
+              </button>
+
+              <!-- Bouton Partage Natif (Web Share API) -->
+              <button 
+                type="button" 
+                id="btn-native-share" 
+                class="grow sm:grow-0 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-medium px-4 py-3 rounded-xl text-xs sm:text-sm transition-all active:scale-95 shrink-0 flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+                title="Partager via le menu natif de votre appareil"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                </svg>
+                <span id="share-btn-text" data-i18n="nativeShareBtn">Partager</span>
+              </button>
+
+              <!-- Bouton Générateur de Code QR Instantané -->
+              <button 
+                type="button" 
+                id="btn-toggle-qr" 
+                class="grow sm:grow-0 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-medium px-4 py-3 rounded-xl text-xs sm:text-sm transition-all active:scale-95 shrink-0 flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-700/80 cursor-pointer shadow-xs"
+                title="Afficher le Code QR instantané"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-cyan-600 dark:text-cyan-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h3.75v3.75H13.5v-3.75ZM13.5 19.5h3.75v.75H13.5v-.75ZM19.5 13.5h.75v3.75h-.75v-3.75ZM19.5 19.5h.75v.75h-.75v-.75Z" />
+                </svg>
+                <span id="qr-btn-text" data-i18n="qrCodeBtn">Code QR</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Interactive QR Code Panel -->
+          <div id="qr-panel" class="hidden p-4 sm:p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-md space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">📱</span>
+                <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white" data-i18n="qrPanelTitle">Code QR instantané pour partage physique ou mobile</h4>
+              </div>
+              <button type="button" id="btn-close-qr" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer le QR Code">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center gap-5 justify-center sm:justify-start">
+              <div id="qr-canvas-container" class="bg-white p-3 rounded-xl border border-slate-200 shadow-xs flex items-center justify-center shrink-0">
+                <canvas id="qr-code-canvas" class="w-40 h-40 sm:w-44 sm:h-44 block"></canvas>
+              </div>
+              <div class="space-y-3 text-center sm:text-left grow">
+                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="qrPanelDesc">
+                  Scannez ce code avec l'appareil photo d'un téléphone ou téléchargez l'image PNG pour l'imprimer, l'intégrer à un tract citoyen ou le partager sur une messagerie.
+                </p>
+                <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
+                  <button type="button" id="btn-download-qr" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer">
+                    <svg class="w-4 h-4 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span data-i18n="qrDownloadBtn">Télécharger l'image (PNG)</span>
+                  </button>
+                  <button type="button" id="btn-copy-qr-image" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer">
+                    <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+                    <span id="qr-copy-image-text" data-i18n="qrCopyImageBtn">Copier l'image QR</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1422,6 +1499,97 @@
     </div>
   </div>
 
+  <!-- Modal Extension Chrome / Chromium -->
+  <div id="extension-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
+    <!-- Backdrop -->
+    <div id="extension-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Modal Content Window -->
+    <div class="relative w-full max-w-xl max-h-[90vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">🧩</span>
+          <h3 data-i18n="extensionModalTitle" class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+            Extension Chrome & Chromium — LienLibre
+          </h3>
+        </div>
+        <button type="button" id="btn-close-extension-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer la boîte de dialogue">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="px-6 py-5 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed custom-scrollbar">
+        
+        <p data-i18n="extensionModalDesc" class="text-slate-700 dark:text-slate-300">
+          Installez l'extension LienLibre sur votre navigateur Chromium (Chrome, Brave, Edge, Arc, Opera) pour générer vos liens passerelles, copier, partager ou afficher un Code QR en 1 clic sans quitter votre lecture.
+        </p>
+
+        <!-- Download Action Card -->
+        <div class="p-4 rounded-2xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10 border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="space-y-0.5 text-center sm:text-left">
+            <h4 class="font-bold text-indigo-900 dark:text-indigo-200">Archive Prête à l'Emploi (.zip)</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Contient le Manifest V3, les icônes haute résolution et le moteur QR autonome.</p>
+          </div>
+          <a href="./extension/lienlibre-extension.zip" download="lienlibre-extension.zip" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-semibold text-xs shadow-sm flex items-center gap-1.5 shrink-0 transition-all cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span data-i18n="extensionModalDownloadBtn">Télécharger l'Extension (.zip)</span>
+          </a>
+        </div>
+
+        <!-- Installation Steps -->
+        <div class="space-y-3 pt-2">
+          <h4 class="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider text-slate-400">
+            Installation en 3 étapes simples :
+          </h4>
+
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-1">
+            <h5 class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>1️⃣</span>
+              <span data-i18n="extensionModalStep1">1. Téléchargez et décompressez le fichier ZIP</span>
+            </h5>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              Extrayez l'archive dans un dossier sur votre ordinateur (ex: Dossier Téléchargements ou Documents).
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-1">
+            <h5 class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>2️⃣</span>
+              <span data-i18n="extensionModalStep2">2. Ouvrez chrome://extensions/ et activez le 'Mode Développeur'</span>
+            </h5>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              Dans la barre d'adresse de votre navigateur, tapez <code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded font-mono text-[11px]">chrome://extensions/</code> (ou <code class="bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded font-mono text-[11px]">edge://extensions/</code>) et basculez l'interrupteur en haut à droite.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-1">
+            <h5 class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>3️⃣</span>
+              <span data-i18n="extensionModalStep3">3. Cliquez sur 'Charger l'extension non empaquetée'</span>
+            </h5>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              Sélectionnez le dossier extrait de l'extension. L'icône LienLibre apparaît instantanément dans votre barre de navigation !
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-end shrink-0">
+        <button type="button" id="btn-close-extension-modal-bottom" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer" data-i18n="botModalClose">
+          Compris & Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Client-side Logic -->
   <script>
     // Worker Endpoint - Support de décentralisation pour forks et miroirs
@@ -1533,7 +1701,22 @@
         legalCheckboxLink: "Conditions d'Utilisation et la Décharge Juridique",
         errorMustAgreeLegal: "Veuillez certifier la source et accepter les Conditions d'Utilisation.",
         sourceBlockedAlert: "Lien bloqué : ce domaine ou type de lien est restreint par mesure de sécurité.",
-        footerText: "Distribué sous licence MIT. Outil technique éphémère sans journalisation de données personnelles."
+        footerText: "Distribué sous licence MIT. Outil technique éphémère sans journalisation de données personnelles.",
+        nativeShareBtn: "Partager",
+        qrCodeBtn: "Code QR",
+        qrPanelTitle: "Code QR instantané pour partage physique ou mobile",
+        qrPanelDesc: "Scannez ce code avec l'appareil photo d'un téléphone ou téléchargez l'image PNG pour l'imprimer, l'intégrer à un tract citoyen ou le partager sur une messagerie.",
+        qrDownloadBtn: "Télécharger l'image (PNG)",
+        qrCopyImageBtn: "Copier l'image QR",
+        qrImageCopied: "Image QR copiée !",
+        navExtension: "Extension",
+        navExtensionMobile: "Extension Chrome (1-clic)",
+        extensionModalTitle: "Extension Chrome & Chromium — LienLibre",
+        extensionModalDesc: "Installez l'extension LienLibre sur votre navigateur Chromium (Chrome, Brave, Edge, Arc, Opera) pour générer vos liens passerelles, copier, partager ou afficher un Code QR en 1 clic sans quitter votre lecture.",
+        extensionModalDownloadBtn: "Télécharger l'Extension (.zip)",
+        extensionModalStep1: "1. Téléchargez et décompressez le fichier ZIP",
+        extensionModalStep2: "2. Ouvrez chrome://extensions/ et activez le 'Mode Développeur'",
+        extensionModalStep3: "3. Cliquez sur 'Charger l'extension non empaquetée' et sélectionnez le dossier"
       },
       en: {
         navHowItWorks: "How it works",
@@ -1613,7 +1796,22 @@
         legalCheckboxLink: "Terms of Service & Legal Disclaimer",
         errorMustAgreeLegal: "Please certify the source and accept the Terms of Service to proceed.",
         sourceBlockedAlert: "Link blocked: this domain or link format is restricted for security reasons.",
-        footerText: "Distributed under the MIT License. Ephemeral technical conduit with zero personal data logging."
+        footerText: "Distributed under the MIT License. Ephemeral technical conduit with zero personal data logging.",
+        nativeShareBtn: "Share",
+        qrCodeBtn: "QR Code",
+        qrPanelTitle: "Instant QR Code for physical or mobile sharing",
+        qrPanelDesc: "Scan this code with a phone camera or download the PNG image to print, include in flyers, or share via messaging apps.",
+        qrDownloadBtn: "Download Image (PNG)",
+        qrCopyImageBtn: "Copy QR Image",
+        qrImageCopied: "QR Image Copied!",
+        navExtension: "Extension",
+        navExtensionMobile: "Chrome Extension (1-click)",
+        extensionModalTitle: "Chrome & Chromium Extension — LienLibre",
+        extensionModalDesc: "Install the LienLibre extension on your Chromium browser (Chrome, Brave, Edge, Arc, Opera) to generate links, copy, share, or display a QR Code in 1 click without leaving your article.",
+        extensionModalDownloadBtn: "Download Extension (.zip)",
+        extensionModalStep1: "1. Download and unzip the ZIP package",
+        extensionModalStep2: "2. Open chrome://extensions/ and enable 'Developer mode'",
+        extensionModalStep3: "3. Click 'Load unpacked' and select the unzipped folder"
       },
       ar: {
         navHowItWorks: "كيفية العمل",
@@ -1693,7 +1891,22 @@
         legalCheckboxLink: "شروط الاستخدام وإخلاء المسؤولية القانونية",
         errorMustAgreeLegal: "يرجى الموافقة على الشروط القانونية وتوثيق المصدر للمتابعة.",
         sourceBlockedAlert: "تم حظر الرابط: هذا النطاق أو نوع الرابط مقيد لأسباب أمنية.",
-        footerText: "مرخص بموجب MIT. أداة تقنية بدون تسجيل أي بيانات شخصية."
+        footerText: "مرخص بموجب MIT. أداة تقنية بدون تسجيل أي بيانات شخصية.",
+        nativeShareBtn: "مشاركة",
+        qrCodeBtn: "رمز QR",
+        qrPanelTitle: "رمز QR فوري للمشاركة عبر الهاتف أو الطباعة",
+        qrPanelDesc: "امسح هذا الرمز بكاميرا هاتفك أو حمّل صورة PNG لطباعتها أو مشاركتها عبر تطبيقات المراسلة.",
+        qrDownloadBtn: "تحميل الصورة (PNG)",
+        qrCopyImageBtn: "نسخ صورة QR",
+        qrImageCopied: "تم نسخ الصورة!",
+        navExtension: "الإضافة",
+        navExtensionMobile: "إضافة Chrome (بنقرة واحدة)",
+        extensionModalTitle: "إضافة Chrome لـ LienLibre",
+        extensionModalDesc: "ثبت إضافة LienLibre على متصفحك لإنشاء روابط آمنة، مشاركتها أو توليد رمز QR بنقرة واحدة.",
+        extensionModalDownloadBtn: "تحميل الإضافة (.zip)",
+        extensionModalStep1: "1. حمّل وفك ضغط الملف المضغوط",
+        extensionModalStep2: "2. افتح chrome://extensions/ وفعّل 'وضع المطور'",
+        extensionModalStep3: "3. انقر على 'تحميل إضافة غير مضغوطة' واختر المجلد"
       },
       es: {
         navHowItWorks: "Funcionamiento",
@@ -1717,7 +1930,7 @@
         formatShort: "⚡ Enlace corto (Investigación)",
         formatMirror: "📰 Enlace espejo (Fiel)",
         trackingCleaned: "🧹 Rastreo eliminado",
-        copyBtn: "Copiar enlace",
+        copyBtn: "Copier enlace",
         copiedText: "¡Copiado!",
         unverifiedTitle: "Medio local o dominio no listado",
         unverifiedDesc: "El Mini-Bot evalúa la fiabilidad de esta fuente en tiempo real y sin costes. Puede auto-certificar el enlace para habilitar la redirección inmediata.",
@@ -1773,7 +1986,22 @@
         legalCheckboxLink: "Condiciones de Uso y Descargo Legal",
         errorMustAgreeLegal: "Por favor, marque la casilla de aceptación legal para continuar.",
         sourceBlockedAlert: "Enlace bloqueado: este dominio o tipo de enlace está restringido por seguridad.",
-        footerText: "Distribuido bajo licencia MIT. Pasarela técnica efímera sin registro de datos personales."
+        footerText: "Distribuido bajo licencia MIT. Pasarela técnica efímera sin registro de datos personales.",
+        nativeShareBtn: "Compartir",
+        qrCodeBtn: "Código QR",
+        qrPanelTitle: "Código QR instantáneo para compartir móvil o físico",
+        qrPanelDesc: "Escanee este código con la cámara de un teléfono o descargue la imagen PNG para imprimirla o compartirla por mensajería.",
+        qrDownloadBtn: "Descargar Imagen (PNG)",
+        qrCopyImageBtn: "Copiar Imagen QR",
+        qrImageCopied: "¡Imagen QR Copiada!",
+        navExtension: "Extensión",
+        navExtensionMobile: "Extensión Chrome (1-clic)",
+        extensionModalTitle: "Extensión Chrome & Chromium — LienLibre",
+        extensionModalDesc: "Instale la extensión LienLibre en su navegador para generar enlaces seguros, compartir o mostrar un código QR en 1 clic.",
+        extensionModalDownloadBtn: "Descargar Extensión (.zip)",
+        extensionModalStep1: "1. Descargue y descomprima el archivo ZIP",
+        extensionModalStep2: "2. Abra chrome://extensions/ y active el 'Modo Desarrollador'",
+        extensionModalStep3: "3. Haga clic en 'Cargar descomprimida' y seleccione la carpeta"
       },
       it: {
         navHowItWorks: "Funzionamento",
@@ -2401,6 +2629,37 @@
     if (btnCloseBotModalBottom) btnCloseBotModalBottom.addEventListener('click', closeBotModal);
     if (botModalBackdrop) botModalBackdrop.addEventListener('click', closeBotModal);
 
+    // Modal Extension Chrome logic
+    const extensionModal = document.getElementById('extension-modal');
+    const extensionModalBackdrop = document.getElementById('extension-modal-backdrop');
+    const btnOpenExtension = document.getElementById('btn-open-extension');
+    const btnMobileExtension = document.getElementById('btn-mobile-extension');
+    const btnCloseExtensionModal = document.getElementById('btn-close-extension-modal');
+    const btnCloseExtensionModalBottom = document.getElementById('btn-close-extension-modal-bottom');
+
+    function openExtensionModal() {
+      if (extensionModal) {
+        extensionModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+      }
+    }
+
+    function closeExtensionModal() {
+      if (extensionModal) {
+        extensionModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+      }
+    }
+
+    if (btnOpenExtension) btnOpenExtension.addEventListener('click', openExtensionModal);
+    if (btnMobileExtension) btnMobileExtension.addEventListener('click', () => {
+      openExtensionModal();
+      if (mobileMenu) mobileMenu.classList.add('hidden');
+    });
+    if (btnCloseExtensionModal) btnCloseExtensionModal.addEventListener('click', closeExtensionModal);
+    if (btnCloseExtensionModalBottom) btnCloseExtensionModalBottom.addEventListener('click', closeExtensionModal);
+    if (extensionModalBackdrop) extensionModalBackdrop.addEventListener('click', closeExtensionModal);
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (legalModal && !legalModal.classList.contains('hidden')) {
@@ -2411,6 +2670,9 @@
         }
         if (botModal && !botModal.classList.contains('hidden')) {
           closeBotModal();
+        }
+        if (extensionModal && !extensionModal.classList.contains('hidden')) {
+          closeExtensionModal();
         }
       }
     });
@@ -2580,6 +2842,31 @@
       mirror: ''
     };
 
+    // QR Code & Web Share UI Elements
+    const btnNativeShare = document.getElementById('btn-native-share');
+    const btnToggleQr = document.getElementById('btn-toggle-qr');
+    const qrPanel = document.getElementById('qr-panel');
+    const btnCloseQr = document.getElementById('btn-close-qr');
+    const qrCodeCanvas = document.getElementById('qr-code-canvas');
+    const btnDownloadQr = document.getElementById('btn-download-qr');
+    const btnCopyQrImage = document.getElementById('btn-copy-qr-image');
+    const qrCopyImageText = document.getElementById('qr-copy-image-text');
+
+    function renderLiveQr() {
+      const textToEncode = outputUrl.textContent;
+      if (!textToEncode || !qrCodeCanvas || typeof LienLibreQR === 'undefined') return;
+      try {
+        LienLibreQR.render(textToEncode, qrCodeCanvas, {
+          size: 200,
+          margin: 3,
+          colorDark: '#0f172a',
+          colorLight: '#ffffff'
+        });
+      } catch (err) {
+        console.warn("Erreur génération QR:", err);
+      }
+    }
+
     function updateFormatTabUI() {
       if (!btnFormatShort || !btnFormatMirror) return;
       if (activeFormat === 'short') {
@@ -2590,6 +2877,9 @@
         btnFormatMirror.className = 'px-2.5 py-1 text-xs rounded-md bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-medium transition-all shadow-sm';
         btnFormatShort.className = 'px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all';
         if (currentGeneratedLinks.mirror) outputUrl.textContent = currentGeneratedLinks.mirror;
+      }
+      if (qrPanel && !qrPanel.classList.contains('hidden')) {
+        renderLiveQr();
       }
     }
 
@@ -2761,7 +3051,7 @@
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (trans[key]) {
-          if (['heroTitle', 'unverifiedDesc', 'whyDesc', 'howDesc', 'statsDesc', 'footerText', 'mirrorModalDesc', 'mirrorStep1Desc', 'mirrorStep2Desc', 'mirrorStep3Desc', 'botModalDesc', 'botModalFeat1Desc', 'botModalFeat2Desc', 'botModalFeat3Desc'].includes(key)) {
+          if (['heroTitle', 'unverifiedDesc', 'whyDesc', 'howDesc', 'statsDesc', 'footerText', 'mirrorModalDesc', 'mirrorStep1Desc', 'mirrorStep2Desc', 'mirrorStep3Desc', 'botModalDesc', 'botModalFeat1Desc', 'botModalFeat2Desc', 'botModalFeat3Desc', 'extensionModalDesc'].includes(key)) {
             el.innerHTML = trans[key];
           } else {
             el.textContent = trans[key];
@@ -3074,6 +3364,87 @@
         showError(currentLang === 'fr' ? "Impossible de copier automatiquement." : "Could not copy automatically.");
       });
     });
+
+    // Native Web Share API Handler
+    if (btnNativeShare) {
+      btnNativeShare.addEventListener('click', () => {
+        const textToShare = outputUrl.textContent;
+        if (!textToShare) return;
+
+        const currentLang = langSelect.value;
+        const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+        const pageTitle = (previewTitle && previewTitle.textContent) || 'LienLibre - Passerelle Presse';
+
+        if (navigator.share) {
+          navigator.share({
+            title: pageTitle,
+            text: currentLang === 'fr' ? 'Lien d\'accès à l\'actualité via LienLibre :' : 'News access link via LienLibre:',
+            url: textToShare
+          }).catch(err => {
+            if (err.name !== 'AbortError') {
+              console.warn('Erreur partage natif :', err);
+            }
+          });
+        } else {
+          navigator.clipboard.writeText(textToShare).then(() => {
+            showError(currentLang === 'fr' ? "Partage natif non supporté sur ce navigateur — Lien copié dans votre presse-papier !" : "Native share not supported on this browser — Link copied to clipboard!");
+          });
+        }
+      });
+    }
+
+    // Interactive QR Code Handlers
+    if (btnToggleQr && qrPanel) {
+      btnToggleQr.addEventListener('click', () => {
+        qrPanel.classList.toggle('hidden');
+        if (!qrPanel.classList.contains('hidden')) {
+          renderLiveQr();
+          setTimeout(() => {
+            qrPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
+        }
+      });
+    }
+
+    if (btnCloseQr && qrPanel) {
+      btnCloseQr.addEventListener('click', () => {
+        qrPanel.classList.add('hidden');
+      });
+    }
+
+    if (btnDownloadQr && qrCodeCanvas) {
+      btnDownloadQr.addEventListener('click', () => {
+        const imgData = qrCodeCanvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = imgData;
+        a.download = 'lienlibre-qrcode.png';
+        a.click();
+      });
+    }
+
+    if (btnCopyQrImage && qrCodeCanvas) {
+      btnCopyQrImage.addEventListener('click', () => {
+        const currentLang = langSelect.value;
+        const trans = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+        qrCodeCanvas.toBlob((blob) => {
+          if (!blob) return;
+          if (navigator.clipboard && navigator.clipboard.write && typeof ClipboardItem !== 'undefined') {
+            navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': blob })
+            ]).then(() => {
+              if (qrCopyImageText) qrCopyImageText.textContent = trans.qrImageCopied || 'Image QR copiée !';
+              setTimeout(() => {
+                if (qrCopyImageText) qrCopyImageText.textContent = trans.qrCopyImageBtn || "Copier l'image QR";
+              }, 2000);
+            }).catch(() => {
+              showError(currentLang === 'fr' ? "Impossible de copier l'image directement (téléchargement PNG disponible)." : "Could not copy image directly (PNG download available).");
+            });
+          } else {
+            showError(currentLang === 'fr' ? "Copie d'image non prise en charge sur ce navigateur (utilisez Télécharger PNG)." : "Direct image copy not supported on this browser (use Download PNG).");
+          }
+        });
+      });
+    }
 
     function showError(text) {
       errorText.textContent = text;

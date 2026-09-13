@@ -1,11 +1,12 @@
-// LienLibre Service Worker (PWA) - Version 4 (Force Refresh & Purge)
-const CACHE_NAME = 'lienlibre-pwa-v4';
+// LienLibre Service Worker (PWA) - Version 5 (QR Code & Chrome Extension)
+const CACHE_NAME = 'lienlibre-pwa-v5';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon.svg',
-  './favicon.svg'
+  './favicon.svg',
+  './js/qr.js'
 ];
 
 self.addEventListener('install', (event) => {
