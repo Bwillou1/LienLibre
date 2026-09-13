@@ -2792,6 +2792,7 @@
 
       const encodedUrl = encodeURIComponent(rawUrl);
       const cleanPath = rawUrl.replace(/^https?:\/\/(?:www\.)?/i, '');
+      const langParam = currentLang !== 'fr' ? `?lang=${currentLang}` : '';
       const defaultDirectLink = `${WORKER_URL}/?url=${encodedUrl}${currentLang !== 'fr' ? '&lang=' + currentLang : ''}`;
       const defaultMirrorLink = `${WORKER_URL}/${cleanPath}${langParam}`;
 

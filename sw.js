@@ -1,5 +1,5 @@
-// LienLibre Service Worker (PWA) - Version 3 (Force Refresh & Purge)
-const CACHE_NAME = 'lienlibre-pwa-v3';
+// LienLibre Service Worker (PWA) - Version 4 (Force Refresh & Purge)
+const CACHE_NAME = 'lienlibre-pwa-v4';
 const STATIC_ASSETS = [
   './',
   './index.html',
