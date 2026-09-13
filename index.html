@@ -2168,19 +2168,17 @@
       }
     };
 
-    // Client fallback instant redirection si paramètre ?url= présent
+    // Client fallback redirection sécurisée
     const urlParams = new URLSearchParams(window.location.search);
-    const target = urlParams.get('url');
-    if (target) {
+    const targetParam = urlParams.get('url');
+    if (targetParam) {
       try {
-        const decoded = decodeURIComponent(target);
-        const parsed = new URL(decoded);
-        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-          window.location.replace(decoded);
+        const parsedUrl = new URL(targetParam);
+        // Validation stricte du protocole contre XSS (javascript:, data:)
+        if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+          window.location.replace(parsedUrl.href);
         }
-      } catch (e) {
-        console.error("URL de redirection invalide");
-      }
+      } catch (_) {}
     }
 
     // Modal Legal logic
@@ -3029,15 +3027,30 @@
         const pct = Math.max(4, Math.round((count / (verifiedTotal || 1)) * 100));
         const item = document.createElement('div');
         item.className = 'space-y-1.5 bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80';
-        item.innerHTML = `
-          <div class="flex justify-between text-xs ${currentLang === 'ar' ? 'flex-row-reverse' : ''}">
-            <span class="font-medium text-slate-200 font-mono">${domain}</span>
-            <span class="text-slate-400 font-mono text-[11px]">${count.toLocaleString(currentLang)} ${clicksSuffix}</span>
-          </div>
-          <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-gradient-to-r from-cyan-400 to-indigo-500 h-full rounded-full" style="width: ${pct}%"></div>
-          </div>
-        `;
+        
+        const row = document.createElement('div');
+        row.className = `flex justify-between text-xs ${currentLang === 'ar' ? 'flex-row-reverse' : ''}`;
+        
+        const dSpan = document.createElement('span');
+        dSpan.className = 'font-medium text-slate-200 font-mono';
+        dSpan.textContent = domain;
+        
+        const cSpan = document.createElement('span');
+        cSpan.className = 'text-slate-400 font-mono text-[11px]';
+        cSpan.textContent = `${count.toLocaleString(currentLang)} ${clicksSuffix}`;
+        
+        row.appendChild(dSpan);
+        row.appendChild(cSpan);
+        
+        const barOuter = document.createElement('div');
+        barOuter.className = 'w-full bg-slate-900 border border-slate-800 rounded-full h-1.5 overflow-hidden';
+        const barInner = document.createElement('div');
+        barInner.className = 'bg-gradient-to-r from-cyan-400 to-indigo-500 h-full rounded-full';
+        barInner.style.width = `${pct}%`;
+        barOuter.appendChild(barInner);
+        
+        item.appendChild(row);
+        item.appendChild(barOuter);
         topDomainsList.appendChild(item);
       });
       

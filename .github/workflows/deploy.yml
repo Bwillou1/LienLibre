@@ -12,6 +12,9 @@ on:
       - 'sw.js'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy-worker:
     name: 🚀 Deploy Cloudflare Worker & Whitelist
