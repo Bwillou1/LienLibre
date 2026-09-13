@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'whitelist.js'
-      - 'worker.js'
-      - 'wrangler.toml'
-      - 'index.html'
-      - 'sw.js'
   workflow_dispatch:
 
 permissions:
