@@ -889,8 +889,8 @@ export default {
       }
     }
 
-    // Uniquement accepter les requêtes GET pour le reste
-    if (request.method !== "GET") {
+    // Accepter les requêtes GET et HEAD pour le reste
+    if (request.method !== "GET" && request.method !== "HEAD") {
       return new Response("Méthode non autorisée", { 
         status: 405, 
         headers: { ...CORS_HEADERS, "Content-Type": "text/plain; charset=utf-8" } 
