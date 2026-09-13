@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LienLibre Lite — Mode Grand Nord & Zones Rurales</title>
+  <meta name="description" content="Version ultra-légère (<10 Ko) de LienLibre pour connexions 2G/3G, satellite ou bas débit dans les régions éloignées et le Grand Nord canadien.">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111827;
+      --accent: #0284c7;
+      --border: #d1d5db;
+      --box: #f3f4f6;
+      --success: #15803d;
+      --alert: #b91c1c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --text: #f8fafc;
+        --accent: #38bdf8;
+        --border: #334155;
+        --box: #1e293b;
+        --success: #4ade80;
+        --alert: #f87171;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 12px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+    }
+    h1 { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
+    .badge { font-size: 0.75rem; background: var(--box); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; }
+    .switch-link { font-size: 0.8rem; color: var(--accent); text-decoration: underline; }
+    .card {
+      background: var(--box);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    label { font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px; }
+    input[type="url"], input[type="text"] {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .btn-group { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    button, .btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    button.sec, .btn.sec {
+      background: var(--box);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .result-box {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px dashed var(--accent);
+      border-radius: 6px;
+      background: var(--bg);
+      font-family: monospace;
+      font-size: 0.85rem;
+      word-break: break-all;
+    }
+    .share-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .share-link {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--box);
+    }
+    .alert-item {
+      border-left: 3px solid var(--alert);
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      background: var(--bg);
+      border-radius: 0 6px 6px 0;
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .alert-title { font-size: 0.85rem; font-weight: 700; color: var(--alert); }
+    .alert-desc { font-size: 0.8rem; margin: 4px 0; }
+    .alert-actions { display: flex; gap: 6px; font-size: 0.75rem; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>⚡ LienLibre Lite</h1>
+      <span class="badge">Mode Grand Nord & Bas Débit (&lt;10 Ko)</span>
+    </div>
+    <a href="./index.html" class="switch-link">Mode Complet ↗</a>
+  </header>
+
+  <!-- Générateur Rapide -->
+  <main class="card">
+    <form id="lite-form">
+      <label for="url-in">URL de l'article de presse ou d'alerte :</label>
+      <input type="url" id="url-in" placeholder="https://www.lapresse.ca/..." required autofocus>
+      
+      <div class="btn-group">
+        <button type="submit" id="btn-submit">⚡ Générer le Lien</button>
+        <button type="button" class="sec" id="btn-paste">Coller</button>
+      </div>
+    </form>
+
+    <div id="lite-result" class="hidden" style="margin-top: 12px;">
+      <label>Lien passerelle prêt :</label>
+      <div id="lite-output" class="result-box"></div>
+      
+      <div class="btn-group" style="margin-top: 8px;">
+        <button type="button" id="btn-copy">📋 Copier le lien</button>
+        <button type="button" class="sec" id="btn-share">📲 Partager (Menu Natif)</button>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <label style="font-size: 0.75rem;">Partage 1-clic direct :</label>
+        <div class="share-row">
+          <a id="sh-sms" class="share-link" href="#">📱 SMS</a>
+          <a id="sh-wa" class="share-link" target="_blank" href="#">💬 WhatsApp</a>
+          <a id="sh-tg" class="share-link" target="_blank" href="#">✈️ Telegram</a>
+          <a id="sh-sig" class="share-link" href="#">🔒 Signal</a>
+          <a id="sh-fb" class="share-link" target="_blank" href="#">📘 Facebook</a>
+          <a id="sh-bsky" class="share-link" target="_blank" href="#">🦋 Bluesky</a>
+          <a id="sh-tw" class="share-link" target="_blank" href="#">✖️ X</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Hub des Alertes d'Urgence Civile -->
+  <section class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <h2 style="font-size: 1rem; font-weight: 700;">🚨 Alertes de Sécurité Civile & Météo</h2>
+      <button type="button" class="sec" style="padding: 2px 8px; font-size: 0.75rem;" id="btn-refresh-alerts">Rafraîchir</button>
+    </div>
+    <div id="alerts-list">
+      <div class="alert-item">
+        <div class="alert-title">🌪️ Environnement Canada — Avis Météo Extrême</div>
+        <div class="alert-desc">Avertissements de tempête, froid extrême et vents violents sur le Québec et le Grand Nord.</div>
+        <div class="alert-actions">
+          <a href="#" class="switch-link load-alert-btn" data-url="https://meteo.gc.ca/">🔗 Charger dans LienLibre</a>
+        </div>
+      </div>
+      <div class="alert-item" style="border-left-color: #d97706;">
+        <div class="alert-title" style="color: #d97706;">🔥 SOPFEU — Indices Feux de Forêt</div>
+        <div class="alert-desc">État d'alerte incendie et interdictions de faire des feux à ciel ouvert dans les zones boisées.</div>
+        <div class="alert-actions">
+          <a href="#" class="switch-link load-alert-btn" data-url="https://sopfeu.qc.ca/">🔗 Charger dans LienLibre</a>
+        </div>
+      </div>
+      <div class="alert-item" style="border-left-color: #0284c7;">
+        <div class="alert-title" style="color: #0284c7;">🏥 Santé Canada / MAPAQ — Rappels d'Urgence</div>
+        <div class="alert-desc">Avis de sécurité sanitaire, alertes de santé publique et rappels d'aliments au Canada.</div>
+        <div class="alert-actions">
+          <a href="#" class="switch-link load-alert-btn" data-url="https://recalls-rappels.canada.ca/fr">🔗 Charger dans LienLibre</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pied de page Fédéré -->
+  <footer>
+    <div id="node-badge">🌐 Nœud Réseau : Détection...</div>
+    <div>Art. 29 LDA • Zero-Log • 100% Libre</div>
+  </footer>
+
+  <script>
+    const WORKER_URL = 'https://acces-presse.williamguindon.workers.dev';
+    const form = document.getElementById('lite-form');
+    const urlIn = document.getElementById('url-in');
+    const resultBox = document.getElementById('lite-result');
+    const output = document.getElementById('lite-output');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnShare = document.getElementById('btn-share');
+    const btnPaste = document.getElementById('btn-paste');
+    const nodeBadge = document.getElementById('node-badge');
+
+    // Détection du nœud fédéré
+    const host = window.location.hostname;
+    nodeBadge.textContent = '🌐 Nœud Réseau : ' + (host.endsWith('.github.io') ? host.split('.')[0] + '/LienLibre' : host || 'Local');
+
+    // Paste helper
+    if (btnPaste) {
+      btnPaste.addEventListener('click', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            urlIn.value = text.trim();
+            urlIn.focus();
+          }
+        } catch {
+          urlIn.focus();
+        }
+      });
+    }
+
+    // Clean tracking
+    function cleanUrl(u) {
+      try {
+        const p = new URL(u);
+        const keys = Array.from(p.searchParams.keys());
+        keys.forEach(k => {
+          if (k.startsWith('utm_') || ['fbclid','gclid','igshid','ref','source'].includes(k.toLowerCase())) {
+            p.searchParams.delete(k);
+          }
+        });
+        return p.toString();
+      } catch {
+        return u;
+      }
+    }
+
+    // Update share links
+    function updateShareLinks(url) {
+      const msg = "Lien d'actualité partagé avec LienLibre Lite :";
+      document.getElementById('sh-sms').href = `sms:?&body=${encodeURIComponent(msg + ' ' + url)}`;
+      document.getElementById('sh-wa').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg + ' ' + url)}`;
+      document.getElementById('sh-tg').href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`;
+      document.getElementById('sh-sig').href = `sgnl://share?text=${encodeURIComponent(msg + ' ' + url)}`;
+      document.getElementById('sh-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+      document.getElementById('sh-bsky').href = `https://bsky.app/intent/compose?text=${encodeURIComponent(msg + ' ' + url)}`;
+      document.getElementById('sh-tw').href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const raw = urlIn.value.trim();
+      if (!raw) return;
+      const cleaned = cleanUrl(raw);
+      const generated = `${WORKER_URL}/?url=${encodeURIComponent(cleaned)}`;
+      
+      output.textContent = generated;
+      updateShareLinks(generated);
+      resultBox.classList.remove('hidden');
+    });
+
+    btnCopy.addEventListener('click', () => {
+      const text = output.textContent;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        btnCopy.textContent = '✅ Copié !';
+        setTimeout(() => { btnCopy.textContent = '📋 Copier le lien'; }, 2000);
+      });
+    });
+
+    btnShare.addEventListener('click', () => {
+      const text = output.textContent;
+      if (!text) return;
+      if (navigator.share) {
+        navigator.share({ title: 'LienLibre Lite', text: 'Lien d\'accès presse :', url: text }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text);
+        btnCopy.textContent = '✅ Copié (fallback) !';
+        setTimeout(() => { btnCopy.textContent = '📋 Copier le lien'; }, 2000);
+      }
+    });
+
+    // Alert buttons
+    document.querySelectorAll('.load-alert-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const alertUrl = btn.getAttribute('data-url');
+        if (alertUrl) {
+          urlIn.value = alertUrl;
+          form.dispatchEvent(new Event('submit'));
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,8 +1,9 @@
-// LienLibre Service Worker (PWA) - Version 5 (QR Code & Chrome Extension)
-const CACHE_NAME = 'lienlibre-pwa-v5';
+// LienLibre Service Worker (PWA) - Version 6 (Emergency Hub, Federation & Ultra-Lite Mode)
+const CACHE_NAME = 'lienlibre-pwa-v6';
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './lite.html',
   './manifest.json',
   './icon.svg',
   './favicon.svg',

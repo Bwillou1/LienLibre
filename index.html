@@ -345,6 +345,10 @@
       <!-- Center Nav (Desktop) -->
       <nav class="hidden lg:flex items-center gap-6 text-xs font-medium text-slate-600 dark:text-slate-300">
         <a href="#how-it-works" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navHowItWorks">Fonctionnement</a>
+        <a href="#alerts-section" class="hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1.5 font-semibold text-red-600/90 dark:text-red-400/90">
+          <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+          <span data-i18n="navAlerts">Alertes Urgence</span>
+        </a>
         <a href="#share-project-section" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navShare">Partager</a>
         <a href="#stats-section" id="nav-stats-link" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors hidden" data-i18n="navStats">Statistiques</a>
       </nav>
@@ -352,6 +356,28 @@
       <!-- Right Action Toolbar -->
       <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         
+        <!-- Mode Grand Nord (Ultra-Lite) Link -->
+        <a 
+          href="./lite.html" 
+          id="btn-nav-lite"
+          class="hidden sm:flex items-center gap-1.5 bg-amber-500/10 hover:bg-amber-500/20 dark:bg-amber-500/15 dark:hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200 border border-amber-500/30 hover:border-amber-400/50 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-xs group cursor-pointer"
+          title="Mode Grand Nord & Zones Rurales (<10 Ko, 0 latence)"
+        >
+          <span class="text-sm group-hover:scale-110 transition-transform">⚡</span>
+          <span data-i18n="navLite">Grand Nord</span>
+        </a>
+
+        <!-- Federated Node Badge / Modal Trigger -->
+        <button 
+          type="button" 
+          id="btn-open-federation" 
+          class="hidden sm:flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 dark:bg-emerald-500/15 dark:hover:bg-emerald-500/25 text-emerald-700 dark:text-emerald-300 hover:text-emerald-800 dark:hover:text-emerald-200 border border-emerald-500/30 hover:border-emerald-400/50 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-xs group cursor-pointer"
+          title="Statut du Réseau Fédéré & Annuaire des Miroirs"
+        >
+          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="nav-node-label" data-i18n="navFederation">Réseau Fédéré</span>
+        </button>
+
         <!-- Chrome Extension Button -->
         <button 
           type="button" 
@@ -457,6 +483,15 @@
     <!-- Mobile Dropdown Menu -->
     <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md px-4 py-3 space-y-2.5 text-xs font-medium">
       <a href="#how-it-works" class="block py-1.5 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400" data-i18n="navHowItWorks">Fonctionnement</a>
+      <a href="#alerts-section" class="block py-1.5 text-red-600 dark:text-red-400 font-semibold flex items-center gap-1.5" data-i18n="navAlertsMobile">
+        <span>🚨</span> <span>Alertes Sécurité Civile</span>
+      </a>
+      <a href="./lite.html" class="block py-1.5 text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1.5">
+        <span>⚡</span> <span data-i18n="navLiteMobile">Mode Grand Nord (&lt;10 Ko)</span>
+      </a>
+      <button type="button" id="btn-mobile-federation" class="w-full text-left py-1.5 text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
+        <span>🌐</span> <span data-i18n="navFederationMobile">Réseau Fédéré (Statut des Nœuds)</span>
+      </button>
       <a href="#share-project-section" class="block py-1.5 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400" data-i18n="navShare">Partager LienLibre</a>
       <button type="button" id="btn-mobile-extension" class="w-full text-left py-1.5 text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1.5">
         <span>🧩</span> <span data-i18n="navExtensionMobile">Extension Chrome (1-clic)</span>
@@ -647,6 +682,55 @@
               </div>
             </div>
           </div>
+
+          <!-- Direct 1-Click Social & Messaging Share Toolbar -->
+          <div class="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+            <div class="flex items-center justify-between">
+              <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🚀</span>
+                <span data-i18n="directShareTitle">Partage direct en 1 clic :</span>
+              </label>
+            </div>
+            
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <!-- WhatsApp -->
+              <a id="direct-share-whatsapp" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>💬</span> <span>WhatsApp</span>
+              </a>
+              <!-- Telegram -->
+              <a id="direct-share-telegram" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-sky-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>✈️</span> <span>Telegram</span>
+              </a>
+              <!-- Signal -->
+              <a id="direct-share-signal" href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>🔒</span> <span>Signal</span>
+              </a>
+              <!-- SMS -->
+              <a id="direct-share-sms" href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-200/80 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>📱</span> <span>SMS</span>
+              </a>
+              <!-- Bluesky -->
+              <a id="direct-share-bluesky" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>🦋</span> <span>Bluesky</span>
+              </a>
+              <!-- Reddit -->
+              <a id="direct-share-reddit" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-700 dark:text-orange-300 border border-orange-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>🤖</span> <span>Reddit</span>
+              </a>
+              <!-- Mastodon -->
+              <a id="direct-share-mastodon" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>🐘</span> <span>Mastodon</span>
+              </a>
+              <!-- Facebook -->
+              <a id="direct-share-facebook" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>📘</span> <span>Facebook</span>
+              </a>
+              <!-- X / Twitter -->
+              <a id="direct-share-x" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/10 hover:bg-slate-900/20 dark:bg-slate-100/10 dark:hover:bg-slate-100/20 text-slate-800 dark:text-slate-200 border border-slate-400/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
+                <span>✖️</span> <span>X</span>
+              </a>
+            </div>
+          </div>
         </div>
 
         <!-- Mini-Bot Sentinel & Auto-Certification Civic Panel -->
@@ -788,6 +872,152 @@
         <p data-i18n="howDesc" class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
           Le lien généré extrait dynamiquement les métadonnées Open Graph (titre, image originale). Les visiteurs réels sont redirigés instantanément vers le média légitime d'origine sans conservation d'adresse IP ni profilage commercial.
         </p>
+      </div>
+    <!-- Public Safety & Emergency Alerts Hub (Environnement Canada, SOPFEU, Santé Publique) -->
+    <section id="alerts-section" class="w-full mt-12 glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">
+            <span class="flex h-2.5 w-2.5 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+            </span>
+            <span data-i18n="alertsBadge">Flux Officiels d'Urgence & Sécurité Civile</span>
+          </div>
+          <h3 data-i18n="alertsTitle" class="font-display font-bold text-xl sm:text-2xl text-slate-900 dark:text-white">
+            Alertes d'Urgence Publique en Direct
+          </h3>
+          <p data-i18n="alertsDesc" class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
+            Accédez aux avis urgents d'Environnement Canada, de la SOPFEU et de la Santé Publique et convertissez-les en LienLibre partageable en 1 clic.
+          </p>
+        </div>
+        <button type="button" id="btn-refresh-rss-alerts" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer shrink-0">
+          <svg class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span data-i18n="alertsRefreshBtn">Actualiser</span>
+        </button>
+      </div>
+
+      <!-- Alert Filters -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs custom-scrollbar">
+        <button type="button" class="alert-filter-btn active px-3 py-1.5 rounded-lg bg-red-600 text-white font-semibold transition-all shadow-xs" data-filter="all">
+          🔥 Tout afficher
+        </button>
+        <button type="button" class="alert-filter-btn px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium transition-all" data-filter="meteo">
+          🌪️ Météo (Env. Canada)
+        </button>
+        <button type="button" class="alert-filter-btn px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium transition-all" data-filter="sopfeu">
+          🌲 Feux de Forêt (SOPFEU)
+        </button>
+        <button type="button" class="alert-filter-btn px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium transition-all" data-filter="sante">
+          🏥 Santé & Rappels
+        </button>
+      </div>
+
+      <!-- Emergency Alerts Dynamic List -->
+      <div id="emergency-alerts-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        <!-- Item 1: Environnement Canada -->
+        <div class="alert-card p-4 rounded-2xl bg-red-500/10 border border-red-500/25 flex flex-col justify-between space-y-3" data-category="meteo">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="px-2 py-0.5 rounded-full font-bold bg-red-500/20 text-red-700 dark:text-red-300 border border-red-500/30">
+                🔴 Alerte Météo
+              </span>
+              <span class="text-slate-500 dark:text-slate-400 font-mono">Environnement Canada</span>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
+              Avis de Tempête & Vents Violents — Québec & Maritimes
+            </h4>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Conditions hivernales difficiles, rafales violentes et visibilité réduite prévues sur plusieurs régions. Consultez les mises à jour officielles.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button type="button" class="btn-convert-alert grow px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer" data-url="https://meteo.gc.ca/warnings/index_f.html">
+              <span>⚡ Convertir en LienLibre</span>
+            </button>
+            <button type="button" class="btn-share-alert px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1 transition-all cursor-pointer" data-url="https://meteo.gc.ca/warnings/index_f.html" data-title="Alerte Environnement Canada">
+              <span>📲 Partager</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Item 2: SOPFEU -->
+        <div class="alert-card p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex flex-col justify-between space-y-3" data-category="sopfeu">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                🟠 Indice d'Incendie Élevé
+              </span>
+              <span class="text-slate-500 dark:text-slate-400 font-mono">SOPFEU</span>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
+              Interdiction de Feux à Ciel Ouvert en Forêt
+            </h4>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Indices de danger d'incendie de forêt élevés à très élevés. Restrictions en vigueur pour la protection de la sécurité civile et des communautés.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button type="button" class="btn-convert-alert grow px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer" data-url="https://sopfeu.qc.ca/">
+              <span>⚡ Convertir en LienLibre</span>
+            </button>
+            <button type="button" class="btn-share-alert px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1 transition-all cursor-pointer" data-url="https://sopfeu.qc.ca/" data-title="Alerte Incendie SOPFEU">
+              <span>📲 Partager</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Item 3: Santé Publique / MAPAQ -->
+        <div class="alert-card p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/25 flex flex-col justify-between space-y-3" data-category="sante">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="px-2 py-0.5 rounded-full font-bold bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30">
+                🔵 Rappel Alimentaire & Santé
+              </span>
+              <span class="text-slate-500 dark:text-slate-400 font-mono">Santé Canada</span>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
+              Avis de Sécurité Publique & Rappel d'Aliments
+            </h4>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Mises en garde officielles et rappels sanitaires d'intérêt public pour préserver la santé des familles et des consommateurs.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button type="button" class="btn-convert-alert grow px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer" data-url="https://recalls-rappels.canada.ca/fr">
+              <span>⚡ Convertir en LienLibre</span>
+            </button>
+            <button type="button" class="btn-share-alert px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1 transition-all cursor-pointer" data-url="https://recalls-rappels.canada.ca/fr" data-title="Rappel Santé Canada">
+              <span>📲 Partager</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Item 4: Sécurité Publique Québec -->
+        <div class="alert-card p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/25 flex flex-col justify-between space-y-3" data-category="sante">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="px-2 py-0.5 rounded-full font-bold bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30">
+                🛡️ Sécurité Civile
+              </span>
+              <span class="text-slate-500 dark:text-slate-400 font-mono">Gouv. du Québec</span>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-snug">
+              Veille sur les Crues & Inondations Printanières
+            </h4>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Surveillance continue du niveau des cours d'eau et consignes d'urgence pour les résidents des zones inondables.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button type="button" class="btn-convert-alert grow px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer" data-url="https://www.quebec.ca/securite-situations-urgence">
+              <span>⚡ Convertir en LienLibre</span>
+            </button>
+            <button type="button" class="btn-share-alert px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1 transition-all cursor-pointer" data-url="https://www.quebec.ca/securite-situations-urgence" data-title="Sécurité Publique Québec">
+              <span>📲 Partager</span>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1590,6 +1820,106 @@
     </div>
   </div>
 
+  <!-- Modal Réseau Fédéré & Inaltérabilité des Nœuds -->
+  <div id="federation-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
+    <!-- Backdrop -->
+    <div id="federation-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Modal Content Window -->
+    <div class="relative w-full max-w-xl max-h-[90vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">🌐</span>
+          <h3 data-i18n="federationModalTitle" class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+            Réseau Fédéré & Inaltérabilité Citoyenne
+          </h3>
+        </div>
+        <button type="button" id="btn-close-federation-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer la boîte de dialogue">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="px-6 py-5 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed custom-scrollbar">
+        
+        <p data-i18n="federationModalDesc" class="text-slate-700 dark:text-slate-300">
+          Chaque instance ou fork de LienLibre constitue un nœud autonome, souverain et inaltérable du maillage citoyen. Même en cas de panne ou de censure d'un hébergeur, le réseau persiste grâce aux miroirs décentralisés.
+        </p>
+
+        <!-- Current Node Identity Card -->
+        <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-indigo-500/10 border border-emerald-500/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span data-i18n="nodeStatusTitle">Nœud Actif Détecté</span>
+            </span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 font-mono text-[10px] font-semibold">100% Opérationnel</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-base">🏷️</span>
+            <span id="modal-node-identity" class="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm break-all">bwillou1/LienLibre (Nœud Origine)</span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">
+            Ce nœud exécute le protocole standard d'interopérabilité sans pistage ni rétention de logs.
+          </p>
+        </div>
+
+        <!-- Inalterability & Fork Principles -->
+        <div class="space-y-3 pt-1">
+          <h4 class="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider text-slate-400">
+            Garanties d'Inaltérabilité du Réseau :
+          </h4>
+
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-1">
+            <h5 class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>⛓️</span>
+              <span>1. Architecture P2P & Open-Source (MIT)</span>
+            </h5>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              Toute personne qui clone ou forke ce dépôt dispose instantanément de l'intégralité du code source, des filtres d'intégrité et des flux d'alertes de sécurité civile sans aucune clé secrète.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-1">
+            <h5 class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>🛡️</span>
+              <span>2. Auto-immunité contre les blocages</span>
+            </h5>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              Si un nom de domaine ou une passerelle Cloudflare est indisponible, les nœuds secondaires basculent automatiquement en mode d'extraction client ou pointent vers les workers alternatifs configurés.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-1">
+            <h5 class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>📡</span>
+              <span>3. Mode Ultra-Allégé pour zones isolées</span>
+            </h5>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              Accessible via <a href="./lite.html" class="text-cyan-600 dark:text-cyan-400 underline font-semibold">lite.html</a> (&lt;6 Ko), le réseau permet l'accès aux actualités même en cas de tempête ou coupure réseau partielle dans le Grand Nord.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-between shrink-0">
+        <a id="btn-modal-fork-link" href="https://github.com/bwillou1/LienLibre/fork" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs transition-colors flex items-center gap-1.5">
+          <span>🍴 Forker ce nœud</span>
+        </a>
+        <button type="button" id="btn-close-federation-modal-bottom" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer" data-i18n="botModalClose">
+          Compris & Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Client-side Logic -->
   <script>
     // Worker Endpoint - Support de décentralisation pour forks et miroirs
@@ -1716,7 +2046,21 @@
         extensionModalDownloadBtn: "Télécharger l'Extension (.zip)",
         extensionModalStep1: "1. Téléchargez et décompressez le fichier ZIP",
         extensionModalStep2: "2. Ouvrez chrome://extensions/ et activez le 'Mode Développeur'",
-        extensionModalStep3: "3. Cliquez sur 'Charger l'extension non empaquetée' et sélectionnez le dossier"
+        extensionModalStep3: "3. Cliquez sur 'Charger l'extension non empaquetée' et sélectionnez le dossier",
+        directShareTitle: "Partage direct 1-clic :",
+        alertsBadge: "Sécurité Civile & Urgences",
+        alertsTitle: "Hub des Alertes Officielles en Direct",
+        alertsDesc: "Flux officiels de sécurité publique canadienne convertibles en LienLibre pour diffusion instantanée sans blocage.",
+        alertsRefreshBtn: "Actualiser les alertes",
+        navAlerts: "Alertes d'urgence",
+        navAlertsMobile: "Hub Alertes de Sécurité Civile",
+        navLite: "Mode Ultra-Allégé (<10 Ko)",
+        navLiteMobile: "Mode Méga-Allégé (Grand Nord / 2G)",
+        navFederation: "Réseau Fédéré",
+        navFederationMobile: "Statut Réseau Fédéré & Nœud",
+        federationModalTitle: "Réseau Fédéré & Inaltérabilité Citoyenne",
+        federationModalDesc: "Chaque instance ou fork de LienLibre constitue un nœud autonome, souverain et inaltérable du maillage citoyen. Même en cas de panne ou de censure d'un hébergeur, le réseau persiste grâce aux miroirs décentralisés.",
+        nodeStatusTitle: "Nœud Actif Détecté"
       },
       en: {
         navHowItWorks: "How it works",
@@ -1811,7 +2155,21 @@
         extensionModalDownloadBtn: "Download Extension (.zip)",
         extensionModalStep1: "1. Download and unzip the ZIP package",
         extensionModalStep2: "2. Open chrome://extensions/ and enable 'Developer mode'",
-        extensionModalStep3: "3. Click 'Load unpacked' and select the unzipped folder"
+        extensionModalStep3: "3. Click 'Load unpacked' and select the unzipped folder",
+        directShareTitle: "1-Click Direct Share:",
+        alertsBadge: "Civil Security & Emergencies",
+        alertsTitle: "Live Official Emergency Alerts Hub",
+        alertsDesc: "Official Canadian public safety feeds ready to convert to LienLibre for instant unblocked sharing.",
+        alertsRefreshBtn: "Refresh alerts",
+        navAlerts: "Emergency Alerts",
+        navAlertsMobile: "Emergency Alerts Hub",
+        navLite: "Ultra-Lite Mode (<10 KB)",
+        navLiteMobile: "Ultra-Lite Mode (Far North / 2G)",
+        navFederation: "Federated Network",
+        navFederationMobile: "Federated Network & Node Status",
+        federationModalTitle: "Federated Network & Civic Inalterability",
+        federationModalDesc: "Every instance or fork of LienLibre constitutes an autonomous, sovereign and inalterable node in the civic mesh network. Even during hosting outages, the network persists via decentralized mirrors.",
+        nodeStatusTitle: "Active Node Detected"
       },
       ar: {
         navHowItWorks: "كيفية العمل",
@@ -1906,7 +2264,21 @@
         extensionModalDownloadBtn: "تحميل الإضافة (.zip)",
         extensionModalStep1: "1. حمّل وفك ضغط الملف المضغوط",
         extensionModalStep2: "2. افتح chrome://extensions/ وفعّل 'وضع المطور'",
-        extensionModalStep3: "3. انقر على 'تحميل إضافة غير مضغوطة' واختر المجلد"
+        extensionModalStep3: "3. انقر على 'تحميل إضافة غير مضغوطة' واختر المجلد",
+        directShareTitle: "مشاركة مباشرة بنقرة واحدة:",
+        alertsBadge: "السلامة المدنية والطوارئ",
+        alertsTitle: "مركز التنبيهات الرسمية المباشرة",
+        alertsDesc: "خلاصات السلامة العامة الكندية الرسمية القابلة للتحويل إلى LienLibre للنشر الفوري دون حظر.",
+        alertsRefreshBtn: "تحديث التنبيهات",
+        navAlerts: "تنبيهات الطوارئ",
+        navAlertsMobile: "مركز تنبيهات السلامة المدنية",
+        navLite: "الوضع فائق الخفة (<10 ك.ب)",
+        navLiteMobile: "الوضع فائق الخفة (الشمال / 2G)",
+        navFederation: "الشبكة الفيدرالية",
+        navFederationMobile: "حالة الشبكة الفيدرالية والعقدة",
+        federationModalTitle: "الشبكة الفيدرالية واستمرارية الخدمة",
+        federationModalDesc: "تشكل كل نسخة أو تفريع من LienLibre عقدة مستقلة وصامدة في الشبكة المدنية اللامركزية.",
+        nodeStatusTitle: "تم اكتشاف عقدة نشطة"
       },
       es: {
         navHowItWorks: "Funcionamiento",
@@ -2001,7 +2373,21 @@
         extensionModalDownloadBtn: "Descargar Extensión (.zip)",
         extensionModalStep1: "1. Descargue y descomprima el archivo ZIP",
         extensionModalStep2: "2. Abra chrome://extensions/ y active el 'Modo Desarrollador'",
-        extensionModalStep3: "3. Haga clic en 'Cargar descomprimida' y seleccione la carpeta"
+        extensionModalStep3: "3. Haga clic en 'Cargar descomprimida' y seleccione la carpeta",
+        directShareTitle: "Compartir directo en 1 clic:",
+        alertsBadge: "Seguridad Civil y Emergencias",
+        alertsTitle: "Centro de Alertas Oficiales en Vivo",
+        alertsDesc: "Fuentes oficiales de seguridad pública de Canadá listas para convertir a LienLibre y compartir al instante.",
+        alertsRefreshBtn: "Actualizar alertas",
+        navAlerts: "Alertas de Emergencia",
+        navAlertsMobile: "Centro de Alertas de Emergencia",
+        navLite: "Modo Ultra-Ligero (<10 KB)",
+        navLiteMobile: "Modo Ultra-Ligero (Zonas remotas / 2G)",
+        navFederation: "Red Federada",
+        navFederationMobile: "Estado de Red Federada y Nodo",
+        federationModalTitle: "Red Federada e Inalterabilidad Cívica",
+        federationModalDesc: "Cada copia o fork de LienLibre constituye un nodo autónomo e inalterable de la red cívica descentralizada.",
+        nodeStatusTitle: "Nodo Activo Detectado"
       },
       it: {
         navHowItWorks: "Funzionamento",
@@ -2081,7 +2467,21 @@
         legalCheckboxLink: "Condizioni d'Uso e la Clausola di Esonero",
         errorMustAgreeLegal: "Spunta la casella di accettazione legale per continuare.",
         sourceBlockedAlert: "Link bloccato: questo dominio o formato è limitato per sicurezza.",
-        footerText: "Distribuito sotto licenza MIT. Strumento tecnico senza registrazione di dati personali."
+        footerText: "Distribuito sotto licenza MIT. Strumento tecnico senza registrazione di dati personali.",
+        directShareTitle: "Condivisione diretta 1-clic:",
+        alertsBadge: "Protezione Civile & Emergenze",
+        alertsTitle: "Hub Allerte Ufficiali in Tempo Reale",
+        alertsDesc: "Feed ufficiali di sicurezza pubblica canadese pronti da convertire in LienLibre per condivisione immediata.",
+        alertsRefreshBtn: "Aggiorna allerte",
+        navAlerts: "Allerte d'emergenza",
+        navAlertsMobile: "Hub Allerte di Protezione Civile",
+        navLite: "Modalità Ultra-Leggera (<10 KB)",
+        navLiteMobile: "Modalità Ultra-Leggera (Zone remote / 2G)",
+        navFederation: "Rete Federata",
+        navFederationMobile: "Stato Rete Federata & Nodo",
+        federationModalTitle: "Rete Federata & Inalterabilità Civica",
+        federationModalDesc: "Ogni copia o fork di LienLibre costituisce un nodo autonomo e resiliente della rete civica decentralizzata.",
+        nodeStatusTitle: "Nodo Attivo Rilevato"
       },
       zh: {
         navHowItWorks: "工作原理",
@@ -2161,7 +2561,21 @@
         legalCheckboxLink: "服务条款与法律免责声明",
         errorMustAgreeLegal: "请勾选确认框并同意服务条款以继续。",
         sourceBlockedAlert: "链接已被拦截：该域名或文件类型因安全规则被禁止。",
-        footerText: "基于 MIT 协议开源。纯粹的瞬时技术管道，零个人数据记录。"
+        footerText: "基于 MIT 协议开源。纯粹的瞬时技术管道，零个人数据记录。",
+        directShareTitle: "一键直达社交分享：",
+        alertsBadge: "民防与应急预警",
+        alertsTitle: "官方实时应急预警中心",
+        alertsDesc: "加拿大官方公共安全与应急预警资讯，一键转换为 LienLibre 畅通分享。",
+        alertsRefreshBtn: "刷新预警信息",
+        navAlerts: "应急预警",
+        navAlertsMobile: "民防应急预警中心",
+        navLite: "极速超轻量模式 (<10 KB)",
+        navLiteMobile: "极速超轻量模式 (极地/弱网/2G)",
+        navFederation: "联邦去中心化网络",
+        navFederationMobile: "联邦网络与节点状态",
+        federationModalTitle: "联邦去中心化网络与抗审查保障",
+        federationModalDesc: "LienLibre 的每一个 Fork 分支均为去中心化公民网络中的自治防篡改节点。",
+        nodeStatusTitle: "已检测到活跃节点"
       },
       cr: {
         navHowItWorks: "Tânisi",
@@ -2660,6 +3074,60 @@
     if (btnCloseExtensionModalBottom) btnCloseExtensionModalBottom.addEventListener('click', closeExtensionModal);
     if (extensionModalBackdrop) extensionModalBackdrop.addEventListener('click', closeExtensionModal);
 
+    // Modal Réseau Fédéré & Inaltérabilité logic
+    const federationModal = document.getElementById('federation-modal');
+    const federationModalBackdrop = document.getElementById('federation-modal-backdrop');
+    const btnOpenFederation = document.getElementById('btn-open-federation');
+    const btnMobileFederation = document.getElementById('btn-mobile-federation');
+    const btnCloseFederationModal = document.getElementById('btn-close-federation-modal');
+    const btnCloseFederationModalBottom = document.getElementById('btn-close-federation-modal-bottom');
+    const modalNodeIdentity = document.getElementById('modal-node-identity');
+    const btnModalForkLink = document.getElementById('btn-modal-fork-link');
+
+    function initFederationNode() {
+      const repo = getGitHubRepo();
+      const isOrigin = (repo.toLowerCase() === 'bwillou1/lienlibre');
+      const nodeTitle = isOrigin ? `${repo} (Nœud Origine Fédéré)` : `${repo} (Nœud Miroir Autonome)`;
+      
+      if (modalNodeIdentity) {
+        modalNodeIdentity.textContent = nodeTitle;
+      }
+      if (btnModalForkLink) {
+        btnModalForkLink.href = `https://github.com/${repo}/fork`;
+      }
+    }
+    initFederationNode();
+
+    function openFederationModal() {
+      if (federationModal) {
+        federationModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+      }
+    }
+
+    function closeFederationModal() {
+      if (federationModal) {
+        federationModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+        if (window.location.hash === '#federation' || window.location.hash === '#node') {
+          history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
+      }
+    }
+
+    if (btnOpenFederation) btnOpenFederation.addEventListener('click', openFederationModal);
+    if (btnMobileFederation) btnMobileFederation.addEventListener('click', () => {
+      openFederationModal();
+      if (mobileMenu) mobileMenu.classList.add('hidden');
+    });
+    if (btnCloseFederationModal) btnCloseFederationModal.addEventListener('click', closeFederationModal);
+    if (btnCloseFederationModalBottom) btnCloseFederationModalBottom.addEventListener('click', closeFederationModal);
+    if (federationModalBackdrop) federationModalBackdrop.addEventListener('click', closeFederationModal);
+
+    if (window.location.hash === '#federation' || window.location.hash === '#node') {
+      openFederationModal();
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (legalModal && !legalModal.classList.contains('hidden')) {
@@ -2673,6 +3141,9 @@
         }
         if (extensionModal && !extensionModal.classList.contains('hidden')) {
           closeExtensionModal();
+        }
+        if (federationModal && !federationModal.classList.contains('hidden')) {
+          closeFederationModal();
         }
       }
     });
@@ -2878,9 +3349,141 @@
         btnFormatShort.className = 'px-2.5 py-1 text-xs rounded-md text-slate-400 hover:text-slate-200 font-medium transition-all';
         if (currentGeneratedLinks.mirror) outputUrl.textContent = currentGeneratedLinks.mirror;
       }
+      if (outputUrl && outputUrl.textContent) {
+        updateDirectShareLinks(outputUrl.textContent);
+      }
       if (qrPanel && !qrPanel.classList.contains('hidden')) {
         renderLiveQr();
       }
+    }
+
+    // Direct 1-Click Social & Messaging Share Handlers
+    function updateDirectShareLinks(linkUrl) {
+      const url = linkUrl || (outputUrl && outputUrl.textContent) || '';
+      if (!url) return;
+      const currentLang = (langSelect && langSelect.value) || 'fr';
+      const shareTitle = (previewTitle && previewTitle.textContent) || 'LienLibre - Passerelle Presse';
+      const shareMsg = (currentLang === 'fr') 
+        ? `Consultez cet article d'intérêt public sans pistage via LienLibre :`
+        : `Read this public interest news article via LienLibre:`;
+
+      const elWa = document.getElementById('direct-share-whatsapp');
+      if (elWa) elWa.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMsg + ' ' + url)}`;
+
+      const elTg = document.getElementById('direct-share-telegram');
+      if (elTg) elTg.href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareMsg)}`;
+
+      const elSms = document.getElementById('direct-share-sms');
+      if (elSms) elSms.href = `sms:?&body=${encodeURIComponent(shareMsg + ' ' + url)}`;
+
+      const elBs = document.getElementById('direct-share-bluesky');
+      if (elBs) elBs.href = `https://bsky.app/intent/compose?text=${encodeURIComponent(shareMsg + ' ' + url)}`;
+
+      const elRd = document.getElementById('direct-share-reddit');
+      if (elRd) elRd.href = `https://www.reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareTitle)}`;
+
+      const elMs = document.getElementById('direct-share-mastodon');
+      if (elMs) elMs.href = `https://mastodonshare.com/?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareMsg + ' ' + shareTitle)}`;
+
+      const elFb = document.getElementById('direct-share-facebook');
+      if (elFb) elFb.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+
+      const elX = document.getElementById('direct-share-x');
+      if (elX) elX.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareMsg)}`;
+    }
+
+    const elSignal = document.getElementById('direct-share-signal');
+    if (elSignal) {
+      elSignal.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = (outputUrl && outputUrl.textContent) || '';
+        if (!url) return;
+        const currentLang = (langSelect && langSelect.value) || 'fr';
+        const shareMsg = (currentLang === 'fr') 
+          ? `Consultez cet article d'intérêt public sans pistage via LienLibre : ${url}`
+          : `Read this public interest news article via LienLibre: ${url}`;
+        
+        window.location.href = `sgnl://share?text=${encodeURIComponent(shareMsg)}`;
+        setTimeout(() => {
+          navigator.clipboard.writeText(shareMsg).catch(() => {});
+        }, 300);
+      });
+    }
+
+    // Public Safety & Emergency Alerts Hub Listeners
+    const alertFilterBtns = document.querySelectorAll('.alert-filter-btn');
+    const alertFeedCards = document.querySelectorAll('.alert-feed-card');
+
+    alertFilterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter') || 'all';
+        
+        alertFilterBtns.forEach(b => {
+          if (b === btn) {
+            b.classList.remove('bg-slate-100', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-300', 'border-slate-300', 'dark:border-slate-800');
+            b.classList.add('bg-rose-600', 'text-white', 'border-rose-500', 'shadow-xs');
+          } else {
+            b.classList.remove('bg-rose-600', 'text-white', 'border-rose-500', 'shadow-xs');
+            b.classList.add('bg-slate-100', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-300', 'border-slate-300', 'dark:border-slate-800');
+          }
+        });
+
+        alertFeedCards.forEach(card => {
+          const cat = card.getAttribute('data-category');
+          if (filter === 'all' || cat === filter) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    document.querySelectorAll('.btn-convert-alert').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const alertUrl = btn.getAttribute('data-alert-url');
+        if (alertUrl && urlInput && form) {
+          urlInput.value = alertUrl;
+          urlInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          form.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+      });
+    });
+
+    document.querySelectorAll('.btn-share-alert').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const alertUrl = btn.getAttribute('data-alert-url') || '';
+        const alertTitle = btn.getAttribute('data-alert-title') || 'Alerte de Sécurité Civile';
+        
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: alertTitle,
+              text: `🚨 ${alertTitle} — Alerte officielle :`,
+              url: alertUrl
+            });
+            return;
+          } catch (_) {}
+        }
+        
+        navigator.clipboard.writeText(`${alertTitle} : ${alertUrl}`).then(() => {
+          const originalHtml = btn.innerHTML;
+          btn.innerHTML = `<span class="text-emerald-400 font-bold">✓ Copié</span>`;
+          setTimeout(() => {
+            btn.innerHTML = originalHtml;
+          }, 2000);
+        });
+      });
+    });
+
+    const btnRefreshAlerts = document.getElementById('btn-refresh-alerts');
+    if (btnRefreshAlerts) {
+      btnRefreshAlerts.addEventListener('click', () => {
+        btnRefreshAlerts.classList.add('animate-spin');
+        setTimeout(() => {
+          btnRefreshAlerts.classList.remove('animate-spin');
+        }, 800);
+      });
     }
 
     function applySelfCertification(isCert) {
