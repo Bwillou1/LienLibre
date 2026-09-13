@@ -221,10 +221,10 @@
 
   <!-- Header / Navigation Bar -->
   <header class="sticky top-0 z-40 w-full glass-nav transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       
       <!-- Brand Logo -->
-      <a href="#" class="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg p-1">
+      <a href="#" class="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg p-1">
         <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-indigo-600 flex items-center justify-center shadow-md shadow-cyan-500/25 group-hover:scale-105 transition-transform">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" class="w-5 h-5 text-white">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
@@ -232,66 +232,30 @@
         </div>
         <div>
           <span class="font-display font-extrabold text-xl tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors">Lien<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-indigo-500 dark:from-cyan-400 dark:to-indigo-400">Libre</span></span>
-          <span class="hidden sm:inline-block ml-2 text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700/60">Civic Tech & Recherche</span>
+          <span class="hidden sm:inline-block ml-2 text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700/60">Civic Tech</span>
         </div>
       </a>
       
-      <!-- Quick Navigation, Mirror, Theme, PWA & Language Controls -->
-      <div class="flex items-center gap-2.5 sm:gap-3.5">
-        <nav class="hidden md:flex items-center gap-5 text-xs font-medium text-slate-600 dark:text-slate-300">
-          <a href="#how-it-works" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navHowItWorks">Fonctionnement</a>
-          <a href="#share-project-section" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navShare">Partager LienLibre</a>
-          <a href="#stats-section" id="nav-stats-link" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors hidden" data-i18n="navStats">Statistiques</a>
-          <button type="button" id="btn-open-legal" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors text-left" data-i18n="navLegal">Mentions Légales & CGU</button>
-        </nav>
+      <!-- Center Nav (Desktop) -->
+      <nav class="hidden lg:flex items-center gap-6 text-xs font-medium text-slate-600 dark:text-slate-300">
+        <a href="#how-it-works" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navHowItWorks">Fonctionnement</a>
+        <a href="#share-project-section" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navShare">Partager</a>
+        <a href="#stats-section" id="nav-stats-link" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors hidden" data-i18n="navStats">Statistiques</a>
+      </nav>
 
-        <!-- Mirror / Fork 1-Click Button -->
+      <!-- Right Action Toolbar -->
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        
+        <!-- Mirror 1-Click Button -->
         <button 
           type="button" 
           id="btn-open-mirror" 
-          class="flex items-center gap-1.5 bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-purple-500/10 hover:from-cyan-500/20 hover:to-purple-500/20 dark:from-cyan-500/15 dark:via-indigo-500/15 dark:to-purple-500/15 dark:hover:from-cyan-500/25 dark:hover:to-purple-500/25 text-cyan-700 dark:text-cyan-300 hover:text-cyan-800 dark:hover:text-cyan-200 border border-cyan-500/30 hover:border-cyan-400/50 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-xs group cursor-pointer"
+          class="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-purple-500/10 hover:from-cyan-500/20 hover:to-purple-500/20 dark:from-cyan-500/15 dark:via-indigo-500/15 dark:to-purple-500/15 dark:hover:from-cyan-500/25 dark:hover:to-purple-500/25 text-cyan-700 dark:text-cyan-300 hover:text-cyan-800 dark:hover:text-cyan-200 border border-cyan-500/30 hover:border-cyan-400/50 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-xs group cursor-pointer"
           title="Créer votre propre site miroir en 1 clic (Fork GitHub)"
         >
           <span class="text-sm group-hover:rotate-12 transition-transform">🪞</span>
-          <span data-i18n="navMirror">Créer un miroir</span>
+          <span data-i18n="navMirror">Miroir</span>
         </button>
-
-        <!-- Theme Mode Toggle Button (Auto / Light / Dark) -->
-        <button 
-          type="button" 
-          id="theme-toggle-btn" 
-          class="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-300 transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer"
-          title="Thème : Automatique (Appareil)"
-          aria-label="Changer le thème"
-        >
-          <!-- Sun Icon (Active when Light Mode forced) -->
-          <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-amber-500 hidden">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-          </svg>
-          <!-- Moon Icon (Active when Dark Mode forced) -->
-          <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-cyan-400 hidden">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-          </svg>
-          <!-- Device / System Auto Icon (Active when Auto) -->
-          <svg id="theme-icon-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-600 dark:text-slate-300">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3" />
-          </svg>
-        </button>
-
-        <!-- PWA Install Button (Shown if installable) -->
-        <button 
-          type="button" 
-          id="btn-pwa-install" 
-          class="hidden items-center gap-1.5 bg-gradient-to-r from-cyan-500/15 to-indigo-500/15 hover:from-cyan-500/25 hover:to-indigo-500/25 dark:from-cyan-500/20 dark:to-indigo-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-xs"
-          title="Installer LienLibre comme application autonome"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-          </svg>
-          <span data-i18n="pwaInstallBtn">Installer l'app</span>
-        </button>
-
-        <div class="h-4 w-[1px] bg-slate-200 dark:bg-slate-800 hidden md:block"></div>
 
         <!-- Language Dropdown -->
         <div class="relative">
@@ -312,32 +276,78 @@
             <option value="moh">🦅 Kanien'kéha</option>
           </select>
         </div>
-        
-        <!-- Report Abuse in Header -->
+
+        <!-- Theme Mode Toggle -->
         <button 
           type="button" 
-          id="btn-nav-report"
-          title="Signaler un lien abusif ou illégal"
-          class="flex items-center gap-1.5 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+          id="theme-toggle-btn" 
+          class="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-300 transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer"
+          title="Thème : Automatique (Appareil)"
+          aria-label="Changer le thème"
         >
-          <span>🚩</span>
-          <span class="hidden sm:inline" data-i18n="navReportBtn">Signaler un abus</span>
+          <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-amber-500 hidden">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+          </svg>
+          <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-cyan-400 hidden">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+          </svg>
+          <svg id="theme-icon-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-600 dark:text-slate-300">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3" />
+          </svg>
         </button>
 
-        <!-- GitHub Source -->
+        <!-- PWA Install Button (Shown if installable) -->
+        <button 
+          type="button" 
+          id="btn-pwa-install" 
+          class="hidden items-center gap-1.5 bg-gradient-to-r from-cyan-500/15 to-indigo-500/15 hover:from-cyan-500/25 hover:to-indigo-500/25 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all shadow-xs"
+          title="Installer LienLibre comme application autonome"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          <span class="hidden md:inline" data-i18n="pwaInstallBtn">Installer l'app</span>
+        </button>
+
+        <!-- GitHub Icon Link -->
         <a 
           href="https://github.com/Bwillou1/LienLibre" 
           target="_blank" 
           rel="noopener noreferrer" 
           title="Consulter le code source sur GitHub"
-          class="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-900/80 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-800 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+          class="flex items-center justify-center h-8 w-8 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-900/80 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-800 transition-all"
         >
           <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
           </svg>
-          <span class="hidden sm:inline">Code source</span>
         </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button 
+          type="button" 
+          id="btn-mobile-menu-toggle"
+          class="lg:hidden flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300"
+          aria-label="Menu principal"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+
       </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md px-4 py-3 space-y-2.5 text-xs font-medium">
+      <a href="#how-it-works" class="block py-1.5 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400" data-i18n="navHowItWorks">Fonctionnement</a>
+      <a href="#share-project-section" class="block py-1.5 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400" data-i18n="navShare">Partager LienLibre</a>
+      <button type="button" id="btn-mobile-mirror" class="w-full text-left py-1.5 text-cyan-600 dark:text-cyan-400 font-semibold flex items-center gap-1.5">
+        <span>🪞</span> <span data-i18n="navMirror">Créer un miroir (Fork 1-clic)</span>
+      </button>
+      <button type="button" id="btn-mobile-legal" class="w-full text-left py-1.5 text-slate-600 dark:text-slate-400" data-i18n="navLegal">Mentions Légales & CGU</button>
+      <button type="button" id="btn-mobile-report" class="w-full text-left py-1.5 text-red-600 dark:text-red-400 font-semibold flex items-center gap-1.5">
+        <span>🚩</span> <span data-i18n="navReportBtn">Signaler un abus</span>
+      </button>
     </div>
   </header>
 
@@ -765,23 +775,94 @@
 
   </main>
 
-  <!-- Footer -->
-  <footer class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 border-t border-slate-200 dark:border-slate-800/80 text-xs text-slate-500 dark:text-slate-400">
-    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-      <div class="space-y-1">
-        <p class="font-medium text-slate-700 dark:text-slate-400">LienLibre — Projet d'utilité civique & recherche en interopérabilité</p>
-        <p data-i18n="footerText">Distribué sous licence MIT. Outil technique éphémère sans journalisation de données personnelles.</p>
-      </div>
+  <!-- Enhanced Civic Footer -->
+  <footer class="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-8 border-t border-slate-200 dark:border-slate-800/80 text-xs text-slate-500 dark:text-slate-400 mt-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10 text-left">
       
-      <div class="flex items-center gap-5">
-        <button type="button" id="btn-footer-legal" class="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors font-medium underline-offset-4 hover:underline cursor-pointer" data-i18n="navLegal">
-          Avis Juridique & Conditions d'Utilisation
-        </button>
-        <span>•</span>
-        <a href="https://github.com/Bwillou1/LienLibre" target="_blank" rel="noopener noreferrer" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          GitHub
-        </a>
+      <!-- Column 1: Identity & Decentralized Mirror Status -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <div class="h-6 w-6 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white shadow-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" class="w-3.5 h-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+            </svg>
+          </div>
+          <span class="font-display font-bold text-sm text-slate-900 dark:text-white">LienLibre</span>
+          <span class="text-[10px] font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-full">Civic Tech</span>
+        </div>
+        
+        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="footerText">
+          Outil citoyen et banc d'essai de recherche en interopérabilité des métadonnées du Web ouvert.
+        </p>
+
+        <!-- Live Network / Mirror Status Indicator -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-400 text-[11px] font-medium">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span id="footer-sync-status">Réseau miroir décentralisé & actif</span>
+        </div>
       </div>
+
+      <!-- Column 2: Navigation & Outils -->
+      <div class="space-y-2.5">
+        <h4 class="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Navigation & Outils</h4>
+        <ul class="space-y-2">
+          <li>
+            <a href="#how-it-works" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navHowItWorks">Fonctionnement de la passerelle</a>
+          </li>
+          <li>
+            <a href="#share-project-section" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navShare">Partager le projet LienLibre</a>
+          </li>
+          <li>
+            <button type="button" id="btn-footer-mirror" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors text-left font-medium text-cyan-600 dark:text-cyan-400 cursor-pointer">
+              🪞 <span data-i18n="navMirror">Déployer votre propre miroir (1-clic)</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" id="btn-footer-bot" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors text-left cursor-pointer">
+              🤖 Mini-Bot Sentinel (Audit Automatique)
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Sécurité, Éthique & Juridique -->
+      <div class="space-y-2.5">
+        <h4 class="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Éthique, Droit & Sécurité</h4>
+        <ul class="space-y-2">
+          <li>
+            <button type="button" id="btn-footer-legal" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors text-left cursor-pointer" data-i18n="navLegal">
+              ⚖️ Avis Juridique, Safe Harbor & CGU
+            </button>
+          </li>
+          <li>
+            <button type="button" id="btn-footer-report" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium transition-colors text-left flex items-center gap-1 cursor-pointer">
+              <span>🚩</span> <span data-i18n="navReportBtn">Signaler un lien abusif / illicite</span>
+            </button>
+          </li>
+          <li>
+            <a href="https://github.com/Bwillou1/LienLibre" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+              <span>🐙</span> Code source GitHub (Licence MIT)
+            </a>
+          </li>
+          <li class="text-[11px] text-slate-500 dark:text-slate-500 pt-1">
+            🔒 Zero-Log : Aucune adresse IP ni clé privée n'est enregistrée.
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom Copyright & Safe Harbor Disclaimer -->
+    <div class="pt-6 border-t border-slate-200/80 dark:border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-[11px]">
+      <p>
+        © 2026 LienLibre — Projet d'utilité civique & recherche (Art. 29 <em>Loi sur le droit d'auteur du Canada</em>).
+      </p>
+      <p class="text-slate-500 dark:text-slate-500">
+        Passerelle technique neutre et décentralisée.
+      </p>
     </div>
   </footer>
 
@@ -2078,6 +2159,8 @@
     }
 
     if (btnOpenMirror) btnOpenMirror.addEventListener('click', openMirrorModal);
+    const btnFooterMirror = document.getElementById('btn-footer-mirror');
+    if (btnFooterMirror) btnFooterMirror.addEventListener('click', openMirrorModal);
     if (btnCloseMirror) btnCloseMirror.addEventListener('click', closeMirrorModal);
     if (btnCloseMirrorBottom) btnCloseMirrorBottom.addEventListener('click', closeMirrorModal);
     if (mirrorModalBackdrop) mirrorModalBackdrop.addEventListener('click', closeMirrorModal);
@@ -2090,6 +2173,7 @@
     const botModal = document.getElementById('bot-modal');
     const botModalBackdrop = document.getElementById('bot-modal-backdrop');
     const btnOpenBotModal = document.getElementById('btn-open-bot-modal');
+    const btnFooterBot = document.getElementById('btn-footer-bot');
     const btnCloseBotModal = document.getElementById('btn-close-bot-modal');
     const btnCloseBotModalBottom = document.getElementById('btn-close-bot-modal-bottom');
 
@@ -2108,6 +2192,7 @@
     }
 
     if (btnOpenBotModal) btnOpenBotModal.addEventListener('click', openBotModal);
+    if (btnFooterBot) btnFooterBot.addEventListener('click', openBotModal);
     if (btnCloseBotModal) btnCloseBotModal.addEventListener('click', closeBotModal);
     if (btnCloseBotModalBottom) btnCloseBotModalBottom.addEventListener('click', closeBotModal);
     if (botModalBackdrop) botModalBackdrop.addEventListener('click', closeBotModal);
@@ -2505,18 +2590,50 @@
       updateLanguage(e.target.value);
     });
 
-    // Report Abuse button in header
+    // Report Abuse handler (Header, Footer, Mobile)
+    function triggerReportAbuse() {
+      const email = getContactEmail();
+      const currentLang = (document.getElementById('lang-select') && document.getElementById('lang-select').value) || 'fr';
+      const isEn = currentLang === 'en';
+      const subject = isEn ? "Abuse / Illegal Content Report - LienLibre" : "Signalement d'abus / Contenu illicite - LienLibre";
+      const body = isEn 
+        ? "Hello,\n\nI would like to report an abuse or illicit content on LienLibre:\n\n- Suspicious URL:\n- Reason for report:\n\nThank you.\n\nDate: " + new Date().toISOString()
+        : "Bonjour,\n\nJe souhaite signaler un lien abusif ou du contenu illicite sur LienLibre :\n\n- URL concernée :\n- Motif du signalement :\n\nMerci.\n\nDate : " + new Date().toISOString();
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
     const btnNavReport = document.getElementById('btn-nav-report');
-    if (btnNavReport) {
-      btnNavReport.addEventListener('click', () => {
-        const email = getContactEmail();
-        const currentLang = (document.getElementById('lang-select') && document.getElementById('lang-select').value) || 'fr';
-        const isEn = currentLang === 'en';
-        const subject = isEn ? "Abuse / Illegal Content Report - LienLibre" : "Signalement d'abus / Contenu illicite - LienLibre";
-        const body = isEn 
-          ? "Hello,\n\nI would like to report an abuse or illicit content on LienLibre:\n\n- Suspicious URL:\n- Reason for report:\n\nThank you.\n\nDate: " + new Date().toISOString()
-          : "Bonjour,\n\nJe souhaite signaler un lien abusif ou du contenu illicite sur LienLibre :\n\n- URL concernée :\n- Motif du signalement :\n\nMerci.\n\nDate : " + new Date().toISOString();
-        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    if (btnNavReport) btnNavReport.addEventListener('click', triggerReportAbuse);
+    const btnFooterReport = document.getElementById('btn-footer-report');
+    if (btnFooterReport) btnFooterReport.addEventListener('click', triggerReportAbuse);
+    const btnMobileReport = document.getElementById('btn-mobile-report');
+    if (btnMobileReport) btnMobileReport.addEventListener('click', () => {
+      triggerReportAbuse();
+      if (mobileMenu) mobileMenu.classList.add('hidden');
+    });
+
+    // Mobile Menu Toggle
+    const btnMobileMenuToggle = document.getElementById('btn-mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (btnMobileMenuToggle && mobileMenu) {
+      btnMobileMenuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+
+    const btnMobileMirror = document.getElementById('btn-mobile-mirror');
+    if (btnMobileMirror) {
+      btnMobileMirror.addEventListener('click', () => {
+        openMirrorModal();
+        if (mobileMenu) mobileMenu.classList.add('hidden');
+      });
+    }
+
+    const btnMobileLegal = document.getElementById('btn-mobile-legal');
+    if (btnMobileLegal) {
+      btnMobileLegal.addEventListener('click', () => {
+        openLegalModal();
+        if (mobileMenu) mobileMenu.classList.add('hidden');
       });
     }
 
