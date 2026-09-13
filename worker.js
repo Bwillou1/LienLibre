@@ -403,35 +403,52 @@ async function checkDnsFamilyShield(hostname) {
     const nextDnsUrl = `https://dns.nextdns.io/8d3993/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
     const nextData = await fetchDoh(nextDnsUrl);
 
-    if (nextData && nextData.Answer && Array.isArray(nextData.Answer)) {
-      const isBlockedNext = nextData.Answer.some(a => 
-        a.data === "0.0.0.0" || 
-        a.data === "::" || 
-        a.data === "127.0.0.1" || 
-        (typeof a.data === "string" && a.data.startsWith("0.0.0."))
-      );
-      if (isBlockedNext) {
+    if (nextData) {
+      if (nextData.Answer && Array.isArray(nextData.Answer)) {
+        const isBlockedNext = nextData.Answer.some(a => 
+          a.data === "0.0.0.0" || 
+          a.data === "::" || 
+          a.data === "127.0.0.1" || 
+          (typeof a.data === "string" && a.data.startsWith("0.0.0."))
+        );
+        if (isBlockedNext) {
+          return {
+            isBlocked: true,
+            reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
+          };
+        }
+        // Si NextDNS valide le domaine avec des IPs valides, retour immédiat sans solliciter le fallback
+        return { isBlocked: false, reason: "" };
+      }
+      // Si NextDNS retourne un statut NXDOMAIN (3) ou REFUSED (5)
+      if (nextData.Status === 3 || nextData.Status === 5) {
         return {
           isBlocked: true,
-          reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
+          reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS (menace de sécurité ou domaine inexistant)."
         };
       }
-      // Si NextDNS valide le domaine, retour immédiat sans solliciter le fallback
-      return { isBlocked: false, reason: "" };
     }
 
     // 2. SECOURS DE FIABILITÉ : Cloudflare Famille 1.1.1.3 (utilisé si NextDNS timeout ou quota dépassé)
     const cfUrl = `https://family.cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanHost)}&type=A`;
     const cfData = await fetchDoh(cfUrl);
 
-    if (cfData && cfData.Answer && Array.isArray(cfData.Answer)) {
-      const isBlockedCf = cfData.Answer.some(a => 
-        a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1"
-      );
-      if (isBlockedCf) {
+    if (cfData) {
+      if (cfData.Answer && Array.isArray(cfData.Answer)) {
+        const isBlockedCf = cfData.Answer.some(a => 
+          a.data === "0.0.0.0" || a.data === "::" || a.data === "127.0.0.1"
+        );
+        if (isBlockedCf) {
+          return {
+            isBlocked: true,
+            reason: "Ce domaine est bloqué par le bouclier Cloudflare Sécurité & Famille (site malveillant ou contenu explicite)."
+          };
+        }
+      }
+      if (cfData.Status === 3 || cfData.Status === 5) {
         return {
           isBlocked: true,
-          reason: "Ce domaine est bloqué par le bouclier Cloudflare Sécurité & Famille (site malveillant ou contenu explicite)."
+          reason: "Ce domaine est bloqué ou introuvable selon le bouclier Cloudflare Sécurité (menace de sécurité ou domaine inexistant)."
         };
       }
     }
@@ -562,19 +579,33 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
 
   score = Math.max(0, Math.min(100, score));
   
-  // Un site valide non répertorié n'est PAS bloqué (isBlocked = false), mais classé pour information
-  const isJournalistic = score >= 70;
-  const isValidated = isJournalistic;
+  // RÈGLE STRICTE DE SÉCURITÉ :
+  // Si le score calculé par Mini-Bot Sentinel est STRICTEMENT INFÉRIEUR À 75 (< 75/100),
+  // le site est IMMÉDIATEMENT BLOQUÉ (aucun sas de sécurité autorisé).
+  if (score < 75) {
+    return {
+      score,
+      isJournalistic: false,
+      isValidated: false,
+      isBlocked: true,
+      blockReason: `Score de sécurité et de conformité insuffisant (${score} / 100). LienLibre exige un score d'audit minimum de 75 / 100 pour autoriser l'accès au sas de sécurité.`,
+      category: "blocked_low_score",
+      badgeText: `Source Bloquée — Score Insuffisant (${score}/100 < 75)`,
+      signals: [
+        ...signals,
+        `⛔ Score de confiance (${score}/100) strictement inférieur au seuil obligatoire de 75/100.`
+      ]
+    };
+  }
 
+  // Si score >= 75 mais domaine hors liste blanche : Accès autorisé AU SAS DE SÉCURITÉ avec consentement manuel
   return {
     score,
-    isJournalistic,
-    isValidated,
+    isJournalistic: true,
+    isValidated: true,
     isBlocked: false,
-    category: isJournalistic ? "journalistic_source" : "unverified_content",
-    badgeText: isJournalistic 
-      ? `Source Journalistique Conforme (${score}/100)` 
-      : `Contenu Non Répertorié (${score}/100)`,
+    category: "unverified_quarantine",
+    badgeText: `Source Éligible au Sas (${score}/100)`,
     signals
   };
 }
@@ -1313,7 +1344,7 @@ function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
       line-height: 1.4;
     }
     .btn-home {
-      display: inline-block;
+      display: block;
       background: linear-gradient(135deg, #0ea5e9, #6366f1);
       color: #fff;
       text-decoration: none;
@@ -1322,6 +1353,20 @@ function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
       font-weight: 600;
       font-size: 0.9rem;
       margin-bottom: 0.75rem;
+      text-align: center;
+    }
+    .btn-safety {
+      display: block;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+      text-decoration: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      text-align: center;
     }
   </style>
 </head>
@@ -1333,7 +1378,13 @@ function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
     <div class="reason-box">
       <strong>Motif du refus :</strong> ${escapeHtml(reason)}
     </div>
+    <a href="https://www.canada.ca/" class="btn-safety">🏛️ Quitter vers un lieu sûr (Canada.ca)</a>
     <a href="https://bwillou1.github.io/LienLibre/" class="btn-home">${escapeHtml(homeBtn)}</a>
+    <div style="margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 0.75rem;">
+      <a href="https://bwillou1.github.io/LienLibre/politiques.html#4-securite-airlock" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline; font-size: 0.78rem;">
+        📜 En savoir plus sur la politique de sécurité et le bouclier DNS (Loi 25 / art. 31.1 LDA) ↗
+      </a>
+    </div>
   </div>
 </body>
 </html>`;

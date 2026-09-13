@@ -368,7 +368,7 @@ Audit **en temps réel**, sans exécution du contenu distant (pas de headless br
 | Homoglyphes / punycode trompeur imitant un média canadien | négatif fort + sas obligatoire |
 | Longueur d’URL excessive, identifiants d’hameçonnage, `@` userinfo | négatif / normalisation stricte |
 
-**Score de confiance /100.** Indicatif uniquement. **Un score élevé ne dispense jamais du sas** pour un domaine hors liste blanche. Le score n’est pas une certification, ni un audit de sécurité du site cible.
+**Score de confiance /100.** Tout score strictement inférieur à **75/100** entraîne le **blocage immédiat (HTTP 403)** de la requête sans aucun accès au sas de sécurité. Pour un domaine hors liste blanche atteignant ou dépassant le seuil de 75/100, l'accès est strictement cantonné au **sas de sécurité actif** avec consentement manuel explicite. Un score élevé ne dispense jamais du sas pour un domaine non répertorié.
 
 ### 4.2.3 Ligne 3 — Sas de sécurité actif (*Airlock*) pour domaines non listés
 
