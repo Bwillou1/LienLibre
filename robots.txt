@@ -45,4 +45,3 @@ User-agent: Facebot
 Allow: /
 
 Sitemap: https://bwillou1.github.io/LienLibre/sitemap.xml
-Sitemap: https://lienlibre.guindonwilliam2.workers.dev/sitemap.xml

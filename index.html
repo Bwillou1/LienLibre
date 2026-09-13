@@ -2826,8 +2826,16 @@
           }
           if (createRes.ok) {
             const createData = await createRes.json();
-            if (createData.shortLink) currentGeneratedLinks.short = createData.shortLink;
-            if (createData.link) currentGeneratedLinks.mirror = createData.link;
+            if (createData.shortLink && !createData.shortLink.includes('workers.dev')) {
+              currentGeneratedLinks.short = createData.shortLink;
+            } else {
+              currentGeneratedLinks.short = cleanProjectLink;
+            }
+            if (createData.link && !createData.link.includes('workers.dev')) {
+              currentGeneratedLinks.mirror = createData.link;
+            } else {
+              currentGeneratedLinks.mirror = cleanProjectLink;
+            }
             updateFormatTabUI();
           }
         } finally {

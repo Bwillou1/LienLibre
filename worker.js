@@ -862,10 +862,12 @@ export default {
         const queryString = queryParts.length > 0 ? "?" + queryParts.join("&") : "";
         const paramString = queryParts.length > 0 ? "&" + queryParts.join("&") : "";
 
-        const vanityLink = `${requestUrl.origin}/${cleanPath}${queryString}`;
-        const directLink = `${requestUrl.origin}/?url=${encodeURIComponent(parsedTarget.href)}${paramString}`;
-        const shortLink = `${requestUrl.origin}/l/${randomId}${queryString}`;
-        const packedLink = `${requestUrl.origin}/p/${packedSlug}${queryString}`;
+        const publicBase = "https://bwillou1.github.io/LienLibre";
+        const cleanProjectLink = `${publicBase}/?url=${encodeURIComponent(parsedTarget.href)}${paramString}`;
+        const vanityLink = cleanProjectLink;
+        const directLink = cleanProjectLink;
+        const shortLink = cleanProjectLink;
+        const packedLink = cleanProjectLink;
 
         return new Response(JSON.stringify({
           ok: true,
