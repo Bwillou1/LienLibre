@@ -1527,20 +1527,20 @@ const WORKER_TRANSLATIONS = {
     redirecting: "LienLibre ti sta reindirizzando all'articolo originale:",
     fallbackNote: "Se il reindirizzamento automatico non funziona dopo pochi secondi, clicca qui sotto.",
     accessBtn: "Accedi all'articolo",
-    supportBanner: "<strong>Sostieni il giornalismo locale:</strong> questo media (<strong>{host}</strong>) ha bisogno di te. Considera di abbonarti o disattivare il tuo ad blocker sul loro sito."
+    supportBanner: "<strong>Sostieni il giornalismo locale:</strong> questo media (<strong>{host}</strong>) ha bisogno di te. Considera l'abbonamento o disattiva l'ad blocker."
   },
   zh: {
     redirectTitle: "安全重定向",
     redirecting: "LienLibre 正在将您重定向至原始文章：",
-    fallbackNote: "如果自动重定向在几秒钟后未运行，请点击下方链接。",
+    fallbackNote: "如果几秒后未自动跳转，请点击下方按钮。",
     accessBtn: "访问文章",
-    supportBanner: "<strong>支持本地新闻：</strong>该媒体（<strong>{host}</strong>）需要您的支持。请考虑订阅或在其网站上停用广告拦截器。"
+    supportBanner: "<strong>支持本地新闻：</strong>该媒体 (<strong>{host}</strong>) 需要您的支持。请考虑订阅或关闭广告拦截器。"
   },
   cr: {
-    redirectTitle: "Kwayask pimi-cahkêyhk",
-    redirecting: "LienLibre wîci-ayamihtân ôma âcimowin:",
-    fallbackNote: "Kîspin nama-sêmâk pimohtêmakahk, ôta cahkêyhk.",
-    accessBtn: "Ayamihtâ âcimowin",
+    redirectTitle: "Kwayask pimohtêwin",
+    redirecting: "LienLibre kici-pimohtêw nôtinikêwin:",
+    fallbackNote: "Kîspin nama sêmâk pimohtêmakwan, ôta cîhcipahikê.",
+    accessBtn: "Pimohtêw masinahikanihk",
     supportBanner: "<strong>Wîcihiwê kânata âcimowina:</strong> ôma (<strong>{host}</strong>) wîci-nîso-kamik. Masinahikan kie wîcihiwê."
   },
   iu: {
@@ -1574,6 +1574,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "Destination :",
     ipLabel: "Votre IP publique :",
     continueBtn: "Quitter LienLibre et continuer vers {host} à mes risques ↗",
+    cancelSafetyBtn: "Annuler et retourner en lieu sûr (Canada.ca)",
     disclaimerText: "Avertissement : En cliquant ci-dessus, vous accédez à ce site externe sous votre entière responsabilité et déchargez LienLibre de toute responsabilité civile ou pénale quant aux contenus tiers (art. 31.1 LDA).",
     reportBtn: "Signaler un contenu abusif ou illicite au Canada",
     supportBanner: "<strong>Soutenez le journalisme d'intérêt public :</strong> Visitez les médias d'information directement et abonnez-vous pour financer la presse locale."
@@ -1585,6 +1586,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "Destination:",
     ipLabel: "Your public IP:",
     continueBtn: "Leave LienLibre and proceed to {host} at my own risk ↗",
+    cancelSafetyBtn: "Cancel and return to safety (Canada.ca)",
     disclaimerText: "Disclaimer: By clicking above, you proceed to this external website under your sole responsibility and hold LienLibre harmless from all civil or criminal liabilities (s. 31.1 Copyright Act).",
     reportBtn: "Report abusive or illegal content in Canada",
     supportBanner: "<strong>Support public interest journalism:</strong> Consider subscribing directly to local news organizations."
@@ -1596,6 +1598,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "الوجهة:",
     ipLabel: "عنوان IP العام الخاص بك:",
     continueBtn: "مغادرة LienLibre والمتابعة إلى {host} على مسؤوليتي ↗",
+    cancelSafetyBtn: "إلغاء والعودة إلى بر الأمان (Canada.ca)",
     disclaimerText: "إخلاء مسؤولية: بالنقر أعلاه، فإنك تقر بالوصول إلى هذا الموقع الخارجي على مسؤوليتك الكاملة وتخلي طرف LienLibre من أي مسؤولية قانونية.",
     reportBtn: "الإبلاغ عن محتوى غير لائق في كندا",
     supportBanner: "<strong>ادعم الصحافة المستقلة:</strong> فكر في زيارة مواقع الأخبار مباشرة."
@@ -1607,6 +1610,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "Destino:",
     ipLabel: "Su IP pública:",
     continueBtn: "Salir de LienLibre y continuar hacia {host} bajo mi propio riesgo ↗",
+    cancelSafetyBtn: "Cancelar y regresar a un sitio seguro (Canada.ca)",
     disclaimerText: "Descargo legal: Al hacer clic arriba, usted asume la total responsabilidad por acceder a este sitio externo y exonera a LienLibre de cualquier reclamo legal.",
     reportBtn: "Reportar un abuso o fraude en Canadá",
     supportBanner: "<strong>Apoye el periodismo independiente:</strong> Considere suscribirse a medios locales."
@@ -1618,6 +1622,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "Destinazione:",
     ipLabel: "Il tuo IP pubblico:",
     continueBtn: "Lasciare LienLibre e continuare verso {host} a mio rischio ↗",
+    cancelSafetyBtn: "Annulla e torna al sicuro (Canada.ca)",
     disclaimerText: "Esonero di responsabilità: Cliccando sopra, accedi a questo sito esterno sotto la tua esclusiva responsabilità ed esoneri LienLibre da ogni responsabilità.",
     reportBtn: "Segnala un abuso in Canada",
     supportBanner: "<strong>Sostieni il giornalismo:</strong> Considera di abbonarti ai media locali."
@@ -1629,6 +1634,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "目标地址:",
     ipLabel: "您的公网 IP:",
     continueBtn: "离开 LienLibre 并自行承担风险继续访问 {host} ↗",
+    cancelSafetyBtn: "取消并返回安全官方页面 (Canada.ca)",
     disclaimerText: "免责声明：点击上方按钮即代表您确认完全以个人责任访问第三方网站，并免除 LienLibre 的任何民事或刑事法律责任（加拿大版权法第31.1条）。",
     reportBtn: "在加拿大举报滥用或欺诈行为",
     supportBanner: "<strong>支持独立新闻：</strong>请考虑直接订阅本地新闻媒体。"
@@ -1640,6 +1646,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "Tânte pimi-ayâw:",
     ipLabel: "Kiyahk IP pimohtêwin:",
     continueBtn: "Nakatamowin LienLibre êkwa pimohtêw {host} ↗",
+    cancelSafetyBtn: "Pôni-pimohtê êkwa kîwê (Canada.ca)",
     disclaimerText: "Kâ-tôhtamiyan, kiyawaw ka-kiskêyihten ôma kîkway.",
     reportBtn: "Report a scam attempt in Canada",
     supportBanner: "<strong>Wîcihiwê âcimowina:</strong> Masinahikan kie wîcihiwê."
@@ -1651,6 +1658,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "Nuutarvik:",
     ipLabel: "IP-it:",
     continueBtn: "Qimakkugu LienLibre uvalu aturlugu {host} ↗",
+    cancelSafetyBtn: "Nuqqarit uvalu utirlutit (Canada.ca)",
     disclaimerText: "Tuqługu una, illivit nalunaiqtait pilirijjutit.",
     reportBtn: "Report a scam attempt in Canada",
     supportBanner: "<strong>Ikayurlugu tusagaksat:</strong> Una ikayuriqquq."
@@ -1662,6 +1670,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "Tshitisheun:",
     ipLabel: "IP nete:",
     continueBtn: "Tshitshipan LienLibre mak pimohtêw {host} ↗",
+    cancelSafetyBtn: "Tshekât mak tshitshipan (Canada.ca)",
     disclaimerText: "E tshitutamin, tshin ka-nishtutamin mishta aimun.",
     reportBtn: "Report a scam attempt in Canada",
     supportBanner: "<strong>Uitsheue tipatshimun:</strong> Uitsheue tshetshi tutamin."
@@ -1673,6 +1682,7 @@ const WORKER_WARN_TRANSLATIONS = {
     destination: "Destination:",
     ipLabel: "IP:",
     continueBtn: "Yah LienLibre ohni tyohtetyon {host} ↗",
+    cancelSafetyBtn: "Sathôntat ohni satsten (Canada.ca)",
     disclaimerText: "Kwah ok kwahiaton ne thó tsi niiorihwà:ke.",
     reportBtn: "Report a scam in Canada",
     supportBanner: "<strong>Sewarihwakwenihs ne ohwentsia:</strong> Takwarent."
@@ -2257,6 +2267,26 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
       word-break: break-all;
       text-align: right;
     }
+    .btn-cancel-safety {
+      display: block;
+      background-color: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+      text-decoration: none;
+      padding: 0.85rem 1.25rem;
+      border-radius: 0.65rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      transition: all 0.2s;
+      text-align: center;
+      margin-bottom: 0.75rem;
+    }
+    .btn-cancel-safety:hover {
+      background-color: rgba(16, 185, 129, 0.25);
+      border-color: rgba(16, 185, 129, 0.6);
+      color: #a7f3d0;
+      transform: translateY(-1px);
+    }
     .btn-action-leave {
       display: block;
       background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
@@ -2369,6 +2399,11 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
         <span class="info-value">${escapedIp}</span>
       </div>
     </div>
+
+    <!-- Bouton de Sécurité : Annuler et retourner en lieu sûr (Canada.ca) -->
+    <a href="https://www.canada.ca/" class="btn-cancel-safety" rel="noopener noreferrer">
+      🏛️ ${escapeHtml(trans.cancelSafetyBtn || "Annuler et retourner en lieu sûr (Canada.ca)")}
+    </a>
 
     <!-- Action Explicite de Sortie / Transfert de Responsabilité (Pas de compte à rebours) -->
     <a href="${escapedUrl}" class="btn-action-leave" rel="noopener noreferrer nofollow" target="_blank">
