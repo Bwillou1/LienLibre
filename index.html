@@ -345,7 +345,7 @@
       <!-- Center Nav (Desktop - épuré & rapide) -->
       <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-slate-600 dark:text-slate-300">
         <a href="#how-it-works" class="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors" data-i18n="navHowItWorks">Fonctionnement</a>
-        <a href="#alerts-section" class="hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1.5 font-semibold text-red-600/90 dark:text-red-400/90">
+        <a href="./alertes.html" class="hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1.5 font-semibold text-red-600/90 dark:text-red-400/90">
           <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
           <span data-i18n="navAlerts">Alertes Urgence</span>
         </a>
@@ -427,7 +427,7 @@
               <div class="text-[11px] text-slate-500 dark:text-slate-400">Pour zones rurales et bas débit</div>
             </div>
           </a>
-          <a href="#alerts-section" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-red-500/10 text-red-700 dark:text-red-400 font-semibold transition-colors">
+          <a href="./alertes.html" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-red-500/10 text-red-700 dark:text-red-400 font-semibold transition-colors">
             <span>🚨</span>
             <div>
               <div data-i18n="navAlertsMobile">Alertes Sécurité Civile</div>
@@ -439,6 +439,13 @@
             <div>
               <div class="font-semibold">Comment ça marche</div>
               <div class="text-[11px] text-slate-500 dark:text-slate-400">Fonctionnement technique & Fair Dealing</div>
+            </div>
+          </a>
+          <a href="./remerciements.html" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-medium transition-colors">
+            <span>📜</span>
+            <div>
+              <div class="font-semibold">Remerciements & Licences</div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400">ggwave, Meshtastic, txqr, MIT & GPL</div>
             </div>
           </a>
         </div>
@@ -477,7 +484,7 @@
 
         <div class="space-y-1 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
           <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-0.5">📱 Application & Légal</div>
-          <button type="button" id="btn-pwa-install" class="hidden w-full text-left items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 font-medium transition-colors cursor-pointer">
+          <button type="button" id="btn-pwa-install" class="w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 font-medium transition-colors cursor-pointer">
             <span>📥</span>
             <div>
               <div class="font-semibold" data-i18n="pwaInstallBtn">Installer l'application PWA</div>
@@ -2040,6 +2047,79 @@
     </div>
   </div>
 
+  <!-- Modal Installation PWA -->
+  <div id="pwa-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
+    <!-- Backdrop -->
+    <div id="pwa-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Modal Window -->
+    <div class="relative w-full max-w-lg max-h-[90vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">📱</span>
+          <h3 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+            Installer LienLibre sur votre appareil
+          </h3>
+        </div>
+        <button type="button" id="btn-close-pwa-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer la boîte de dialogue">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-5 overflow-y-auto space-y-3.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed custom-scrollbar">
+        <p class="text-slate-700 dark:text-slate-300">
+          LienLibre est une application web progressive (PWA). Elle fonctionne 100% hors ligne et s'installe en quelques secondes sans passer par une boutique d'applications :
+        </p>
+
+        <!-- iOS Safari -->
+        <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1">
+          <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>🍏</span>
+            <span>iPhone / iPad (Safari)</span>
+          </h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400">
+            Touchez le bouton de partage <strong>⎋ (Partager)</strong> en bas de votre écran Safari, faites défiler vers le bas et sélectionnez <strong>« Sur l'écran d'accueil » (+)</strong>.
+          </p>
+        </div>
+
+        <!-- Android -->
+        <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1">
+          <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>🤖</span>
+            <span>Android (Chrome / Samsung Internet)</span>
+          </h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400">
+            Touchez le menu <strong>⋮ (trois points)</strong> en haut à droite, puis sélectionnez <strong>« Installer l'application »</strong> ou <strong>« Ajouter à l'écran d'accueil »</strong>.
+          </p>
+        </div>
+
+        <!-- Desktop Chrome / Edge / Brave -->
+        <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1">
+          <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>💻</span>
+            <span>Ordinateur (Chrome / Edge / Brave)</span>
+          </h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400">
+            Cliquez sur l'icône <strong>📥 Installer</strong> directement à droite dans la barre d'adresses de votre navigateur.
+          </p>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-end shrink-0">
+        <button type="button" id="btn-close-pwa-modal-bottom" class="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs px-5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer">
+          Compris & Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Client-side Logic -->
   <script>
     // Worker Endpoint - Support de décentralisation pour forks et miroirs
@@ -3051,8 +3131,7 @@
     }
 
     // Modal Legal logic
-    const legalModal = document.getElementById('legal-modal');
-    const legalModalBackdrop = document.getElementById('legal-modal-backdrop');
+    const legalModal = document.getElementById('modal-legal');
     const btnOpenLegal = document.getElementById('btn-open-legal');
     const btnFooterLegal = document.getElementById('btn-footer-legal');
     const btnCloseLegal = document.getElementById('btn-close-legal');
@@ -3072,15 +3151,19 @@
     initLegalContact();
 
     function openLegalModal() {
-      legalModal.classList.remove('hidden');
-      document.body.classList.add('modal-active');
+      if (legalModal) {
+        legalModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+      }
     }
 
     function closeLegalModal() {
-      legalModal.classList.add('hidden');
-      document.body.classList.remove('modal-active');
-      if (window.location.hash === '#legal' || window.location.hash === '#mentions-legales') {
-        history.replaceState(null, null, window.location.pathname + window.location.search);
+      if (legalModal) {
+        legalModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+        if (window.location.hash === '#legal' || window.location.hash === '#mentions-legales') {
+          history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
       }
     }
 
@@ -3088,7 +3171,11 @@
     if (btnFooterLegal) btnFooterLegal.addEventListener('click', openLegalModal);
     if (btnCloseLegal) btnCloseLegal.addEventListener('click', closeLegalModal);
     if (btnCloseLegalBottom) btnCloseLegalBottom.addEventListener('click', closeLegalModal);
-    if (legalModalBackdrop) legalModalBackdrop.addEventListener('click', closeLegalModal);
+    if (legalModal) {
+      legalModal.addEventListener('click', (e) => {
+        if (e.target === legalModal) closeLegalModal();
+      });
+    }
 
     if (window.location.hash === '#legal' || window.location.hash === '#mentions-legales') {
       openLegalModal();
@@ -3793,29 +3880,50 @@
       });
     }
 
+    // PWA Modal Wiring
+    const pwaModal = document.getElementById('pwa-modal');
+    const pwaModalBackdrop = document.getElementById('pwa-modal-backdrop');
+    const btnClosePwaModal = document.getElementById('btn-close-pwa-modal');
+    const btnClosePwaModalBottom = document.getElementById('btn-close-pwa-modal-bottom');
+
+    function openPwaModal() {
+      if (pwaModal) {
+        pwaModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+      }
+    }
+
+    function closePwaModal() {
+      if (pwaModal) {
+        pwaModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+      }
+    }
+
+    if (btnClosePwaModal) btnClosePwaModal.addEventListener('click', closePwaModal);
+    if (btnClosePwaModalBottom) btnClosePwaModalBottom.addEventListener('click', closePwaModal);
+    if (pwaModalBackdrop) pwaModalBackdrop.addEventListener('click', closePwaModal);
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      if (btnPwaInstall) {
-        btnPwaInstall.classList.remove('hidden');
-        btnPwaInstall.classList.add('inline-flex');
-      }
     });
 
     if (btnPwaInstall) {
       btnPwaInstall.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          btnPwaInstall.classList.add('hidden');
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            deferredPrompt = null;
+          }
+        } else {
+          openPwaModal();
         }
-        deferredPrompt = null;
       });
     }
 
     window.addEventListener('appinstalled', () => {
-      if (btnPwaInstall) btnPwaInstall.classList.add('hidden');
       deferredPrompt = null;
     });
 
