@@ -217,6 +217,29 @@
     </div>
   </main>
 
+  <!-- Décodeur de Paquet Meshtastic & Récepteur Sonore (Lite) -->
+  <section class="card" style="border: 1px solid #6366f1;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+      <h2 style="font-size: 0.95rem; font-weight: 700; color: #6366f1;">📻 Décodeur Radio & Son (Mesh / ggwave)</h2>
+      <button type="button" class="btn sec" id="btn-lite-sample-mesh" style="padding: 2px 6px; font-size: 0.7rem;">🎲 Exemple</button>
+    </div>
+    <div style="margin-bottom: 6px;">
+      <textarea id="lite-mesh-input" rows="2" placeholder="Collez un paquet radio Meshtastic ou capsule #o=..." style="width: 100%; box-sizing: border-box; font-size: 0.75rem; font-family: monospace; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--box); color: var(--text);"></textarea>
+    </div>
+    <div class="btn-group">
+      <button type="button" id="btn-lite-decode-input" class="btn" style="padding: 4px 8px; font-size: 0.75rem; background: #6366f1;">⚡ Décoder le paquet</button>
+      <button type="button" id="btn-lite-play-chirp" class="btn sec" style="padding: 4px 8px; font-size: 0.75rem;">🔊 Émettre Son (ggwave)</button>
+    </div>
+    <div id="lite-decode-output" class="hidden" style="margin-top: 8px; padding: 8px; background: var(--box); border-radius: 6px; font-size: 0.8rem; border: 1px solid var(--border);">
+      <div id="lite-dec-title" style="font-weight: bold; color: #6366f1;"></div>
+      <div id="lite-dec-summary" style="margin-top: 4px; font-size: 0.75rem;"></div>
+      <div style="margin-top: 6px; display: flex; gap: 6px;">
+        <button type="button" id="btn-lite-load-dec" class="btn" style="padding: 3px 6px; font-size: 0.7rem;">⚡ Charger dans le formulaire</button>
+        <button type="button" id="btn-lite-copy-dec" class="btn sec" style="padding: 3px 6px; font-size: 0.7rem;">📋 Copier</button>
+      </div>
+    </div>
+  </section>
+
   <!-- Hub des Alertes d'Urgence Civile -->
   <section class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -605,6 +628,112 @@
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
     updateOnlineStatus();
+
+    // Decoder Card Handlers (Lite)
+    const liteMeshInput = document.getElementById('lite-mesh-input');
+    const btnLiteDecodeInput = document.getElementById('btn-lite-decode-input');
+    const btnLitePlayChirp = document.getElementById('btn-lite-play-chirp');
+    const btnLiteSampleMesh = document.getElementById('btn-lite-sample-mesh');
+    const liteDecodeOutput = document.getElementById('lite-decode-output');
+    const liteDecTitle = document.getElementById('lite-dec-title');
+    const liteDecSummary = document.getElementById('lite-dec-summary');
+    const btnLiteLoadDec = document.getElementById('btn-lite-load-dec');
+    const btnLiteCopyDec = document.getElementById('btn-lite-copy-dec');
+
+    let liteDecodedLink = '';
+
+    function decodeLitePacket(raw) {
+      if (!raw || !raw.trim()) return;
+      const text = raw.trim();
+      let foundUrl = '';
+      let cap = null;
+
+      const capMatch = text.match(/#o=([A-Za-z0-9_\-]+)/);
+      if (capMatch) {
+        cap = OfflineCapsule.decode(capMatch[1]);
+      }
+
+      const urlMatch = text.match(/https?:\/\/[^\s]+/i);
+      if (urlMatch) {
+        foundUrl = urlMatch[0];
+        if (!cap && foundUrl.includes('#o=')) {
+          const part = foundUrl.split('#o=')[1];
+          if (part) cap = OfflineCapsule.decode(part.split('&')[0]);
+        }
+      }
+
+      let title = '';
+      let summary = '';
+      if (cap && cap.u) {
+        title = cap.t || 'Capsule autonome';
+        summary = cap.s || `Source: ${cap.u}`;
+        liteDecodedLink = cap.u;
+      } else if (foundUrl) {
+        title = text.replace(foundUrl, '').replace(/\[LienLibre[^\]]*\]/gi, '').replace(/#\w+/g, '').trim() || foundUrl;
+        summary = `Lien radio extrait : ${foundUrl}`;
+        liteDecodedLink = foundUrl;
+      } else {
+        title = "Paquet Radio Brut";
+        summary = text;
+        liteDecodedLink = '';
+      }
+
+      if (liteDecTitle) liteDecTitle.textContent = title;
+      if (liteDecSummary) liteDecSummary.textContent = summary;
+
+      if (btnLiteLoadDec) {
+        if (liteDecodedLink) {
+          btnLiteLoadDec.style.display = 'inline-block';
+          btnLiteLoadDec.onclick = () => {
+            urlIn.value = liteDecodedLink;
+            form.dispatchEvent(new Event('submit'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          };
+        } else {
+          btnLiteLoadDec.style.display = 'none';
+        }
+      }
+
+      if (btnLiteCopyDec) {
+        btnLiteCopyDec.onclick = () => {
+          navigator.clipboard.writeText(`${title}\n${summary}\n${liteDecodedLink}`);
+          btnLiteCopyDec.textContent = '✅ Copié !';
+          setTimeout(() => { btnLiteCopyDec.textContent = '📋 Copier'; }, 2000);
+        };
+      }
+
+      if (liteDecodeOutput) liteDecodeOutput.classList.remove('hidden');
+    }
+
+    if (btnLiteDecodeInput) {
+      btnLiteDecodeInput.addEventListener('click', () => {
+        decodeLitePacket(liteMeshInput ? liteMeshInput.value : '');
+      });
+    }
+
+    if (btnLitePlayChirp) {
+      btnLitePlayChirp.addEventListener('click', () => {
+        playAudioGgwaveSequence(btnLitePlayChirp);
+      });
+    }
+
+    if (btnLiteSampleMesh) {
+      btnLiteSampleMesh.addEventListener('click', () => {
+        const samplePayload = OfflineCapsule.encode({
+          u: 'https://sopfeu.qc.ca',
+          d: 'sopfeu.qc.ca',
+          t: 'SOPFEU — Indice Feux de Forêt',
+          s: 'Alerte incendie active sur les zones boréales.',
+          e: true,
+          ts: Math.floor(Date.now() / 1000)
+        });
+        const sample = `[LienLibre Mesh] SOPFEU Alerte\nhttps://bwillou1.github.io/LienLibre/lite.html#o=${samplePayload}\n#radio #lora`;
+        if (liteMeshInput) {
+          liteMeshInput.value = sample;
+          decodeLitePacket(sample);
+        }
+      });
+    }
 
     window.addEventListener('DOMContentLoaded', checkAndRenderOfflineCapsule);
     window.addEventListener('hashchange', checkAndRenderOfflineCapsule);

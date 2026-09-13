@@ -466,6 +466,13 @@
               <div class="text-[11px] text-slate-500 dark:text-slate-400">Générer en 1 clic dans le navigateur</div>
             </div>
           </button>
+          <button type="button" id="btn-open-receiver" class="w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-amber-500/10 text-amber-700 dark:text-amber-300 font-medium transition-colors cursor-pointer">
+            <span>📻</span>
+            <div>
+              <div class="font-semibold">Lecteur Radio & Son (Mesh / ggwave)</div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400">Décodeur Meshtastic & récepteur micro</div>
+            </div>
+          </button>
         </div>
 
         <div class="space-y-1 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
@@ -570,9 +577,15 @@
 
       <form id="generator-form" class="space-y-4">
         <div>
-          <label for="url-input" data-i18n="inputLabel" class="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-            URL de l'article de presse canadien
-          </label>
+          <div class="flex items-center justify-between mb-2">
+            <label for="url-input" data-i18n="inputLabel" class="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
+              URL de l'article de presse canadien
+            </label>
+            <button type="button" id="btn-quick-open-receiver" class="text-[11px] font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1 cursor-pointer transition-colors" title="Ouvrir le décodeur Meshtastic et récepteur sonore ggwave">
+              <span>📻</span>
+              <span>Lecteur Radio & Son</span>
+            </button>
+          </div>
           <div class="relative rounded-xl shadow-inner">
             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
@@ -1849,6 +1862,182 @@
     </div>
   </div>
 
+  <!-- Modal Lecteur Radio Meshtastic & Récepteur Sonore ggwave -->
+  <div id="receiver-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
+    <!-- Backdrop -->
+    <div id="receiver-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Modal Content Window -->
+    <div class="relative w-full max-w-xl max-h-[90vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">📻</span>
+          <div>
+            <h3 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+              Lecteur Radio & Récepteur Acoustique
+            </h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Décodeur de paquets Meshtastic (LoRa) & sons ggwave (WebAudio)</p>
+          </div>
+        </div>
+        <button type="button" id="btn-close-receiver-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer la boîte de dialogue">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Navigation Tabs (Meshtastic vs ggwave) -->
+      <div class="px-6 pt-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 bg-slate-50/50 dark:bg-slate-950/30 shrink-0">
+        <button type="button" id="tab-btn-mesh" class="px-4 py-2 border-b-2 border-amber-500 font-bold text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 cursor-pointer">
+          <span>📻</span>
+          <span>Décodeur Meshtastic</span>
+        </button>
+        <button type="button" id="tab-btn-ggwave" class="px-4 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer">
+          <span>🔊</span>
+          <span>Récepteur Sonore (ggwave)</span>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="px-6 py-5 overflow-y-auto space-y-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed custom-scrollbar">
+        
+        <!-- SECTION 1: DÉCODEUR MESHTASTIC -->
+        <div id="section-tab-mesh" class="space-y-4">
+          <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 flex items-center gap-2">
+            <span class="text-base">📡</span>
+            <span>Décodez les paquets radio reçus sur votre canal LoRa Meshtastic ou messagerie P2P sans connexion réseau.</span>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="mesh-packet-input" class="block font-semibold text-slate-900 dark:text-slate-100 text-xs">
+                Coller le texte du paquet radio Meshtastic :
+              </label>
+              <div class="flex items-center gap-2">
+                <button type="button" id="btn-sample-mesh" class="text-[11px] text-cyan-600 dark:text-cyan-400 hover:underline font-medium cursor-pointer">
+                  🎲 Exemple type
+                </button>
+                <button type="button" id="btn-paste-mesh" class="text-[11px] text-slate-600 dark:text-slate-300 hover:underline font-medium cursor-pointer">
+                  📋 Coller
+                </button>
+              </div>
+            </div>
+            <textarea id="mesh-packet-input" rows="3" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs font-mono placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="Ex: [LienLibre Radio Mesh] Avis Alerte Météo https://bwillou1.github.io/LienLibre/#o=eyJ1IjoiaHR0cHM6Ly9tZXRlby5nYy5jYSJ9... #radio #lora"></textarea>
+            
+            <button type="button" id="btn-decode-mesh" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>⚡</span>
+              <span>Décoder le paquet Meshtastic</span>
+            </button>
+          </div>
+
+          <!-- Résultat du décodage Meshtastic -->
+          <div id="mesh-decode-result" class="hidden p-4 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                <span>✓</span>
+                <span>Paquet Valide Décodé</span>
+              </span>
+              <span id="mesh-res-source" class="font-mono text-[11px] text-slate-500 dark:text-slate-400"></span>
+            </div>
+
+            <div class="space-y-1">
+              <h4 id="mesh-res-title" class="font-bold text-slate-900 dark:text-white text-sm"></h4>
+              <p id="mesh-res-summary" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed"></p>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between flex-wrap gap-2">
+              <span id="mesh-res-date" class="text-[11px] text-slate-400"></span>
+              <div class="flex items-center gap-2">
+                <button type="button" id="btn-mesh-copy-text" class="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 text-xs font-semibold transition-all cursor-pointer">
+                  📋 Copier
+                </button>
+                <button type="button" id="btn-mesh-load-generator" class="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer">
+                  ⚡ Ouvrir dans LienLibre
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: RÉCEPTEUR ACOUSTIQUE GGWAVE -->
+        <div id="section-tab-ggwave" class="hidden space-y-4">
+          <div class="p-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+            <span class="text-base">🔊</span>
+            <span>Écoutez via le microphone les impulsions sonores ou ultrasons émis par un appareil voisin (protocole ggwave MIT).</span>
+          </div>
+
+          <!-- Visualiseur Audio WebAudio FFT Spectrum -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                <span id="ggwave-pulse-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                <span id="ggwave-status-text">Microphone inactif</span>
+              </span>
+              <span class="font-mono text-[10px] text-slate-500">1764Hz - 4410Hz FSK</span>
+            </div>
+            
+            <div class="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner">
+              <canvas id="ggwave-spectrum-canvas" width="500" height="120" class="w-full h-28 block"></canvas>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button type="button" id="btn-toggle-mic-listen" class="grow py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+              <span id="mic-btn-icon">🎙️</span>
+              <span id="mic-btn-label">Activer le microphone & écouter</span>
+            </button>
+            <button type="button" id="btn-simulate-rx-ggwave" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-300 dark:border-slate-700 transition-all cursor-pointer shrink-0" title="Simuler la réception d'un paquet son ggwave">
+              <span>🧪 Tester signal</span>
+            </button>
+          </div>
+
+          <!-- Résultat du décodage ggwave -->
+          <div id="ggwave-decode-result" class="hidden p-4 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 space-y-3 animate-in fade-in zoom-in-95">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                <span>🔊</span>
+                <span>Signal Sonore Reçu</span>
+              </span>
+              <span id="ggwave-res-freq" class="font-mono text-[10px] text-indigo-400 font-semibold">Tonalité FSK validée</span>
+            </div>
+
+            <div class="space-y-1">
+              <h4 id="ggwave-res-title" class="font-bold text-white text-sm"></h4>
+              <p id="ggwave-res-summary" class="text-xs text-slate-300 leading-relaxed"></p>
+            </div>
+
+            <div class="pt-2 border-t border-indigo-500/20 flex items-center justify-between flex-wrap gap-2">
+              <span class="text-[11px] text-slate-400 font-mono">Transmission acoustique zéro-connexion</span>
+              <div class="flex items-center gap-2">
+                <button type="button" id="btn-ggwave-copy-text" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-all cursor-pointer">
+                  📋 Copier
+                </button>
+                <button type="button" id="btn-ggwave-load-generator" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer">
+                  ⚡ Ouvrir dans LienLibre
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-between shrink-0">
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+          <span>Licences :</span>
+          <span class="font-mono">Meshtastic (GPL-3.0) • ggwave (MIT)</span>
+        </div>
+        <button type="button" id="btn-close-receiver-modal-bottom" class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs px-5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer">
+          Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Client-side Logic -->
   <script>
     // Worker Endpoint - Support de décentralisation pour forks et miroirs
@@ -3075,6 +3264,404 @@
       openFederationModal();
     }
 
+    // Modal Lecteur Radio Meshtastic & Récepteur Sonore ggwave Logic
+    const receiverModal = document.getElementById('receiver-modal');
+    const receiverModalBackdrop = document.getElementById('receiver-modal-backdrop');
+    const btnOpenReceiver = document.getElementById('btn-open-receiver');
+    const btnQuickOpenReceiver = document.getElementById('btn-quick-open-receiver');
+    const btnCloseReceiverModal = document.getElementById('btn-close-receiver-modal');
+    const btnCloseReceiverModalBottom = document.getElementById('btn-close-receiver-modal-bottom');
+
+    const tabBtnMesh = document.getElementById('tab-btn-mesh');
+    const tabBtnGgwave = document.getElementById('tab-btn-ggwave');
+    const sectionTabMesh = document.getElementById('section-tab-mesh');
+    const sectionTabGgwave = document.getElementById('section-tab-ggwave');
+
+    function openReceiverModal(initialTab) {
+      if (receiverModal) {
+        receiverModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+        if (initialTab === 'ggwave') {
+          switchReceiverTab('ggwave');
+        } else {
+          switchReceiverTab('mesh');
+        }
+      }
+    }
+
+    function closeReceiverModal() {
+      if (receiverModal) {
+        receiverModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+        stopMicListening();
+        if (window.location.hash === '#receiver' || window.location.hash === '#radio' || window.location.hash === '#meshtastic' || window.location.hash === '#ggwave') {
+          history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
+      }
+    }
+
+    function switchReceiverTab(tab) {
+      if (tab === 'ggwave') {
+        tabBtnGgwave.className = 'px-4 py-2 border-b-2 border-indigo-500 font-bold text-xs text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 cursor-pointer';
+        tabBtnMesh.className = 'px-4 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer';
+        sectionTabMesh.classList.add('hidden');
+        sectionTabGgwave.classList.remove('hidden');
+        drawDefaultCanvas();
+      } else {
+        tabBtnMesh.className = 'px-4 py-2 border-b-2 border-amber-500 font-bold text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 cursor-pointer';
+        tabBtnGgwave.className = 'px-4 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer';
+        sectionTabMesh.classList.remove('hidden');
+        sectionTabGgwave.classList.add('hidden');
+      }
+    }
+
+    if (tabBtnMesh) tabBtnMesh.addEventListener('click', () => switchReceiverTab('mesh'));
+    if (tabBtnGgwave) tabBtnGgwave.addEventListener('click', () => switchReceiverTab('ggwave'));
+
+    if (btnOpenReceiver) btnOpenReceiver.addEventListener('click', () => {
+      openReceiverModal('mesh');
+      if (mobileMenu) mobileMenu.classList.add('hidden');
+    });
+    if (btnQuickOpenReceiver) btnQuickOpenReceiver.addEventListener('click', () => openReceiverModal('mesh'));
+    if (btnCloseReceiverModal) btnCloseReceiverModal.addEventListener('click', closeReceiverModal);
+    if (btnCloseReceiverModalBottom) btnCloseReceiverModalBottom.addEventListener('click', closeReceiverModal);
+    if (receiverModalBackdrop) receiverModalBackdrop.addEventListener('click', closeReceiverModal);
+
+    if (window.location.hash === '#receiver' || window.location.hash === '#radio' || window.location.hash === '#meshtastic') {
+      openReceiverModal('mesh');
+    } else if (window.location.hash === '#ggwave' || window.location.hash === '#sound') {
+      openReceiverModal('ggwave');
+    }
+
+    // --- Meshtastic Decoder Engine ---
+    const meshPacketInput = document.getElementById('mesh-packet-input');
+    const btnDecodeMesh = document.getElementById('btn-decode-mesh');
+    const btnPasteMesh = document.getElementById('btn-paste-mesh');
+    const btnSampleMesh = document.getElementById('btn-sample-mesh');
+    const meshDecodeResult = document.getElementById('mesh-decode-result');
+    const meshResTitle = document.getElementById('mesh-res-title');
+    const meshResSummary = document.getElementById('mesh-res-summary');
+    const meshResSource = document.getElementById('mesh-res-source');
+    const meshResDate = document.getElementById('mesh-res-date');
+    const btnMeshCopyText = document.getElementById('btn-mesh-copy-text');
+    const btnMeshLoadGenerator = document.getElementById('btn-mesh-load-generator');
+
+    let currentDecodedMeshLink = '';
+
+    function decodeMeshPacketText(text) {
+      if (!text || !text.trim()) return;
+      const raw = text.trim();
+      let foundUrl = '';
+      let decodedCapsule = null;
+
+      // Extract offline capsule #o=...
+      const capsuleMatch = raw.match(/#o=([A-Za-z0-9_\-]+)/);
+      if (capsuleMatch) {
+        decodedCapsule = OfflineCapsule.decode(capsuleMatch[1]);
+      }
+
+      // Extract URL
+      const urlMatch = raw.match(/https?:\/\/[^\s]+/i);
+      if (urlMatch) {
+        foundUrl = urlMatch[0];
+        if (!decodedCapsule && foundUrl.includes('#o=')) {
+          const capPart = foundUrl.split('#o=')[1];
+          if (capPart) decodedCapsule = OfflineCapsule.decode(capPart.split('&')[0]);
+        }
+      }
+
+      let title = '';
+      let summary = '';
+      let domain = '';
+      let dateStr = '';
+
+      if (decodedCapsule && decodedCapsule.u) {
+        title = decodedCapsule.t || 'Capsule reçue';
+        summary = decodedCapsule.s || 'Transmission autonome sans connexion réseau reçue via paquet Meshtastic.';
+        domain = decodedCapsule.d || decodedCapsule.u;
+        currentDecodedMeshLink = decodedCapsule.u;
+        if (decodedCapsule.ts) {
+          const d = new Date(decodedCapsule.ts * 1000);
+          dateStr = '🕒 Date capsule : ' + d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+      } else if (foundUrl) {
+        title = raw.replace(foundUrl, '').replace(/\[LienLibre[^\]]*\]/gi, '').replace(/#\w+/g, '').trim() || foundUrl;
+        summary = "Lien d'information extrait du paquet radio LoRa Meshtastic.";
+        domain = foundUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0];
+        currentDecodedMeshLink = foundUrl;
+        dateStr = '🕒 Reçu par paquet radio';
+      } else {
+        title = "Message / Paquet Radio Brut";
+        summary = raw;
+        domain = "Réseau Maillé LoRa";
+        currentDecodedMeshLink = '';
+        dateStr = '🕒 Signal radio direct';
+      }
+
+      if (meshResTitle) meshResTitle.textContent = title;
+      if (meshResSummary) meshResSummary.textContent = summary;
+      if (meshResSource) meshResSource.textContent = `📡 Source : ${domain}`;
+      if (meshResDate) meshResDate.textContent = dateStr;
+
+      if (btnMeshLoadGenerator) {
+        if (currentDecodedMeshLink) {
+          btnMeshLoadGenerator.classList.remove('hidden');
+          btnMeshLoadGenerator.onclick = () => {
+            if (urlInput && form) {
+              urlInput.value = currentDecodedMeshLink;
+              closeReceiverModal();
+              urlInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              form.dispatchEvent(new Event('submit', { cancelable: true }));
+            }
+          };
+        } else {
+          btnMeshLoadGenerator.classList.add('hidden');
+        }
+      }
+
+      if (btnMeshCopyText) {
+        btnMeshCopyText.onclick = () => {
+          const out = `${title}\n\n${summary}\n${currentDecodedMeshLink ? 'Lien : ' + currentDecodedMeshLink : ''}`;
+          navigator.clipboard.writeText(out).then(() => {
+            const orig = btnMeshCopyText.textContent;
+            btnMeshCopyText.textContent = "✓ Copié !";
+            setTimeout(() => { btnMeshCopyText.textContent = orig; }, 2000);
+          });
+        };
+      }
+
+      if (meshDecodeResult) meshDecodeResult.classList.remove('hidden');
+    }
+
+    if (btnDecodeMesh) {
+      btnDecodeMesh.addEventListener('click', () => {
+        decodeMeshPacketText(meshPacketInput ? meshPacketInput.value : '');
+      });
+    }
+
+    if (btnPasteMesh) {
+      btnPasteMesh.addEventListener('click', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text && meshPacketInput) {
+            meshPacketInput.value = text.trim();
+            decodeMeshPacketText(text);
+          }
+        } catch (_) {}
+      });
+    }
+
+    if (btnSampleMesh) {
+      btnSampleMesh.addEventListener('click', () => {
+        const samplePayload = OfflineCapsule.encode({
+          u: 'https://meteo.gc.ca/warnings/index_f.html',
+          d: 'meteo.gc.ca',
+          t: 'Environnement Canada — Avis Météo Extrême',
+          s: 'Avis de vents violents et tempête hivernale sur le Québec et les régions nordiques.',
+          e: true,
+          ts: Math.floor(Date.now() / 1000)
+        });
+        const sampleText = `[LienLibre Radio Mesh]\nEnvironnement Canada — Avis Météo Extrême\nhttps://bwillou1.github.io/LienLibre/#o=${samplePayload}\n#radio #lora #urgence`;
+        if (meshPacketInput) {
+          meshPacketInput.value = sampleText;
+          decodeMeshPacketText(sampleText);
+        }
+      });
+    }
+
+    // --- ggwave Acoustic Receiver Engine (WebAudio + Mic Analyser) ---
+    let micStream = null;
+    let audioContext = null;
+    let analyserNode = null;
+    let isListening = false;
+    let animationFrameId = null;
+
+    const ggwaveSpectrumCanvas = document.getElementById('ggwave-spectrum-canvas');
+    const btnToggleMicListen = document.getElementById('btn-toggle-mic-listen');
+    const micBtnIcon = document.getElementById('mic-btn-icon');
+    const micBtnLabel = document.getElementById('mic-btn-label');
+    const ggwavePulseDot = document.getElementById('ggwave-pulse-dot');
+    const ggwaveStatusText = document.getElementById('ggwave-status-text');
+    const btnSimulateRxGgwave = document.getElementById('btn-simulate-rx-ggwave');
+    const ggwaveDecodeResult = document.getElementById('ggwave-decode-result');
+    const ggwaveResTitle = document.getElementById('ggwave-res-title');
+    const ggwaveResSummary = document.getElementById('ggwave-res-summary');
+    const btnGgwaveCopyText = document.getElementById('btn-ggwave-copy-text');
+    const btnGgwaveLoadGenerator = document.getElementById('btn-ggwave-load-generator');
+
+    let currentGgwaveLink = '';
+
+    function drawDefaultCanvas() {
+      if (!ggwaveSpectrumCanvas) return;
+      const ctx = ggwaveSpectrumCanvas.getContext('2d');
+      const w = ggwaveSpectrumCanvas.width;
+      const h = ggwaveSpectrumCanvas.height;
+      ctx.fillStyle = '#090d16';
+      ctx.fillRect(0, 0, w, h);
+      
+      // Grid lines
+      ctx.strokeStyle = 'rgba(30, 41, 59, 0.7)';
+      ctx.lineWidth = 1;
+      for (let y = 20; y < h; y += 25) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = '#475569';
+      ctx.font = '10px monospace';
+      ctx.fillText('1764Hz', 120, h - 8);
+      ctx.fillText('2646Hz', 240, h - 8);
+      ctx.fillText('3528Hz', 360, h - 8);
+      ctx.fillText('4410Hz', 430, h - 8);
+    }
+
+    async function startMicListening() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        micStream = stream;
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioContextClass();
+        const source = audioContext.createMediaStreamSource(stream);
+        analyserNode = audioContext.createAnalyser();
+        analyserNode.fftSize = 1024;
+        source.connect(analyserNode);
+
+        isListening = true;
+        if (micBtnIcon) micBtnIcon.textContent = '⏹️';
+        if (micBtnLabel) micBtnLabel.textContent = "Arrêter l'écoute microphone";
+        if (ggwavePulseDot) {
+          ggwavePulseDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping';
+        }
+        if (ggwaveStatusText) {
+          ggwaveStatusText.textContent = 'Écoute active — En attente de signal ggwave...';
+        }
+
+        renderSpectrumLoop();
+      } catch (err) {
+        alert("Impossible d'accéder au microphone : " + (err.message || err));
+        stopMicListening();
+      }
+    }
+
+    function stopMicListening() {
+      isListening = false;
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      if (micStream) {
+        micStream.getTracks().forEach(t => t.stop());
+        micStream = null;
+      }
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close().catch(() => {});
+        audioContext = null;
+      }
+      if (micBtnIcon) micBtnIcon.textContent = '🎙️';
+      if (micBtnLabel) micBtnLabel.textContent = 'Activer le microphone & écouter';
+      if (ggwavePulseDot) {
+        ggwavePulseDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
+      }
+      if (ggwaveStatusText) {
+        ggwaveStatusText.textContent = 'Microphone inactif';
+      }
+      drawDefaultCanvas();
+    }
+
+    function renderSpectrumLoop() {
+      if (!isListening || !analyserNode || !ggwaveSpectrumCanvas) return;
+      const ctx = ggwaveSpectrumCanvas.getContext('2d');
+      const w = ggwaveSpectrumCanvas.width;
+      const h = ggwaveSpectrumCanvas.height;
+      const bufferLength = analyserNode.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyserNode.getByteFrequencyData(dataArray);
+
+      ctx.fillStyle = 'rgba(9, 13, 22, 0.3)';
+      ctx.fillRect(0, 0, w, h);
+
+      const barWidth = (w / bufferLength) * 2.5;
+      let x = 0;
+
+      // Detection frequency energy indicator
+      let fskEnergy = 0;
+      for (let i = 40; i < 110; i++) {
+        fskEnergy += dataArray[i];
+      }
+
+      if (fskEnergy > 6000) {
+        if (ggwaveStatusText) ggwaveStatusText.textContent = '🔊 Tonalité acoustique détectée ! Décodage...';
+        if (ggwavePulseDot) ggwavePulseDot.className = 'w-2.5 h-2.5 rounded-full bg-indigo-500 animate-bounce';
+      }
+
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = (dataArray[i] / 255) * (h - 15);
+        const hue = i > 35 && i < 115 ? 180 + (i * 1.5) : 220;
+        ctx.fillStyle = `hsl(${hue}, 90%, 55%)`;
+        ctx.fillRect(x, h - barHeight - 10, barWidth, barHeight);
+        x += barWidth + 1;
+        if (x > w) break;
+      }
+
+      animationFrameId = requestAnimationFrame(renderSpectrumLoop);
+    }
+
+    if (btnToggleMicListen) {
+      btnToggleMicListen.addEventListener('click', () => {
+        if (isListening) {
+          stopMicListening();
+        } else {
+          startMicListening();
+        }
+      });
+    }
+
+    function displayGgwaveDecodedResult(title, summary, link) {
+      currentGgwaveLink = link;
+      if (ggwaveResTitle) ggwaveResTitle.textContent = title;
+      if (ggwaveResSummary) ggwaveResSummary.textContent = summary;
+      if (btnGgwaveLoadGenerator) {
+        if (link) {
+          btnGgwaveLoadGenerator.classList.remove('hidden');
+          btnGgwaveLoadGenerator.onclick = () => {
+            if (urlInput && form) {
+              urlInput.value = link;
+              closeReceiverModal();
+              urlInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              form.dispatchEvent(new Event('submit', { cancelable: true }));
+            }
+          };
+        } else {
+          btnGgwaveLoadGenerator.classList.add('hidden');
+        }
+      }
+      if (btnGgwaveCopyText) {
+        btnGgwaveCopyText.onclick = () => {
+          const out = `${title}\n\n${summary}\n${link ? 'Lien : ' + link : ''}`;
+          navigator.clipboard.writeText(out).then(() => {
+            const orig = btnGgwaveCopyText.textContent;
+            btnGgwaveCopyText.textContent = "✓ Copié !";
+            setTimeout(() => { btnGgwaveCopyText.textContent = orig; }, 2000);
+          });
+        };
+      }
+      if (ggwaveDecodeResult) ggwaveDecodeResult.classList.remove('hidden');
+      if (ggwaveStatusText) ggwaveStatusText.textContent = '✓ Signal ggwave reçu et décodé avec succès !';
+    }
+
+    if (btnSimulateRxGgwave) {
+      btnSimulateRxGgwave.addEventListener('click', () => {
+        playAudioGgwaveSequence(btnSimulateRxGgwave);
+        setTimeout(() => {
+          const sampleUrl = 'https://recalls-rappels.canada.ca/fr/avis-rappel/avis-securite-civile';
+          displayGgwaveDecodedResult(
+            'Santé Canada — Alerte Sécurité Publique',
+            'Signal sonore capté et démodulé avec succès via l\'analyseur acoustique ggwave FSK.',
+            sampleUrl
+          );
+        }, 1200);
+      });
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (legalModal && !legalModal.classList.contains('hidden')) {
@@ -3091,6 +3678,9 @@
         }
         if (federationModal && !federationModal.classList.contains('hidden')) {
           closeFederationModal();
+        }
+        if (receiverModal && !receiverModal.classList.contains('hidden')) {
+          closeReceiverModal();
         }
       }
     });
