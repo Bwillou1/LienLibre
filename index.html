@@ -1423,6 +1423,21 @@
       return '';
     }
 
+    // Récupération dynamique du dépôt GitHub (pour forks et miroirs)
+    function getGitHubRepo() {
+      if (typeof window.LIENLIBRE_GITHUB_REPO === 'string' && window.LIENLIBRE_GITHUB_REPO.trim()) {
+        return window.LIENLIBRE_GITHUB_REPO.trim();
+      }
+      const host = window.location.hostname;
+      if (host.endsWith('.github.io')) {
+        const user = host.split('.')[0];
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        const repo = pathParts[0] || 'LienLibre';
+        return `${user}/${repo}`;
+      }
+      return 'Bwillou1/LienLibre';
+    }
+
     // Traductions complètes pour 10 langues (FR, EN, AR, ES, IT, ZH, CR, IU, IN, MOH)
     const TRANSLATIONS = {
       fr: {
@@ -2252,10 +2267,10 @@
 
     function initLegalContact() {
       if (legalContactEmailText) {
-        legalContactEmailText.textContent = "Guichet GitHub (Issues & Pull Requests)";
+        legalContactEmailText.textContent = `Guichet GitHub (${getGitHubRepo()})`;
       }
       if (legalContactEmailBtn) {
-        legalContactEmailBtn.href = "https://github.com/Bwillou1/LienLibre/issues/new?template=signalement-abus.yml";
+        legalContactEmailBtn.href = `https://github.com/${getGitHubRepo()}/issues/new?template=signalement-abus.yml`;
         legalContactEmailBtn.target = "_blank";
       }
     }
@@ -2649,7 +2664,7 @@
 
     function generateMailtoUrl(lang, domain) {
       const domainClean = (domain || "").replace(/^www\./i, '');
-      return `https://github.com/Bwillou1/LienLibre/issues/new?template=demande-ajout-media.yml&title=${encodeURIComponent(`[Ajout Média] : ${domainClean}`)}`;
+      return `https://github.com/${getGitHubRepo()}/issues/new?template=demande-ajout-media.yml&title=${encodeURIComponent(`[Ajout Média] : ${domainClean}`)}`;
     }
 
     // Share Project Logic
@@ -2782,7 +2797,7 @@
     // Report Abuse handler (Header, Footer, Mobile)
     function triggerReportAbuse() {
       const currentDomain = (currentUnverifiedDomain || (urlInput && urlInput.value.trim().replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0]) || '');
-      const url = `https://github.com/Bwillou1/LienLibre/issues/new?template=signalement-abus.yml&title=${encodeURIComponent('[Signalement Abus] : ' + currentDomain)}`;
+      const url = `https://github.com/${getGitHubRepo()}/issues/new?template=signalement-abus.yml&title=${encodeURIComponent('[Signalement Abus] : ' + currentDomain)}`;
       window.open(url, '_blank');
     }
 
