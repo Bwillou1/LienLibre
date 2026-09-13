@@ -1,14 +1,17 @@
-// LienLibre Service Worker (PWA) - Version 7 (Emergency Hub, Federation & Ultra-Lite Mode)
-const CACHE_NAME = 'lienlibre-pwa-v7';
+// LienLibre Service Worker (PWA) - Version 8 (Offline TXQR Streams, Mesh & Audio)
+const CACHE_NAME = 'lienlibre-pwa-v8';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './alertes.html',
   './lite.html',
+  './remerciements.html',
+  './politiques.html',
   './manifest.json',
   './icon.svg',
   './favicon.svg',
-  './js/qr.js'
+  './js/qr.js',
+  './js/txqr.js'
 ];
 
 self.addEventListener('install', (event) => {

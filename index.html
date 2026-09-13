@@ -322,6 +322,7 @@
     }
   </style>
   <script src="./js/qr.js"></script>
+  <script src="./js/txqr.js"></script>
 </head>
 <body class="text-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-cyan-500 selection:text-white overflow-x-hidden">
 
@@ -711,17 +712,31 @@
           </div>
 
           <!-- Interactive QR Code Panel -->
+          <!-- Interactive QR Code Panel (Static + TXQR Animated Stream) -->
           <div id="qr-panel" class="hidden p-4 sm:p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-md space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="text-lg">📱</span>
-                <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white" data-i18n="qrPanelTitle">Code QR instantané pour partage physique ou mobile</h4>
+                <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white" data-i18n="qrPanelTitle">Code QR & Flux TXQR Animé (Haut Débit)</h4>
               </div>
               <button type="button" id="btn-close-qr" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer le QR Code">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
-            <div class="flex flex-col sm:flex-row items-center gap-5 justify-center sm:justify-start">
+
+            <!-- Sub-tabs for QR: Static vs TXQR Animated Stream -->
+            <div class="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+              <button type="button" id="btn-qr-subtab-static" class="flex-1 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white shadow-xs transition-all cursor-pointer">
+                📷 QR Code Fixe
+              </button>
+              <button type="button" id="btn-qr-subtab-txqr" class="flex-1 py-1.5 px-3 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                <span>🎞️ Flux Animé (TXQR)</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">divan</span>
+              </button>
+            </div>
+
+            <!-- VIEW 1: STATIC QR CODE -->
+            <div id="qr-view-static" class="flex flex-col sm:flex-row items-center gap-5 justify-center sm:justify-start">
               <div id="qr-canvas-container" class="bg-white p-3 rounded-xl border border-slate-200 shadow-xs flex items-center justify-center shrink-0">
                 <canvas id="qr-code-canvas" class="w-40 h-40 sm:w-44 sm:h-44 block"></canvas>
               </div>
@@ -749,6 +764,38 @@
                 </div>
               </div>
             </div>
+
+            <!-- VIEW 2: TXQR ANIMATED QR STREAM (Créateur / Émetteur TXQR) -->
+            <div id="qr-view-txqr" class="hidden flex flex-col sm:flex-row items-center gap-5 justify-center sm:justify-start">
+              <div class="bg-white p-3 rounded-xl border border-sky-300 dark:border-sky-700 shadow-md flex flex-col items-center justify-center shrink-0">
+                <canvas id="txqr-anim-canvas" class="w-40 h-40 sm:w-44 sm:h-44 block"></canvas>
+                <div class="w-full mt-2 flex items-center justify-between text-[11px] font-mono font-semibold text-slate-700">
+                  <span id="txqr-frame-badge">Trame 1/1</span>
+                  <span id="txqr-fps-badge" class="text-sky-600">8 FPS</span>
+                </div>
+              </div>
+              <div class="space-y-3 text-center sm:text-left grow">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-700 dark:text-sky-300 text-[11px] font-semibold border border-sky-500/30">
+                  <span>🎞️ Protocole TXQR (Ivan Daniluk - MIT)</span>
+                </div>
+                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Flux vidéo haute densité diffusant l'article complet trame par trame. L'autre personne pointe simplement son scanner TXQR (onglet Lecteur) pour aspirer l'article en 2 secondes sans Wi-Fi.
+                </p>
+                <div class="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
+                  <button type="button" id="btn-txqr-play-pause" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span id="txqr-play-icon">⏸️</span>
+                    <span id="txqr-play-text">Pause</span>
+                  </button>
+                  <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+                    <span class="text-[11px] px-1.5 text-slate-400">Vitesse :</span>
+                    <button type="button" class="btn-txqr-speed px-2 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer" data-fps="5">5 fps</button>
+                    <button type="button" class="btn-txqr-speed px-2 py-1 rounded-lg text-[11px] font-bold bg-sky-600 text-white transition-all cursor-pointer" data-fps="8">8 fps</button>
+                    <button type="button" class="btn-txqr-speed px-2 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer" data-fps="12">12 fps</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <!-- Direct 1-Click Social & Messaging Share Toolbar (Online Mode) -->
@@ -1885,9 +1932,9 @@
           <span class="text-xl">📻</span>
           <div>
             <h3 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white">
-              Lecteur Radio & Récepteur Acoustique
+              Lecteur Radio, Son & Scanner TXQR
             </h3>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">Décodeur de paquets Meshtastic (LoRa) & sons ggwave (WebAudio)</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Décodeur Meshtastic (LoRa), récepteur son ggwave & scanner QR animé TXQR</p>
           </div>
         </div>
         <button type="button" id="btn-close-receiver-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer la boîte de dialogue">
@@ -1897,15 +1944,19 @@
         </button>
       </div>
 
-      <!-- Navigation Tabs (Meshtastic vs ggwave) -->
-      <div class="px-6 pt-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 bg-slate-50/50 dark:bg-slate-950/30 shrink-0">
-        <button type="button" id="tab-btn-mesh" class="px-4 py-2 border-b-2 border-amber-500 font-bold text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 cursor-pointer">
+      <!-- Navigation Tabs (Meshtastic vs ggwave vs TXQR) -->
+      <div class="px-6 pt-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2 bg-slate-50/50 dark:bg-slate-950/30 shrink-0 overflow-x-auto">
+        <button type="button" id="tab-btn-mesh" class="px-3.5 py-2 border-b-2 border-amber-500 font-bold text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
           <span>📻</span>
           <span>Décodeur Meshtastic</span>
         </button>
-        <button type="button" id="tab-btn-ggwave" class="px-4 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer">
+        <button type="button" id="tab-btn-ggwave" class="px-3.5 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
           <span>🔊</span>
-          <span>Récepteur Sonore (ggwave)</span>
+          <span>Récepteur Son (ggwave)</span>
+        </button>
+        <button type="button" id="tab-btn-txqr" class="px-3.5 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
+          <span>🎞️</span>
+          <span>Scanner TXQR (QR Animé)</span>
         </button>
       </div>
 
@@ -2031,13 +2082,93 @@
           </div>
         </div>
 
+        <!-- SECTION 3: SCANNER & RÉCEPTEUR TXQR (QR ANIMÉ) -->
+        <div id="section-tab-txqr" class="hidden space-y-4">
+          <div class="p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-900 dark:text-sky-200 flex items-center gap-2">
+            <span class="text-base">🎞️</span>
+            <span>Visez un flux de QR codes animés (TXQR par Ivan Daniluk) avec votre caméra pour aspirer un article complet à 8-15 images/sec.</span>
+          </div>
+
+          <!-- Video Viewport / Reticle for Camera Scanning -->
+          <div class="relative rounded-2xl overflow-hidden border border-slate-700 bg-black shadow-inner flex items-center justify-center min-h-[180px]">
+            <video id="txqr-scanner-video" class="w-full h-52 object-cover hidden" playsinline autoplay muted></video>
+            
+            <!-- Idle / Waiting Placeholder -->
+            <div id="txqr-scanner-placeholder" class="p-6 text-center space-y-2">
+              <span class="text-3xl">📷</span>
+              <p class="text-xs text-slate-400">Caméra en attente. Cliquez ci-dessous pour démarrer le scanner vidéo.</p>
+            </div>
+
+            <!-- Reticle Target Overlay -->
+            <div id="txqr-scanner-reticle" class="hidden absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div class="w-36 h-36 border-2 border-dashed border-sky-400 rounded-2xl animate-pulse"></div>
+            </div>
+          </div>
+
+          <!-- Chunk Progress Bar & Acquisition Grid -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                <span id="txqr-rx-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                <span id="txqr-rx-status">En attente de trames...</span>
+              </span>
+              <span id="txqr-chunks-count" class="font-mono text-[11px] text-sky-600 dark:text-sky-400 font-bold">0 / 0 trames (0%)</span>
+            </div>
+            
+            <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div id="txqr-rx-progress-bar" class="bg-gradient-to-r from-sky-500 to-indigo-600 h-full w-0 transition-all duration-150"></div>
+            </div>
+
+            <div id="txqr-chunks-matrix" class="flex flex-wrap gap-1 pt-1 max-h-16 overflow-y-auto"></div>
+          </div>
+
+          <!-- Camera Controls -->
+          <div class="flex items-center gap-2">
+            <button type="button" id="btn-toggle-txqr-cam" class="grow py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+              <span id="txqr-cam-btn-icon">📷</span>
+              <span id="txqr-cam-btn-label">Démarrer la caméra & scanner</span>
+            </button>
+            <button type="button" id="btn-simulate-txqr-stream" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-300 dark:border-slate-700 transition-all cursor-pointer shrink-0" title="Simuler la réception d'un flux TXQR animé sans caméra">
+              <span>🧪 Tester flux</span>
+            </button>
+          </div>
+
+          <!-- Résultat du décodage TXQR -->
+          <div id="txqr-decode-result" class="hidden p-4 rounded-2xl bg-sky-950/30 border border-sky-500/30 space-y-3 animate-in fade-in zoom-in-95">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                <span>✓</span>
+                <span>Flux TXQR Reconstitué</span>
+              </span>
+              <span id="txqr-res-badge" class="font-mono text-[10px] text-sky-400 font-semibold">100% Intégrité</span>
+            </div>
+
+            <div class="space-y-1">
+              <h4 id="txqr-res-title" class="font-bold text-white text-sm"></h4>
+              <p id="txqr-res-summary" class="text-xs text-slate-300 leading-relaxed"></p>
+            </div>
+
+            <div class="pt-2 border-t border-sky-500/20 flex items-center justify-between flex-wrap gap-2">
+              <span class="text-[11px] text-slate-400 font-mono">Transfert optique vidéo ultra-rapide</span>
+              <div class="flex items-center gap-2">
+                <button type="button" id="btn-txqr-copy-text" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-all cursor-pointer">
+                  📋 Copier
+                </button>
+                <button type="button" id="btn-txqr-load-generator" class="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer">
+                  ⚡ Ouvrir dans LienLibre
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Modal Footer -->
       <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-between shrink-0">
-        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 flex-wrap">
           <span>Licences :</span>
-          <span class="font-mono">Meshtastic (GPL-3.0) • ggwave (MIT)</span>
+          <span class="font-mono">Meshtastic (GPL-3.0) • ggwave (MIT) • txqr (MIT)</span>
         </div>
         <button type="button" id="btn-close-receiver-modal-bottom" class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs px-5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer">
           Fermer
@@ -3363,8 +3494,10 @@
 
     const tabBtnMesh = document.getElementById('tab-btn-mesh');
     const tabBtnGgwave = document.getElementById('tab-btn-ggwave');
+    const tabBtnTxqr = document.getElementById('tab-btn-txqr');
     const sectionTabMesh = document.getElementById('section-tab-mesh');
     const sectionTabGgwave = document.getElementById('section-tab-ggwave');
+    const sectionTabTxqr = document.getElementById('section-tab-txqr');
 
     function openReceiverModal(initialTab) {
       if (receiverModal) {
@@ -3372,6 +3505,8 @@
         document.body.classList.add('modal-active');
         if (initialTab === 'ggwave') {
           switchReceiverTab('ggwave');
+        } else if (initialTab === 'txqr') {
+          switchReceiverTab('txqr');
         } else {
           switchReceiverTab('mesh');
         }
@@ -3383,29 +3518,51 @@
         receiverModal.classList.add('hidden');
         document.body.classList.remove('modal-active');
         stopMicListening();
-        if (window.location.hash === '#receiver' || window.location.hash === '#radio' || window.location.hash === '#meshtastic' || window.location.hash === '#ggwave') {
+        stopTxqrCameraScanner();
+        if (window.location.hash === '#receiver' || window.location.hash === '#radio' || window.location.hash === '#meshtastic' || window.location.hash === '#ggwave' || window.location.hash === '#txqr' || window.location.hash === '#scanner') {
           history.replaceState(null, null, window.location.pathname + window.location.search);
         }
       }
     }
 
     function switchReceiverTab(tab) {
+      const activeMeshClass = 'px-3.5 py-2 border-b-2 border-amber-500 font-bold text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 cursor-pointer whitespace-nowrap';
+      const activeGgwaveClass = 'px-3.5 py-2 border-b-2 border-indigo-500 font-bold text-xs text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 cursor-pointer whitespace-nowrap';
+      const activeTxqrClass = 'px-3.5 py-2 border-b-2 border-sky-500 font-bold text-xs text-sky-600 dark:text-sky-400 flex items-center gap-1.5 cursor-pointer whitespace-nowrap';
+      const inactiveClass = 'px-3.5 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap';
+
       if (tab === 'ggwave') {
-        tabBtnGgwave.className = 'px-4 py-2 border-b-2 border-indigo-500 font-bold text-xs text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 cursor-pointer';
-        tabBtnMesh.className = 'px-4 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer';
-        sectionTabMesh.classList.add('hidden');
-        sectionTabGgwave.classList.remove('hidden');
+        if (tabBtnGgwave) tabBtnGgwave.className = activeGgwaveClass;
+        if (tabBtnMesh) tabBtnMesh.className = inactiveClass;
+        if (tabBtnTxqr) tabBtnTxqr.className = inactiveClass;
+        if (sectionTabMesh) sectionTabMesh.classList.add('hidden');
+        if (sectionTabTxqr) sectionTabTxqr.classList.add('hidden');
+        if (sectionTabGgwave) sectionTabGgwave.classList.remove('hidden');
+        stopTxqrCameraScanner();
         drawDefaultCanvas();
+      } else if (tab === 'txqr') {
+        if (tabBtnTxqr) tabBtnTxqr.className = activeTxqrClass;
+        if (tabBtnMesh) tabBtnMesh.className = inactiveClass;
+        if (tabBtnGgwave) tabBtnGgwave.className = inactiveClass;
+        if (sectionTabMesh) sectionTabMesh.classList.add('hidden');
+        if (sectionTabGgwave) sectionTabGgwave.classList.add('hidden');
+        if (sectionTabTxqr) sectionTabTxqr.classList.remove('hidden');
+        stopMicListening();
       } else {
-        tabBtnMesh.className = 'px-4 py-2 border-b-2 border-amber-500 font-bold text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 cursor-pointer';
-        tabBtnGgwave.className = 'px-4 py-2 border-b-2 border-transparent font-medium text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1.5 cursor-pointer';
-        sectionTabMesh.classList.remove('hidden');
-        sectionTabGgwave.classList.add('hidden');
+        if (tabBtnMesh) tabBtnMesh.className = activeMeshClass;
+        if (tabBtnGgwave) tabBtnGgwave.className = inactiveClass;
+        if (tabBtnTxqr) tabBtnTxqr.className = inactiveClass;
+        if (sectionTabGgwave) sectionTabGgwave.classList.add('hidden');
+        if (sectionTabTxqr) sectionTabTxqr.classList.add('hidden');
+        if (sectionTabMesh) sectionTabMesh.classList.remove('hidden');
+        stopMicListening();
+        stopTxqrCameraScanner();
       }
     }
 
     if (tabBtnMesh) tabBtnMesh.addEventListener('click', () => switchReceiverTab('mesh'));
     if (tabBtnGgwave) tabBtnGgwave.addEventListener('click', () => switchReceiverTab('ggwave'));
+    if (tabBtnTxqr) tabBtnTxqr.addEventListener('click', () => switchReceiverTab('txqr'));
 
     if (btnOpenReceiver) btnOpenReceiver.addEventListener('click', () => {
       openReceiverModal('mesh');
@@ -3420,6 +3577,8 @@
       openReceiverModal('mesh');
     } else if (window.location.hash === '#ggwave' || window.location.hash === '#sound') {
       openReceiverModal('ggwave');
+    } else if (window.location.hash === '#txqr' || window.location.hash === '#scanner') {
+      openReceiverModal('txqr');
     }
 
     // --- Meshtastic Decoder Engine ---
@@ -3748,6 +3907,243 @@
             sampleUrl
           );
         }, 1200);
+      });
+    }
+
+    // --- TXQR Scanner Engine (Animated QR Video Stream & Camera Decoder) ---
+    const txqrVideo = document.getElementById('txqr-scanner-video');
+    const txqrPlaceholder = document.getElementById('txqr-scanner-placeholder');
+    const txqrReticle = document.getElementById('txqr-scanner-reticle');
+    const txqrRxDot = document.getElementById('txqr-rx-dot');
+    const txqrRxStatus = document.getElementById('txqr-rx-status');
+    const txqrChunksCount = document.getElementById('txqr-chunks-count');
+    const txqrRxProgressBar = document.getElementById('txqr-rx-progress-bar');
+    const txqrChunksMatrix = document.getElementById('txqr-chunks-matrix');
+    const btnToggleTxqrCam = document.getElementById('btn-toggle-txqr-cam');
+    const txqrCamBtnIcon = document.getElementById('txqr-cam-btn-icon');
+    const txqrCamBtnLabel = document.getElementById('txqr-cam-btn-label');
+    const btnSimulateTxqrStream = document.getElementById('btn-simulate-txqr-stream');
+    const txqrDecodeResult = document.getElementById('txqr-decode-result');
+    const txqrResBadge = document.getElementById('txqr-res-badge');
+    const txqrResTitle = document.getElementById('txqr-res-title');
+    const txqrResSummary = document.getElementById('txqr-res-summary');
+    const btnTxqrCopyText = document.getElementById('btn-txqr-copy-text');
+    const btnTxqrLoadGenerator = document.getElementById('btn-txqr-load-generator');
+
+    let txqrScanner = null;
+    let txqrDecoder = (typeof LienLibreTXQR !== 'undefined') ? new LienLibreTXQR.Decoder() : null;
+    let isTxqrCameraActive = false;
+    let currentDecodedTxqrLink = '';
+    let simulationTimer = null;
+
+    function renderTxqrMatrix(total, sessionChunks) {
+      if (!txqrChunksMatrix) return;
+      txqrChunksMatrix.innerHTML = '';
+      for (let i = 1; i <= total; i++) {
+        const chunkBox = document.createElement('div');
+        const isReceived = sessionChunks && sessionChunks.has(i);
+        chunkBox.className = `w-5 h-5 rounded text-[9px] font-mono font-bold flex items-center justify-center transition-all ${
+          isReceived
+            ? 'bg-sky-500 text-white shadow-xs scale-105'
+            : 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+        }`;
+        chunkBox.textContent = i;
+        txqrChunksMatrix.appendChild(chunkBox);
+      }
+    }
+
+    function handleTxqrScannedData(rawText) {
+      if (!rawText || !txqrDecoder) return;
+      const res = txqrDecoder.feed(rawText);
+      if (!res) return;
+
+      // Update UI metrics
+      if (txqrRxProgressBar) {
+        txqrRxProgressBar.style.width = `${res.percent}%`;
+      }
+      if (txqrChunksCount) {
+        txqrChunksCount.textContent = `${res.receivedCount || 1} / ${res.total || 1} trames (${res.percent}%)`;
+      }
+      if (txqrRxDot) {
+        txqrRxDot.className = 'w-2.5 h-2.5 rounded-full bg-sky-500 animate-ping';
+      }
+      if (txqrRxStatus) {
+        txqrRxStatus.textContent = res.isComplete
+          ? '✓ Assemblage 100% terminé !'
+          : `Réception trame ${res.index || 1}/${res.total || 1}...`;
+      }
+
+      if (res.sessionId && txqrDecoder.sessions.has(res.sessionId)) {
+        renderTxqrMatrix(res.total, txqrDecoder.sessions.get(res.sessionId).chunks);
+      }
+
+      if (res.isComplete && res.payload) {
+        if (isTxqrCameraActive) {
+          stopTxqrCameraScanner();
+        }
+        processDecodedTxqrPayload(res.payload);
+      }
+    }
+
+    function processDecodedTxqrPayload(fullText) {
+      if (!fullText) return;
+      let title = '';
+      let summary = '';
+      let link = '';
+
+      // Check if it's an offline capsule
+      const capsuleMatch = fullText.match(/#o=([A-Za-z0-9_\-]+)/);
+      if (capsuleMatch) {
+        const cap = OfflineCapsule.decode(capsuleMatch[1]);
+        if (cap && cap.u) {
+          title = cap.t || 'Capsule TXQR Reçue';
+          summary = cap.s || "Article et métadonnées complètes transférés via flux optique haute vitesse TXQR.";
+          link = cap.u;
+        }
+      }
+
+      if (!title) {
+        const urlMatch = fullText.match(/https?:\/\/[^\s]+/i);
+        if (urlMatch) {
+          link = urlMatch[0];
+          title = fullText.replace(link, '').replace(/\[LienLibre[^\]]*\]/gi, '').trim() || link;
+          summary = "Données d'article extraites avec succès du flux vidéo de QR codes animés TXQR.";
+        } else {
+          title = "Contenu TXQR Décodé";
+          summary = fullText;
+          link = '';
+        }
+      }
+
+      displayTxqrDecodedResult(title, summary, link);
+    }
+
+    function displayTxqrDecodedResult(title, summary, link) {
+      currentDecodedTxqrLink = link;
+      if (txqrResTitle) txqrResTitle.textContent = title;
+      if (txqrResSummary) txqrResSummary.textContent = summary;
+      if (txqrResBadge) txqrResBadge.textContent = '100% Intégrité (Sans réseau)';
+
+      if (btnTxqrLoadGenerator) {
+        if (link) {
+          btnTxqrLoadGenerator.classList.remove('hidden');
+          btnTxqrLoadGenerator.onclick = () => {
+            if (urlInput && form) {
+              urlInput.value = link;
+              closeReceiverModal();
+              urlInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              form.dispatchEvent(new Event('submit', { cancelable: true }));
+            }
+          };
+        } else {
+          btnTxqrLoadGenerator.classList.add('hidden');
+        }
+      }
+
+      if (btnTxqrCopyText) {
+        btnTxqrCopyText.onclick = () => {
+          const out = `${title}\n\n${summary}\n${link ? 'Lien : ' + link : ''}`;
+          navigator.clipboard.writeText(out).then(() => {
+            const orig = btnTxqrCopyText.textContent;
+            btnTxqrCopyText.textContent = "✓ Copié !";
+            setTimeout(() => { btnTxqrCopyText.textContent = orig; }, 2000);
+          });
+        };
+      }
+
+      if (txqrDecodeResult) txqrDecodeResult.classList.remove('hidden');
+      if (txqrRxStatus) txqrRxStatus.textContent = '✓ Flux TXQR entièrement validé et reconstitué !';
+      if (txqrRxDot) txqrRxDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500';
+    }
+
+    async function startTxqrCameraScanner() {
+      try {
+        if (!txqrScanner && typeof LienLibreTXQR !== 'undefined') {
+          txqrScanner = new LienLibreTXQR.CameraScanner({
+            videoElement: txqrVideo,
+            onScan: (val) => handleTxqrScannedData(val)
+          });
+        }
+        if (!txqrScanner) throw new Error("Moteur TXQR non initialisé.");
+
+        if (txqrVideo) txqrVideo.classList.remove('hidden');
+        if (txqrReticle) txqrReticle.classList.remove('hidden');
+        if (txqrPlaceholder) txqrPlaceholder.classList.add('hidden');
+
+        await txqrScanner.startCamera();
+        isTxqrCameraActive = true;
+
+        if (txqrCamBtnIcon) txqrCamBtnIcon.textContent = '⏹️';
+        if (txqrCamBtnLabel) txqrCamBtnLabel.textContent = 'Arrêter la caméra';
+        if (txqrRxDot) txqrRxDot.className = 'w-2.5 h-2.5 rounded-full bg-sky-500 animate-ping';
+        if (txqrRxStatus) txqrRxStatus.textContent = 'Caméra active — Pointez vers l\'écran avec le flux TXQR...';
+      } catch (err) {
+        alert("Impossible de démarrer la caméra : " + (err.message || err));
+        stopTxqrCameraScanner();
+      }
+    }
+
+    function stopTxqrCameraScanner() {
+      if (txqrScanner) {
+        txqrScanner.stopCamera();
+      }
+      isTxqrCameraActive = false;
+      if (txqrVideo) txqrVideo.classList.add('hidden');
+      if (txqrReticle) txqrReticle.classList.add('hidden');
+      if (txqrPlaceholder) txqrPlaceholder.classList.remove('hidden');
+
+      if (txqrCamBtnIcon) txqrCamBtnIcon.textContent = '📷';
+      if (txqrCamBtnLabel) txqrCamBtnLabel.textContent = 'Démarrer la caméra & scanner';
+      if (txqrRxDot) txqrRxDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
+      if (txqrRxStatus && txqrDecodeResult && !txqrDecodeResult.classList.contains('hidden')) {
+        // keep complete status
+      } else if (txqrRxStatus) {
+        txqrRxStatus.textContent = 'En attente de trames...';
+      }
+    }
+
+    if (btnToggleTxqrCam) {
+      btnToggleTxqrCam.addEventListener('click', () => {
+        if (isTxqrCameraActive) {
+          stopTxqrCameraScanner();
+        } else {
+          startTxqrCameraScanner();
+        }
+      });
+    }
+
+    if (btnSimulateTxqrStream) {
+      btnSimulateTxqrStream.addEventListener('click', () => {
+        if (simulationTimer) clearInterval(simulationTimer);
+        if (txqrDecoder) txqrDecoder.reset();
+
+        const sampleCapsule = OfflineCapsule.encode({
+          u: 'https://www.lapresse.ca/actualites/2026-09-13/climat-et-societe.php',
+          d: 'lapresse.ca',
+          t: 'La Presse — Transition Énergétique & Données Publiques',
+          s: 'Rapport complet sur la numérisation des alertes environnementales et l\'accès universel à l\'information au Québec.',
+          e: false,
+          ts: Math.floor(Date.now() / 1000)
+        });
+        const sampleUrl = `https://bwillou1.github.io/LienLibre/#o=${sampleCapsule}`;
+
+        const testEncoder = new LienLibreTXQR.Encoder(sampleUrl, { chunkSize: 60 });
+        const frames = testEncoder.chunks;
+        let cur = 0;
+
+        if (txqrRxStatus) txqrRxStatus.textContent = '🧪 Simulation de réception d\'un flux TXQR en cours...';
+        if (txqrRxDot) txqrRxDot.className = 'w-2.5 h-2.5 rounded-full bg-sky-500 animate-ping';
+        if (txqrDecodeResult) txqrDecodeResult.classList.add('hidden');
+
+        simulationTimer = setInterval(() => {
+          if (cur >= frames.length) {
+            clearInterval(simulationTimer);
+            simulationTimer = null;
+            return;
+          }
+          handleTxqrScannedData(frames[cur].frameText);
+          cur++;
+        }, 130);
       });
     }
 
@@ -4688,10 +5084,16 @@
       btnToggleQr.addEventListener('click', () => {
         qrPanel.classList.toggle('hidden');
         if (!qrPanel.classList.contains('hidden')) {
-          renderLiveQr();
+          if (activeQrSubtab === 'txqr') {
+            updateTxqrStream();
+          } else {
+            renderLiveQr();
+          }
           setTimeout(() => {
             qrPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }, 50);
+        } else {
+          if (txqrEncoder) txqrEncoder.stop();
         }
       });
     }
@@ -4699,8 +5101,100 @@
     if (btnCloseQr && qrPanel) {
       btnCloseQr.addEventListener('click', () => {
         qrPanel.classList.add('hidden');
+        if (txqrEncoder) txqrEncoder.stop();
       });
     }
+
+    // Sub-tab switching in QR Panel (Static vs TXQR Stream)
+    const btnQrSubtabStatic = document.getElementById('btn-qr-subtab-static');
+    const btnQrSubtabTxqr = document.getElementById('btn-qr-subtab-txqr');
+    const qrViewStatic = document.getElementById('qr-view-static');
+    const qrViewTxqr = document.getElementById('qr-view-txqr');
+    const txqrAnimCanvas = document.getElementById('txqr-anim-canvas');
+    const txqrFrameBadge = document.getElementById('txqr-frame-badge');
+    const txqrFpsBadge = document.getElementById('txqr-fps-badge');
+    const btnTxqrPlayPause = document.getElementById('btn-txqr-play-pause');
+    const txqrPlayIcon = document.getElementById('txqr-play-icon');
+    const txqrPlayText = document.getElementById('txqr-play-text');
+    const btnTxqrSpeedList = document.querySelectorAll('.btn-txqr-speed');
+
+    let txqrEncoder = null;
+    let txqrFps = 8;
+    let activeQrSubtab = 'static';
+
+    function updateTxqrStream() {
+      if (!txqrAnimCanvas || typeof LienLibreTXQR === 'undefined') return;
+      const payload = (outputUrl && outputUrl.textContent) || window.location.href;
+      if (txqrEncoder) {
+        txqrEncoder.stop();
+      }
+      txqrEncoder = new LienLibreTXQR.Encoder(payload, {
+        fps: txqrFps,
+        chunkSize: 75,
+        onFrame: (frame, idx, total) => {
+          if (txqrFrameBadge) txqrFrameBadge.textContent = `Trame ${idx + 1}/${total}`;
+        }
+      });
+      if (txqrFpsBadge) txqrFpsBadge.textContent = `${txqrFps} FPS`;
+      txqrEncoder.renderToCanvas(txqrAnimCanvas);
+      txqrEncoder.start();
+      if (txqrPlayIcon) txqrPlayIcon.textContent = '⏸️';
+      if (txqrPlayText) txqrPlayText.textContent = 'Pause';
+    }
+
+    function switchQrSubtab(subtab) {
+      activeQrSubtab = subtab;
+      const activeClass = 'flex-1 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800 font-bold text-slate-900 dark:text-white shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5';
+      const inactiveClass = 'flex-1 py-1.5 px-3 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium transition-all cursor-pointer flex items-center justify-center gap-1.5';
+
+      if (subtab === 'txqr') {
+        if (btnQrSubtabTxqr) btnQrSubtabTxqr.className = activeClass;
+        if (btnQrSubtabStatic) btnQrSubtabStatic.className = inactiveClass;
+        if (qrViewStatic) qrViewStatic.classList.add('hidden');
+        if (qrViewTxqr) qrViewTxqr.classList.remove('hidden');
+        updateTxqrStream();
+      } else {
+        if (btnQrSubtabStatic) btnQrSubtabStatic.className = activeClass;
+        if (btnQrSubtabTxqr) btnQrSubtabTxqr.className = inactiveClass;
+        if (txqrEncoder) txqrEncoder.stop();
+        if (qrViewTxqr) qrViewTxqr.classList.add('hidden');
+        if (qrViewStatic) qrViewStatic.classList.remove('hidden');
+        renderLiveQr();
+      }
+    }
+
+    if (btnQrSubtabStatic) btnQrSubtabStatic.addEventListener('click', () => switchQrSubtab('static'));
+    if (btnQrSubtabTxqr) btnQrSubtabTxqr.addEventListener('click', () => switchQrSubtab('txqr'));
+
+    if (btnTxqrPlayPause) {
+      btnTxqrPlayPause.addEventListener('click', () => {
+        if (!txqrEncoder) return;
+        if (txqrEncoder.isPlaying) {
+          txqrEncoder.stop();
+          if (txqrPlayIcon) txqrPlayIcon.textContent = '▶️';
+          if (txqrPlayText) txqrPlayText.textContent = 'Reprendre';
+        } else {
+          txqrEncoder.start();
+          if (txqrPlayIcon) txqrPlayIcon.textContent = '⏸️';
+          if (txqrPlayText) txqrPlayText.textContent = 'Pause';
+        }
+      });
+    }
+
+    btnTxqrSpeedList.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fps = parseInt(btn.getAttribute('data-fps'), 10) || 8;
+        txqrFps = fps;
+        btnTxqrSpeedList.forEach(b => {
+          b.className = 'btn-txqr-speed px-2 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
+        });
+        btn.className = 'btn-txqr-speed px-2 py-1 rounded-lg text-[11px] font-bold bg-sky-600 text-white transition-all cursor-pointer';
+        if (txqrFpsBadge) txqrFpsBadge.textContent = `${fps} FPS`;
+        if (txqrEncoder) {
+          txqrEncoder.setFPS(fps);
+        }
+      });
+    });
 
     if (btnDownloadQr && qrCodeCanvas) {
       btnDownloadQr.addEventListener('click', () => {
