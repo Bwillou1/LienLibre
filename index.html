@@ -1352,7 +1352,7 @@
   <!-- Client-side Logic -->
   <script>
     // Worker Endpoint
-    const WORKER_URL = 'https://lienlibre.guindonwilliam2.workers.dev';
+    const WORKER_URL = 'https://lienlibre.acces-presse.workers.dev';
 
     // Fonction de calcul dynamique et obscurcie de l'adresse de contact pour bloquer les robots de moissonnage
     function getContactEmail() {
@@ -2792,15 +2792,12 @@
 
       const encodedUrl = encodeURIComponent(rawUrl);
       const cleanPath = rawUrl.replace(/^https?:\/\/(?:www\.)?/i, '');
-      const langParam = currentLang !== 'fr' ? `?lang=${currentLang}` : '';
+      const defaultDirectLink = `${WORKER_URL}/?url=${encodedUrl}${currentLang !== 'fr' ? '&lang=' + currentLang : ''}`;
+      const defaultMirrorLink = `${WORKER_URL}/${cleanPath}${langParam}`;
 
-      // Base du projet GitHub Pages (Neutre & sans nom personnel)
-      const GITHUB_PROJECT_URL = 'https://bwillou1.github.io/LienLibre';
-      const cleanProjectLink = `${GITHUB_PROJECT_URL}/?url=${encodedUrl}${currentLang !== 'fr' ? '&lang=' + currentLang : ''}`;
-
-      // Liens générés par défaut sous le domaine neutre du projet
-      currentGeneratedLinks.short = cleanProjectLink;
-      currentGeneratedLinks.mirror = cleanProjectLink;
+      // Liens générés par défaut sous le domaine sécurisé acces-presse
+      currentGeneratedLinks.short = defaultDirectLink;
+      currentGeneratedLinks.mirror = defaultMirrorLink;
       updateFormatTabUI();
 
       setTimeout(() => {
@@ -2826,16 +2823,8 @@
           }
           if (createRes.ok) {
             const createData = await createRes.json();
-            if (createData.shortLink && !createData.shortLink.includes('workers.dev')) {
-              currentGeneratedLinks.short = createData.shortLink;
-            } else {
-              currentGeneratedLinks.short = cleanProjectLink;
-            }
-            if (createData.link && !createData.link.includes('workers.dev')) {
-              currentGeneratedLinks.mirror = createData.link;
-            } else {
-              currentGeneratedLinks.mirror = cleanProjectLink;
-            }
+            if (createData.shortLink) currentGeneratedLinks.short = createData.shortLink;
+            if (createData.link) currentGeneratedLinks.mirror = createData.link;
             updateFormatTabUI();
           }
         } finally {

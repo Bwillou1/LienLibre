@@ -25,6 +25,6 @@
 
 ## Developer & API Endpoints
 - Web App: `https://bwillou1.github.io/LienLibre/`
-- Worker Gateway: `https://lienlibre.guindonwilliam2.workers.dev`
+- Worker Gateway: `https://lienlibre.acces-presse.workers.dev`
 - API Link Generator: `POST /api/create` with `{"url": "<URL>", "lang": "fr|en"}`
 - Aggregate Stats: `GET /api/stats`
