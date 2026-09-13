@@ -552,10 +552,15 @@
             <span>🕒 Créée :</span>
             <span id="capsule-timestamp"></span>
           </div>
-          <div class="flex items-center gap-2">
-            <a id="capsule-orig-link" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 text-slate-900 dark:text-white text-xs font-semibold transition-all">
-              🌐 Ouvrir si connecté
-            </a>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" id="btn-capsule-meshtastic" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white text-xs font-semibold border border-slate-300 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer" title="Diffuser par paquet radio Meshtastic (GPL-3.0)">
+              <span>📻</span>
+              <span>Paquet Meshtastic</span>
+            </button>
+            <button type="button" id="btn-capsule-ggwave" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white text-xs font-semibold border border-slate-300 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer" title="Émettre par signal sonore WebAudio (ggwave MIT)">
+              <span>🔊</span>
+              <span>Son (ggwave)</span>
+            </button>
             <button type="button" id="btn-capsule-copy" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer">
               📋 Copier le résumé
             </button>
@@ -726,8 +731,8 @@
             </div>
           </div>
 
-          <!-- Direct 1-Click Social & Messaging Share Toolbar -->
-          <div class="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+          <!-- Direct 1-Click Social & Messaging Share Toolbar (Online Mode) -->
+          <div id="direct-share-online-toolbar" class="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-800">
             <div class="flex items-center justify-between">
               <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                 <span>🚀</span>
@@ -771,6 +776,34 @@
               <!-- X / Twitter -->
               <a id="direct-share-x" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/10 hover:bg-slate-900/20 dark:bg-slate-100/10 dark:hover:bg-slate-100/20 text-slate-800 dark:text-slate-200 border border-slate-400/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
                 <span>✖️</span> <span>X</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Dedicated Off-Grid / Mesh Broadcast Toolbar (Offline Mode) -->
+          <div id="direct-share-offline-toolbar" class="hidden space-y-2 pt-3 border-t border-amber-500/30">
+            <div class="flex items-center justify-between">
+              <label class="block text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🛰️</span>
+                <span>Transmission Hors-Ligne & Radio Mesh (Sans Wi-Fi) :</span>
+              </label>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button type="button" id="btn-broadcast-meshtastic" class="px-3.5 py-2 text-xs font-bold rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-200 border border-amber-500/40 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95" title="Copier au format radio Meshtastic (GPL-3.0)">
+                <span>📻</span>
+                <span>Paquet Meshtastic</span>
+              </button>
+              <button type="button" id="btn-broadcast-ggwave" class="px-3.5 py-2 text-xs font-bold rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-900 dark:text-indigo-200 border border-indigo-500/40 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95" title="Émettre par signal sonore WebAudio (ggwave MIT)">
+                <span>🔊</span>
+                <span>Son (ggwave)</span>
+              </button>
+              <button type="button" id="btn-broadcast-qr" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95">
+                <span>📱</span>
+                <span>Afficher QR</span>
+              </button>
+              <a id="direct-share-sms-offline" href="#" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-200/80 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold transition-all active:scale-95 shadow-xs">
+                <span>💬</span>
+                <span>SMS Cellulaire</span>
               </a>
             </div>
           </div>
@@ -3320,6 +3353,17 @@
         outputUrl.textContent = currentGeneratedLinks.offline;
       }
 
+      // Basculer l'affichage des outils de partage (Réseau vs Hors-Ligne)
+      const onlineToolbar = document.getElementById('direct-share-online-toolbar');
+      const offlineToolbar = document.getElementById('direct-share-offline-toolbar');
+      if (activeFormat === 'offline') {
+        if (onlineToolbar) onlineToolbar.classList.add('hidden');
+        if (offlineToolbar) offlineToolbar.classList.remove('hidden');
+      } else {
+        if (onlineToolbar) onlineToolbar.classList.remove('hidden');
+        if (offlineToolbar) offlineToolbar.classList.add('hidden');
+      }
+
       if (outputUrl && outputUrl.textContent) {
         updateDirectShareLinks(outputUrl.textContent);
       }
@@ -3361,6 +3405,9 @@
 
       const elX = document.getElementById('direct-share-x');
       if (elX) elX.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareMsg)}`;
+
+      const elSmsOffline = document.getElementById('direct-share-sms-offline');
+      if (elSmsOffline) elSmsOffline.href = `sms:?&body=${encodeURIComponent(shareMsg + ' ' + url)}`;
     }
 
     const elSignal = document.getElementById('direct-share-signal');
@@ -4002,38 +4049,80 @@
       });
     }
 
+    function playAudioGgwaveSequence(buttonEl) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const freqs = [1764, 2205, 2646, 3087, 3528, 3969, 4410];
+        let now = ctx.currentTime;
+        
+        let originalHtml = '';
+        if (buttonEl) {
+          originalHtml = buttonEl.innerHTML;
+          buttonEl.innerHTML = `<span>🔊</span> <span>Émission...</span>`;
+        }
+        
+        const seq = [0, 2, 4, 1, 3, 5, 0, 4, 2, 6, 1, 5];
+        seq.forEach((idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.setValueAtTime(freqs[idx % freqs.length], now);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.12);
+          now += 0.13;
+        });
+
+        if (buttonEl) {
+          setTimeout(() => {
+            buttonEl.innerHTML = originalHtml;
+          }, 2000);
+        }
+      } catch (err) {
+        console.warn("Audio non supporté:", err);
+      }
+    }
+
     const btnPlayAudioGgwaveHome = document.getElementById('btn-play-audio-ggwave-home');
     if (btnPlayAudioGgwaveHome) {
       btnPlayAudioGgwaveHome.addEventListener('click', () => {
-        try {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (!AudioContext) return;
-          const ctx = new AudioContext();
-          const freqs = [1764, 2205, 2646, 3087, 3528, 3969, 4410];
-          let now = ctx.currentTime;
-          
-          const originalHtml = btnPlayAudioGgwaveHome.innerHTML;
-          btnPlayAudioGgwaveHome.innerHTML = `<span>🔊</span> <span>Émission...</span>`;
-          
-          const seq = [0, 2, 4, 1, 3, 5, 0, 4, 2, 6, 1, 5];
-          seq.forEach((idx) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.frequency.setValueAtTime(freqs[idx % freqs.length], now);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(now);
-            osc.stop(now + 0.12);
-            now += 0.13;
-          });
+        playAudioGgwaveSequence(btnPlayAudioGgwaveHome);
+      });
+    }
 
-          setTimeout(() => {
-            btnPlayAudioGgwaveHome.innerHTML = originalHtml;
-          }, 2000);
-        } catch (err) {
-          console.warn("Audio non supporté:", err);
+    // Dedicated Offline Broadcast Toolbar Handlers
+    const btnBroadcastMeshtastic = document.getElementById('btn-broadcast-meshtastic');
+    if (btnBroadcastMeshtastic) {
+      btnBroadcastMeshtastic.addEventListener('click', () => {
+        const link = (outputUrl && outputUrl.textContent) || window.location.href;
+        const title = (previewTitle && previewTitle.textContent) || 'Article/Info';
+        const payload = `[LienLibre Radio Mesh]\n${title}\n${link}\n#radio #lora #p2p`;
+        navigator.clipboard.writeText(payload).then(() => {
+          const origHtml = btnBroadcastMeshtastic.innerHTML;
+          btnBroadcastMeshtastic.innerHTML = `<span>✓</span> <span>Paquet copié !</span>`;
+          setTimeout(() => { btnBroadcastMeshtastic.innerHTML = origHtml; }, 2000);
+        });
+      });
+    }
+
+    const btnBroadcastGgwave = document.getElementById('btn-broadcast-ggwave');
+    if (btnBroadcastGgwave) {
+      btnBroadcastGgwave.addEventListener('click', () => {
+        playAudioGgwaveSequence(btnBroadcastGgwave);
+      });
+    }
+
+    const btnBroadcastQr = document.getElementById('btn-broadcast-qr');
+    if (btnBroadcastQr) {
+      btnBroadcastQr.addEventListener('click', () => {
+        if (qrPanel) {
+          qrPanel.classList.remove('hidden');
+          renderLiveQr();
+          qrPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
       });
     }
@@ -4151,8 +4240,8 @@
           const capTitle = document.getElementById('capsule-title');
           const capSummary = document.getElementById('capsule-summary');
           const capDomain = document.getElementById('capsule-domain');
-          const capTimestamp = document.getElementById('capsule-timestamp');
-          const capOrigLink = document.getElementById('capsule-orig-link');
+          const btnCapsuleMeshtastic = document.getElementById('btn-capsule-meshtastic');
+          const btnCapsuleGgwave = document.getElementById('btn-capsule-ggwave');
           const btnCapsuleCopy = document.getElementById('btn-capsule-copy');
 
           if (capTitle) capTitle.textContent = capsule.t || capsule.u;
@@ -4162,9 +4251,24 @@
             const date = new Date(capsule.ts * 1000);
             capTimestamp.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           }
-          if (capOrigLink) {
-            capOrigLink.href = capsule.u;
+
+          if (btnCapsuleMeshtastic) {
+            btnCapsuleMeshtastic.onclick = () => {
+              const payload = `[LienLibre Radio Mesh]\n${capsule.t || 'Information'}\n${capsule.s || ''}\nSource: ${capsule.u}\n#radio #lora #p2p`;
+              navigator.clipboard.writeText(payload).then(() => {
+                const origHtml = btnCapsuleMeshtastic.innerHTML;
+                btnCapsuleMeshtastic.innerHTML = `<span>✓</span> <span>Paquet copié !</span>`;
+                setTimeout(() => { btnCapsuleMeshtastic.innerHTML = origHtml; }, 2000);
+              });
+            };
           }
+
+          if (btnCapsuleGgwave) {
+            btnCapsuleGgwave.onclick = () => {
+              playAudioGgwaveSequence(btnCapsuleGgwave);
+            };
+          }
+
           if (btnCapsuleCopy) {
             btnCapsuleCopy.onclick = () => {
               const text = `${capsule.t || 'Information'}\n\n${capsule.s || ''}\n\nSource : ${capsule.u}`;

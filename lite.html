@@ -158,7 +158,8 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--border); padding-top: 8px;">
       <span style="font-size: 0.7rem; color: var(--text);">🕒 Créée : <span id="capsule-timestamp"></span></span>
       <div class="btn-group">
-        <a id="capsule-orig-link" href="#" target="_blank" rel="noopener noreferrer" class="btn sec" style="padding: 4px 8px; font-size: 0.75rem;">🌐 Ouvrir si connecté</a>
+        <button type="button" id="btn-capsule-meshtastic" class="btn sec" style="padding: 4px 8px; font-size: 0.75rem;" title="Copier au format radio Meshtastic (GPL-3.0)">📻 Paquet Meshtastic</button>
+        <button type="button" id="btn-capsule-ggwave" class="btn sec" style="padding: 4px 8px; font-size: 0.75rem;" title="Émettre par signal sonore (MIT)">🔊 Son (ggwave)</button>
         <button type="button" id="btn-capsule-copy" style="padding: 4px 8px; font-size: 0.75rem; background: #d97706;">📋 Copier le résumé</button>
       </div>
     </div>
@@ -192,7 +193,16 @@
         <button type="button" class="sec" id="btn-share">📲 Partager (Menu Natif)</button>
       </div>
 
-      <div style="margin-top: 10px;">
+      <!-- Off-grid Mesh / Sound Broadcast Bar -->
+      <div id="lite-offline-bar" class="hidden" style="margin-top: 10px;">
+        <label style="font-size: 0.75rem; font-weight: bold; color: #d97706;">Transmission Hors-Ligne & Radio Mesh (Sans Wi-Fi) :</label>
+        <div class="btn-group" style="margin-top: 6px;">
+          <button type="button" id="btn-lite-meshtastic" class="btn sec" style="padding: 4px 8px; font-size: 0.75rem;">📻 Paquet Meshtastic</button>
+          <button type="button" id="btn-lite-ggwave" class="btn sec" style="padding: 4px 8px; font-size: 0.75rem;">🔊 Son (ggwave)</button>
+        </div>
+      </div>
+
+      <div id="lite-online-share-row" style="margin-top: 10px;">
         <label style="font-size: 0.75rem;">Partage 1-clic direct :</label>
         <div class="share-row">
           <a id="sh-sms" class="share-link" href="#">📱 SMS</a>
@@ -313,6 +323,9 @@
     nodeBadge.textContent = '🌐 Nœud Réseau : ' + (host.endsWith('.github.io') ? host.split('.')[0] + '/LienLibre' : host || 'Local');
 
     function updateTabUI() {
+      const offlineBar = document.getElementById('lite-offline-bar');
+      const onlineShareRow = document.getElementById('lite-online-share-row');
+
       if (activeTab === 'gateway') {
         btnTabGateway.className = 'btn';
         btnTabOffline.className = 'btn sec';
@@ -321,6 +334,8 @@
           output.textContent = generatedLinks.gateway;
           updateShareLinks(generatedLinks.gateway);
         }
+        if (offlineBar) offlineBar.classList.add('hidden');
+        if (onlineShareRow) onlineShareRow.classList.remove('hidden');
       } else {
         btnTabOffline.className = 'btn';
         btnTabGateway.className = 'btn sec';
@@ -329,7 +344,67 @@
           output.textContent = generatedLinks.offline;
           updateShareLinks(generatedLinks.offline);
         }
+        if (offlineBar) offlineBar.classList.remove('hidden');
+        if (onlineShareRow) onlineShareRow.classList.add('hidden');
       }
+    }
+
+    function playAudioGgwaveSequence(buttonEl) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const freqs = [1764, 2205, 2646, 3087, 3528, 3969, 4410];
+        let now = ctx.currentTime;
+        
+        let originalText = '';
+        if (buttonEl) {
+          originalText = buttonEl.textContent;
+          buttonEl.textContent = '🔊 Émission sonore...';
+        }
+        
+        const seq = [0, 2, 4, 1, 3, 5, 0, 4, 2, 6, 1, 5];
+        seq.forEach((idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.setValueAtTime(freqs[idx % freqs.length], now);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.12);
+          now += 0.13;
+        });
+
+        if (buttonEl) {
+          setTimeout(() => {
+            buttonEl.textContent = originalText;
+          }, 2000);
+        }
+      } catch (err) {
+        console.warn("Audio non supporté:", err);
+      }
+    }
+
+    const btnLiteMeshtastic = document.getElementById('btn-lite-meshtastic');
+    if (btnLiteMeshtastic) {
+      btnLiteMeshtastic.addEventListener('click', () => {
+        const link = output.textContent || window.location.href;
+        const payload = `[LienLibre Mesh] ${link} #radio #lora`;
+        navigator.clipboard.writeText(payload).then(() => {
+          const orig = btnLiteMeshtastic.textContent;
+          btnLiteMeshtastic.textContent = '✅ Paquet copié !';
+          setTimeout(() => { btnLiteMeshtastic.textContent = orig; }, 2000);
+        });
+      });
+    }
+
+    const btnLiteGgwave = document.getElementById('btn-lite-ggwave');
+    if (btnLiteGgwave) {
+      btnLiteGgwave.addEventListener('click', () => {
+        playAudioGgwaveSequence(btnLiteGgwave);
+      });
     }
 
     if (btnTabGateway) {
@@ -466,8 +541,8 @@
           const capTitle = document.getElementById('capsule-title');
           const capSummary = document.getElementById('capsule-summary');
           const capDomain = document.getElementById('capsule-domain');
-          const capTimestamp = document.getElementById('capsule-timestamp');
-          const capOrigLink = document.getElementById('capsule-orig-link');
+          const btnCapsuleMeshtastic = document.getElementById('btn-capsule-meshtastic');
+          const btnCapsuleGgwave = document.getElementById('btn-capsule-ggwave');
           const btnCapsuleCopy = document.getElementById('btn-capsule-copy');
 
           if (capTitle) capTitle.textContent = capsule.t || capsule.u;
@@ -477,9 +552,24 @@
             const date = new Date(capsule.ts * 1000);
             capTimestamp.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           }
-          if (capOrigLink) {
-            capOrigLink.href = capsule.u;
+
+          if (btnCapsuleMeshtastic) {
+            btnCapsuleMeshtastic.onclick = () => {
+              const payload = `[LienLibre Radio Mesh]\n${capsule.t || 'Information'}\n${capsule.s || ''}\nSource: ${capsule.u}\n#radio #lora #p2p`;
+              navigator.clipboard.writeText(payload).then(() => {
+                const orig = btnCapsuleMeshtastic.textContent;
+                btnCapsuleMeshtastic.textContent = '✅ Paquet copié !';
+                setTimeout(() => { btnCapsuleMeshtastic.textContent = orig; }, 2000);
+              });
+            };
           }
+
+          if (btnCapsuleGgwave) {
+            btnCapsuleGgwave.onclick = () => {
+              playAudioGgwaveSequence(btnCapsuleGgwave);
+            };
+          }
+
           if (btnCapsuleCopy) {
             btnCapsuleCopy.onclick = () => {
               const text = `${capsule.t || 'Information'}\n\n${capsule.s || ''}\n\nSource : ${capsule.u}`;
