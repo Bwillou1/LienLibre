@@ -442,6 +442,20 @@
               <div class="text-[11px] text-slate-500 dark:text-slate-400">Fonctionnement technique & Fair Dealing</div>
             </div>
           </a>
+          <a href="./liseuse.html" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-medium transition-colors">
+            <span>📖</span>
+            <div>
+              <div class="font-semibold">Mode Liseuse E-Ink (4 Chiffres)</div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400">Kobo, Kindle, reMarkable sans fil</div>
+            </div>
+          </a>
+          <button type="button" id="btn-mobile-siri" class="w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-purple-500/10 text-purple-700 dark:text-purple-300 font-medium transition-colors cursor-pointer">
+            <span>🎙️</span>
+            <div>
+              <div class="font-semibold">Raccourci iOS / Siri & Watch</div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400">« Dis Siri, crée un LienLibre »</div>
+            </div>
+          </button>
           <a href="./remerciements.html" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-medium transition-colors">
             <span>📜</span>
             <div>
@@ -798,6 +812,43 @@
 
           </div>
 
+          <!-- Paywall & Clickbait / Sponsored Content Alert Notice -->
+          <div id="paywall-warning" class="hidden p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs space-y-1.5 animate-in fade-in">
+            <div class="flex items-center justify-between font-bold">
+              <span class="flex items-center gap-1.5">
+                <span>🔒</span>
+                <span id="paywall-warning-title">Mur payant / Abonnement requis sur le site source</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-800 dark:text-amber-300 font-mono uppercase font-bold">Paywall</span>
+            </div>
+            <p id="paywall-warning-desc" class="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
+              Ce média verrouille la lecture intégrale de cet article derrière un abonnement payant. LienLibre extrait fidèlement les métadonnées et le résumé civique, mais vos proches devront être abonnés pour lire la suite sur le média source.
+            </p>
+          </div>
+
+          <div id="sponsored-warning" class="hidden p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-900 dark:text-rose-200 text-xs space-y-1 animate-in fade-in">
+            <div class="flex items-center gap-1.5 font-bold">
+              <span>📢</span>
+              <span>Avertissement : Contenu publicitaire / Partenariat commercial détecté</span>
+            </div>
+            <p class="text-[11px] text-rose-800 dark:text-rose-300 leading-relaxed">
+              Ce lien présente des indices de publi-reportage, commandite ou contenu promotionnel non explicitement étiqueté.
+            </p>
+          </div>
+
+          <!-- Meta / Facebook Anti-Blocking Shield Banner -->
+          <div class="p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-900 dark:text-indigo-200 text-xs flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🛡️</span>
+              <div class="text-[11px] leading-relaxed">
+                <strong class="font-bold text-indigo-950 dark:text-indigo-100">Bouclier Anti-Blocage Meta (C-18) Actif :</strong> Vos liens sont protégés contre la censure automatique de Facebook, Instagram et Messenger grâce aux balises neutres d'interopérabilité (art. 29 & 31.1 LDA).
+              </div>
+            </div>
+            <button type="button" id="btn-open-siri-modal-banner" class="shrink-0 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-[11px] transition-all flex items-center gap-1 cursor-pointer">
+              <span>🎙️</span> Siri & Watch
+            </button>
+          </div>
+
           <!-- Direct 1-Click Social & Messaging Share Toolbar (Online Mode) -->
           <div id="direct-share-online-toolbar" class="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-800">
             <div class="flex items-center justify-between">
@@ -808,6 +859,14 @@
             </div>
             
             <div class="flex items-center gap-1.5 flex-wrap">
+              <!-- Send to E-Reader (4-Digit Pairing) -->
+              <button type="button" id="btn-open-ereader-modal" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold transition-all active:scale-95 shadow-xs cursor-pointer" title="Envoyer directement sur votre liseuse (Kobo, Kindle, reMarkable) avec un code à 4 chiffres">
+                <span>📖</span> <span>Liseuse (4 chiffres)</span>
+              </button>
+              <!-- Siri / Apple Shortcuts -->
+              <button type="button" id="btn-open-siri-modal" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold transition-all active:scale-95 shadow-xs cursor-pointer" title="Activer le Raccourci iOS / Siri & Apple Watch">
+                <span>🎙️</span> <span>Siri & Watch</span>
+              </button>
               <!-- WhatsApp -->
               <a id="direct-share-whatsapp" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
                 <span>💬</span> <span>WhatsApp</span>
@@ -837,8 +896,8 @@
                 <span>🐘</span> <span>Mastodon</span>
               </a>
               <!-- Facebook -->
-              <a id="direct-share-facebook" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
-                <span>📘</span> <span>Facebook</span>
+              <a id="direct-share-facebook" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs" title="Lien optimisé pour contourner le blocage Meta">
+                <span>📘</span> <span>Facebook (Anti-Blocage)</span>
               </a>
               <!-- X / Twitter -->
               <a id="direct-share-x" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/10 hover:bg-slate-900/20 dark:bg-slate-100/10 dark:hover:bg-slate-100/20 text-slate-800 dark:text-slate-200 border border-slate-400/20 text-xs font-semibold transition-all active:scale-95 shadow-2xs">
@@ -2244,6 +2303,160 @@
       <!-- Modal Footer -->
       <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-end shrink-0">
         <button type="button" id="btn-close-pwa-modal-bottom" class="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs px-5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer">
+          Compris & Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal 1: Envoyer vers Liseuse E-Ink (Code à 4 chiffres) -->
+  <div id="ereader-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
+    <!-- Backdrop -->
+    <div id="ereader-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Modal Window -->
+    <div class="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">📖</span>
+          <h3 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+            Envoyer vers Liseuse (E-Ink)
+          </h3>
+        </div>
+        <button type="button" id="btn-close-ereader-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer la boîte de dialogue">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-5 space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+        <p class="text-slate-700 dark:text-slate-300 text-xs">
+          Ouvrez <strong class="text-slate-900 dark:text-white font-mono">liseuse.html</strong> sur le navigateur de votre liseuse (Kobo, Kindle, reMarkable) et entrez son <strong>code à 4 chiffres</strong> :
+        </p>
+
+        <!-- 4 Digit Input -->
+        <div class="flex items-center justify-center gap-2.5 py-2">
+          <input type="text" maxlength="1" id="ereader-code-1" class="ereader-digit-input w-12 h-14 text-center text-2xl font-mono font-black rounded-2xl bg-slate-100 dark:bg-slate-950 border-2 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-cyan-500 focus:outline-none shadow-inner" inputmode="numeric" autocomplete="off">
+          <input type="text" maxlength="1" id="ereader-code-2" class="ereader-digit-input w-12 h-14 text-center text-2xl font-mono font-black rounded-2xl bg-slate-100 dark:bg-slate-950 border-2 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-cyan-500 focus:outline-none shadow-inner" inputmode="numeric" autocomplete="off">
+          <input type="text" maxlength="1" id="ereader-code-3" class="ereader-digit-input w-12 h-14 text-center text-2xl font-mono font-black rounded-2xl bg-slate-100 dark:bg-slate-950 border-2 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-cyan-500 focus:outline-none shadow-inner" inputmode="numeric" autocomplete="off">
+          <input type="text" maxlength="1" id="ereader-code-4" class="ereader-digit-input w-12 h-14 text-center text-2xl font-mono font-black rounded-2xl bg-slate-100 dark:bg-slate-950 border-2 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-cyan-500 focus:outline-none shadow-inner" inputmode="numeric" autocomplete="off">
+        </div>
+
+        <!-- Article Preview to send -->
+        <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs space-y-1">
+          <div class="font-bold text-slate-900 dark:text-white truncate" id="ereader-preview-title">Article en cours</div>
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate font-mono" id="ereader-preview-url"></div>
+        </div>
+
+        <div id="ereader-send-status" class="hidden text-xs text-center font-semibold py-1"></div>
+
+        <button type="button" id="btn-submit-ereader-send" class="w-full py-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 dark:from-slate-100 dark:to-white dark:hover:from-white dark:hover:to-slate-200 text-white dark:text-slate-900 font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <span>⚡</span>
+          <span>Transférer sur la liseuse</span>
+        </button>
+
+        <div class="text-center pt-1">
+          <a href="./liseuse.html" target="_blank" class="text-xs text-cyan-600 dark:text-cyan-400 hover:underline font-medium">
+            Ouvrir l'écran de réception liseuse (liseuse.html) ↗
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal 2: Raccourci Apple iOS / Siri & Apple Watch -->
+  <div id="siri-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
+    <!-- Backdrop -->
+    <div id="siri-modal-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Modal Window -->
+    <div class="relative w-full max-w-lg max-h-[90vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">🎙️</span>
+          <h3 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+            Raccourci iOS / Siri & Apple Watch
+          </h3>
+        </div>
+        <button type="button" id="btn-close-siri-modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer la boîte de dialogue">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-5 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed custom-scrollbar">
+        
+        <!-- Voice Command Spotlight Box -->
+        <div class="p-4 rounded-2xl bg-gradient-to-r from-purple-500/15 via-indigo-500/15 to-cyan-500/15 border border-purple-500/30 text-center space-y-1.5">
+          <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Commande Vocale Siri & Dictée Watch</div>
+          <div class="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">
+            « Dis Siri, crée un LienLibre »
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">
+            Fonctionne instantanément depuis Safari, Apple News, Chrome, Twitter, Reddit ou votre Apple Watch.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Comment l'utiliser en 3 modes rapides :</h4>
+
+          <!-- Mode 1: Share Sheet -->
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1">
+            <h5 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>⎋</span>
+              <span>1. Menu de Partage iOS (Safari & Apps de Presse)</span>
+            </h5>
+            <p class="text-xs text-slate-600 dark:text-slate-400">
+              Dans n'importe quel article sur Safari, Chrome, La Presse ou CBC, touchez <strong>Partager ⎋</strong> puis <strong>« LienLibre »</strong>. Votre passerelle propre est copiée instantanément !
+            </p>
+          </div>
+
+          <!-- Mode 2: Voice -->
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1">
+            <h5 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>⌚</span>
+              <span>2. Apple Watch & Contrôle au poignet</span>
+            </h5>
+            <p class="text-xs text-slate-600 dark:text-slate-400">
+              Dictez l'URL ou touchez le raccourci sur votre montre pour créer un QR code ou transférer un article d'urgence vers votre liseuse ou canal Meshtastic.
+            </p>
+          </div>
+
+          <!-- Mode 3: Anti-Meta -->
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1">
+            <h5 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🛡️</span>
+              <span>3. Bouclier Anti-Blocage Meta & C-18 intégré</span>
+            </h5>
+            <p class="text-xs text-slate-600 dark:text-slate-400">
+              Le raccourci applique automatiquement les filtres de détection de paywalls et nettoie tous les mouchards publicitaires pour un partage sans censure.
+            </p>
+          </div>
+        </div>
+
+        <div class="pt-2 flex flex-col sm:flex-row gap-2">
+          <button type="button" id="btn-copy-siri-phrase" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs border border-slate-300 dark:border-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <span>📋</span> <span id="btn-copy-siri-phrase-text">Copier la commande vocale</span>
+          </button>
+          <a href="https://www.icloud.com/shortcuts/" target="_blank" id="btn-open-apple-shortcuts" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 text-center">
+            <span>⚡</span> <span>Ouvrir l'app Raccourcis iOS</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-end shrink-0">
+        <button type="button" id="btn-close-siri-modal-bottom" class="bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs px-5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer">
           Compris & Fermer
         </button>
       </div>
@@ -4167,8 +4380,194 @@
         if (receiverModal && !receiverModal.classList.contains('hidden')) {
           closeReceiverModal();
         }
+        if (ereaderModal && !ereaderModal.classList.contains('hidden')) {
+          closeEreaderModal();
+        }
+        if (siriModal && !siriModal.classList.contains('hidden')) {
+          closeSiriModal();
+        }
       }
     });
+
+    // --- E-Reader / Liseuse Modal & 4-Digit Pairing Logic ---
+    const ereaderModal = document.getElementById('ereader-modal');
+    const ereaderModalBackdrop = document.getElementById('ereader-modal-backdrop');
+    const btnCloseEreaderModal = document.getElementById('btn-close-ereader-modal');
+    const btnOpenEreaderModal = document.getElementById('btn-open-ereader-modal');
+    const ereaderDigitInputs = document.querySelectorAll('.ereader-digit-input');
+    const btnSubmitEreaderSend = document.getElementById('btn-submit-ereader-send');
+    const ereaderSendStatus = document.getElementById('ereader-send-status');
+    const ereaderPreviewTitle = document.getElementById('ereader-preview-title');
+    const ereaderPreviewUrl = document.getElementById('ereader-preview-url');
+
+    function openEreaderModal(prefilledCode) {
+      if (ereaderModal) {
+        const title = (previewTitle && previewTitle.textContent) || (urlInput && urlInput.value) || 'Article d\'information';
+        const url = (outputUrl && outputUrl.textContent) || (urlInput && urlInput.value) || window.location.href;
+        if (ereaderPreviewTitle) ereaderPreviewTitle.textContent = title;
+        if (ereaderPreviewUrl) ereaderPreviewUrl.textContent = url;
+        if (ereaderSendStatus) ereaderSendStatus.classList.add('hidden');
+
+        if (prefilledCode && prefilledCode.length === 4) {
+          ereaderDigitInputs.forEach((inp, idx) => {
+            inp.value = prefilledCode[idx] || '';
+          });
+        }
+
+        ereaderModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+        if (ereaderDigitInputs.length > 0) {
+          const firstEmpty = Array.from(ereaderDigitInputs).find(i => !i.value) || ereaderDigitInputs[0];
+          setTimeout(() => firstEmpty.focus(), 100);
+        }
+      }
+    }
+
+    function closeEreaderModal() {
+      if (ereaderModal) {
+        ereaderModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+      }
+    }
+
+    if (btnOpenEreaderModal) btnOpenEreaderModal.addEventListener('click', () => openEreaderModal());
+    if (btnCloseEreaderModal) btnCloseEreaderModal.addEventListener('click', closeEreaderModal);
+    if (ereaderModalBackdrop) ereaderModalBackdrop.addEventListener('click', closeEreaderModal);
+
+    // Auto-advance digit inputs
+    ereaderDigitInputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        const val = input.value.replace(/\D/g, '');
+        input.value = val ? val[val.length - 1] : '';
+        if (input.value && index < ereaderDigitInputs.length - 1) {
+          ereaderDigitInputs[index + 1].focus();
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+          ereaderDigitInputs[index - 1].focus();
+        }
+      });
+    });
+
+    if (btnSubmitEreaderSend) {
+      btnSubmitEreaderSend.addEventListener('click', async () => {
+        const code = Array.from(ereaderDigitInputs).map(i => i.value.trim()).join('');
+        if (code.length !== 4) {
+          if (ereaderSendStatus) {
+            ereaderSendStatus.className = 'text-xs text-center font-semibold py-1 text-rose-600 dark:text-rose-400';
+            ereaderSendStatus.textContent = 'Veuillez saisir les 4 chiffres affichés sur la liseuse.';
+            ereaderSendStatus.classList.remove('hidden');
+          }
+          return;
+        }
+
+        const title = (previewTitle && previewTitle.textContent) || (urlInput && urlInput.value) || 'Article LienLibre';
+        const summary = (previewDesc && previewDesc.textContent) || '';
+        const targetUrlVal = (outputUrl && outputUrl.textContent) || (urlInput && urlInput.value) || window.location.href;
+
+        const payload = {
+          code,
+          title,
+          summary,
+          url: targetUrlVal,
+          source: (previewDomain && previewDomain.textContent) || (urlInput ? urlInput.value : '')
+        };
+
+        // Fallback local storage / BroadcastChannel
+        try {
+          localStorage.setItem(`lienlibre_ereader_payload_${code}`, JSON.stringify(payload));
+        } catch (_) {}
+
+        // Send to Cloudflare Worker API
+        let success = true;
+        if (WORKER_URL) {
+          try {
+            const res = await fetch(`${WORKER_URL}/api/ereader/send`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (!res.ok) success = false;
+          } catch (_) {}
+        }
+
+        if (ereaderSendStatus) {
+          ereaderSendStatus.className = 'text-xs text-center font-bold py-1 text-emerald-600 dark:text-emerald-400';
+          ereaderSendStatus.textContent = `✓ Article envoyé ! La liseuse (${code}) l'affiche en quelques secondes.`;
+          ereaderSendStatus.classList.remove('hidden');
+        }
+
+        setTimeout(() => {
+          closeEreaderModal();
+        }, 2200);
+      });
+    }
+
+    // --- Apple iOS, Siri & Watch Modal Logic ---
+    const siriModal = document.getElementById('siri-modal');
+    const siriModalBackdrop = document.getElementById('siri-modal-backdrop');
+    const btnCloseSiriModal = document.getElementById('btn-close-siri-modal');
+    const btnCloseSiriModalBottom = document.getElementById('btn-close-siri-modal-bottom');
+    const btnOpenSiriModal = document.getElementById('btn-open-siri-modal');
+    const btnOpenSiriModalBanner = document.getElementById('btn-open-siri-modal-banner');
+    const btnMobileSiri = document.getElementById('btn-mobile-siri');
+    const btnCopySiriPhrase = document.getElementById('btn-copy-siri-phrase');
+    const btnCopySiriPhraseText = document.getElementById('btn-copy-siri-phrase-text');
+
+    function openSiriModal() {
+      if (siriModal) {
+        siriModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+      }
+    }
+
+    function closeSiriModal() {
+      if (siriModal) {
+        siriModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+      }
+    }
+
+    if (btnOpenSiriModal) btnOpenSiriModal.addEventListener('click', openSiriModal);
+    if (btnOpenSiriModalBanner) btnOpenSiriModalBanner.addEventListener('click', openSiriModal);
+    if (btnMobileSiri) btnMobileSiri.addEventListener('click', () => {
+      openSiriModal();
+      if (mobileMenu) mobileMenu.classList.add('hidden');
+    });
+    if (btnCloseSiriModal) btnCloseSiriModal.addEventListener('click', closeSiriModal);
+    if (btnCloseSiriModalBottom) btnCloseSiriModalBottom.addEventListener('click', closeSiriModal);
+    if (siriModalBackdrop) siriModalBackdrop.addEventListener('click', closeSiriModal);
+
+    if (btnCopySiriPhrase) {
+      btnCopySiriPhrase.addEventListener('click', () => {
+        navigator.clipboard.writeText("Dis Siri, crée un LienLibre").then(() => {
+          if (btnCopySiriPhraseText) {
+            btnCopySiriPhraseText.textContent = "✓ Commande copiée !";
+            setTimeout(() => { btnCopySiriPhraseText.textContent = "Copier la commande vocale"; }, 2000);
+          }
+        });
+      });
+    }
+
+    // Auto-détection des liseuses électroniques (Kobo, Kindle, reMarkable) ou push_code
+    (function checkEreaderDevice() {
+      const ua = (navigator.userAgent || '').toLowerCase();
+      const isEreader = /kobo|kindle|silk|remarkable|pocketbook|ebook|e-reader|bookeen/.test(ua) || window.location.search.includes('mode=ereader');
+      if (isEreader && !window.location.pathname.endsWith('liseuse.html')) {
+        window.location.href = './liseuse.html' + window.location.search + window.location.hash;
+        return;
+      }
+
+      // Check if URL has ?push_code=XXXX
+      const urlParams = new URLSearchParams(window.location.search);
+      const pushCode = urlParams.get('push_code');
+      if (pushCode && pushCode.length === 4) {
+        setTimeout(() => {
+          openEreaderModal(pushCode);
+        }, 400);
+      }
+    })();
 
     // Theme Manager (Auto / Light / Dark)
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
@@ -4691,6 +5090,10 @@
     const previewDomain = document.getElementById('preview-domain');
     const previewTitle = document.getElementById('preview-title');
     const previewDesc = document.getElementById('preview-desc');
+    const paywallWarning = document.getElementById('paywall-warning');
+    const paywallWarningTitle = document.getElementById('paywall-warning-title');
+    const paywallWarningDesc = document.getElementById('paywall-warning-desc');
+    const sponsoredWarning = document.getElementById('sponsored-warning');
 
     // Dynamic Language Switching
     function updateLanguage(lang) {
@@ -4821,6 +5224,8 @@
       errorMessage.classList.add('hidden');
       unverifiedWarning.classList.add('hidden');
       trackingCleanedBadge.classList.add('hidden');
+      if (paywallWarning) paywallWarning.classList.add('hidden');
+      if (sponsoredWarning) sponsoredWarning.classList.add('hidden');
       if (checkboxSelfCertify) checkboxSelfCertify.checked = false;
       if (selfCertifySuccess) selfCertifySuccess.classList.add('hidden');
       resultArea.classList.remove('hidden');
@@ -4995,6 +5400,34 @@
           trackingCleanedBadge.classList.remove('hidden');
         } else {
           trackingCleanedBadge.classList.add('hidden');
+        }
+
+        // Paywall Detection Warning
+        if (paywallWarning) {
+          if (data.paywall && data.paywall.isPaywall) {
+            paywallWarning.classList.remove('hidden');
+            if (paywallWarningTitle) {
+              paywallWarningTitle.textContent = currentLang === 'fr' 
+                ? "Mur payant / Abonnement requis sur le site source" 
+                : "Paywall / Subscription required on source website";
+            }
+            if (paywallWarningDesc && data.paywall.reason) {
+              paywallWarningDesc.textContent = currentLang === 'fr'
+                ? `Ce média verrouille la lecture intégrale (${data.paywall.reason}). LienLibre extrait fidèlement les métadonnées et le résumé civique, mais vos proches devront être abonnés pour lire l'intégralité sur le site source.`
+                : `This outlet restricts full reading (${data.paywall.reason}). LienLibre extracts metadata and civic summary, but subscription is needed on the source site for full text.`;
+            }
+          } else {
+            paywallWarning.classList.add('hidden');
+          }
+        }
+
+        // Sponsored / Clickbait Warning
+        if (sponsoredWarning) {
+          if (data.isSponsored === true || data.sponsored === true) {
+            sponsoredWarning.classList.remove('hidden');
+          } else {
+            sponsoredWarning.classList.add('hidden');
+          }
         }
         
         // Interdiction formelle d'afficher des images pour les liens non approuvés (art. 29 & 31.1 LDA)

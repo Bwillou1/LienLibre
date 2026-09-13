@@ -57,6 +57,9 @@ let lastWhitelistFetch = 0;
 let lastBlocklistFetch = 0;
 const WHITELIST_SYNC_INTERVAL = 300000; // 5 minutes
 
+// Mémoire éphémère pour appairage par code à 4 chiffres des liseuses E-Ink (Kobo, Kindle, reMarkable)
+const EREADER_SESSIONS = new Map();
+
 /**
  * Synchronise et charge la dernière version de la liste blanche depuis le dépôt GitHub officiel.
  */
@@ -888,6 +891,96 @@ export default {
       });
     }
 
+    // 3.1. Points de terminaison Liseuse E-Ink (Code à 4 chiffres style send.djazz.se)
+    if (requestUrl.pathname === "/api/ereader/code") {
+      const code = Math.floor(1000 + Math.random() * 9000).toString();
+      EREADER_SESSIONS.set(code, { createdAt: Date.now(), payload: null });
+      if (env && env.LIENLIBRE_KV && typeof env.LIENLIBRE_KV.put === "function") {
+        await env.LIENLIBRE_KV.put(`ereader:${code}`, JSON.stringify({ createdAt: Date.now(), payload: null }), { expirationTtl: 600 });
+      }
+      return new Response(JSON.stringify({ success: true, code, expires: 600 }), {
+        status: 200,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+      });
+    }
+
+    if (requestUrl.pathname === "/api/ereader/send" && (request.method === "POST" || request.method === "GET")) {
+      let bodyData = {};
+      if (request.method === "POST") {
+        try {
+          bodyData = await request.json();
+        } catch (_) {}
+      } else {
+        bodyData = {
+          code: requestUrl.searchParams.get("code"),
+          url: requestUrl.searchParams.get("url"),
+          title: requestUrl.searchParams.get("title"),
+          summary: requestUrl.searchParams.get("summary")
+        };
+      }
+
+      const code = (bodyData.code || "").trim();
+      if (!code || code.length !== 4) {
+        return new Response(JSON.stringify({ error: "Code à 4 chiffres invalide." }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+
+      const payload = {
+        title: bodyData.title || "Article LienLibre",
+        summary: bodyData.summary || "",
+        url: bodyData.url || "",
+        text: bodyData.text || bodyData.summary || "",
+        source: bodyData.source || (bodyData.url ? new URL(bodyData.url).hostname : "Média"),
+        timestamp: Math.floor(Date.now() / 1000)
+      };
+
+      EREADER_SESSIONS.set(code, { createdAt: Date.now(), payload });
+      if (env && env.LIENLIBRE_KV && typeof env.LIENLIBRE_KV.put === "function") {
+        await env.LIENLIBRE_KV.put(`ereader:${code}`, JSON.stringify({ createdAt: Date.now(), payload }), { expirationTtl: 600 });
+      }
+
+      return new Response(JSON.stringify({ success: true, message: `Article envoyé avec succès à la liseuse (${code}).` }), {
+        status: 200,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+      });
+    }
+
+    if (requestUrl.pathname === "/api/ereader/poll") {
+      const code = (requestUrl.searchParams.get("code") || "").trim();
+      if (!code) {
+        return new Response(JSON.stringify({ error: "Code manquant" }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+
+      let session = EREADER_SESSIONS.get(code);
+      if (!session && env && env.LIENLIBRE_KV && typeof env.LIENLIBRE_KV.get === "function") {
+        const rawKv = await env.LIENLIBRE_KV.get(`ereader:${code}`);
+        if (rawKv) {
+          try { session = JSON.parse(rawKv); } catch (_) {}
+        }
+      }
+
+      if (session && session.payload) {
+        EREADER_SESSIONS.delete(code);
+        if (env && env.LIENLIBRE_KV && typeof env.LIENLIBRE_KV.delete === "function") {
+          await env.LIENLIBRE_KV.delete(`ereader:${code}`);
+        }
+        return new Response(JSON.stringify({ ready: true, data: session.payload }), {
+          status: 200,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+
+      return new Response(JSON.stringify({ ready: false }), {
+        status: 200,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+      });
+    }
+
     // 4. Point de terminaison API Create (/api/create - supporte POST et GET pour compatibilité totale)
     if (requestUrl.pathname === "/api/create") {
       let targetInput = "";
@@ -1210,7 +1303,10 @@ export default {
       author: "",
       publishedTime: "",
       schemaType: "",
-      fallbackImages: []
+      fallbackImages: [],
+      hasPaywallMeta: false,
+      detectedPaywallIndicators: [],
+      detectedClickbaitIndicators: []
     };
 
     try {
@@ -1254,13 +1350,35 @@ export default {
             .on('meta[name="twitter:image"]', {
               element(el) { meta.twitterImage = el.getAttribute("content") || ""; }
             })
+            .on('meta[name="isAccessibleForFree"], meta[property="isAccessibleForFree"], meta[name="cXenseParse:paywall"], meta[property="article:content_tier"], meta[name="paywall"]', {
+              element(el) {
+                const content = (el.getAttribute("content") || "").toLowerCase();
+                if (content === "false" || content === "metered" || content === "locked" || content === "premium" || content === "true") {
+                  meta.hasPaywallMeta = true;
+                  meta.detectedPaywallIndicators.push(`Balise: ${el.getAttribute("name") || el.getAttribute("property")}="${content}"`);
+                }
+              }
+            })
+            .on('[class*="paywall"], [id*="paywall"], [class*="subscription-wall"], [class*="subscriber-only"], [class*="piano-id"], [class*="article-gate"], [class*="poool-widget"], [class*="qiota"]', {
+              element(el) {
+                meta.hasPaywallMeta = true;
+                const cls = el.getAttribute("class") || el.getAttribute("id") || "paywall";
+                meta.detectedPaywallIndicators.push(`Élément: ${cls.slice(0, 30)}`);
+              }
+            })
             .on('title', {
               text(textChunk) { meta.standardTitle += textChunk.text; }
             })
             .on('script[type="application/ld+json"]', {
               text(textChunk) {
-                if (textChunk.text && (textChunk.text.includes("NewsArticle") || textChunk.text.includes("Article") || textChunk.text.includes("ReportageNewsArticle"))) {
-                  meta.schemaType += textChunk.text;
+                if (textChunk.text) {
+                  if (textChunk.text.includes("NewsArticle") || textChunk.text.includes("Article") || textChunk.text.includes("ReportageNewsArticle")) {
+                    meta.schemaType += textChunk.text;
+                  }
+                  if (textChunk.text.includes('"isAccessibleForFree":false') || textChunk.text.includes('"isAccessibleForFree": false') || textChunk.text.includes('"isAccessibleForFree":"False"') || textChunk.text.includes('"isAccessibleForFree": "False"') || textChunk.text.includes('"isAccessibleForFree":"false"')) {
+                    meta.hasPaywallMeta = true;
+                    meta.detectedPaywallIndicators.push('Schema.org: isAccessibleForFree = false');
+                  }
                 }
               }
             })
@@ -1286,6 +1404,41 @@ export default {
     // 6. Appliquer la logique de Fallback et calcul du Mini-Bot Sentinel
     const finalTitle = (meta.title || meta.twitterTitle || meta.standardTitle || targetUrl.hostname).trim();
     const finalDescription = (meta.description || meta.twitterDescription || "Cliquez pour lire l'article complet sur " + targetUrl.hostname).trim();
+
+    // Analyse heuristique du texte pour murs payants et contenus sponsorisés
+    const fullSearchText = `${finalTitle} ${finalDescription} ${meta.standardTitle}`.toLowerCase();
+    const paywallKws = [
+      "réservé aux abonnés", "article réservé aux abonnés", "abonnés seulement",
+      "abonnez-vous pour lire", "exclusive to subscribers", "subscriber-only",
+      "subscribe to continue", "subscriber exclusive", "premium article", "réservé aux membres"
+    ];
+    for (const kw of paywallKws) {
+      if (fullSearchText.includes(kw)) {
+        meta.hasPaywallMeta = true;
+        meta.detectedPaywallIndicators.push(`Mention: « ${kw} »`);
+        break;
+      }
+    }
+
+    const sponsoredKws = [
+      "publireportage", "partenariat rémunéré", "contenu sponsorisé", "commandité par",
+      "advertorial", "sponsored content", "paid partnership", "en collaboration avec"
+    ];
+    for (const sk of sponsoredKws) {
+      if (fullSearchText.includes(sk)) {
+        meta.detectedClickbaitIndicators.push(`Contenu promotionnel: « ${sk} »`);
+        break;
+      }
+    }
+
+    const isPaywallDetected = meta.hasPaywallMeta || meta.detectedPaywallIndicators.length > 0;
+    const isSponsoredDetected = meta.detectedClickbaitIndicators.length > 0;
+    const paywallData = {
+      isPaywall: isPaywallDetected,
+      type: isPaywallDetected ? "hard" : "none",
+      label: isPaywallDetected ? "Abonnement requis / Mur payant détecté" : "Accès libre",
+      indicators: meta.detectedPaywallIndicators
+    };
     
     // RÈGLE JURIDIQUE & PÉNALE STRICTE (art. 29 & 31.1 LDA) :
     // INTERDICTION FORMELLE d'extraire, relayer ou afficher des images pour les sites non approuvés dans whitelist.js.
@@ -1318,7 +1471,9 @@ export default {
             title: "Source Bloquée",
             description: botAudit.blockReason,
             allowed: false,
-            botAudit: botAudit
+            botAudit: botAudit,
+            paywall: paywallData,
+            isSponsored: isSponsoredDetected
           }),
           {
             status: 403,
@@ -1338,7 +1493,9 @@ export default {
           allowed: isAllowed,
           selfCertified: isSelfCertified,
           trackingCleaned: strippedAny,
-          botAudit: botAudit
+          botAudit: botAudit,
+          paywall: paywallData,
+          isSponsored: isSponsoredDetected
         }),
         {
           status: 200,

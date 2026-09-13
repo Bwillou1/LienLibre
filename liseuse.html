@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+  <title>LienLibre — Mode Liseuse E-Ink (Kobo, Kindle, reMarkable)</title>
+  <meta name="description" content="Interface ultra-optimisée pour liseuses électroniques (E-Ink) avec appairage instantané par code à 4 chiffres sans fil.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <style>
+    /* Pure E-Ink High-Contrast Stylesheet */
+    :root {
+      --bg: #ffffff;
+      --fg: #000000;
+      --border: #000000;
+      --font-size: 20px;
+      --line-height: 1.6;
+    }
+
+    body.dark-mode {
+      --bg: #000000;
+      --fg: #ffffff;
+      --border: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      transition: none !important;
+      animation: none !important;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: 'Bookerly', 'Caecilia', 'Georgia', 'Times New Roman', serif;
+      font-size: var(--font-size);
+      line-height: var(--line-height);
+      padding: 16px;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 3px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .brand {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      color: var(--fg);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button, .btn {
+      background: var(--bg);
+      color: var(--fg);
+      border: 2px solid var(--border);
+      padding: 8px 14px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: system-ui, -apple-system, sans-serif;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    button:active, .btn:active {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    /* Screen 1 : Pairing Code */
+    #screen-pairing {
+      text-align: center;
+      padding: 24px 10px;
+    }
+
+    .code-box {
+      border: 4px solid var(--border);
+      padding: 24px 16px;
+      margin: 20px auto;
+      max-width: 420px;
+      background: var(--bg);
+    }
+
+    .code-digits {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 12px;
+      margin: 12px 0;
+      display: block;
+    }
+
+    .instructions {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin: 16px 0;
+    }
+
+    .status-text {
+      font-size: 0.95rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-style: italic;
+      margin-top: 14px;
+    }
+
+    /* Screen 2 : Reader View */
+    #screen-reader {
+      display: none;
+    }
+
+    .article-header {
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    .article-title {
+      font-size: 1.8rem;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .article-meta {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .article-summary {
+      font-size: 1.25rem;
+      font-weight: bold;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      padding: 12px;
+      border-left: 4px solid var(--border);
+      background: var(--bg);
+    }
+
+    .article-content {
+      font-size: var(--font-size);
+      line-height: var(--line-height);
+      word-break: break-word;
+    }
+
+    .article-content p {
+      margin-bottom: 18px;
+      text-indent: 1.5em;
+    }
+
+    .article-content p:first-of-type {
+      text-indent: 0;
+    }
+
+    .article-source-box {
+      margin-top: 36px;
+      padding: 16px;
+      border: 2px solid var(--border);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.85rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* QR Code Container for Liseuse */
+    #pairing-qr-canvas {
+      width: 140px;
+      height: 140px;
+      margin: 14px auto 0;
+      display: block;
+      border: 2px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & E-Reader Controls -->
+  <header>
+    <a href="index.html" class="brand">📖 LienLibre <span style="font-size: 0.8rem; font-weight: normal;">(Liseuse E-Ink)</span></a>
+    <div class="toolbar">
+      <button type="button" id="btn-text-minus" title="Diminuer la police">A-</button>
+      <button type="button" id="btn-text-plus" title="Agrandir la police">A+</button>
+      <button type="button" id="btn-toggle-contrast" title="Inverser les contrastes">🌓</button>
+      <button type="button" id="btn-new-code" title="Générer un nouveau code">⚡ Code</button>
+      <a href="index.html" class="btn" title="Retourner à l'accueil standard">🏠 Web</a>
+    </div>
+  </header>
+
+  <!-- SCREEN 1: PAIRING CODE (En attente d'un article) -->
+  <main id="screen-pairing">
+    <div class="code-box">
+      <div style="font-family: system-ui, -apple-system, sans-serif; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
+        ⚡ Code de Réception Liseuse
+      </div>
+      
+      <span id="display-pairing-code" class="code-digits">----</span>
+
+      <p class="instructions">
+        Sur votre téléphone ou ordinateur (sur <strong>LienLibre</strong>), cliquez sur <strong>« Envoyer vers Liseuse »</strong> et tapez ces <strong>4 chiffres</strong>.
+      </p>
+
+      <canvas id="pairing-qr-canvas" class="hidden"></canvas>
+
+      <div id="pairing-status" class="status-text">
+        ⏳ En attente d'un article ou d'un média...
+      </div>
+    </div>
+
+    <!-- Saisie manuelle de secours pour la liseuse si besoin -->
+    <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px; font-family: system-ui, -apple-system, sans-serif; font-size: 0.9rem;">
+      <details>
+        <summary style="cursor: pointer; font-weight: bold; padding: 6px 0;">Saisir une URL ou une capsule directement sur la liseuse ▾</summary>
+        <div style="margin-top: 10px;">
+          <input type="text" id="manual-url-input" placeholder="Coller une URL ou #o=capsule" style="width: 100%; padding: 10px; border: 2px solid var(--border); font-size: 1rem; margin-bottom: 8px; background: var(--bg); color: var(--fg);">
+          <button type="button" id="btn-manual-load" style="width: 100%;">Afficher l'article</button>
+        </div>
+      </details>
+    </div>
+  </main>
+
+  <!-- SCREEN 2: CLEAN E-INK ARTICLE READER -->
+  <main id="screen-reader">
+    <article class="article-header">
+      <div id="article-meta" class="article-meta">SOURCE • DATE</div>
+      <h1 id="article-title" class="article-title">Titre de l'article</h1>
+      <div id="article-summary" class="article-summary">Résumé civique de l'article</div>
+    </article>
+
+    <div id="article-content" class="article-content">
+      <!-- Article text paragraphs injected here -->
+    </div>
+
+    <div class="article-source-box">
+      <div><strong>Passerelle civique LienLibre (Art. 29 LDA)</strong></div>
+      <div id="article-source-url" style="word-break: break-all; margin-top: 4px;"></div>
+      <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <button type="button" id="btn-back-to-code">⬅ Recevoir un autre article</button>
+        <button type="button" onclick="window.print()">🖨️ Imprimer</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="./js/qr.js"></script>
+  <script>
+    // Worker Endpoint
+    const DEFAULT_WORKER_URL = 'https://lienlibre.acces-presse.workers.dev';
+    const isOfficialSite = (window.location.hostname === 'bwillou1.github.io' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const customWorkerUrl = (typeof window.LIENLIBRE_WORKER_URL === 'string' && window.LIENLIBRE_WORKER_URL.trim()) || localStorage.getItem('LIENLIBRE_CUSTOM_WORKER_URL') || '';
+    const WORKER_URL = customWorkerUrl || (isOfficialSite ? DEFAULT_WORKER_URL : '');
+
+    // DOM Elements
+    const screenPairing = document.getElementById('screen-pairing');
+    const screenReader = document.getElementById('screen-reader');
+    const displayPairingCode = document.getElementById('display-pairing-code');
+    const pairingStatus = document.getElementById('pairing-status');
+    const pairingQrCanvas = document.getElementById('pairing-qr-canvas');
+
+    const articleTitle = document.getElementById('article-title');
+    const articleMeta = document.getElementById('article-meta');
+    const articleSummary = document.getElementById('article-summary');
+    const articleContent = document.getElementById('article-content');
+    const articleSourceUrl = document.getElementById('article-source-url');
+
+    const btnTextMinus = document.getElementById('btn-text-minus');
+    const btnTextPlus = document.getElementById('btn-text-plus');
+    const btnToggleContrast = document.getElementById('btn-toggle-contrast');
+    const btnNewCode = document.getElementById('btn-new-code');
+    const btnBackToCode = document.getElementById('btn-back-to-code');
+
+    const manualUrlInput = document.getElementById('manual-url-input');
+    const btnManualLoad = document.getElementById('btn-manual-load');
+
+    let currentPairingCode = '';
+    let pollingInterval = null;
+    let currentFontSize = 20;
+
+    // Offline Capsule Codec
+    const OfflineCapsule = {
+      decode(encoded) {
+        try {
+          const cleanB64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+          const padded = cleanB64.padEnd(cleanB64.length + (4 - cleanB64.length % 4) % 4, '=');
+          const binStr = atob(padded);
+          const bytes = new Uint8Array(binStr.length);
+          for (let i = 0; i < binStr.length; i++) {
+            bytes[i] = binStr.charCodeAt(i);
+          }
+          const text = new TextDecoder().decode(bytes);
+          const parts = text.split('§');
+          if (parts.length < 6) return null;
+          return {
+            u: parts[0],
+            d: parts[1],
+            t: parts[2],
+            s: parts[3],
+            e: parts[4] === '1',
+            ts: parseInt(parts[5], 10) || Math.floor(Date.now() / 1000)
+          };
+        } catch (_) {
+          return null;
+        }
+      }
+    };
+
+    // Font size controls
+    btnTextMinus.addEventListener('click', () => {
+      if (currentFontSize > 14) {
+        currentFontSize -= 2;
+        document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+      }
+    });
+
+    btnTextPlus.addEventListener('click', () => {
+      if (currentFontSize < 36) {
+        currentFontSize += 2;
+        document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+      }
+    });
+
+    btnToggleContrast.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    btnNewCode.addEventListener('click', () => {
+      startNewPairingSession();
+    });
+
+    if (btnBackToCode) {
+      btnBackToCode.addEventListener('click', () => {
+        startNewPairingSession();
+      });
+    }
+
+    // Generate random 4-digit code
+    function generate4DigitCode() {
+      return Math.floor(1000 + Math.random() * 9000).toString();
+    }
+
+    // Start a fresh pairing session
+    async function startNewPairingSession() {
+      if (pollingInterval) clearInterval(pollingInterval);
+      
+      screenReader.style.display = 'none';
+      screenPairing.style.display = 'block';
+
+      // 1. Try to request from Worker API or generate locally
+      let code = generate4DigitCode();
+      if (WORKER_URL) {
+        try {
+          const res = await fetch(`${WORKER_URL}/api/ereader/code`, { method: 'GET' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.code) code = data.code;
+          }
+        } catch (_) {}
+      }
+
+      currentPairingCode = code;
+      displayPairingCode.textContent = `${code.slice(0, 2)} ${code.slice(2)}`;
+      pairingStatus.textContent = `⏳ En attente d'envoi pour le code ${code}...`;
+
+      // Render pairing QR code for phone cameras
+      if (pairingQrCanvas && typeof LienLibreQR !== 'undefined') {
+        try {
+          const pairUrl = `${window.location.origin}${window.location.pathname.replace('liseuse.html', 'index.html')}?push_code=${code}`;
+          LienLibreQR.render(pairUrl, pairingQrCanvas, { size: 140, margin: 1, colorDark: '#000000', colorLight: '#ffffff' });
+          pairingQrCanvas.classList.remove('hidden');
+        } catch (_) {}
+      }
+
+      // Start Polling (every 2.5 seconds)
+      pollingInterval = setInterval(async () => {
+        await checkPairingInbox(code);
+      }, 2500);
+    }
+
+    // Poll worker or local storage for incoming article
+    async function checkPairingInbox(code) {
+      // 1. Check local storage / BroadcastChannel
+      const localKey = `lienlibre_ereader_payload_${code}`;
+      const localData = localStorage.getItem(localKey);
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData);
+          localStorage.removeItem(localKey);
+          renderReceivedArticle(parsed);
+          return;
+        } catch (_) {}
+      }
+
+      // 2. Check Cloudflare Worker API
+      if (WORKER_URL) {
+        try {
+          const res = await fetch(`${WORKER_URL}/api/ereader/poll?code=${code}`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && (data.ready === true || data.data) && data.data) {
+              renderReceivedArticle(data.data);
+            }
+          }
+        } catch (_) {}
+      }
+    }
+
+    // Render Article in clean E-Ink Typography
+    function renderReceivedArticle(article) {
+      if (pollingInterval) clearInterval(pollingInterval);
+      
+      const title = article.title || article.t || "Article sans titre";
+      const summary = article.summary || article.description || article.s || "";
+      const source = article.source || article.domain || article.d || (article.url ? new URL(article.url).hostname : "Média d'information");
+      const url = article.url || article.u || "";
+      const text = article.text || article.content || "";
+
+      articleTitle.textContent = title;
+      articleMeta.textContent = `📡 Source : ${source}`;
+      if (summary) {
+        articleSummary.textContent = summary;
+        articleSummary.classList.remove('hidden');
+      } else {
+        articleSummary.classList.add('hidden');
+      }
+
+      articleContent.innerHTML = '';
+      if (text) {
+        const paragraphs = text.split(/\n\n+/);
+        paragraphs.forEach(p => {
+          if (p.trim()) {
+            const pEl = document.createElement('p');
+            pEl.textContent = p.trim();
+            articleContent.appendChild(pEl);
+          }
+        });
+      } else {
+        const pEl = document.createElement('p');
+        pEl.textContent = summary || "Résumé et métadonnées d'information reçus avec succès sur la liseuse.";
+        articleContent.appendChild(pEl);
+      }
+
+      articleSourceUrl.innerHTML = `Lien officiel : <a href="${url}" target="_blank" style="color: var(--fg); font-weight: bold;">${url}</a>`;
+
+      screenPairing.style.display = 'none';
+      screenReader.style.display = 'block';
+      window.scrollTo(0, 0);
+    }
+
+    // Manual load handler
+    if (btnManualLoad) {
+      btnManualLoad.addEventListener('click', () => {
+        const raw = (manualUrlInput.value || '').trim();
+        if (!raw) return;
+
+        if (raw.includes('#o=')) {
+          const capPart = raw.split('#o=')[1].split('&')[0];
+          const cap = OfflineCapsule.decode(capPart);
+          if (cap) {
+            renderReceivedArticle({
+              title: cap.t,
+              summary: cap.s,
+              source: cap.d,
+              url: cap.u
+            });
+            return;
+          }
+        }
+
+        renderReceivedArticle({
+          title: raw,
+          summary: "Chargement direct sur la liseuse.",
+          url: raw
+        });
+      });
+    }
+
+    // Check if URL has hash capsule (#o=...) or parameter
+    function checkUrlOnLoad() {
+      const hash = window.location.hash || '';
+      if (hash.startsWith('#o=')) {
+        const cap = OfflineCapsule.decode(hash.substring(3));
+        if (cap && cap.u) {
+          renderReceivedArticle({
+            title: cap.t,
+            summary: cap.s,
+            source: cap.d,
+            url: cap.u
+          });
+          return;
+        }
+      }
+
+      startNewPairingSession();
+    }
+
+    window.addEventListener('DOMContentLoaded', checkUrlOnLoad);
+  </script>
+</body>
+</html>
