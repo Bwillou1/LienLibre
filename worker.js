@@ -250,19 +250,17 @@ function decodePackedUrl(packed) {
 
 /**
  * Génère l'URL du proxy d'image.
- * RÈGLE PÉNALE STRICTE : Ne proxyifie QUE si le domaine fait partie de ALLOWED_DOMAINS.
- * Pour tous les autres domaines, conserve l'URL d'origine sans passer par le proxy /i/.
+ * RÈGLE JURIDIQUE & PÉNALE STRICTE (art. 29 & 31.1 LDA) :
+ * INTERDICTION FORMELLE d'extraire, relayer ou proxifier des images pour les sites non approuvés.
+ * Ne proxifie QUE si le domaine fait formellement partie de whitelist.js.
  */
 function getProxyImageUrl(origin, rawImageUrl, isAllowed = false) {
-  if (!rawImageUrl) return "";
-  if (!isAllowed) {
-    return rawImageUrl; // Pas de relais proxy pour les domaines non vérifiés
-  }
+  if (!rawImageUrl || !isAllowed) return "";
   try {
     const b64 = btoa(rawImageUrl).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
     return `${origin}/i/${b64}`;
   } catch (_) {
-    return rawImageUrl;
+    return "";
   }
 }
 
@@ -1129,12 +1127,18 @@ export default {
     const finalTitle = (meta.title || meta.twitterTitle || meta.standardTitle || targetUrl.hostname).trim();
     const finalDescription = (meta.description || meta.twitterDescription || "Cliquez pour lire l'article complet sur " + targetUrl.hostname).trim();
     
-    let rawImage = meta.image || meta.twitterImage;
-    if (!rawImage && meta.fallbackImages.length > 0) {
-      rawImage = meta.fallbackImages[0];
+    // RÈGLE JURIDIQUE & PÉNALE STRICTE (art. 29 & 31.1 LDA) :
+    // INTERDICTION FORMELLE d'extraire, relayer ou afficher des images pour les sites non approuvés dans whitelist.js.
+    // Seuls les médias vérifiés et autorisés de la liste blanche ont droit à l'affichage d'images.
+    let rawImage = "";
+    if (isAllowed) {
+      rawImage = meta.image || meta.twitterImage;
+      if (!rawImage && meta.fallbackImages.length > 0) {
+        rawImage = meta.fallbackImages[0];
+      }
     }
     
-    const finalImage = rawImage ? resolveUrl(targetUrl.href, rawImage) : "";
+    const finalImage = (isAllowed && rawImage) ? resolveUrl(targetUrl.href, rawImage) : "";
 
     // Calcul de l'audit automatique du Mini-Bot
     const botAudit = calculateBotAudit(targetUrl, meta, isAllowed, dnsThreat);
@@ -1168,7 +1172,7 @@ export default {
         JSON.stringify({
           title: finalTitle,
           description: finalDescription,
-          image: finalImage,
+          image: isAllowed ? finalImage : "",
           url: targetUrl.href,
           allowed: isAllowed,
           selfCertified: isSelfCertified,

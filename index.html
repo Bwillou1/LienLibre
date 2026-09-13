@@ -2908,11 +2908,13 @@
           trackingCleanedBadge.classList.add('hidden');
         }
         
-        if (data.image) {
+        // Interdiction formelle d'afficher des images pour les liens non approuvés (art. 29 & 31.1 LDA)
+        if (data.allowed === true && data.image) {
           previewImg.src = data.image;
           previewImg.classList.remove('hidden');
           previewImgPlaceholder.classList.add('hidden');
         } else {
+          previewImg.src = '';
           previewImg.classList.add('hidden');
           previewImgPlaceholder.classList.remove('hidden');
         }
