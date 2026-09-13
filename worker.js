@@ -41,9 +41,9 @@ const CORS_HEADERS = {
   "Access-Control-Max-Age": "86400"
 };
 
-// En-têtes HTTP de sécurité globaux
+// En-têtes HTTP de sécurité globaux (Inclus CDN jsDelivr pour le widget libre d'accessibilité Sienna)
 const SECURITY_HEADERS = {
-  "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src *; data: *;",
+  "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline' https://cdn.jsdelivr.net; script-src 'unsafe-inline' https://cdn.jsdelivr.net; img-src * data:; font-src * data:; connect-src *;",
   "X-Frame-Options": "DENY",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin"
@@ -1504,12 +1504,16 @@ function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
     </div>
     <a href="https://www.canada.ca/" class="btn-safety">🏛️ Quitter vers un lieu sûr (Canada.ca)</a>
     <a href="https://bwillou1.github.io/LienLibre/" class="btn-home">${escapeHtml(homeBtn)}</a>
-    <div style="margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 0.75rem;">
+    <div style="margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem;">
       <a href="https://bwillou1.github.io/LienLibre/politiques.html#4-securite-airlock" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline; font-size: 0.78rem;">
         📜 En savoir plus sur la politique de sécurité et le bouclier DNS (Loi 25 / art. 31.1 LDA) ↗
       </a>
+      <a href="https://bwillou1.github.io/LienLibre/remerciements.html" target="_blank" rel="noopener noreferrer" style="color: #94a3b8; text-decoration: underline; font-size: 0.75rem;">
+        ♿ Remerciements & Accessibilité (Sienna) ↗
+      </a>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" defer></script>
 </body>
 </html>`;
 }
@@ -2609,8 +2613,9 @@ function generateWarningHTML(targetUrl, title, description, image, userIp, lang 
   </div>
 
   <div class="support-banner">
-    <span class="heart">❤️</span> ${trans.supportBanner}
+    <span class="heart">❤️</span> ${trans.supportBanner} | <a href="https://bwillou1.github.io/LienLibre/remerciements.html" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline;">♿ Remerciements & Accessibilité (Sienna) ↗</a>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" defer></script>
 </body>
 </html>`;
 }
@@ -2776,9 +2781,10 @@ function getWelcomeHTML() {
     </div>
 
     <div class="legal-notice">
-      ⚖️ <strong>Cadre légal :</strong> Conforme à l'utilisation équitable (art. 29 <em>Loi sur le droit d'auteur du Canada</em>) et au statut de simple conduit technique (art. 31.1 LDA). Aucun cookie publicitaire, zéro conservation de données personnelles. <a href="https://bwillou1.github.io/LienLibre/politiques.html" style="color: #38bdf8; text-decoration: underline;" target="_blank" rel="noopener noreferrer">Consulter les politiques complètes (Loi 25, LPRPDE, Sécurité) ↗</a>
+      ⚖️ <strong>Cadre légal :</strong> Conforme à l'utilisation équitable (art. 29 <em>Loi sur le droit d'auteur du Canada</em>) et au statut de simple conduit technique (art. 31.1 LDA). Aucun cookie publicitaire, zéro conservation de données personnelles. <a href="https://bwillou1.github.io/LienLibre/politiques.html" style="color: #38bdf8; text-decoration: underline;" target="_blank" rel="noopener noreferrer">Consulter les politiques complètes (Loi 25, LPRPDE, Sécurité) ↗</a> · <a href="https://bwillou1.github.io/LienLibre/remerciements.html" style="color: #94a3b8; text-decoration: underline;" target="_blank" rel="noopener noreferrer">♿ Remerciements & Accessibilité (Sienna) ↗</a>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" defer></script>
 </body>
 </html>`;
 }

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LienLibre — Remerciements, Accessibilité & Crédits Open Source</title>
+  
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="favicon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#090d16">
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Remerciements officiels, engagement pour l'accessibilité universelle (WCAG 2.2, ADA) et attribution des licences libres du projet LienLibre, notamment le Sienna Accessibility Widget de Benny Luk (Licence MIT).">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bwillou1.github.io/LienLibre/remerciements.html">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              900: '#0c4a6e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Background Aura -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-3 group">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+        🔗
+      </div>
+      <div>
+        <span class="font-extrabold text-lg text-white tracking-tight">Lien<span class="text-cyan-400">Libre</span></span>
+        <span class="hidden sm:inline-block ml-2 text-xs text-slate-400 font-medium">· Remerciements & Accessibilité</span>
+      </div>
+    </a>
+    <div class="flex items-center gap-3 text-xs">
+      <a href="index.html" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors flex items-center gap-1.5 font-medium">
+        <span>←</span> Accueil
+      </a>
+      <a href="politiques.html" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors flex items-center gap-1.5 font-medium">
+        <span>📜</span> Politiques
+      </a>
+      <a href="https://github.com/Bwillou1/LienLibre" target="_blank" rel="noopener noreferrer" class="hidden sm:flex px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 transition-colors items-center gap-1.5 font-medium">
+        <span>🐙</span> GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="relative z-10 flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 space-y-10">
+
+    <!-- Hero Title -->
+    <div class="space-y-3 text-center sm:text-left">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+        <span>♿</span> Inclusion & Open Source
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+        Remerciements, Accessibilité & Crédits
+      </h1>
+      <p class="text-slate-400 text-sm sm:text-base leading-relaxed max-w-2xl">
+        Le projet civique et éducatif <strong>LienLibre</strong> repose sur le partage du savoir et des briques technologiques libres de la communauté open-source mondiale. Nous exprimons notre profonde gratitude envers les créateurs et mainteneurs d'outils qui rendent le web plus ouvert, plus sûr et accessible à toutes et tous.
+      </p>
+    </div>
+
+    <!-- Special Spotlight: Sienna Accessibility Widget -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-indigo-950/40 to-slate-900/60 border-2 border-indigo-500/40 shadow-2xl space-y-6 relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-indigo-500/20">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center text-3xl shadow-inner">
+            👩‍🦽
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-xl sm:text-2xl font-bold text-white">Sienna Accessibility Widget</h2>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">MIT License</span>
+            </div>
+            <p class="text-xs sm:text-sm text-indigo-300 font-medium">Créé et maintenu par <strong>Benny Luk</strong> (<a href="https://github.com/bennyluk" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">@bennyluk</a>)</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a href="https://github.com/bennyluk/Sienna-Accessibility-Widget" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all flex items-center gap-1.5">
+            <span>🐙</span> Dépôt GitHub Officiel
+          </a>
+          <a href="https://accessibility-widget.pages.dev" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-all flex items-center gap-1.5">
+            <span>🌐</span> Site & Démo
+          </a>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+        <p>
+          LienLibre intègre fièrement le widget <strong>Sienna</strong> sur l’ensemble de sa plateforme afin d'offrir une expérience de lecture inclusive, équitable et universelle.
+        </p>
+        
+        <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2 pt-2">
+          <span>✨</span> Fonctionnalités d'accessibilité offertes aux citoyens :
+        </h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-indigo-500/20 space-y-1">
+            <h4 class="font-bold text-indigo-200 text-xs flex items-center gap-1.5"><span>📖</span> Police pour la dyslexie</h4>
+            <p class="text-[11px] text-slate-400">Application instantanée de la typographie OpenDyslexic pour faciliter la lecture des personnes ayant des troubles d'apprentissage.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-indigo-500/20 space-y-1">
+            <h4 class="font-bold text-indigo-200 text-xs flex items-center gap-1.5"><span>🔍</span> Agrandissement & Espacement</h4>
+            <p class="text-[11px] text-slate-400">Ajustement fluide de la taille des polices, de la hauteur de ligne et de l'interlettrage pour le confort visuel.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-indigo-500/20 space-y-1">
+            <h4 class="font-bold text-indigo-200 text-xs flex items-center gap-1.5"><span>🎨</span> Contrastes, Niveaux de gris & Saturation</h4>
+            <p class="text-[11px] text-slate-400">Inversion de contraste, mode monochrome, contraste élevé et désaturation pour les personnes malvoyantes ou daltoniennes.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-indigo-500/20 space-y-1">
+            <h4 class="font-bold text-indigo-200 text-xs flex items-center gap-1.5"><span>📏</span> Guide de lecture & Grand curseur</h4>
+            <p class="text-[11px] text-slate-400">Règle de lecture horizontale focalisée et agrandissement du pointeur pour une navigation assistée sans fatigue visuelle.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-indigo-500/20 space-y-1">
+            <h4 class="font-bold text-indigo-200 text-xs flex items-center gap-1.5"><span>🛑</span> Arrêt des animations</h4>
+            <p class="text-[11px] text-slate-400">Neutralisation des transitions pour protéger les personnes souffrant d'épilepsie photosensible ou de troubles vestibulaires.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-indigo-500/20 space-y-1">
+            <h4 class="font-bold text-indigo-200 text-xs flex items-center gap-1.5"><span>🔒</span> 100% Client-Side & Zéro Donnée</h4>
+            <p class="text-[11px] text-slate-400">Aucun cookie, aucun mouchard et aucun traçage : conformité totale avec la Loi 25 (Québec) et le RGPD.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full MIT License of Sienna -->
+      <div class="space-y-2 pt-4">
+        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span>📜</span> Texte intégral de la Licence MIT — Sienna (Benny Luk)
+        </h4>
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-400 leading-relaxed overflow-x-auto">
+<pre class="text-slate-300">Copyright 2025 Benny Luk
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre>
+        </div>
+      </div>
+
+      <div class="text-center pt-2">
+        <p class="text-xs text-indigo-300">
+          ☕ Vous appréciez cet outil ? Soutenez Benny Luk sur <a href="https://buymeacoffee.com/bennyluk" target="_blank" rel="noopener noreferrer" class="underline hover:text-white font-bold">Buy Me a Coffee</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Other Open Source Credits -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+        <span>🌐</span> Autres Composants & Remerciements
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-300">
+        
+        <div class="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-cyan-300">NextDNS</h3>
+            <span class="text-[10px] text-slate-500 font-mono">DNS-over-HTTPS</span>
+          </div>
+          <p class="text-slate-400 text-xs">
+            Fournisseur de résolution DNS chiffrée utilisé pour notre double bouclier de sécurité (profils <code>8d3993</code> et <code>9d8318</code>) bloquant maliciels, hameçonnages et menaces en temps réel.
+          </p>
+          <a href="https://nextdns.io" target="_blank" rel="noopener noreferrer" class="text-xs text-cyan-400 hover:underline inline-block font-medium">nextdns.io ↗</a>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-cyan-300">Cloudflare Workers & KV</h3>
+            <span class="text-[10px] text-slate-500 font-mono">Serverless Edge</span>
+          </div>
+          <p class="text-slate-400 text-xs">
+            Infrastructure réseau mondiale décentralisée permettant l'exécution stateless de notre passerelle avec protection DDoS et chiffrement TLS de bout en bout.
+          </p>
+          <a href="https://workers.cloudflare.com" target="_blank" rel="noopener noreferrer" class="text-xs text-cyan-400 hover:underline inline-block font-medium">workers.cloudflare.com ↗</a>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-cyan-300">Tailwind CSS</h3>
+            <span class="text-[10px] text-slate-500 font-mono">MIT License</span>
+          </div>
+          <p class="text-slate-400 text-xs">
+            Framework CSS utilitaire moderne permettant de concevoir une interface réactive, fluide, accessible et légère sans lourdeur logicielle.
+          </p>
+          <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-xs text-cyan-400 hover:underline inline-block font-medium">tailwindcss.com ↗</a>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-cyan-300">Open Graph & Schema.org</h3>
+            <span class="text-[10px] text-slate-500 font-mono">Standards du Web</span>
+          </div>
+          <p class="text-slate-400 text-xs">
+            Protocoles ouverts d'interopérabilité sémantique permettant la transmission fidèle des métadonnées éditoriales dans le respect de l'utilisation équitable (art. 29 LDA).
+          </p>
+          <a href="https://ogp.me" target="_blank" rel="noopener noreferrer" class="text-xs text-cyan-400 hover:underline inline-block font-medium">ogp.me ↗</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Bottom Navigation -->
+    <div class="pt-6 border-t border-slate-800 text-center flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <p>© 2026 LienLibre — Projet citoyen et éducatif à but non lucratif.</p>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="text-cyan-400 hover:underline font-semibold">Accueil LienLibre</a>
+        <a href="politiques.html" class="text-slate-400 hover:underline">Politiques officielles</a>
+        <a href="https://github.com/Bwillou1/LienLibre" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:underline">Code source GitHub</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sienna Accessibility Widget (Open Source - Benny Luk - MIT License) -->
+  <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" defer></script>
+</body>
+</html>
