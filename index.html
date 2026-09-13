@@ -684,6 +684,9 @@
           </span>
         </a>
         
+        <!-- Anti-Bot Honeypot Trap (Invisible to humans, filled only by automated spam scripts) -->
+        <input type="text" name="website_trap_hp" id="website_trap_hp" class="hidden" style="display:none !important; position:absolute !important; left:-9999px !important; opacity:0 !important;" tabindex="-1" autocomplete="off" aria-hidden="true">
+
         <button 
           type="submit" 
           id="btn-submit-generate"
@@ -5335,15 +5338,20 @@
         const createCtrl = new AbortController();
         const createTimeout = setTimeout(() => createCtrl.abort(), 4000);
         try {
+          const trapHpValue = (document.getElementById('website_trap_hp')?.value || '');
           const createRes = await fetch(`${WORKER_URL}/api/create`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: rawUrl, lang: currentLang }),
+            body: JSON.stringify({
+              url: rawUrl,
+              lang: currentLang,
+              website_trap_hp: trapHpValue
+            }),
             signal: createCtrl.signal
           });
-          if (createRes.status === 403) {
+          if (createRes.status === 403 || createRes.status === 429) {
             const errData = await createRes.json().catch(() => ({}));
-            showError(trans.sourceBlockedAlert || ("🛑 " + (errData.error || "Ce domaine ou type de contenu est interdit par sécurité.")));
+            showError("🛑 " + (errData.error || "Action refusée par le filtre anti-bot / anti-spam."));
             resultArea.classList.add('hidden');
             return;
           }
