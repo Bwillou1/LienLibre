@@ -82,6 +82,9 @@ const WHITELIST_SYNC_INTERVAL = 300000; // 5 minutes
 // Mémoire éphémère pour appairage par code à 4 chiffres des liseuses E-Ink (Kobo, Kindle, reMarkable)
 const EREADER_SESSIONS = new Map();
 
+// Mémoire locale de secours pour liens courts (6 caractères)
+const SHORT_LINKS_MEMORY = new Map();
+
 // Mémoire de limitation de débit anti-spam / anti-bot pour la création de liens (/api/create)
 const CREATION_RATE_LIMITS = new Map();
 const CREATION_WINDOW_MS = 60000; // Fenêtre glissante de 1 minute
@@ -1316,8 +1319,20 @@ export default {
             });
           }
         }
-        const randomId = Math.random().toString(36).substring(2, 10);
+        const randomId = Math.random().toString(36).substring(2, 8); // Format court de 6 caractères
         const packedSlug = encodePackedUrl(parsedTarget.href);
+
+        // Sauvegarde en mémoire de secours
+        SHORT_LINKS_MEMORY.set(randomId, {
+          url: parsedTarget.href,
+          lang: targetLang,
+          selfCertified: isSelfCertified,
+          created: Date.now()
+        });
+        if (SHORT_LINKS_MEMORY.size > 5000) {
+          const firstKey = SHORT_LINKS_MEMORY.keys().next().value;
+          SHORT_LINKS_MEMORY.delete(firstKey);
+        }
 
         if (env && env.LIENLIBRE_KV) {
           await env.LIENLIBRE_KV.put(`link:${randomId}`, JSON.stringify({
@@ -1402,7 +1417,14 @@ export default {
           }
         }
       }
-      // Si non trouvé dans KV, vérifier si c'est un slug encodé
+      // Si non trouvé dans KV, vérifier la mémoire du Worker
+      if (!targetUrlString && id && SHORT_LINKS_MEMORY.has(id)) {
+        const memObj = SHORT_LINKS_MEMORY.get(id);
+        if (memObj && memObj.url) {
+          targetUrlString = memObj.url;
+        }
+      }
+      // Si non trouvé, vérifier si c'est un slug encodé
       if (!targetUrlString && id) {
         const decoded = decodePackedUrl(id);
         if (decoded) {
