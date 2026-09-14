@@ -3,3 +3,4 @@
 TOKEN_STOP/
 node_modules/
 src-tauri/target/
+web-dist/

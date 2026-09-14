@@ -1,6 +1,6 @@
 [package]
 name = "lienlibre-desktop"
-version = "2.5.0"
+version = "1.0.0"
 description = "Passerelle citoyenne et éducative d'interopérabilité des métadonnées Open Graph (Tauri Desktop)"
 authors = ["William Guindon <guindonwilliam2@gmail.com>"]
 edition = "2021"
