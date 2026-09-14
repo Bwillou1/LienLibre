@@ -414,6 +414,25 @@ async function checkDynamicBlacklist(env, hostname) {
   }
 }
 
+// Alphabet Base62 URL-safe pour raccourcisseur haute densité (62^6 = 56.8 milliards de combinaisons)
+const BASE62_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+function generateBase62Id(length = 6) {
+  let result = "";
+  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+    const bytes = new Uint8Array(length);
+    crypto.getRandomValues(bytes);
+    for (let i = 0; i < length; i++) {
+      result += BASE62_ALPHABET[bytes[i] % 62];
+    }
+  } else {
+    for (let i = 0; i < length; i++) {
+      result += BASE62_ALPHABET[Math.floor(Math.random() * 62)];
+    }
+  }
+  return result;
+}
+
 const DOMAIN_COMPRESSION_MAP = [
   ["https://ici.radio-canada.ca/", "~rc/"],
   ["https://radio-canada.ca/", "~rc0/"],
@@ -1325,7 +1344,7 @@ export default {
             });
           }
         }
-        const randomId = Math.random().toString(36).substring(2, 8); // Format court de 6 caractères
+        const randomId = generateBase62Id(6); // Format compact Base62 (6 caractères)
         const packedSlug = encodePackedUrl(parsedTarget.href);
 
         // Sauvegarde en mémoire de secours
