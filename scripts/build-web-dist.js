@@ -19,9 +19,13 @@ const filesToCopy = [
   'politiques.html',
   'favicon.svg',
   'icon.svg',
+  'og-image.png',
+  'og-image.svg',
   'manifest.json',
   'sw.js',
-  'worker.js'
+  'worker.js',
+  'whitelist.js',
+  'blocklist.js'
 ];
 
 const dirsToCopy = [

@@ -31,7 +31,7 @@
       <category>Actualités &amp; Technologie Civique</category>
       <description><![CDATA[LienLibre permet à tous les citoyens de partager librement des articles de presse canadienne sur Facebook, Messenger et Instagram avec aperçu complet, sans pistage et dans le respect de l'utilisation équitable (art. 29 LDA).]]></description>
       <content:encoded><![CDATA[<p>LienLibre est une plateforme d'utilité publique développée par William Guindon assurant l'interopérabilité des métadonnées Open Graph pour les médias canadiens. Elle garantit l'accès aux nouvelles en zone urbaine et rurale avec redirection immédiate 0-seconde vers les sources officielles.</p>]]></content:encoded>
-      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.svg" />
+      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.png" />
     </item>
 
     <item>
@@ -42,7 +42,7 @@
       <dc:creator>LienLibre Sécurité Civile</dc:creator>
       <category>Sécurité Civile &amp; Météo</category>
       <description><![CDATA[Agrégateur temps réel des alertes météo extrêmes d'Environnement Canada, des avis de feux de forêt SOPFEU et des rappels de santé publique du gouvernement du Canada.]]></description>
-      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.svg" />
+      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.png" />
     </item>
 
     <item>
@@ -53,7 +53,7 @@
       <dc:creator>William Guindon</dc:creator>
       <category>Résilience &amp; Hors-Ligne</category>
       <description><![CDATA[Capsules autonomes auto-portées permettant l'échange d'informations d'urgence sans Internet via flux vidéo QR animés (TXQR), paquets radio maillés (Meshtastic LoRa) et signaux acoustiques (ggwave).]]></description>
-      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.svg" />
+      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.png" />
     </item>
 
     <item>
@@ -64,7 +64,7 @@
       <dc:creator>William Guindon</dc:creator>
       <category>Accessibilité &amp; Liseuses</category>
       <description><![CDATA[Interface ultra-contrastée monochrome spécialement étudiée pour liseuses électroniques (Kobo, Kindle, reMarkable) avec transfert instantané d'articles par code PIN à 4 chiffres.]]></description>
-      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.svg" />
+      <media:thumbnail url="https://bwillou1.github.io/LienLibre/og-image.png" />
     </item>
 
   </channel>
