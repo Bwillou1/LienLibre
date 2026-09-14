@@ -419,10 +419,15 @@ function encodePackedUrl(urlStr) {
 }
 
 function decodePackedUrl(packed) {
+  if (!packed || typeof packed !== "string") return null;
   try {
     let base64 = packed.replace(/-/g, "+").replace(/_/g, "/");
     while (base64.length % 4) base64 += "=";
-    return decodeURIComponent(atob(base64));
+    const decoded = decodeURIComponent(atob(base64));
+    if (decoded && (decoded.startsWith("http://") || decoded.startsWith("https://"))) {
+      return decoded;
+    }
+    return null;
   } catch (_) {
     return null;
   }
@@ -1333,11 +1338,16 @@ export default {
     }
 
     let targetUrlString = requestUrl.searchParams.get("url");
+    const isShortOrPackedRoute = requestUrl.pathname.startsWith("/p/") || 
+                                requestUrl.pathname.startsWith("/l/") || 
+                                requestUrl.pathname.startsWith("/go/") || 
+                                requestUrl.pathname.startsWith("/r/");
+    let shortRouteKey = null;
 
     // Résolution stateless de liens opaques /p/:packed
     if (!targetUrlString && requestUrl.pathname.startsWith("/p/")) {
-      const packed = requestUrl.pathname.slice(3).split("/")[0].split("?")[0];
-      const decoded = decodePackedUrl(packed);
+      shortRouteKey = requestUrl.pathname.slice(3).split("/")[0].split("?")[0];
+      const decoded = decodePackedUrl(shortRouteKey);
       if (decoded) {
         targetUrlString = decoded;
       }
@@ -1346,6 +1356,7 @@ export default {
     // Résolution des liens courts /l/:id ou /go/:id ou /r/:id
     if (!targetUrlString && (requestUrl.pathname.startsWith("/l/") || requestUrl.pathname.startsWith("/go/") || requestUrl.pathname.startsWith("/r/"))) {
       const id = requestUrl.pathname.replace(/^\/(?:l|go|r)\//, "").split("/")[0].split("?")[0];
+      shortRouteKey = id;
       if (env && env.LIENLIBRE_KV && id) {
         const stored = await env.LIENLIBRE_KV.get(`link:${id}`);
         if (stored) {
@@ -1364,6 +1375,31 @@ export default {
           targetUrlString = decoded;
         }
       }
+    }
+
+    // Si on a explicitement demandé une route de lien court (/l/, /p/, /go/, /r/) mais qu'il est introuvable / expiré
+    if (isShortOrPackedRoute && !targetUrlString) {
+      const isJsonReq = requestUrl.searchParams.get("json") === "1" || 
+                        requestUrl.searchParams.get("json") === "true" ||
+                        (request.headers.get("Accept") || "").includes("application/json");
+      if (isJsonReq) {
+        return new Response(JSON.stringify({
+          error: "Lien introuvable ou expiré.",
+          code: "NOT_FOUND",
+          id: shortRouteKey
+        }), {
+          status: 404,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+      return new Response(getNotFoundHTML(shortRouteKey, requestUrl.origin), {
+        status: 404,
+        headers: {
+          ...CORS_HEADERS,
+          ...SECURITY_HEADERS,
+          "Content-Type": "text/html; charset=utf-8"
+        }
+      });
     }
 
     // Résolution des liens miroirs ressemblant fidèlement à l'URL originale (/lapresse.ca/actualites/...)
@@ -3181,6 +3217,214 @@ function getWelcomeHTML() {
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" defer></script>
+</body>
+</html>`;
+}
+
+/**
+ * Génère le HTML pour une page 404 conviviale lorsqu'un lien court est expiré ou introuvable
+ */
+function getNotFoundHTML(shortId = "", origin = "") {
+  const safeId = shortId ? String(shortId).replace(/[^a-zA-Z0-9-_]/g, "") : "";
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lien introuvable ou expiré — LienLibre</title>
+  <link rel="icon" type="image/svg+xml" href="${origin || ""}/favicon.svg">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #090d16;
+      background-image: 
+        radial-gradient(at 15% 10%, rgba(239, 68, 68, 0.15) 0px, transparent 45%),
+        radial-gradient(at 85% 15%, rgba(99, 102, 241, 0.15) 0px, transparent 45%);
+      color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1.5rem;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      padding: 2.5rem 2rem;
+      max-width: 580px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 10px #ef4444;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 0 0.75rem;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #f87171, #fb923c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin: 0 0 1.5rem;
+      line-height: 1.6;
+    }
+    .url-box {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .url-input {
+      flex: 1;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: #ffffff;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .url-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #ffffff;
+      border: none;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .btn-submit:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+    @media (min-width: 480px) {
+      .btn-group {
+        flex-direction: row;
+      }
+    }
+    .btn-primary {
+      flex: 1;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #ffffff;
+      padding: 0.85rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px 0 rgba(14, 165, 233, 0.35);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(14, 165, 233, 0.5);
+    }
+    .btn-secondary {
+      flex: 1;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      padding: 0.85rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-secondary:hover {
+      background: rgba(51, 65, 85, 0.8);
+      color: #ffffff;
+    }
+    .legal-notice {
+      font-size: 0.75rem;
+      color: #64748b;
+      line-height: 1.5;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 1.25rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">
+      <span class="dot"></span>
+      Lien Non Trouvé ou Expiré
+    </div>
+    <h1>Lien<span>Libre</span></h1>
+    <p>
+      Le lien court spécifié ${safeId ? `(<code>/l/${safeId}</code>)` : ""} n'a pas été trouvé ou sa durée de conservation (30 jours) a expiré.
+    </p>
+
+    <form class="url-box" onsubmit="event.preventDefault(); const u = document.getElementById('targetInput').value.trim(); if(u) window.location.href = '${origin || ""}/?url=' + encodeURIComponent(u);">
+      <input id="targetInput" type="url" class="url-input" placeholder="Coller l'URL de l'article d'actualité..." required />
+      <button type="submit" class="btn-submit">Ouvrir ↗</button>
+    </form>
+
+    <div class="btn-group">
+      <a href="https://bwillou1.github.io/LienLibre/" class="btn-primary">
+        <span>Accueil LienLibre</span>
+        <span>↗</span>
+      </a>
+      <a href="https://github.com/Bwillou1/LienLibre" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+        <span>📖 Code Source</span>
+      </a>
+    </div>
+
+    <div class="legal-notice">
+      ⚖️ <strong>Astuce :</strong> Pour partager un lien permanent sans dépendre de la base de données, utilisez le format miroir direct (ex: <code>https://lienlibre.acces-presse.workers.dev/lapresse.ca/...</code>) ou le format encodé stateless <code>/p/...</code>.
+    </div>
+  </div>
 </body>
 </html>`;
 }
