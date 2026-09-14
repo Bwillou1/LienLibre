@@ -320,8 +320,9 @@ function cleanTrackingParameters(urlStr) {
   }
 }
 
-// Durée de rétention automatique des données temporaires (30 jours)
+// Durée de rétention des données
 const RETENTION_30_DAYS_SECONDS = 60 * 60 * 24 * 30;
+const RETENTION_1_YEAR_SECONDS = 60 * 60 * 24 * 365; // Rétention garantie 1 an minimum
 
 /**
  * Enregistre un clic de manière 100% anonyme dans le stockage Cloudflare KV.
@@ -410,9 +411,36 @@ async function checkDynamicBlacklist(env, hostname) {
   }
 }
 
+const DOMAIN_COMPRESSION_MAP = [
+  ["https://ici.radio-canada.ca/", "~rc/"],
+  ["https://radio-canada.ca/", "~rc0/"],
+  ["https://www.lapresse.ca/", "~lp/"],
+  ["https://lapresse.ca/", "~lp0/"],
+  ["https://www.ledevoir.com/", "~ld/"],
+  ["https://ledevoir.com/", "~ld0/"],
+  ["https://www.journaldemontreal.com/", "~jdm/"],
+  ["https://www.journaldequebec.com/", "~jdq/"],
+  ["https://www.lesoleil.com/", "~ls/"],
+  ["https://www.cbc.ca/", "~cbc/"],
+  ["https://www.theglobeandmail.com/", "~tgm/"],
+  ["https://nationalpost.com/", "~np/"],
+  ["https://www.thestar.com/", "~ts/"],
+  ["https://globalnews.ca/", "~gn/"],
+  ["https://ctvnews.ca/", "~ctv/"],
+  ["https://", "~s/"],
+  ["http://", "~h/"]
+];
+
 function encodePackedUrl(urlStr) {
   try {
-    return btoa(encodeURIComponent(urlStr)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    let compact = urlStr.trim();
+    for (const [prefix, code] of DOMAIN_COMPRESSION_MAP) {
+      if (compact.startsWith(prefix)) {
+        compact = code + compact.slice(prefix.length);
+        break;
+      }
+    }
+    return btoa(encodeURIComponent(compact)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   } catch (_) {
     return "";
   }
@@ -423,7 +451,13 @@ function decodePackedUrl(packed) {
   try {
     let base64 = packed.replace(/-/g, "+").replace(/_/g, "/");
     while (base64.length % 4) base64 += "=";
-    const decoded = decodeURIComponent(atob(base64));
+    let decoded = decodeURIComponent(atob(base64));
+    for (const [prefix, code] of DOMAIN_COMPRESSION_MAP) {
+      if (decoded.startsWith(code)) {
+        decoded = prefix + decoded.slice(code.length);
+        break;
+      }
+    }
     if (decoded && (decoded.startsWith("http://") || decoded.startsWith("https://"))) {
       return decoded;
     }
@@ -1291,7 +1325,7 @@ export default {
             lang: targetLang,
             selfCertified: isSelfCertified,
             created: Date.now()
-          }), { expirationTtl: RETENTION_30_DAYS_SECONDS }); // 30 jours
+          }), { expirationTtl: RETENTION_1_YEAR_SECONDS }); // 1 an complet garanti
         }
 
         const cleanPath = parsedTarget.href.replace(/^https?:\/\/(?:www\.)?/i, '');
