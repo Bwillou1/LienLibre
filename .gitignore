@@ -4,3 +4,6 @@ TOKEN_STOP/
 node_modules/
 src-tauri/target/
 web-dist/
+android/.gradle/
+android/build/
+android/app/build/
