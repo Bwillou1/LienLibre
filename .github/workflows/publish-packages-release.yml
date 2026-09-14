@@ -190,5 +190,6 @@ jobs:
             dist/lienlibre-android-app-debug-v2.5.0.apk
           draft: false
           prerelease: false
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
