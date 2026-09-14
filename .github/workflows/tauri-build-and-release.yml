@@ -1,0 +1,78 @@
+name: Release Multiplatform Desktop App (Tauri macOS / Windows / Linux)
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-tauri:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            args: '--target universal-apple-darwin'
+          - platform: 'ubuntu-22.04'
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Rust Stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Install Linux Dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libssl-dev
+
+      - name: Install Node Dependencies
+        run: npm install --no-audit
+
+      - name: Build Tauri Desktop App & Generate Auto-Updater Assets
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v2.5.0
+          releaseName: 'LienLibre v2.5.0 (macOS, Windows, Linux, Android, Extension)'
+          releaseBody: |
+            # 🚀 LienLibre Desktop v2.5.0 — Publication Multiplateforme
+            
+            Passerelle citoyenne, éducative et de recherche pour l'interopérabilité des métadonnées Open Graph au Canada.
+
+            ---
+
+            ### 💻 Applications de Bureau Disponibles (Tauri Native) :
+            - 🍎 **macOS (Apple Silicon & Intel)** : Téléchargez le fichier `.dmg` ou `.app.tar.gz`.
+            - 🪟 **Windows (10 / 11)** : Téléchargez l'installateur `.msi` ou le binaire autonome.
+            - 🐧 **Linux (Ubuntu, Debian, Fedora, Arch)** : Téléchargez le paquet `.AppImage` ou `.deb`.
+
+            ### 🔄 Mises à Jour Automatiques :
+            - Intègre le système de mise à jour transparente **Tauri Auto-Updater** via `latest.json`.
+            - L'application vérifie et installe automatiquement les correctifs dès qu'un push est déployé sur GitHub.
+
+            ---
+            *Conforme à l'exception d'utilisation équitable (Art. 29 LDA / C-18).*
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
+          includeUpdaterJson: true

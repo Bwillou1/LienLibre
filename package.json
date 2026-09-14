@@ -9,6 +9,7 @@
     "dist/",
     "extension/",
     "android/",
+    "src-tauri/",
     "js/",
     "index.html",
     "viewer.html",
@@ -21,7 +22,13 @@
   "scripts": {
     "ping": "node scripts/ping-google-news-ai.js",
     "test": "node -c worker.js sw.js extension/popup.js js/qr.js js/txqr.js scripts/ping-google-news-ai.js",
-    "package:extension": "cd extension && zip -r ../dist/lienlibre-chrome-extension.zip . -x '*.DS_Store*'"
+    "package:extension": "cd extension && zip -r ../dist/lienlibre-chrome-extension.zip . -x '*.DS_Store*'",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.2.0"
   },
   "repository": {
     "type": "git",
@@ -39,6 +46,8 @@
     "canada",
     "llms",
     "chrome-extension",
-    "android"
+    "android",
+    "tauri",
+    "macos-app"
   ]
 }

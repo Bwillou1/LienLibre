@@ -10,6 +10,9 @@ Le projet permet d'étudier l'extraction de métadonnées visuelles et de prése
 
 | Plateforme / Paquet | Type de Fichier | Lien de Téléchargement Direct / Registre |
 | :--- | :--- | :--- |
+| 🍎 **macOS (Apple Silicon & Intel)** | `DMG` / `App` (Tauri Natif) | [📥 **Télécharger pour macOS (`.dmg`)**](https://github.com/Bwillou1/LienLibre/releases/latest) |
+| 🪟 **Windows (10 / 11)** | `MSI` / `EXE` (Tauri Natif) | [📥 **Télécharger pour Windows (`.msi`)**](https://github.com/Bwillou1/LienLibre/releases/latest) |
+| 🐧 **Linux (Ubuntu / Fedora / Arch)** | `AppImage` / `DEB` (Tauri Natif) | [📥 **Télécharger pour Linux (`.AppImage`)**](https://github.com/Bwillou1/LienLibre/releases/latest) |
 | 📱 **Application Android Native** | `APK` (Android 8.0+) | [📥 **Télécharger l'APK (`.apk`)**](https://github.com/Bwillou1/LienLibre/releases/download/v2.5.0/lienlibre-android-app-debug-v2.5.0.apk) |
 | 🧩 **Extension Google Chrome** | `ZIP` (Manifest V3) | [📥 **Télécharger l'Extension (`.zip`)**](https://github.com/Bwillou1/LienLibre/releases/download/v2.5.0/lienlibre-chrome-extension-v2.5.0.zip) |
 | 🌐 **GitHub Container Registry (Android)** | Conteneur OCI | `ghcr.io/bwillou1/lienlibre-android` |
