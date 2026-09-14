@@ -1,0 +1,23 @@
+{
+  "name": "@bwillou1/lienlibre-extension",
+  "version": "2.5.0",
+  "description": "Extension Chrome officielle LienLibre pour la génération en 1 clic de capsules de partage équitable",
+  "author": "William Guindon",
+  "license": "MIT",
+  "main": "popup.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bwillou1/LienLibre.git",
+    "directory": "extension"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "keywords": [
+    "chrome-extension",
+    "manifest-v3",
+    "lienlibre",
+    "open-graph",
+    "fair-dealing"
+  ]
+}

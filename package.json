@@ -1,16 +1,21 @@
 {
-  "name": "lienlibre",
+  "name": "@bwillou1/lienlibre",
   "version": "2.5.0",
   "description": "Passerelle citoyenne, éducative et de recherche pour l'interopérabilité des métadonnées Open Graph au Canada",
   "author": "William Guindon",
   "license": "MIT",
+  "main": "js/txqr.js",
   "scripts": {
     "ping": "node scripts/ping-google-news-ai.js",
-    "test": "node -c worker.js sw.js extension/popup.js js/qr.js js/txqr.js scripts/ping-google-news-ai.js"
+    "test": "node -c worker.js sw.js extension/popup.js js/qr.js js/txqr.js scripts/ping-google-news-ai.js",
+    "package:extension": "cd extension && zip -r ../dist/lienlibre-chrome-extension.zip . -x '*.DS_Store*'"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Bwillou1/LienLibre.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "keywords": [
     "civic-tech",
@@ -19,6 +24,8 @@
     "indexnow",
     "fair-dealing",
     "canada",
-    "llms"
+    "llms",
+    "chrome-extension",
+    "android"
   ]
 }
