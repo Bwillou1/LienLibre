@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="create_capsule"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_create_capsule"
+        android:shortcutLongLabel="Créer une Capsule LienLibre">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="org.lienlibre.app"
+            android:targetClass="org.lienlibre.app.MainActivity"
+            android:data="web+lienlibre://create" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="civil_alerts"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_civil_alerts"
+        android:shortcutLongLabel="Hub Alertes de Sécurité Civile">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="org.lienlibre.app"
+            android:targetClass="org.lienlibre.app.MainActivity"
+            android:data="web+lienlibre://alerts" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="ereader_mode"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_ereader"
+        android:shortcutLongLabel="Mode Liseuse 4 chiffres">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="org.lienlibre.app"
+            android:targetClass="org.lienlibre.app.MainActivity"
+            android:data="web+lienlibre://ereader" />
+    </shortcut>
+</shortcuts>

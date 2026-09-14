@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">LienLibre</string>
+    <string name="app_tagline">Réseau Libre d\'Information Citoyenne &amp; Accès Garanti</string>
+    <string name="share_target_title">Générer une Capsule LienLibre</string>
+    <string name="shortcut_create_capsule">Créer une capsule</string>
+    <string name="shortcut_civil_alerts">Alertes de sécurité</string>
+    <string name="shortcut_ereader">Mode Liseuse 4 chiffres</string>
+    <string name="shortcut_mesh">Réseau Hors-Ligne TXQR</string>
+</resources>
