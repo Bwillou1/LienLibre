@@ -5542,11 +5542,18 @@
           });
           if (createRes.status === 403 || createRes.status === 429) {
             const errData = await createRes.json().catch(() => ({}));
-            showError("🛑 " + (errData.error || "Action refusée par le filtre anti-bot / anti-spam."));
-            resultArea.classList.add('hidden');
-            return;
-          }
-          if (createRes.ok) {
+            const errMsg = (typeof errData.message === 'string' ? errData.message : '') || 
+                           (typeof errData.error === 'string' ? errData.error : '') || 
+                           (typeof errData.description === 'string' ? errData.description : '') || 
+                           "Action refusée par le filtre de sécurité.";
+            if (errData.blocked === true) {
+              showError("🛑 " + errMsg);
+              resultArea.classList.add('hidden');
+              return;
+            } else {
+              console.warn("Création en mode dégradé (client-side) :", errMsg);
+            }
+          } else if (createRes.ok) {
             const createData = await createRes.json();
             if (createData.shortLink) currentGeneratedLinks.short = createData.shortLink;
             if (createData.link) currentGeneratedLinks.mirror = createData.link;
@@ -5574,7 +5581,11 @@
         
         if (response.status === 403) {
           const blockData = await response.json().catch(() => ({}));
-          const explicitReason = blockData.description || blockData.message || (blockData.botAudit && blockData.botAudit.blockReason) || "Ce lien a été bloqué par mesure de sécurité.";
+          const explicitReason = (typeof blockData.message === 'string' ? blockData.message : '') || 
+                                 (typeof blockData.description === 'string' ? blockData.description : '') || 
+                                 (typeof blockData.error === 'string' ? blockData.error : '') || 
+                                 (blockData.botAudit && typeof blockData.botAudit.blockReason === 'string' ? blockData.botAudit.blockReason : '') || 
+                                 "Ce lien a été bloqué par mesure de sécurité.";
           showError("🛑 " + explicitReason);
           resultArea.classList.add('hidden');
           return;
@@ -5587,7 +5598,11 @@
         const data = await response.json();
 
         if (data.blocked === true) {
-          const explicitReason = data.description || data.message || (data.botAudit && data.botAudit.blockReason) || "Ce domaine a été bloqué par mesure de sécurité.";
+          const explicitReason = (typeof data.message === 'string' ? data.message : '') || 
+                                 (typeof data.description === 'string' ? data.description : '') || 
+                                 (typeof data.error === 'string' ? data.error : '') || 
+                                 (data.botAudit && typeof data.botAudit.blockReason === 'string' ? data.botAudit.blockReason : '') || 
+                                 "Ce domaine a été bloqué par mesure de sécurité.";
           showError("🛑 " + explicitReason);
           resultArea.classList.add('hidden');
           return;

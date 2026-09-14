@@ -88,7 +88,7 @@ const SHORT_LINKS_MEMORY = new Map();
 // Mémoire de limitation de débit anti-spam / anti-bot pour la création de liens (/api/create)
 const CREATION_RATE_LIMITS = new Map();
 const CREATION_WINDOW_MS = 60000; // Fenêtre glissante de 1 minute
-const CREATION_MAX_PER_MINUTE = 15; // Max 15 créations par minute par IP
+const CREATION_MAX_PER_MINUTE = 60; // Max 60 créations par minute par IP
 
 function checkCreationRateLimit(ip) {
   if (!ip || ip === "unknown") return true;
@@ -1196,10 +1196,11 @@ export default {
       const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
 
       // 4.1. Filtrage strict des outils de scripts et scrapers automatisés (Création réservée aux navigateurs humains)
-      const isAutomatedBotScript = !userAgent || /^(curl|wget|python|scrapy|aiohttp|go-http-client|httpclient|postman|libwww|node-fetch|undici|axios|ruby|php|pycurl|headlesschrome)/i.test(userAgent);
+      const isAutomatedBotScript = userAgent && /^(curl|wget|python|scrapy|aiohttp|go-http-client|httpclient|postman|libwww|node-fetch|undici|axios|ruby|php|pycurl|headlesschrome)/i.test(userAgent);
       if (isAutomatedBotScript) {
         return new Response(JSON.stringify({
-          error: "Accès refusé : Les scripts et robots automatisés ne sont pas autorisés à générer des liens. Utilisation réservée aux humains via l'interface web."
+          error: "Accès refusé : Les scripts et robots automatisés ne sont pas autorisés à générer des liens. Utilisation réservée aux humains via l'interface web.",
+          message: "Accès refusé : Les scripts et robots automatisés ne sont pas autorisés à générer des liens."
         }), {
           status: 403,
           headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
@@ -1209,7 +1210,8 @@ export default {
       // 4.2. Limitation de débit glissante par adresse IP (Anti-Spam / Anti-DDoS)
       if (!checkCreationRateLimit(clientIp)) {
         return new Response(JSON.stringify({
-          error: "Protection Anti-Spam : Trop de requêtes de création en peu de temps depuis votre adresse IP. Veuillez patienter une minute."
+          error: "Protection Anti-Spam : Trop de requêtes de création en peu de temps depuis votre adresse IP. Veuillez patienter une minute.",
+          message: "Protection Anti-Spam : Trop de requêtes de création en peu de temps depuis votre adresse IP."
         }), {
           status: 429,
           headers: { ...CORS_HEADERS, "Retry-After": "60", "Content-Type": "application/json; charset=utf-8" }
@@ -1257,14 +1259,17 @@ export default {
 
       // 4.3. Rejet immédiat si le piège à robot (Honeypot) est rempli
       if (isHoneypotTriggered) {
-        return new Response(JSON.stringify({ error: "Requête automatisée rejetée par le filtre de sécurité." }), {
+        return new Response(JSON.stringify({
+          error: "Requête automatisée rejetée par le filtre de sécurité.",
+          message: "Requête automatisée rejetée par le filtre de sécurité."
+        }), {
           status: 403,
           headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
         });
       }
 
       if (!targetInput) {
-        return new Response(JSON.stringify({ error: "URL cible manquante." }), {
+        return new Response(JSON.stringify({ error: "URL cible manquante.", message: "URL cible manquante." }), {
           status: 400,
           headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
         });
@@ -1278,10 +1283,11 @@ export default {
         // 1. Vérification de la liste noire dynamique Cloudflare KV
         const kvBlacklistReason = await checkDynamicBlacklist(env, parsedTarget.hostname);
         if (kvBlacklistReason) {
+          const blockMsg = `Ce domaine est suspendu par mesure de sécurité (${kvBlacklistReason}).`;
           return new Response(JSON.stringify({
-            error: true,
+            error: blockMsg,
             blocked: true,
-            message: `Ce domaine est suspendu par mesure de sécurité (${kvBlacklistReason}).`
+            message: blockMsg
           }), {
             status: 403,
             headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
@@ -1293,7 +1299,7 @@ export default {
         if (threat.isBlocked) {
           recordBlockedDomain(parsedTarget.hostname, threat.reason, env, ctx);
           return new Response(JSON.stringify({
-            error: true,
+            error: threat.reason,
             blocked: true,
             message: threat.reason
           }), {
@@ -1310,7 +1316,7 @@ export default {
           if (dnsShield.isBlocked) {
             recordBlockedDomain(parsedTarget.hostname, dnsShield.reason, env, ctx);
             return new Response(JSON.stringify({
-              error: true,
+              error: dnsShield.reason,
               blocked: true,
               message: dnsShield.reason
             }), {
