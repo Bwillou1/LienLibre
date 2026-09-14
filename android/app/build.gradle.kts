@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    `maven-publish`
 }
 
 android {
@@ -46,37 +45,8 @@ android {
     buildFeatures {
         compose = true
     }
-
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
 }
 
-publishing {
-    publications {
-        register<MavenPublication>("release") {
-            groupId = "org.lienlibre"
-            artifactId = "lienlibre-android"
-            version = "1.0.0"
-
-            afterEvaluate {
-                from(components["release"])
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/Bwillou1/LienLibre")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: ""
-                password = System.getenv("GITHUB_TOKEN") ?: ""
-            }
-        }
-    }
-}
 
 dependencies {
     implementation(libs.androidx.core.ktx)

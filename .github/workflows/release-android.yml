@@ -38,9 +38,10 @@ jobs:
       - name: Build Android APK
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon --stacktrace
           mkdir -p ../dist
-          cp app/build/outputs/apk/debug/*.apk ../dist/lienlibre-android-v1.0.0.apk || true
+          cp app/build/outputs/apk/debug/*.apk ../dist/lienlibre-android-v1.0.0.apk
+          ls -lh ../dist/lienlibre-android-v1.0.0.apk
           cd ..
 
       - name: Create Dedicated Android Release
