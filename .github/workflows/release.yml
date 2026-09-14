@@ -1,0 +1,49 @@
+name: Release macOS Desktop App (Tauri)
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'desktop-v*'
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos-tauri:
+    name: 🍎 Build macOS Tauri Desktop (.dmg / .app)
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Setup Rust Stable & macOS Targets
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Install JavaScript Dependencies
+        run: npm install --no-audit
+
+      - name: Build and Attach Tauri Bundles to Release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.event.release.tag_name || github.ref_name }}
+          releaseName: ${{ github.event.release.name || github.ref_name }}
+          releaseBody: ${{ github.event.release.body || 'Publication officielle de l''application de bureau LienLibre pour macOS (Apple Silicon et Intel).' }}
+          releaseDraft: false
+          prerelease: false
+          args: '--target universal-apple-darwin'
+          includeUpdaterJson: true
