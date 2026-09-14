@@ -2,19 +2,72 @@
   "name": "LienLibre — Passerelle Citoyenne & Éducative",
   "short_name": "LienLibre",
   "description": "Outil civique et éducatif pour l'interopérabilité des métadonnées Open Graph et le libre accès aux informations publiques canadiennes.",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
   "background_color": "#090d16",
   "theme_color": "#090d16",
-  "categories": ["utilities", "news", "education"],
+  "categories": ["utilities", "news", "education", "productivity"],
   "icons": [
     {
       "src": "icon.svg",
       "sizes": "512x512 192x192 128x128 64x64 32x32",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "⚡ Créer un LienLibre",
+      "short_name": "Nouveau lien",
+      "description": "Convertir instantanément une URL d'actualité",
+      "url": "./index.html?action=new",
+      "icons": [{ "src": "icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "🚨 Hub Alertes de Sécurité",
+      "short_name": "Alertes",
+      "description": "Consulter les avis météo, feux et rappels de santé",
+      "url": "./alertes.html",
+      "icons": [{ "src": "icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "📖 Mode Liseuse E-Ink",
+      "short_name": "Liseuse",
+      "description": "Réception d'articles par code à 4 chiffres (Kobo, Kindle)",
+      "url": "./liseuse.html",
+      "icons": [{ "src": "icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "⚡ Grand Nord & 2G",
+      "short_name": "Grand Nord",
+      "description": "Version ultra-allégée hors-réseau",
+      "url": "./lite.html",
+      "icons": [{ "src": "icon.svg", "sizes": "192x192" }]
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+lienlibre",
+      "url": "./index.html?url=%s"
     }
   ]
 }

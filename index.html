@@ -292,14 +292,19 @@
     }
   </script>
 
-  <!-- Custom Styles with Light/Dark Themes -->
+  <!-- Custom Styles with Light/Dark Themes & Apple HIG / Material 3 Tokens -->
   <style>
     :root {
       color-scheme: light dark;
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
     }
     
     *, *::before, *::after {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html {
@@ -307,6 +312,24 @@
       width: 100%;
       max-width: 100%;
       -webkit-text-size-adjust: 100%;
+    }
+
+    /* Apple HIG Safe Areas for Header, Footer & Modals */
+    header {
+      padding-top: max(0.875rem, var(--sat)) !important;
+      padding-left: max(1rem, var(--sal)) !important;
+      padding-right: max(1rem, var(--sar)) !important;
+    }
+
+    footer {
+      padding-bottom: max(2rem, var(--sab)) !important;
+    }
+
+    /* Foldable & Dual-Screen Device Postures (Surface Duo, Galaxy Fold, Pixel Fold) */
+    @media (horizontal-viewport-segments: 2), (vertical-viewport-segments: 2) {
+      .max-w-4xl {
+        max-width: 96vw !important;
+      }
     }
     
     body {
@@ -670,8 +693,13 @@
               required
               data-i18n-placeholder="inputPlaceholder"
               placeholder="Ex: https://www.lapresse.ca/actualites/politique/..." 
-              class="block w-full pl-10 pr-4 py-3 sm:py-3.5 bg-slate-50/80 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm transition-all"
+              class="block w-full pl-10 pr-14 py-3 sm:py-3.5 bg-slate-50/80 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm transition-all"
             >
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <kbd class="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-mono font-semibold text-slate-400 dark:text-slate-500 bg-slate-200/60 dark:bg-slate-800/60 rounded border border-slate-300 dark:border-slate-700 shadow-2xs">
+                <span>⌘</span><span>K</span>
+              </kbd>
+            </div>
           </div>
         </div>
 
@@ -2496,13 +2524,24 @@
           </div>
         </div>
 
+        <!-- App Intents & Action Button Tip -->
+        <div class="p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-950 dark:text-indigo-200 text-xs space-y-1">
+          <div class="font-bold flex items-center gap-1.5 text-indigo-800 dark:text-indigo-300">
+            <span>🔘</span>
+            <span>Compatible Bouton d'Action (iPhone 15/16 Pro & Apple Watch Ultra)</span>
+          </div>
+          <p class="text-[11px] leading-relaxed">
+            Assignez le raccourci au Bouton d'Action pour convertir et copier le LienLibre de n'importe quelle page web en un clic physique.
+          </p>
+        </div>
+
         <div class="pt-2 flex flex-col sm:flex-row gap-2">
           <button type="button" id="btn-copy-siri-phrase" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs border border-slate-300 dark:border-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
             <span>📋</span> <span id="btn-copy-siri-phrase-text">Copier la commande vocale</span>
           </button>
-          <a href="https://www.icloud.com/shortcuts/" target="_blank" id="btn-open-apple-shortcuts" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 text-center">
-            <span>⚡</span> <span>Ouvrir l'app Raccourcis iOS</span>
-          </a>
+          <button type="button" id="btn-download-shortcut-recipe" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 text-center cursor-pointer">
+            <span>⚡</span> <span id="btn-download-shortcut-recipe-text">Installer le Raccourci iOS</span>
+          </button>
         </div>
       </div>
 
@@ -4602,6 +4641,30 @@
       });
     }
 
+    const btnDownloadShortcutRecipe = document.getElementById('btn-download-shortcut-recipe');
+    const btnDownloadShortcutRecipeText = document.getElementById('btn-download-shortcut-recipe-text');
+    if (btnDownloadShortcutRecipe) {
+      btnDownloadShortcutRecipe.addEventListener('click', () => {
+        // App Intent Recipe URL
+        const shortcutScheme = `shortcuts://run-shortcut?name=LienLibre`;
+        const webUrl = `${window.location.origin}${window.location.pathname}?url=`;
+        
+        // Copy instructions to clipboard for quick paste in iOS Shortcuts
+        navigator.clipboard.writeText(`https://bwillou1.github.io/LienLibre/?url=`).catch(() => {});
+
+        if (btnDownloadShortcutRecipeText) {
+          btnDownloadShortcutRecipeText.textContent = "✓ Ouverture Raccourcis...";
+          setTimeout(() => { btnDownloadShortcutRecipeText.textContent = "Installer le Raccourci iOS"; }, 2500);
+        }
+
+        // Try to launch native Apple Shortcuts app, fallback to iCloud shortcuts
+        window.location.href = shortcutScheme;
+        setTimeout(() => {
+          window.open('https://support.apple.com/fr-ca/guide/shortcuts/welcome/ios', '_blank');
+        }, 1200);
+      });
+    }
+
     // Auto-détection des liseuses électroniques (Kobo, Kindle, reMarkable) ou push_code
     (function checkEreaderDevice() {
       const ua = (navigator.userAgent || '').toLowerCase();
@@ -5991,6 +6054,87 @@
 
     window.addEventListener('DOMContentLoaded', checkAndRenderOfflineCapsule);
     window.addEventListener('hashchange', checkAndRenderOfflineCapsule);
+
+    // Apple & Android Web Haptic Engine
+    function triggerHaptic(type = 'light') {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        try {
+          if (type === 'success') navigator.vibrate([10, 30, 20]);
+          else if (type === 'heavy') navigator.vibrate(40);
+          else if (type === 'medium') navigator.vibrate(25);
+          else navigator.vibrate(12);
+        } catch (_) {}
+      }
+    }
+
+    // Attach haptic feedback to main interactive buttons
+    document.querySelectorAll('button, .btn, [role="button"]').forEach(btn => {
+      btn.addEventListener('click', () => triggerHaptic('light'));
+    });
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => triggerHaptic('success'));
+    }
+
+    // Web Share Target API & URL Params Auto-Populate (Android / iOS Shortcuts / App Intents)
+    function checkShareTargetAndParams() {
+      const params = new URLSearchParams(window.location.search);
+      const incomingUrl = params.get('url') || params.get('text') || params.get('link') || '';
+      if (incomingUrl && incomingUrl.trim()) {
+        const urlMatch = incomingUrl.match(/https?:\/\/[^\s]+/i);
+        const cleanIncoming = urlMatch ? urlMatch[0] : incomingUrl.trim();
+        if (cleanIncoming.startsWith('http://') || cleanIncoming.startsWith('https://')) {
+          urlInput.value = cleanIncoming;
+          form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+      }
+    }
+    checkShareTargetAndParams();
+
+    // Global Keyboard Shortcuts (Apple macOS / iPadOS & Desktop)
+    document.addEventListener('keydown', (e) => {
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+      
+      // Cmd+K / Ctrl+K : Focus search input
+      if (isCmdOrCtrl && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (urlInput) {
+          urlInput.focus();
+          urlInput.select();
+        }
+      }
+      
+      // Cmd+Enter / Ctrl+Enter : Submit form
+      if (isCmdOrCtrl && e.key === 'Enter') {
+        e.preventDefault();
+        if (form) {
+          form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+      }
+
+      // Cmd+Shift+C : Copy generated link
+      if (isCmdOrCtrl && e.shiftKey && e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        if (copyBtn && !resultArea.classList.contains('hidden')) {
+          copyBtn.click();
+        }
+      }
+
+      // Cmd+Shift+L : Switch to E-Reader Liseuse mode
+      if (isCmdOrCtrl && e.shiftKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        window.location.href = 'liseuse.html';
+      }
+
+      // Escape : Close all modals
+      if (e.key === 'Escape') {
+        const openModals = document.querySelectorAll('.fixed:not(.hidden)');
+        openModals.forEach(m => {
+          if (m.id && m.id.includes('modal')) {
+            m.classList.add('hidden');
+          }
+        });
+      }
+    });
 
     // Background Indexing & Search Engine / AI Ping (Throttled once per 12h)
     (function() {
