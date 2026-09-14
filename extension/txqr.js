@@ -17,9 +17,14 @@
 }(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
-  // Helper to generate a short 4-char session ID
+  // Helper to generate a short 4-char cryptographically secure session ID
   function generateSessionId() {
-    return Math.random().toString(36).substring(2, 6).toUpperCase();
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      const array = new Uint8Array(3);
+      crypto.getRandomValues(array);
+      return Array.from(array, function (byte) { return ('0' + byte.toString(16)).slice(-2); }).join('').substring(0, 4).toUpperCase();
+    }
+    return (Date.now().toString(36) + 'XXXX').slice(-4).toUpperCase();
   }
 
   /**

@@ -425,7 +425,14 @@
 
     function openModalWithLink(title, link, origUrl) {
       currentModalPayload = { url: origUrl, title: title, link: link };
-      if (modalAlertTitle) modalAlertTitle.innerHTML = `<span>🚨</span> ${title}`;
+      if (modalAlertTitle) {
+        modalAlertTitle.textContent = '';
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '🚨 ';
+        modalAlertTitle.appendChild(iconSpan);
+        const textNode = document.createTextNode(title);
+        modalAlertTitle.appendChild(textNode);
+      }
       if (modalLinkOutput) modalLinkOutput.textContent = link;
 
       if (qrCanvas && typeof LienLibreQR !== 'undefined') {

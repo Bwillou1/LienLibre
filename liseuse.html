@@ -472,7 +472,24 @@
         articleContent.appendChild(pEl);
       }
 
-      articleSourceUrl.innerHTML = `Lien officiel : <a href="${url}" target="_blank" style="color: var(--fg); font-weight: bold;">${url}</a>`;
+      articleSourceUrl.textContent = 'Lien officiel : ';
+      const sourceLink = document.createElement('a');
+      try {
+        const parsedUrl = new URL(url);
+        if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+          sourceLink.href = parsedUrl.href;
+        } else {
+          sourceLink.href = '#';
+        }
+      } catch (e) {
+        sourceLink.href = '#';
+      }
+      sourceLink.target = '_blank';
+      sourceLink.rel = 'noopener noreferrer';
+      sourceLink.style.color = 'var(--fg)';
+      sourceLink.style.fontWeight = 'bold';
+      sourceLink.textContent = url;
+      articleSourceUrl.appendChild(sourceLink);
 
       screenPairing.style.display = 'none';
       screenReader.style.display = 'block';

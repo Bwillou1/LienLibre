@@ -18,6 +18,9 @@ concurrency:
   group: ping-indexing-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   ping-search-engines-and-ai:
     name: 📡 Notification Google News, Bing & Moteurs IA
