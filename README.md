@@ -6,19 +6,15 @@ Le projet permet d'étudier l'extraction de métadonnées visuelles et de prése
 
 ---
 
-## 📦 Téléchargements Directs & Paquets ([GitHub Releases](https://github.com/Bwillou1/LienLibre/releases) & [GitHub Packages](https://github.com/Bwillou1/LienLibre/packages))
+## 📦 Téléchargements Directs & 3 Releases v1.0.0 ([GitHub Releases](https://github.com/Bwillou1/LienLibre/releases))
 
-| Plateforme / Paquet | Type de Fichier | Lien de Téléchargement Direct / Registre |
+Le projet publie **3 Releases distinctes et indépendantes en version 1.0.0** :
+
+| Release / Plateforme | Type de Binaire | Lien de la Release & Téléchargement Direct |
 | :--- | :--- | :--- |
-| 🍎 **macOS (Apple Silicon & Intel)** | `DMG` / `App` (Tauri Natif) | [📥 **Télécharger pour macOS (`.dmg`)**](https://github.com/Bwillou1/LienLibre/releases/latest) |
-| 🪟 **Windows (10 / 11)** | `MSI` / `EXE` (Tauri Natif) | [📥 **Télécharger pour Windows (`.msi`)**](https://github.com/Bwillou1/LienLibre/releases/latest) |
-| 🐧 **Linux (Ubuntu / Fedora / Arch)** | `AppImage` / `DEB` (Tauri Natif) | [📥 **Télécharger pour Linux (`.AppImage`)**](https://github.com/Bwillou1/LienLibre/releases/latest) |
-| 📱 **Application Android Native** | `APK` (Android 8.0+) | [📥 **Télécharger l'APK (`.apk`)**](https://github.com/Bwillou1/LienLibre/releases/download/v2.5.0/lienlibre-android-app-debug-v2.5.0.apk) |
-| 🧩 **Extension Google Chrome** | `ZIP` (Manifest V3) | [📥 **Télécharger l'Extension (`.zip`)**](https://github.com/Bwillou1/LienLibre/releases/download/v2.5.0/lienlibre-chrome-extension-v2.5.0.zip) |
-| 🌐 **GitHub Container Registry (Android)** | Conteneur OCI | `ghcr.io/bwillou1/lienlibre-android` |
-| 🌐 **GitHub Container Registry (Extension)** | Conteneur OCI | `ghcr.io/bwillou1/lienlibre-extension` |
-| 📦 **GitHub NPM Package (Web)** | Registre NPM | `@bwillou1/lienlibre` |
-| 📦 **GitHub NPM Package (Extension)** | Registre NPM | `@bwillou1/lienlibre-extension` |
+| 💻 **[Release Desktop v1.0.0](https://github.com/Bwillou1/LienLibre/releases/tag/desktop-v1.0.0)** | `DMG` / `MSI` / `AppImage` | 🍎 **[macOS (.dmg)](https://github.com/Bwillou1/LienLibre/releases/tag/desktop-v1.0.0)** · 🪟 **[Windows (.msi)](https://github.com/Bwillou1/LienLibre/releases/tag/desktop-v1.0.0)** · 🐧 **[Linux (.AppImage)](https://github.com/Bwillou1/LienLibre/releases/tag/desktop-v1.0.0)** |
+| 📱 **[Release Android v1.0.0](https://github.com/Bwillou1/LienLibre/releases/tag/android-v1.0.0)** | `APK` (Android 8.0+) | 🤖 **[Télécharger l'APK v1.0.0](https://github.com/Bwillou1/LienLibre/releases/download/android-v1.0.0/lienlibre-android-v1.0.0.apk)** |
+| 🧩 **[Release Extension v1.0.0](https://github.com/Bwillou1/LienLibre/releases/tag/extension-v1.0.0)** | `ZIP` (Manifest V3) | 🧩 **[Télécharger l'Extension ZIP v1.0.0](https://github.com/Bwillou1/LienLibre/releases/download/extension-v1.0.0/lienlibre-chrome-extension-v1.0.0.zip)** |
 
 ---
 

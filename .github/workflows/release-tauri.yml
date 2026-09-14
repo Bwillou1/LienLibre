@@ -1,9 +1,9 @@
-name: Release Multiplatform Desktop App (Tauri macOS / Windows / Linux)
+name: Release Desktop Tauri App (v1.0.0)
 
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    tags: ['desktop-v*']
   workflow_dispatch:
 
 permissions:
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   build-tauri:
+    name: 💻 Build & Release Desktop Tauri App (v1.0.0)
     strategy:
       fail-fast: false
       matrix:
@@ -52,23 +53,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v2.5.0
-          releaseName: 'LienLibre v2.5.0 (macOS, Windows, Linux, Android, Extension)'
+          tagName: desktop-v1.0.0
+          releaseName: '💻 LienLibre Desktop v1.0.0 (macOS, Windows, Linux)'
           releaseBody: |
-            # 🚀 LienLibre Desktop v2.5.0 — Publication Multiplateforme
-            
-            Passerelle citoyenne, éducative et de recherche pour l'interopérabilité des métadonnées Open Graph au Canada.
+            # 💻 LienLibre Desktop App — Version 1.0.0
+
+            Application de bureau native ultra-légère propulsée par **Tauri & Rust**.
 
             ---
 
-            ### 💻 Applications de Bureau Disponibles (Tauri Native) :
-            - 🍎 **macOS (Apple Silicon & Intel)** : Téléchargez le fichier `.dmg` ou `.app.tar.gz`.
+            ### 📥 Fichiers Téléchargeables par Système d'Exploitation :
+            - 🍎 **macOS (Apple Silicon M1/M2/M3/M4 & Intel)** : Téléchargez le fichier `.dmg` ou `.app.tar.gz`.
             - 🪟 **Windows (10 / 11)** : Téléchargez l'installateur `.msi` ou le binaire autonome.
             - 🐧 **Linux (Ubuntu, Debian, Fedora, Arch)** : Téléchargez le paquet `.AppImage` ou `.deb`.
 
-            ### 🔄 Mises à Jour Automatiques :
-            - Intègre le système de mise à jour transparente **Tauri Auto-Updater** via `latest.json`.
-            - L'application vérifie et installe automatiquement les correctifs dès qu'un push est déployé sur GitHub.
+            ---
+
+            ### 🔄 Système de Mise à Jour Automatique :
+            - Intègre le système de mise à jour **Tauri Auto-Updater** via `latest.json`.
+            - Mises à jour transparentes et vérification en arrière-plan à chaque nouveau push sur GitHub.
 
             ---
             *Conforme à l'exception d'utilisation équitable (Art. 29 LDA / C-18).*

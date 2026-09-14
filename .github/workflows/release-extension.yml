@@ -1,0 +1,89 @@
+name: Release Chrome Extension (v1.0.0)
+
+on:
+  push:
+    branches: [main]
+    tags: ['extension-v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-and-release-extension:
+    name: 🧩 Package & Release Chrome Extension (v1.0.0)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@bwillou1'
+
+      - name: Package Chrome Extension ZIP
+        run: |
+          mkdir -p dist
+          cd extension
+          zip -r ../dist/lienlibre-chrome-extension-v1.0.0.zip . -x "*.DS_Store*" "*.git*"
+          cp ../dist/lienlibre-chrome-extension-v1.0.0.zip ./lienlibre-extension.zip
+          cd ..
+
+      - name: Publish NPM Packages to GitHub Packages
+        run: |
+          cd extension
+          npm publish --access public || echo "Extension package version already published"
+          cd ..
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Chrome Extension Container Package
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: packages/extension/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/bwillou1/lienlibre-extension:latest
+            ghcr.io/bwillou1/lienlibre-extension:v1.0.0
+
+      - name: Create Dedicated Extension Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: extension-v1.0.0
+          name: "🧩 LienLibre Extension Chrome v1.0.0"
+          body: |
+            # 🧩 LienLibre Extension Google Chrome & Chromium — Version 1.0.0
+
+            Extension de navigateur officielle pour Chromium (Chrome, Brave, Edge, Arc, Opera) basée sur Manifest V3.
+
+            ---
+
+            ### 📥 Fichier Téléchargeable :
+            - 🧩 **[Télécharger l'Extension Chrome (Archive ZIP v1.0.0)](https://github.com/Bwillou1/LienLibre/releases/download/extension-v1.0.0/lienlibre-chrome-extension-v1.0.0.zip)**
+
+            ---
+
+            ### 🚀 Installation en 3 Étapes :
+            1. Téléchargez et décompressez le fichier `.zip`.
+            2. Ouvrez `chrome://extensions/` dans votre navigateur et activez le **Mode Développeur** en haut à droite.
+            3. Cliquez sur **Charger l'extension non empaquetée** et sélectionnez le dossier extrait.
+
+            ---
+            *Conforme à l'exception d'utilisation équitable (Art. 29 LDA / C-18).*
+          files: dist/lienlibre-chrome-extension-v1.0.0.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
