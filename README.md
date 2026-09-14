@@ -6,6 +6,19 @@ Le projet permet d'étudier l'extraction de métadonnées visuelles et de prése
 
 ---
 
+## 📦 Téléchargements Directs & Paquets ([GitHub Releases](https://github.com/Bwillou1/LienLibre/releases) & [GitHub Packages](https://github.com/Bwillou1/LienLibre/packages))
+
+| Plateforme / Paquet | Type de Fichier | Lien de Téléchargement Direct / Registre |
+| :--- | :--- | :--- |
+| 📱 **Application Android Native** | `APK` (Android 8.0+) | [📥 **Télécharger l'APK (`.apk`)**](https://github.com/Bwillou1/LienLibre/releases/download/v2.5.0/lienlibre-android-app-debug-v2.5.0.apk) |
+| 🧩 **Extension Google Chrome** | `ZIP` (Manifest V3) | [📥 **Télécharger l'Extension (`.zip`)**](https://github.com/Bwillou1/LienLibre/releases/download/v2.5.0/lienlibre-chrome-extension-v2.5.0.zip) |
+| 🌐 **GitHub Container Registry (Android)** | Conteneur OCI | `ghcr.io/bwillou1/lienlibre-android` |
+| 🌐 **GitHub Container Registry (Extension)** | Conteneur OCI | `ghcr.io/bwillou1/lienlibre-extension` |
+| 📦 **GitHub NPM Package (Web)** | Registre NPM | `@bwillou1/lienlibre` |
+| 📦 **GitHub NPM Package (Extension)** | Registre NPM | `@bwillou1/lienlibre-extension` |
+
+---
+
 ## 🛡️ Cadre Juridique, Safe Harbor & Clause de Non-Responsabilité
 
 1. **Recherche Éducative & Utilisation Équitable (*Fair Dealing*)** :

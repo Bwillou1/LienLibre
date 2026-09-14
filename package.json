@@ -5,6 +5,19 @@
   "author": "William Guindon",
   "license": "MIT",
   "main": "js/txqr.js",
+  "files": [
+    "dist/",
+    "extension/",
+    "android/",
+    "js/",
+    "index.html",
+    "viewer.html",
+    "lite.html",
+    "ereader.html",
+    "offline.html",
+    "manifest.json",
+    "README.md"
+  ],
   "scripts": {
     "ping": "node scripts/ping-google-news-ai.js",
     "test": "node -c worker.js sw.js extension/popup.js js/qr.js js/txqr.js scripts/ping-google-news-ai.js",

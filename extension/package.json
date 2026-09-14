@@ -5,6 +5,17 @@
   "author": "William Guindon",
   "license": "MIT",
   "main": "popup.js",
+  "files": [
+    "manifest.json",
+    "popup.html",
+    "popup.js",
+    "popup.css",
+    "qr.js",
+    "txqr.js",
+    "icons/",
+    "lienlibre-extension.zip",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Bwillou1/LienLibre.git",
