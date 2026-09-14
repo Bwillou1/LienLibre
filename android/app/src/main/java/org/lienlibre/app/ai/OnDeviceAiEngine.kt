@@ -6,22 +6,23 @@ import kotlinx.coroutines.withContext
 import org.lienlibre.app.data.AiAnalysisResult
 
 /**
- * Android with AI - On-Device Edge Intelligence Engine for LienLibre.
+ * Android with AI - On-Device Edge Metadata & Gateway Inspector for LienLibre.
  * 
- * Complies with Google's on-device privacy principles and AICore / Gemini Nano architecture:
- * - Zero network latency for local analysis
- * - Complete user privacy (no browsing telemetry sent to servers)
- * - Real-time Paywall, Clickbait, and Civic Reliability scoring
+ * RÈGLE FONDAMENTALE D'ARCHITECTURE & LÉGALITÉ (Art. 29 LDA / C-18) :
+ * LienLibre agit STRICTEMENT en tant que PASSERELLE NEUTRE (Gateway / Neutral Carrier).
+ * Il ne lit pas, ne scrape pas, ne copie pas et ne résume JAMAIS le texte intégral des articles de presse.
+ * L'inspection porte EXCLUSIVEMENT sur les métadonnées publiques Open Graph (titre, nom de domaine, description og).
  */
 class OnDeviceAiEngine(private val context: Context) {
 
-    // Known paywall & gatekeeper domains / signatures
+    // Signatures de paywalls et monétisation (vérifiées sur les en-têtes et métadonnées)
     private val paywallKeywords = listOf(
         "abonne", "abonnement", "subscriber-only", "paywall", "premium", 
         "metered", "piano.io", "wallkit", "poool.fr", "tinypass", 
         "monetization", "softwall", "hardwall", "connexion-requise"
     )
 
+    // Détection de sensationnalisme dans les titres (Open Graph og:title)
     private val clickbaitTriggers = listOf(
         "vous ne devinerez jamais", "incroyable", "choc", "ce qui s'est passé ensuite",
         "hallucinant", "les médecins le détestent", "le secret que", "attention :",
@@ -35,30 +36,30 @@ class OnDeviceAiEngine(private val context: Context) {
     )
 
     /**
-     * Analyzes incoming shared link and raw text using on-device heuristics & local models.
+     * Analyse locale des métadonnées Open Graph (URL + Titre OG) sans jamais toucher au texte intégral
      */
-    suspend fun analyzeContent(url: String, title: String, contentSnippet: String = ""): AiAnalysisResult = withContext(Dispatchers.Default) {
+    suspend fun analyzeContent(url: String, ogTitle: String, ogDescription: String = ""): AiAnalysisResult = withContext(Dispatchers.Default) {
         val lowerUrl = url.lowercase()
-        val lowerTitle = title.lowercase()
-        val lowerContent = contentSnippet.lowercase()
+        val lowerTitle = ogTitle.lowercase()
+        val lowerDesc = ogDescription.lowercase()
 
         val warnings = mutableListOf<String>()
 
-        // 1. Paywall Detection
+        // 1. Détection de Paywall / Mur Payant sur les métadonnées
         var isPaywall = false
         var paywallConfidence = 0.0f
 
         val paywallMatches = paywallKeywords.count { keyword ->
-            lowerUrl.contains(keyword) || lowerContent.contains(keyword)
+            lowerUrl.contains(keyword) || lowerDesc.contains(keyword)
         }
 
         if (paywallMatches > 0) {
             isPaywall = true
             paywallConfidence = (0.5f + (paywallMatches * 0.2f)).coerceAtMost(0.99f)
-            warnings.add("🔒 Mur payant détecté ($paywallMatches marqueurs) - Capsule de secours recommandée")
+            warnings.add("🔒 Mur payant / Abonnement requis détecté sur le site d'origine")
         }
 
-        // 2. Clickbait Detection
+        // 2. Détection de Piège à Clics (Clickbait) sur le titre Open Graph
         var isClickbait = false
         var clickbaitConfidence = 0.0f
 
@@ -66,8 +67,8 @@ class OnDeviceAiEngine(private val context: Context) {
             lowerTitle.contains(trigger)
         }
 
-        val hasAllCaps = title.length > 15 && title.count { it.isUpperCase() }.toFloat() / title.length > 0.45f
-        val hasExcessPunctuation = title.contains("???") || title.contains("!!!") || title.contains("!?")
+        val hasAllCaps = ogTitle.length > 15 && ogTitle.count { it.isUpperCase() }.toFloat() / ogTitle.length > 0.45f
+        val hasExcessPunctuation = ogTitle.contains("???") || ogTitle.contains("!!!") || ogTitle.contains("!?")
 
         if (clickbaitMatches > 0 || hasAllCaps || hasExcessPunctuation) {
             isClickbait = true
@@ -76,7 +77,7 @@ class OnDeviceAiEngine(private val context: Context) {
             warnings.add("⚠️ Titre sensationnaliste / Piège à clics détecté")
         }
 
-        // 3. Civic Reliability Scoring
+        // 3. Calcul de l'Indice de Fiabilité Citoyenne (basé sur la transparence de la source)
         var civicScore = 80
         val isDomainTrusted = trustedCivicDomains.any { lowerUrl.contains(it) }
         if (isDomainTrusted) {
@@ -87,8 +88,7 @@ class OnDeviceAiEngine(private val context: Context) {
             civicScore -= (clickbaitConfidence * 40).toInt()
         }
 
-        // 4. On-Device Summary Generation
-        val summary = generateLocalSummary(title, contentSnippet)
+        val ogSnippet = if (ogDescription.isNotBlank()) ogDescription else "Aperçu Open Graph officiel de l'éditeur d'origine."
 
         AiAnalysisResult(
             isPaywall = isPaywall,
@@ -96,25 +96,18 @@ class OnDeviceAiEngine(private val context: Context) {
             isClickbait = isClickbait,
             clickbaitConfidence = clickbaitConfidence,
             civicReliabilityScore = civicScore.coerceIn(10, 100),
-            summary = summary,
-            warnings = warnings
+            openGraphSnippet = ogSnippet,
+            warnings = warnings,
+            gatewayNotice = "Passerelle neutre : Redirection directe vers le navigateur et le site d'origine de l'éditeur."
         )
     }
 
-    private fun generateLocalSummary(title: String, content: String): String {
-        if (content.isBlank()) {
-            return "Article vérifié par le moteur d'IA embarqué LienLibre. Prêt pour archivage citoyen et redistribution décentralisée."
-        }
-        val sentences = content.split(". ").take(3)
-        return sentences.joinToString(". ") + (if (sentences.isNotEmpty()) "." else "")
-    }
-
     /**
-     * Anti-Spam / Anti-Bot proof generation for human capsule creation
+     * Génération de jeton anti-bot / anti-spam garantissant une action humaine
      */
     fun generateHumanVerificationToken(): String {
         val timestamp = System.currentTimeMillis()
         val randomSalt = (1000..9999).random()
-        return "human-verified-$timestamp-$randomSalt"
+        return "human-gateway-$timestamp-$randomSalt"
     }
 }

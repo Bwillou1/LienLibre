@@ -111,7 +111,7 @@ fun EreaderScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "1. Ouvrez le navigateur de votre liseuse\n2. Rendez-vous sur bwillou1.github.io/LienLibre/ereader.html\n3. Entrez ces 4 chiffres pour lire vos capsules format E-Ink sans pub.",
+                        text = "1. Ouvrez le navigateur expérimental de votre liseuse\n2. Rendez-vous sur bwillou1.github.io/LienLibre/ereader.html\n3. Entrez ces 4 chiffres pour que la liseuse charge la passerelle et ouvre le lien direct chez l'éditeur avec un rendu optimisé E-Ink.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

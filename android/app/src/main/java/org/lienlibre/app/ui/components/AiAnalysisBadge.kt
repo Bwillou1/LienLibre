@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.lienlibre.app.data.AiAnalysisResult
 import org.lienlibre.app.ui.theme.AlertGreen
@@ -45,14 +45,15 @@ fun AiAnalysisBadge(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.AutoAwesome,
-                    contentDescription = "Edge AI",
+                    contentDescription = "Passerelle Edge AI",
                     tint = CyanPrimary,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Edge AI • Analyse Locale Embarquée",
+                    text = "Passerelle Neutre • Métadonnées OG",
                     style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
                     color = CyanPrimary
                 )
             }
@@ -68,7 +69,7 @@ fun AiAnalysisBadge(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "Indice : ${analysis.civicReliabilityScore}%",
+                    text = "Source : ${analysis.civicReliabilityScore}%",
                     style = MaterialTheme.typography.labelSmall,
                     color = if (analysis.civicReliabilityScore >= 80) AlertGreen else AlertYellow
                 )
@@ -90,7 +91,7 @@ fun AiAnalysisBadge(
                 Icon(Icons.Default.Lock, contentDescription = null, tint = AlertRed, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Mur Payant / Abonnement Requis Détecté",
+                    text = "Mur Payant Détecté (Abonnement éditeur requis)",
                     style = MaterialTheme.typography.bodyMedium,
                     color = AlertRed
                 )
@@ -111,7 +112,7 @@ fun AiAnalysisBadge(
                 Icon(Icons.Default.Warning, contentDescription = null, tint = AlertYellow, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Alerte Titre Accrocheur / Piège à clics",
+                    text = "Attention : Titre Sensationnaliste / Piège à clics",
                     style = MaterialTheme.typography.bodyMedium,
                     color = AlertYellow
                 )
@@ -119,12 +120,24 @@ fun AiAnalysisBadge(
             Spacer(modifier = Modifier.height(6.dp))
         }
 
-        // On-device AI Summary
-        if (analysis.summary.isNotBlank()) {
+        // OpenGraph Snippet
+        if (analysis.openGraphSnippet.isNotBlank()) {
             Text(
-                text = analysis.summary,
-                style = MaterialTheme.typography.bodyMedium,
+                text = analysis.openGraphSnippet,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+        }
+
+        // Legal / Fair Dealing neutral gateway notice
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.Info, contentDescription = null, tint = CyanPrimary.copy(alpha = 0.7f), modifier = Modifier.size(14.dp))
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = analysis.gatewayNotice,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
             )
         }
     }

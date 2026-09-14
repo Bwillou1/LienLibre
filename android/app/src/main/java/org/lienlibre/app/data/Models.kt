@@ -25,8 +25,9 @@ data class AiAnalysisResult(
     val isClickbait: Boolean = false,
     val clickbaitConfidence: Float = 0f,
     val civicReliabilityScore: Int = 100, // 0 to 100
-    val summary: String = "",
-    val warnings: List<String> = emptyList()
+    val openGraphSnippet: String = "", // Only Open Graph metadata snippet, never full text
+    val warnings: List<String> = emptyList(),
+    val gatewayNotice: String = "Passerelle neutre : transmission exclusive des métadonnées Open Graph vers le navigateur d'origine (Art. 29 LDA / C-18)"
 )
 
 @Serializable

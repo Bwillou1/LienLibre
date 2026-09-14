@@ -96,7 +96,7 @@ fun HomeScreen(
 
             // Subtitle
             Text(
-                text = "Générez un lien citoyen inaltérable, résistant aux blocages et accessible hors-ligne.",
+                text = "Passerelle citoyenne neutre : Générez un pont de redirection direct et sécurisé basé sur les métadonnées Open Graph officielles, sans scraping ni altération du contenu éditeur.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -251,6 +251,21 @@ fun HomeScreen(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text("Copier")
                             }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Open in Default Browser (Neutral Gateway Action)
+                        OutlinedButton(
+                            onClick = {
+                                val browserIntent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(cap.originalUrl))
+                                context.startActivity(browserIntent)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(Icons.Default.OpenInBrowser, contentDescription = null)
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Ouvrir l'article d'origine dans le navigateur")
                         }
 
                         Spacer(modifier = Modifier.height(12.dp))
