@@ -7,7 +7,6 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.version="2.5.0"
 
 WORKDIR /extension
-COPY dist/*.zip /extension/ || true
 COPY extension/ /extension/src/
 
 CMD ["ls", "-la", "/extension"]

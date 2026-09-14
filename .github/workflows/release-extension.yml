@@ -33,31 +33,6 @@ jobs:
           cp ../dist/lienlibre-chrome-extension-v1.0.0.zip ./lienlibre-extension.zip
           cd ..
 
-      - name: Publish NPM Packages to GitHub Packages
-        run: |
-          cd extension
-          npm publish --access public || echo "Extension package version already published"
-          cd ..
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Log in to GitHub Container Registry (GHCR)
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Push Chrome Extension Container Package
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: packages/extension/Dockerfile
-          push: true
-          tags: |
-            ghcr.io/bwillou1/lienlibre-extension:latest
-            ghcr.io/bwillou1/lienlibre-extension:v1.0.0
-
       - name: Create Dedicated Extension Release
         uses: softprops/action-gh-release@v2
         with:
@@ -87,3 +62,31 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish NPM Packages to GitHub Packages
+        continue-on-error: true
+        run: |
+          cd extension
+          npm publish --access public || echo "Extension package version already published"
+          cd ..
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        continue-on-error: true
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Chrome Extension Container Package
+        continue-on-error: true
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: packages/extension/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/bwillou1/lienlibre-extension:latest
+            ghcr.io/bwillou1/lienlibre-extension:v1.0.0

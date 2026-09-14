@@ -7,7 +7,6 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.version="2.5.0"
 
 WORKDIR /app
-COPY dist/*.apk /app/ || true
 COPY android/ /app/android/
 
 CMD ["ls", "-la", "/app"]
