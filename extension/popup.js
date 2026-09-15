@@ -250,8 +250,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   } else {
     // Testing mode outside Chrome extension runtime
     if (sourceTitle) sourceTitle.textContent = "Mode Test Local";
-    if (sourceDomain) sourceDomain.textContent = "lapresse.ca";
-    currentCleanUrl = "https://www.lapresse.ca";
+    if (sourceDomain) sourceDomain.textContent = "example.com";
+    currentCleanUrl = "https://example.com/actualites";
     if (btnGenerate) btnGenerate.disabled = false;
   }
 });
