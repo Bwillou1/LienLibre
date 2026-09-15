@@ -85,6 +85,11 @@ const EREADER_SESSIONS = new Map();
 // Mémoire locale de secours pour liens courts (6 caractères)
 const SHORT_LINKS_MEMORY = new Map();
 
+// Table de correspondances statiques permanentes (liens historiques et raccourcis officiels)
+const STATIC_SHORT_LINKS = {
+  "spu0dnqi": "https://ici.radio-canada.ca/nouvelle/2283399/solutions-encadrer-ia-extinction-coxon-bengio-decrypteurs"
+};
+
 // Mémoire de limitation de débit anti-spam / anti-bot pour la création de liens (/api/create)
 const CREATION_RATE_LIMITS = new Map();
 const CREATION_WINDOW_MS = 60000; // Fenêtre glissante de 1 minute
@@ -1431,7 +1436,12 @@ export default {
     if (!targetUrlString && (requestUrl.pathname.startsWith("/l/") || requestUrl.pathname.startsWith("/go/") || requestUrl.pathname.startsWith("/r/"))) {
       const id = requestUrl.pathname.replace(/^\/(?:l|go|r)\//, "").split("/")[0].split("?")[0];
       shortRouteKey = id;
-      if (env && env.LIENLIBRE_KV && id) {
+      // 1. Vérification dans la table statique permanente
+      if (!targetUrlString && id && STATIC_SHORT_LINKS[id]) {
+        targetUrlString = STATIC_SHORT_LINKS[id];
+      }
+      // 2. Vérification dans Cloudflare KV
+      if (!targetUrlString && env && env.LIENLIBRE_KV && id) {
         const stored = await env.LIENLIBRE_KV.get(`link:${id}`);
         if (stored) {
           try {
@@ -1442,14 +1452,14 @@ export default {
           }
         }
       }
-      // Si non trouvé dans KV, vérifier la mémoire du Worker
+      // 3. Vérification dans la mémoire locale du Worker
       if (!targetUrlString && id && SHORT_LINKS_MEMORY.has(id)) {
         const memObj = SHORT_LINKS_MEMORY.get(id);
         if (memObj && memObj.url) {
           targetUrlString = memObj.url;
         }
       }
-      // Si non trouvé, vérifier si c'est un slug encodé
+      // 4. Si non trouvé, vérifier si c'est un slug encodé
       if (!targetUrlString && id) {
         const decoded = decodePackedUrl(id);
         if (decoded) {
