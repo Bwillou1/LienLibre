@@ -2263,14 +2263,24 @@
               🛑
             </div>
             <h4 class="text-base font-bold text-red-400 mb-1.5">Accès Suspendu par Mesure de Sécurité</h4>
-            <p class="text-xs text-slate-300 mb-3 leading-relaxed">
-              Ce lien a été intercepté par le bouclier familial NextDNS / Cloudflare :<br>
-              <span class="font-mono text-red-300 bg-red-950/60 px-2 py-0.5 rounded border border-red-800/50">site-suspect-fraude.com</span>
+            <p class="text-xs text-slate-300 mb-2 leading-relaxed">
+              Ce lien a été intercepté par le bouclier familial NextDNS / Cloudflare :
             </p>
+            <div id="demo-blocked-url-container" class="mb-3">
+              <div id="demo-blocked-url-masked" class="font-mono text-xs text-red-300/90 bg-red-950/60 px-3 py-1.5 rounded-lg border border-red-800/60 inline-flex items-center gap-1.5">
+                <span>🔒 [URL masquée pour votre sécurité]</span>
+              </div>
+              <div id="demo-blocked-url-revealed" class="font-mono text-xs text-red-200 bg-red-950/90 px-3 py-1.5 rounded-lg border border-red-700 inline-block break-all hidden select-all">
+                ⚠️ URL interceptée : <code class="text-red-400 font-bold">https://site-suspect-fraude.invalid/phishing</code>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-2">
+                💡 <em>L'URL est masquée pour éviter toute infection. Tapez <code>thisisunsafe</code> ou <code>thisissecure</code> au clavier pour l'inspecter.</em>
+              </p>
+            </div>
             <div class="p-2.5 rounded-lg bg-red-950/40 border border-red-900/50 text-red-200 text-[11px] mb-4 text-left">
               <strong>Motif du blocage :</strong> Détection de menace de sécurité, hameçonnage (phishing) ou diffusion de malwares.
             </div>
-            <a href="politiques.html" target="_blank" class="text-xs text-cyan-400 hover:underline">
+            <a href="politiques.html#4-securite-airlock" target="_blank" class="text-xs text-cyan-400 hover:underline">
               Consulter la politique de sécurité & contestation ↗
             </a>
           </div>
@@ -3970,6 +3980,26 @@
     if (window.location.hash === '#demos' || window.location.hash === '#modeles') {
       openDemoScreensModal('approved');
     }
+
+    // Secret security keystroke inspection buffer ("thisisunsafe" / "thisissecure")
+    let secretKeyBuffer = "";
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (e.key && e.key.length === 1) {
+        secretKeyBuffer = (secretKeyBuffer + e.key.toLowerCase()).slice(-20);
+        if (secretKeyBuffer.includes('thisisunsafe') || secretKeyBuffer.includes('thisissecure')) {
+          secretKeyBuffer = '';
+          const masked = document.getElementById('demo-blocked-url-masked');
+          const revealed = document.getElementById('demo-blocked-url-revealed');
+          if (masked && revealed) {
+            masked.classList.add('hidden');
+            revealed.classList.remove('hidden');
+          }
+          document.querySelectorAll('.blocked-url-masked').forEach(el => el.classList.add('hidden'));
+          document.querySelectorAll('.blocked-url-revealed').forEach(el => el.classList.remove('hidden'));
+        }
+      }
+    });
 
     // Custom Worker URL handler for Mirrors and Forks
     const inputCustomWorker = document.getElementById('input-custom-worker');

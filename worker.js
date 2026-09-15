@@ -2013,6 +2013,17 @@ function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
     <div class="reason-box">
       <strong>Motif du refus :</strong> ${escapeHtml(reason)}
     </div>
+    <div id="url-container" style="margin-bottom: 1.25rem;">
+      <div id="url-masked" style="background: rgba(239, 68, 68, 0.1); border: 1px dashed rgba(239, 68, 68, 0.4); border-radius: 0.5rem; padding: 0.6rem 0.8rem; font-family: monospace; font-size: 0.8rem; color: #fca5a5;">
+        🔒 [URL masquée pour votre sécurité]
+      </div>
+      <div id="url-revealed" style="display: none; background: rgba(239, 68, 68, 0.25); border: 1px solid rgba(239, 68, 68, 0.6); border-radius: 0.5rem; padding: 0.6rem 0.8rem; font-family: monospace; font-size: 0.8rem; color: #fca5a5; word-break: break-all; text-align: left;">
+        ⚠️ <strong>URL interceptée :</strong> <code style="user-select: all; color: #f87171;">${escapeHtml(targetUrl)}</code>
+      </div>
+      <p style="font-size: 0.72rem; color: #64748b; margin-top: 0.4rem; margin-bottom: 0;">
+        💡 <em>L'URL est masquée pour éviter toute infection. Tapez <code>thisisunsafe</code> ou <code>thisissecure</code> au clavier pour l'inspecter.</em>
+      </p>
+    </div>
     <a href="https://www.canada.ca/" class="btn-safety">🏛️ Quitter vers un lieu sûr (Canada.ca)</a>
     <a href="https://bwillou1.github.io/LienLibre/" class="btn-home">${escapeHtml(homeBtn)}</a>
     <div style="margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem;">
@@ -2024,6 +2035,26 @@ function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
       </a>
     </div>
   </div>
+  <script>
+    (function() {
+      var buffer = '';
+      window.addEventListener('keydown', function(e) {
+        if (['INPUT', 'TEXTAREA'].indexOf(e.target.tagName) !== -1) return;
+        if (e.key && e.key.length === 1) {
+          buffer = (buffer + e.key.toLowerCase()).slice(-20);
+          if (buffer.indexOf('thisisunsafe') !== -1 || buffer.indexOf('thisissecure') !== -1) {
+            buffer = '';
+            var masked = document.getElementById('url-masked');
+            var revealed = document.getElementById('url-revealed');
+            if (masked && revealed) {
+              masked.style.display = 'none';
+              revealed.style.display = 'block';
+            }
+          }
+        }
+      });
+    })();
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" defer></script>
 </body>
 </html>`;
