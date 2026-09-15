@@ -2257,14 +2257,14 @@
         </div>
 
         <!-- ==================== DEMO 3 : MENACE BLOQUÉE ==================== -->
-        <div id="demo-pane-blocked" class="demo-pane w-full max-w-md flex flex-col items-center text-center space-y-4 hidden">
-          <div class="w-full p-6 rounded-2xl bg-slate-900/80 border border-red-500/40 shadow-2xl backdrop-blur-xl">
+        <div id="demo-pane-blocked" class="demo-pane w-full max-w-md flex flex-col items-center text-center space-y-3.5 hidden">
+          <div class="w-full p-5 sm:p-6 rounded-2xl bg-slate-900/80 border border-red-500/40 shadow-2xl backdrop-blur-xl">
             <div class="h-10 w-10 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-lg mx-auto mb-3">
               🛑
             </div>
             <h4 class="text-base font-bold text-red-400 mb-1.5">Accès Suspendu par Mesure de Sécurité</h4>
             <p class="text-xs text-slate-300 mb-2 leading-relaxed">
-              Ce lien a été intercepté par le bouclier familial NextDNS / Cloudflare :
+              Ce lien a été intercepté par le bouclier familial et l'airlock de sécurité :
             </p>
             <div id="demo-blocked-url-container" class="mb-3">
               <div id="demo-blocked-url-masked" class="font-mono text-xs text-red-300/90 bg-red-950/60 px-3 py-1.5 rounded-lg border border-red-800/60 inline-flex items-center gap-1.5">
@@ -2273,12 +2273,23 @@
               <div id="demo-blocked-url-revealed" class="font-mono text-xs text-red-200 bg-red-950/90 px-3 py-1.5 rounded-lg border border-red-700 inline-block break-all hidden select-all">
                 ⚠️ URL interceptée : <code class="text-red-400 font-bold">https://site-suspect-fraude.invalid/phishing</code>
               </div>
-              <p class="text-[10px] text-slate-500 mt-2">
-                💡 <em>L'URL est masquée pour éviter toute infection. Tapez <code>thisisunsafe</code> ou <code>thisissecure</code> au clavier pour l'inspecter.</em>
+              <p class="text-[11px] text-amber-300/90 bg-amber-950/30 border border-amber-900/40 rounded-lg p-2 mt-2.5 text-left leading-relaxed">
+                🔍 <strong>Pour inspecter cette adresse :</strong> Si vous êtes un auditeur de sécurité ou un utilisateur averti et souhaitez visualiser l'URL bloquée sans jamais l'ouvrir, tapez simplement <code class="bg-slate-900 px-1.5 py-0.5 rounded text-amber-200 font-mono">thisisunsafe</code> ou <code class="bg-slate-900 px-1.5 py-0.5 rounded text-amber-200 font-mono">thisissecure</code> sur votre clavier n'importe où sur la page.
               </p>
             </div>
-            <div class="p-2.5 rounded-lg bg-red-950/40 border border-red-900/50 text-red-200 text-[11px] mb-4 text-left">
-              <strong>Motif du blocage :</strong> Détection de menace de sécurité, hameçonnage (phishing) ou diffusion de malwares.
+            <div class="p-2.5 rounded-lg bg-red-950/40 border border-red-900/50 text-red-200 text-[11px] mb-3 text-left">
+              <strong>Motif du blocage :</strong> Détection de menace critique (hameçonnage, vol de données, logiciels malveillants ou nom de domaine trompeur).
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-400 text-[10px] text-left leading-relaxed mb-3 space-y-1.5">
+              <p class="font-semibold text-slate-300 flex items-center gap-1">
+                <span>⚖️</span> <span>Décharge expresse de responsabilité & Avertissement solennel :</span>
+              </p>
+              <p>
+                LienLibre a neutralisé et mis en quarantaine cette adresse afin de préserver votre intégrité numérique. Toute décision d'inspecter, de copier ou de rechercher cette URL externe est prise sous votre <strong>responsabilité exclusive et entière</strong>.
+              </p>
+              <p>
+                LienLibre, ses auteurs, développeurs bénévoles et hébergeurs <strong>déclinent formellement et irrévocablement toute responsabilité</strong> pour tout dommage matériel, immatériel, financier, perte de données, infection virale ou usurpation résultant d'une tentative d'accès indépendant à ce domaine prohibé.
+              </p>
             </div>
             <a href="politiques.html#4-securite-airlock" target="_blank" class="text-xs text-cyan-400 hover:underline">
               Consulter la politique de sécurité & contestation ↗

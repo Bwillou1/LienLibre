@@ -2020,8 +2020,17 @@ function generateBlockedHTML(targetUrl, reason, lang, requestOrigin) {
       <div id="url-revealed" style="display: none; background: rgba(239, 68, 68, 0.25); border: 1px solid rgba(239, 68, 68, 0.6); border-radius: 0.5rem; padding: 0.6rem 0.8rem; font-family: monospace; font-size: 0.8rem; color: #fca5a5; word-break: break-all; text-align: left;">
         ⚠️ <strong>URL interceptée :</strong> <code style="user-select: all; color: #f87171;">${escapeHtml(targetUrl)}</code>
       </div>
-      <p style="font-size: 0.72rem; color: #64748b; margin-top: 0.4rem; margin-bottom: 0;">
-        💡 <em>L'URL est masquée pour éviter toute infection. Tapez <code>thisisunsafe</code> ou <code>thisissecure</code> au clavier pour l'inspecter.</em>
+      <div style="background: rgba(180, 83, 9, 0.15); border: 1px solid rgba(217, 119, 6, 0.3); border-radius: 0.5rem; padding: 0.6rem 0.75rem; margin-top: 0.6rem; text-align: left; font-size: 0.75rem; color: #fde68a; line-height: 1.45;">
+        🔍 <strong>Inspection d'adresse :</strong> Si vous êtes un auditeur de sécurité ou un utilisateur averti et souhaitez visualiser l'URL bloquée sans jamais l'ouvrir, tapez simplement <code style="background: #0f172a; padding: 2px 5px; border-radius: 4px; color: #fef08a; font-family: monospace;">thisisunsafe</code> ou <code style="background: #0f172a; padding: 2px 5px; border-radius: 4px; color: #fef08a; font-family: monospace;">thisissecure</code> au clavier sur cette page.
+      </div>
+    </div>
+    <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 0.75rem; padding: 0.85rem; margin-bottom: 1.25rem; font-size: 0.72rem; color: #94a3b8; text-align: left; line-height: 1.5;">
+      <div style="font-weight: 700; color: #e2e8f0; margin-bottom: 0.3rem;">⚖️ Décharge expresse de responsabilité & Avertissement solennel :</div>
+      <p style="margin: 0 0 0.4rem;">
+        LienLibre a neutralisé et mis en quarantaine cette adresse afin de préserver votre intégrité numérique. Toute décision d'inspecter, de copier ou de rechercher cette URL externe est prise sous votre <strong>responsabilité exclusive et entière</strong>.
+      </p>
+      <p style="margin: 0;">
+        LienLibre, ses auteurs, développeurs bénévoles et hébergeurs <strong>déclinent formellement et irrévocablement toute responsabilité</strong> pour tout dommage matériel, immatériel, financier, perte de données, infection virale ou usurpation résultant d'une tentative d'accès indépendant à ce domaine prohibé.
       </p>
     </div>
     <a href="https://www.canada.ca/" class="btn-safety">🏛️ Quitter vers un lieu sûr (Canada.ca)</a>
