@@ -530,6 +530,13 @@
               <div class="text-[11px] text-slate-500 dark:text-slate-400">« Dis Siri, crée un LienLibre »</div>
             </div>
           </button>
+          <button type="button" id="btn-open-demo-screens" class="w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-sky-500/10 text-sky-700 dark:text-sky-300 font-medium transition-colors cursor-pointer">
+            <span>🎭</span>
+            <div>
+              <div class="font-semibold">Modèles de Redirection (Démos)</div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400">Voir les 4 écrans (Approuvé, Avertissement, Bloqué, 404)</div>
+            </div>
+          </button>
           <a href="./remerciements.html" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-medium transition-colors">
             <span>📜</span>
             <div>
@@ -2156,6 +2163,155 @@
     </div>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- MODAL : Simulateur / Modèles d'écrans de redirection                       -->
+  <!-- ========================================================================= -->
+  <div id="modal-demo-screens" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md hidden" role="dialog" aria-modal="true" aria-labelledby="modal-demo-screens-title">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-950/50 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">🎭</span>
+          <div>
+            <h3 id="modal-demo-screens-title" class="font-bold text-slate-900 dark:text-white text-base sm:text-lg">
+              Modèles & Écrans de Redirection
+            </h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Aperçu en direct de ce que voit le lecteur selon le type de lien partagé
+            </p>
+          </div>
+        </div>
+        <button type="button" id="btn-close-demo-screens" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" aria-label="Fermer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="px-4 pt-3 pb-2 border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/80 flex items-center gap-1.5 overflow-x-auto text-xs shrink-0">
+        <button type="button" class="demo-tab-btn px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer bg-cyan-600 text-white shadow-xs" data-demo-tab="approved">
+          🟢 1. Média Approuvé
+        </button>
+        <button type="button" class="demo-tab-btn px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" data-demo-tab="unapproved">
+          🟡 2. Non Approuvé (Avertissement)
+        </button>
+        <button type="button" class="demo-tab-btn px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" data-demo-tab="blocked">
+          🔴 3. Menace Bloquée (Quarantaine)
+        </button>
+        <button type="button" class="demo-tab-btn px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800" data-demo-tab="notfound">
+          🔵 4. Lien 404 / Expiré
+        </button>
+      </div>
+
+      <!-- Modal Body (Preview Canvas) -->
+      <div class="p-4 sm:p-6 overflow-y-auto bg-slate-950 flex-grow flex items-center justify-center min-h-[380px]">
+        
+        <!-- ==================== DEMO 1 : MÉDIA APPROUVÉ ==================== -->
+        <div id="demo-pane-approved" class="demo-pane w-full max-w-md flex flex-col items-center text-center space-y-4">
+          <div class="w-full p-6 rounded-2xl bg-slate-900/80 border border-slate-700/60 shadow-2xl backdrop-blur-xl">
+            <div class="h-10 w-10 border-3 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin mx-auto mb-4"></div>
+            <h4 class="text-base font-bold text-white mb-1.5">Redirection sécurisée</h4>
+            <p class="text-xs text-slate-400 mb-2 leading-relaxed">
+              LienLibre vous redirige vers l'article d'origine :<br>
+              <strong class="text-slate-200">Les craintes liées à l’IA déjà connues dans le milieu</strong>
+            </p>
+            <p class="text-[11px] text-slate-500 mb-4">Redirection automatique instantanée...</p>
+            <a href="https://ici.radio-canada.ca/nouvelle/2283399/solutions-encadrer-ia-extinction-coxon-bengio-decrypteurs" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors">
+              <span>Accéder à l'article officiel</span>
+              <span>↗</span>
+            </a>
+          </div>
+          <div class="w-full p-3 rounded-xl bg-cyan-950/40 border border-cyan-800/40 text-cyan-300 text-[11px] leading-relaxed">
+            ❤️ <strong>Soutenez le journalisme local :</strong> ce média (<strong>ici.radio-canada.ca</strong>) a besoin de vous. Pensez à vous abonner ou à désactiver votre bloqueur de pub sur leur site.
+          </div>
+        </div>
+
+        <!-- ==================== DEMO 2 : DOMAINE NON APPROUVÉ ==================== -->
+        <div id="demo-pane-unapproved" class="demo-pane w-full max-w-md flex flex-col items-center text-center space-y-4 hidden">
+          <div class="w-full p-6 rounded-2xl bg-slate-900/80 border border-amber-500/30 shadow-2xl backdrop-blur-xl">
+            <div class="h-10 w-10 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg mx-auto mb-3">
+              ⚠️
+            </div>
+            <h4 class="text-base font-bold text-amber-300 mb-1.5">Sas de Sécurité & Avertissement Citoyen</h4>
+            <p class="text-xs text-slate-300 mb-3 leading-relaxed">
+              Ce lien mène vers un domaine non répertorié :<br>
+              <span class="font-mono text-amber-200 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/50">exemple-blog-externe.org</span>
+            </p>
+            <p class="text-[11px] text-slate-400 mb-4 leading-relaxed">
+              Ce domaine ne fait pas partie des médias canadiens officiels audités. Vérifiez la légitimité de la source avant de continuer.
+            </p>
+            <div class="space-y-2">
+              <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors">
+                <span>Continuer manuellement vers le site tiers ↗</span>
+              </a>
+              <button type="button" class="w-full inline-flex items-center justify-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs px-4 py-1.5 rounded-lg transition-colors" onclick="document.getElementById('btn-close-demo-screens').click();">
+                <span>🛡️ Revenir en lieu sûr</span>
+              </button>
+            </div>
+          </div>
+          <div class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-[10px] text-left">
+            ⚖️ <strong>Protection :</strong> Votre adresse IP (<code>192.0.2.1</code>) a été filtrée contre les requêtes d'hameçonnage automatisées.
+          </div>
+        </div>
+
+        <!-- ==================== DEMO 3 : MENACE BLOQUÉE ==================== -->
+        <div id="demo-pane-blocked" class="demo-pane w-full max-w-md flex flex-col items-center text-center space-y-4 hidden">
+          <div class="w-full p-6 rounded-2xl bg-slate-900/80 border border-red-500/40 shadow-2xl backdrop-blur-xl">
+            <div class="h-10 w-10 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-lg mx-auto mb-3">
+              🛑
+            </div>
+            <h4 class="text-base font-bold text-red-400 mb-1.5">Accès Suspendu par Mesure de Sécurité</h4>
+            <p class="text-xs text-slate-300 mb-3 leading-relaxed">
+              Ce lien a été intercepté par le bouclier familial NextDNS / Cloudflare :<br>
+              <span class="font-mono text-red-300 bg-red-950/60 px-2 py-0.5 rounded border border-red-800/50">site-suspect-fraude.com</span>
+            </p>
+            <div class="p-2.5 rounded-lg bg-red-950/40 border border-red-900/50 text-red-200 text-[11px] mb-4 text-left">
+              <strong>Motif du blocage :</strong> Détection de menace de sécurité, hameçonnage (phishing) ou diffusion de malwares.
+            </div>
+            <a href="politiques.html" target="_blank" class="text-xs text-cyan-400 hover:underline">
+              Consulter la politique de sécurité & contestation ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- ==================== DEMO 4 : LIEN 404 / EXPIRÉ ==================== -->
+        <div id="demo-pane-notfound" class="demo-pane w-full max-w-md flex flex-col items-center text-center space-y-4 hidden">
+          <div class="w-full p-6 rounded-2xl bg-slate-900/80 border border-sky-500/30 shadow-2xl backdrop-blur-xl">
+            <div class="inline-flex items-center gap-1.5 bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-1 rounded-full text-[11px] font-semibold mb-3">
+              <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+              Lien Non Trouvé ou Expiré
+            </div>
+            <h4 class="text-base font-bold text-white mb-1.5">Lien<span class="text-cyan-400">Libre</span></h4>
+            <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+              Le lien court spécifié n'a pas été trouvé en base ou sa durée a expiré.
+            </p>
+            <div class="flex gap-1.5 mb-3">
+              <input type="text" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none" placeholder="Coller une URL d'article..." value="https://www.lapresse.ca/actualites/..." readonly />
+              <button type="button" class="bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-semibold text-xs px-3 py-1.5 rounded-lg">Ouvrir ↗</button>
+            </div>
+            <p class="text-[10px] text-slate-500">
+              💡 Utilisez les liens stateless <code>/p/...</code> pour des liens permanents à vie.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-between shrink-0 text-xs">
+        <span class="text-slate-500 dark:text-slate-400">
+          Simulateur interactif des 4 types de réponses HTTP
+        </span>
+        <button type="button" id="btn-close-demo-screens-bottom" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold px-4 py-1.5 rounded-lg transition-colors cursor-pointer">
+          Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Modal Lecteur Radio Meshtastic & Récepteur Sonore ggwave -->
   <div id="receiver-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
     <!-- Backdrop -->
@@ -3746,6 +3902,73 @@
     if (btnCloseMirrorBottom) btnCloseMirrorBottom.addEventListener('click', closeMirrorModal);
     if (window.location.hash === '#mirror' || window.location.hash === '#fork') {
       openMirrorModal();
+    }
+
+    // Modal Demo Screens logic
+    const modalDemoScreens = document.getElementById('modal-demo-screens');
+    const btnOpenDemoScreens = document.getElementById('btn-open-demo-screens');
+    const btnCloseDemoScreens = document.getElementById('btn-close-demo-screens');
+    const btnCloseDemoScreensBottom = document.getElementById('btn-close-demo-screens-bottom');
+    const demoTabBtns = document.querySelectorAll('.demo-tab-btn');
+    const demoPanes = {
+      approved: document.getElementById('demo-pane-approved'),
+      unapproved: document.getElementById('demo-pane-unapproved'),
+      blocked: document.getElementById('demo-pane-blocked'),
+      notfound: document.getElementById('demo-pane-notfound')
+    };
+
+    function openDemoScreensModal(initialTab = 'approved') {
+      if (modalDemoScreens) {
+        modalDemoScreens.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+        switchDemoTab(initialTab);
+      }
+    }
+
+    function closeDemoScreensModal() {
+      if (modalDemoScreens) {
+        modalDemoScreens.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+        if (window.location.hash === '#demos' || window.location.hash === '#modeles') {
+          history.replaceState(null, null, window.location.pathname + window.location.search);
+        }
+      }
+    }
+
+    function switchDemoTab(tabKey) {
+      demoTabBtns.forEach(btn => {
+        const isCurrent = btn.dataset.demoTab === tabKey;
+        if (isCurrent) {
+          btn.className = "demo-tab-btn px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer bg-cyan-600 text-white shadow-xs";
+        } else {
+          btn.className = "demo-tab-btn px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800";
+        }
+      });
+      Object.keys(demoPanes).forEach(k => {
+        if (demoPanes[k]) {
+          if (k === tabKey) {
+            demoPanes[k].classList.remove('hidden');
+          } else {
+            demoPanes[k].classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    demoTabBtns.forEach(btn => {
+      btn.addEventListener('click', () => switchDemoTab(btn.dataset.demoTab));
+    });
+
+    if (btnOpenDemoScreens) btnOpenDemoScreens.addEventListener('click', () => openDemoScreensModal('approved'));
+    if (btnCloseDemoScreens) btnCloseDemoScreens.addEventListener('click', closeDemoScreensModal);
+    if (btnCloseDemoScreensBottom) btnCloseDemoScreensBottom.addEventListener('click', closeDemoScreensModal);
+    if (modalDemoScreens) {
+      modalDemoScreens.addEventListener('click', (e) => {
+        if (e.target === modalDemoScreens) closeDemoScreensModal();
+      });
+    }
+    if (window.location.hash === '#demos' || window.location.hash === '#modeles') {
+      openDemoScreensModal('approved');
     }
 
     // Custom Worker URL handler for Mirrors and Forks
