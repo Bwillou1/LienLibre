@@ -65,7 +65,7 @@ Cliquez sur le bouton **Fork** en haut à droite du dépôt `Bwillou1/LienLibre`
 
 ### Étape 3 : Créer votre profil NextDNS gratuit
 1. Rendez-vous sur [nextdns.io](https://nextdns.io) et créez un compte gratuit (300 000 requêtes gratuites/mois).
-2. Notez votre identifiant de profil à 6 caractères (ex: `9d8318` ou `ab12cd`).
+2. Notez votre identifiant de profil à 6 caractères (ex: `ab12cd`).
 3. Vous pouvez configurer des listes de blocage de sécurité (Security, Parental Control) selon vos préférences.
 
 ### Étape 4 : Déployer votre Cloudflare Worker
@@ -78,7 +78,7 @@ Cliquez sur le bouton **Fork** en haut à droite du dépôt `Bwillou1/LienLibre`
 3. Éditez `wrangler.toml` pour renseigner vos variables :
    ```toml
    [vars]
-   NEXTDNS_ID_PRIMARY = "votre_id_nextdns" # ex: "9d8318"
+   NEXTDNS_ID_PRIMARY = "votre_id_nextdns" # ex: "ab12cd"
    NEXTDNS_ID_BACKUP = "votre_id_secours"
    CONTACT_EMAIL = "votre-courriel@exemple.com"
    GITHUB_REPO = "votre-pseudo/votre-depot"

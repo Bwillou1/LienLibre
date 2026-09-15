@@ -637,9 +637,10 @@ function checkSecurityThreats(targetUrl, meta = {}) {
 
 /**
  * 🌐 Double Bouclier DNS NextDNS (Configurable via env.NEXTDNS_ID_PRIMARY et env.NEXTDNS_ID_BACKUP)
- * - 1. Interroge NextDNS Profil Principal (Par défaut 8d3993 ou variable d'environnement).
- * - 2. Interroge NextDNS Profil Secours (Par défaut 9d8318 ou variable d'environnement) si le premier est indisponible.
- * - Bloque les maliciels, hameçonnages, traqueurs, domaines récents et contenus adultes.
+ * - 1. Interroge NextDNS Profil Principal (variable d'environnement ou profil durci par défaut).
+ * - 2. Interroge NextDNS Profil Secours (variable d'environnement ou profil durci par défaut) si le premier est indisponible ou a épuisé son quota.
+ * - 3. Mode Liste Blanche Stricte (Failsafe) : Si les boucliers DNS sont indisponibles ou les quotas épuisés, seuls les domaines validés en liste blanche sont autorisés.
+ * - Bloque les maliciels, hameçonnages, traqueurs, domaines récents et contenus malveillants.
  */
 async function checkDnsFamilyShield(hostname, env = null) {
   try {
@@ -668,12 +669,15 @@ async function checkDnsFamilyShield(hostname, env = null) {
       }
     };
 
+    let dnsResolved = false;
+
     // 1. PROFIL PRINCIPAL : NextDNS (ID configurable)
     if (primaryId) {
       const primaryDnsUrl = `https://dns.nextdns.io/${encodeURIComponent(primaryId)}/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
       const primaryData = await fetchDoh(primaryDnsUrl);
 
-      if (primaryData) {
+      if (primaryData && (primaryData.Status === 0 || primaryData.Status === 3 || primaryData.Status === 5 || Array.isArray(primaryData.Answer))) {
+        dnsResolved = true;
         if (primaryData.Answer && Array.isArray(primaryData.Answer)) {
           const isBlocked = primaryData.Answer.some(a => 
             a.data === "0.0.0.0" || 
@@ -696,6 +700,9 @@ async function checkDnsFamilyShield(hostname, env = null) {
             reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS (menace de sécurité ou domaine inexistant)."
           };
         }
+        if (primaryData.Status === 0) {
+          return { isBlocked: false, reason: "" };
+        }
       }
     }
 
@@ -704,7 +711,8 @@ async function checkDnsFamilyShield(hostname, env = null) {
       const backupDnsUrl = `https://dns.nextdns.io/${encodeURIComponent(backupId)}/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
       const backupData = await fetchDoh(backupDnsUrl);
 
-      if (backupData) {
+      if (backupData && (backupData.Status === 0 || backupData.Status === 3 || backupData.Status === 5 || Array.isArray(backupData.Answer))) {
+        dnsResolved = true;
         if (backupData.Answer && Array.isArray(backupData.Answer)) {
           const isBlockedBackup = backupData.Answer.some(a => 
             a.data === "0.0.0.0" || 
@@ -726,11 +734,26 @@ async function checkDnsFamilyShield(hostname, env = null) {
             reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS de secours (menace de sécurité ou domaine inexistant)."
           };
         }
+        if (backupData.Status === 0) {
+          return { isBlocked: false, reason: "" };
+        }
       }
+    }
+
+    // 3. Strict Whitelist Failsafe Mode : Si les deux serveurs DNS ont échoué ou dépassé leur quota
+    if (!dnsResolved) {
+      return {
+        isBlocked: true,
+        reason: "Protection Failsafe Active : Les boucliers de vérification DNS sont temporairement indisponibles (ou quota atteint). Par mesure de sécurité stricte, seuls les médias vérifiés en liste blanche sont autorisés."
+      };
     }
 
   } catch (err) {
     console.warn("Erreur de validation DNS bouclier :", err);
+    return {
+      isBlocked: true,
+      reason: "Protection Failsafe Active : Erreur lors de la vérification de sécurité DNS. Par précaution, seuls les médias vérifiés en liste blanche sont autorisés."
+    };
   }
 
   return { isBlocked: false, reason: "" };
@@ -1334,9 +1357,9 @@ export default {
 
         const isAllowed = isDomainAllowed(parsedTarget.hostname);
 
-        // 3. Double Bouclier DNS NextDNS (Principal 8d3993 + Secours 9d8318 - Ignoré pour les domaines dans la liste blanche)
+        // 3. Double Bouclier DNS NextDNS (Principal + Secours - Ignoré pour les domaines dans la liste blanche)
         if (!isAllowed) {
-          const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname);
+          const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname, env);
           if (dnsShield.isBlocked) {
             recordBlockedDomain(parsedTarget.hostname, dnsShield.reason, env, ctx);
             return new Response(JSON.stringify({
@@ -1601,10 +1624,10 @@ export default {
       });
     }
 
-    // 3. Double Bouclier DNS NextDNS (Principal 8d3993 + Secours 9d8318 - Ignoré totalement pour les médias vérifiés de la liste blanche)
+    // 3. Double Bouclier DNS NextDNS (Principal + Secours - Ignoré totalement pour les médias vérifiés de la liste blanche)
     let dnsThreat = { isBlocked: false, reason: "" };
     if (!isAllowed) {
-      dnsThreat = await checkDnsFamilyShield(targetUrl.hostname);
+      dnsThreat = await checkDnsFamilyShield(targetUrl.hostname, env);
       if (dnsThreat.isBlocked) {
         recordBlockedDomain(targetUrl.hostname, dnsThreat.reason, env, ctx);
         if (isJsonRequested) {

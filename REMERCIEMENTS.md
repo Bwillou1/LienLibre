@@ -42,7 +42,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 * **Meshtastic :** Projet open source et communautaire de communications radio maillées décentralisées et chiffrées (Mesh LoRa). (*Licence : GPL-3.0*) ([github.com/meshtastic/meshtastic](https://github.com/meshtastic/meshtastic))
 * **TxQR (Ivan Daniluk) :** Protocole et outil de transmission unidirectionnelle de données à haut débit via flux de QR codes animés. (*Licence : MIT*) ([github.com/divan/txqr](https://github.com/divan/txqr))
 * **Free QR Code Generator (Brainwagon) :** Générateur de QR Code vectoriel autonome et léger sans dépendance. (*Licence : MIT*) ([github.com/brainwagon/free-qrcode-generator](https://github.com/brainwagon/free-qrcode-generator))
-* **NextDNS :** Résolution DNS chiffrée (DoH) pour notre double bouclier de sécurité (`8d3993` et `9d8318`) protégeant les citoyens contre les maliciels et hameçonnages. ([nextdns.io](https://nextdns.io))
+* **NextDNS :** Résolution DNS chiffrée (DoH) pour notre double bouclier de sécurité (profil principal et profil de secours avec mode liste blanche stricte) protégeant les citoyens contre les maliciels et hameçonnages. ([nextdns.io](https://nextdns.io))
 * **Cloudflare Workers & KV :** Infrastructure Edge décentralisée assurant la résilience et la rapidité de la passerelle technique neutre. ([workers.cloudflare.com](https://workers.cloudflare.com))
 * **Tailwind CSS :** Conception d'interface réactive, accessible et épurée sous licence MIT. ([tailwindcss.com](https://tailwindcss.com))
 * **Open Graph Protocol & Schema.org :** Standards ouverts d'interopérabilité des métadonnées du web. ([ogp.me](https://ogp.me))

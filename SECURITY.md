@@ -10,8 +10,8 @@ L'ensemble de nos politiques officielles de sécurité (Security Airlock Protoco
 ## 🛡️ Mesures de protection intégrées
 
 1. **Défense en profondeur & Filtrage DNS Protecteur :**
-   - **Priorité 1 (Principal) :** NextDNS Anti-Malware / Anti-Phishing avec ID de configuration durcie (`8d3993`) via DNS-over-HTTPS.
-   - **Priorité 2 (Secours) :** NextDNS Profil secondaire durci (`9d8318`) pour basculement transparent (capacité cumulée 600 000 requêtes/mois).
+   - **Priorité 1 (Principal) :** NextDNS Anti-Malware / Anti-Phishing avec configuration durcie via DNS-over-HTTPS.
+   - **Priorité 2 (Secours) :** NextDNS Profil secondaire durci pour basculement transparent (avec mode liste blanche stricte de secours).
    - Tout domaine identifié comme malveillant est immédiatement bloqué avec un statut HTTP `403 Forbidden`.
 
 2. **Sentinelle Mini-Bot & Sas de Sécurité (Airlock) :**

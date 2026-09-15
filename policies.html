@@ -136,7 +136,7 @@
 </ul>
 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5">LienLibre <strong class="font-bold text-white">n’est pas</strong> un agrégateur de contenus, <strong class="font-bold text-white">n’est pas</strong> un moteur de recherche d’articles intégraux, <strong class="font-bold text-white">n’est pas</strong> un service de contournement de paywall, et <strong class="font-bold text-white">n’est pas</strong> un intermédiaire éditorial.</p>
 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5"><strong class="font-bold text-white">Statut :</strong> projet <em class="italic text-slate-200">open source</em>, bénévole, à but non lucratif, à vocation éducative et civique.</p>
-<p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5"><strong class="font-bold text-white">Hébergement et infrastructure (indicative) :</strong> pages statiques GitHub Pages ; <em class="italic text-slate-200">edge workers</em> (Cloudflare Workers) ; résolution DNS via NextDNS (configuration durcie principale <code class="bg-slate-900 border border-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono text-xs">8d3993</code> et repli NextDNS <code class="bg-slate-900 border border-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono text-xs">9d8318</code>).</p>
+<p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5"><strong class="font-bold text-white">Hébergement et infrastructure (indicative) :</strong> pages statiques GitHub Pages ; <em class="italic text-slate-200">edge workers</em> (Cloudflare Workers) ; résolution DNS via NextDNS (configuration durcie principale et repli NextDNS de secours avec mode liste blanche stricte).</p>
 <h2 id="1-2-acceptation" class="text-xl sm:text-2xl font-bold text-cyan-300 mt-8 mb-3 scroll-mt-20 pb-2 border-b border-slate-800/80">1.2 Acceptation</h2>
 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5">L’accès, la consultation ou l’utilisation de LienLibre emporte acceptation pleine et entière des présentes conditions, de la politique de confidentialité, de la déclaration de droit d’auteur et du protocole de sécurité.</p>
 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5">Si vous n’acceptez pas ces termes, vous devez cesser immédiatement toute utilisation.</p>
@@ -388,13 +388,13 @@
 </tr></thead><tbody class="divide-y divide-slate-800/80 bg-slate-950/60 text-slate-300">
 <tr class="hover:bg-slate-900/50 transition-colors">
 <td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed"><strong class="font-bold text-white">1 (principal)</strong></td>
-<td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed"><strong class="font-bold text-white">NextDNS Anti-Malware / Anti-Phishing</strong>, configuration durcie <strong class="font-bold text-white">ID <code class="bg-slate-900 border border-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono text-xs">8d3993</code></strong>, via <strong class="font-bold text-white">DNS-over-HTTPS (DoH)</strong></td>
+<td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed"><strong class="font-bold text-white">NextDNS Anti-Malware / Anti-Phishing</strong>, configuration durcie principale, via <strong class="font-bold text-white">DNS-over-HTTPS (DoH)</strong></td>
 <td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed">Blocage maliciel, hameçonnage, domaines newly-registered à risque selon politiques NextDNS</td>
 </tr>
 <tr class="hover:bg-slate-900/50 transition-colors">
 <td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed"><strong class="font-bold text-white">2 (secours)</strong></td>
-<td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed"><strong class="font-bold text-white">NextDNS Anti-Malware / Anti-Phishing</strong>, configuration durcie <strong class="font-bold text-white">ID <code class="bg-slate-900 border border-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono text-xs">9d8318</code></strong>, via <strong class="font-bold text-white">DNS-over-HTTPS (DoH)</strong></td>
-<td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed">Disponibilité et basculement automatique si profil principal saturé ou indisponible</td>
+<td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed"><strong class="font-bold text-white">NextDNS Anti-Malware / Anti-Phishing</strong>, configuration durcie secondaire de repli, via <strong class="font-bold text-white">DNS-over-HTTPS (DoH)</strong></td>
+<td class="p-3 sm:p-3.5 border-r border-slate-800/80 last:border-r-0 leading-relaxed">Disponibilité et basculement automatique si profil principal saturé ou indisponible (repli sur liste blanche stricte en cas de panne globale)</td>
 </tr>
 </tbody></table></div>
 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5"><strong class="font-bold text-white">Règle dure.</strong> Tout nom de domaine identifié comme malveillant par le résolveur retenu est <strong class="font-bold text-white">immédiatement bloqué</strong> avec une réponse <strong class="font-bold text-white">HTTP 403 Forbidden</strong>. Aucune redirection. Aucun sas cliquable vers la cible. Message d’erreur explicite + liens vers <code class="bg-slate-900 border border-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono text-xs">canada.ca</code> et le signalement.</p>
@@ -593,7 +593,7 @@ Acknowledgments: https://github.com/Bwillou1/LienLibre/security/advisories
 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5">Sauf mention contraire, le présent texte de politiques est publié pour usage du projet LienLibre. La reproduction fidèle sur les URLs officielles est autorisée. Il ne s’agit pas d’un modèle générique garanti pour d’autres services.</p>
 <hr class="my-8 border-slate-800" />
 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5"><strong class="font-bold text-white">Fin du document — LienLibre POLICIES.md v1.0 — 2026-09-13</strong></p>
-<p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5"><em class="italic text-slate-200">Rédigé dans un esprit de conformité Loi 25 / LPRPDE, d’exonération 31.1 LDA, d’utilisation équitable art. 29, de procédure d’avis et retrait volontaire, et de défense en profondeur (NextDNS 8d3993 / NextDNS 9d8318 / Mini-Bot / Airlock).</em></p>
+<p class="text-xs sm:text-sm text-slate-300 leading-relaxed my-2.5"><em class="italic text-slate-200">Rédigé dans un esprit de conformité Loi 25 / LPRPDE, d’exonération 31.1 LDA, d’utilisation équitable art. 29, de procédure d’avis et retrait volontaire, et de défense en profondeur (Double Bouclier NextDNS / Mini-Bot / Airlock / Failsafe Liste Blanche).</em></p>
     </article>
 
     <!-- Bottom Navigation -->
