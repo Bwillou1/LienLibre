@@ -1,3 +1,6 @@
+mod atoll;
+
+use atoll::{broadcast_to_atoll, detect_atoll_support, AtollActivityPayload, AtollStatusResult};
 use serde::{Deserialize, Serialize};
 use tauri::{
     menu::{Menu, MenuItem},
@@ -39,6 +42,22 @@ fn get_app_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
+#[tauri::command]
+fn get_atoll_status() -> AtollStatusResult {
+    detect_atoll_support()
+}
+
+#[tauri::command]
+fn emit_atoll_activity(title: String, subtitle: String, score: u32, status: String, link: Option<String>) -> bool {
+    broadcast_to_atoll(AtollActivityPayload {
+        title,
+        subtitle,
+        score,
+        status,
+        link,
+    })
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -47,7 +66,9 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             inspect_metadata_neutral,
-            get_app_version
+            get_app_version,
+            get_atoll_status,
+            emit_atoll_activity
         ])
         .setup(|app| {
             // Setup System Tray Menu

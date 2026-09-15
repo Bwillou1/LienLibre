@@ -10,6 +10,7 @@ if (!fs.existsSync(distDir)) {
 
 const filesToCopy = [
   'index.html',
+  'badge.html',
   'alertes.html',
   'credits.html',
   'remerciements.html',

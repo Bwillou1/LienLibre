@@ -82,30 +82,132 @@ const WHITELIST_SYNC_INTERVAL = 300000; // 5 minutes
 // Mémoire éphémère pour appairage par code à 4 chiffres des liseuses E-Ink (Kobo, Kindle, reMarkable)
 const EREADER_SESSIONS = new Map();
 
-// Mémoire locale de secours pour liens courts (6 caractères)
-const SHORT_LINKS_MEMORY = new Map();
-
 // Table de correspondances statiques permanentes (liens historiques et raccourcis officiels)
 const STATIC_SHORT_LINKS = {
   "spu0dnqi": "https://ici.radio-canada.ca/nouvelle/2283399/solutions-encadrer-ia-extinction-coxon-bengio-decrypteurs"
 };
 
-// Mémoire de limitation de débit anti-spam / anti-bot pour la création de liens (/api/create)
-const CREATION_RATE_LIMITS = new Map();
-const CREATION_WINDOW_MS = 60000; // Fenêtre glissante de 1 minute
-const CREATION_MAX_PER_MINUTE = 60; // Max 60 créations par minute par IP
+// =========================================================================
+// SYSTÈME INTELLIGENT DE RÉPUTATION, STRIKES ET QUOTAS COMPORTEMENTAUX
+// =========================================================================
+const CLIENT_WINDOW_MS = 86400000; // Fenêtre glissante de 24 heures (1 jour)
+const CLIENT_STRIKES = new Map(); // clientKey -> [timestamp...]
+const CLIENT_CREATION_USAGE = new Map(); // clientKey -> { whitelisted: [ts...], unverified: [ts...] }
 
-function checkCreationRateLimit(ip) {
-  if (!ip || ip === "unknown") return true;
-  const now = Date.now();
-  const records = CREATION_RATE_LIMITS.get(ip) || [];
-  const validRecords = records.filter(ts => now - ts < CREATION_WINDOW_MS);
-  if (validRecords.length >= CREATION_MAX_PER_MINUTE) {
-    return false;
+const QUOTA_RESIDENTIAL_TOTAL = 30; // Max 30 créations par jour par client (idéal pour médias et lecteurs réguliers)
+const QUOTA_RESIDENTIAL_UNVERIFIED = 5; // Max 5 créations hors liste blanche (liens non répertoriés) par jour
+const QUOTA_INSTITUTIONAL_TOTAL = 100; // Max 100 créations par jour pour rédactions / partenaires reconnus
+const MAX_STRIKES_BEFORE_BAN = 3; // Bannissement 24h dès 3 infractions aux règles de sécurité (Sentinel)
+
+// Liste blanche des clés de partenaires institutionnels
+const INSTITUTIONAL_KEYS = new Set([
+  // "org_partner_sample_key"
+]);
+
+// Liste blanche d'adresses IP partenaires ou institutionnelles
+const INSTITUTIONAL_IPS = new Set([
+  // IP institutionnelles d'organismes de presse / partenaires
+]);
+
+function getClientIdentifier(request) {
+  const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
+  const clientId = (request.headers.get("X-LienLibre-Client-ID") || "").trim().slice(0, 64);
+  return clientId ? `${clientIp}#${clientId}` : clientIp;
+}
+
+function isClientInstitutional(request, env = null) {
+  const partnerKey = (request.headers.get("X-LienLibre-Partner-Key") || "").trim();
+  if (partnerKey && (INSTITUTIONAL_KEYS.has(partnerKey) || (env && env.INSTITUTIONAL_KEYS && env.INSTITUTIONAL_KEYS.split(",").map(k => k.trim()).includes(partnerKey)))) {
+    return true;
   }
-  validRecords.push(now);
-  CREATION_RATE_LIMITS.set(ip, validRecords);
-  return true;
+  const clientIp = request.headers.get("CF-Connecting-IP") || "";
+  if (clientIp && (INSTITUTIONAL_IPS.has(clientIp) || (env && env.INSTITUTIONAL_IPS && env.INSTITUTIONAL_IPS.split(",").map(s => s.trim()).includes(clientIp)))) {
+    return true;
+  }
+  return false;
+}
+
+function checkClientBanned(clientKey) {
+  if (!clientKey || clientKey === "unknown") return { isBanned: false, strikesCount: 0, remainingHours: 0 };
+  const now = Date.now();
+  const strikes = (CLIENT_STRIKES.get(clientKey) || []).filter(ts => now - ts < CLIENT_WINDOW_MS);
+  if (strikes.length >= MAX_STRIKES_BEFORE_BAN) {
+    const oldestStrike = Math.min(...strikes);
+    const remainingHours = Math.ceil((CLIENT_WINDOW_MS - (now - oldestStrike)) / 3600000);
+    return {
+      isBanned: true,
+      strikesCount: strikes.length,
+      remainingHours: Math.max(1, remainingHours)
+    };
+  }
+  return { isBanned: false, strikesCount: strikes.length, remainingHours: 0 };
+}
+
+function recordClientStrike(clientKey) {
+  if (!clientKey || clientKey === "unknown") return 1;
+  const now = Date.now();
+  const strikes = (CLIENT_STRIKES.get(clientKey) || []).filter(ts => now - ts < CLIENT_WINDOW_MS);
+  strikes.push(now);
+  CLIENT_STRIKES.set(clientKey, strikes);
+  return strikes.length;
+}
+
+function checkClientQuota(clientKey, isWhitelisted, isInstitutional) {
+  if (!clientKey || clientKey === "unknown") return { allowed: true };
+  const now = Date.now();
+  const usage = CLIENT_CREATION_USAGE.get(clientKey) || { whitelisted: [], unverified: [] };
+  const validWhitelisted = (usage.whitelisted || []).filter(ts => now - ts < CLIENT_WINDOW_MS);
+  const validUnverified = (usage.unverified || []).filter(ts => now - ts < CLIENT_WINDOW_MS);
+  const totalCount = validWhitelisted.length + validUnverified.length;
+
+  if (isInstitutional) {
+    if (totalCount >= QUOTA_INSTITUTIONAL_TOTAL) {
+      return {
+        allowed: false,
+        error: `Quota institutionnel quotidien atteint (Max ${QUOTA_INSTITUTIONAL_TOTAL} créations par 24h).`,
+        message: `Quota institutionnel quotidien atteint (Max ${QUOTA_INSTITUTIONAL_TOTAL} créations par 24h).`
+      };
+    }
+    return { allowed: true };
+  }
+
+  // Quotas résidentiels
+  if (!isWhitelisted && validUnverified.length >= QUOTA_RESIDENTIAL_UNVERIFIED) {
+    return {
+      allowed: false,
+      error: `Limite quotidienne atteinte : Maximum ${QUOTA_RESIDENTIAL_UNVERIFIED} créations de liens non répertoriés par 24h. Les médias vérifiés de la liste officielle restent autorisés (jusqu'à ${QUOTA_RESIDENTIAL_TOTAL}/jour).`,
+      message: `Limite quotidienne atteinte pour les liens hors liste officielle (${QUOTA_RESIDENTIAL_UNVERIFIED}/jour).`
+    };
+  }
+
+  if (totalCount >= QUOTA_RESIDENTIAL_TOTAL) {
+    return {
+      allowed: false,
+      error: `Limite quotidienne globale atteinte (Max ${QUOTA_RESIDENTIAL_TOTAL} créations de liens par 24h depuis cet appareil / IP).`,
+      message: `Limite quotidienne globale atteinte (${QUOTA_RESIDENTIAL_TOTAL}/jour).`
+    };
+  }
+
+  return { allowed: true };
+}
+
+function recordClientCreation(clientKey, isWhitelisted) {
+  if (!clientKey || clientKey === "unknown") return;
+  const now = Date.now();
+  const usage = CLIENT_CREATION_USAGE.get(clientKey) || { whitelisted: [], unverified: [] };
+  const validWhitelisted = (usage.whitelisted || []).filter(ts => now - ts < CLIENT_WINDOW_MS);
+  const validUnverified = (usage.unverified || []).filter(ts => now - ts < CLIENT_WINDOW_MS);
+
+  if (isWhitelisted) {
+    validWhitelisted.push(now);
+  } else {
+    validUnverified.push(now);
+  }
+
+  CLIENT_CREATION_USAGE.set(clientKey, {
+    whitelisted: validWhitelisted,
+    unverified: validUnverified
+  });
 }
 
 /**
@@ -636,132 +738,154 @@ function checkSecurityThreats(targetUrl, meta = {}) {
 }
 
 /**
- * 🌐 Double Bouclier DNS NextDNS (Configurable via env.NEXTDNS_ID_PRIMARY et env.NEXTDNS_ID_BACKUP)
- * - 1. Interroge NextDNS Profil Principal (variable d'environnement ou profil durci par défaut).
- * - 2. Interroge NextDNS Profil Secours (variable d'environnement ou profil durci par défaut) si le premier est indisponible ou a épuisé son quota.
- * - 3. Mode Liste Blanche Stricte (Failsafe) : Si les boucliers DNS sont indisponibles ou les quotas épuisés, seuls les domaines validés en liste blanche sont autorisés.
- * - Bloque les maliciels, hameçonnages, traqueurs, domaines récents et contenus malveillants.
+ * Vérifie si une adresse IP est privée, de bouclage local ou réservée (Protection Anti-SSRF).
  */
-async function checkDnsFamilyShield(hostname, env = null) {
-  try {
-    const cleanHost = (hostname || "").toLowerCase().replace(/^www\./, "");
-    if (!cleanHost || isDomainAllowed(cleanHost)) {
-      return { isBlocked: false, reason: "" };
-    }
+function isPrivateOrReservedIp(ip) {
+  if (!ip || typeof ip !== "string") return false;
+  const cleanIp = ip.trim().toLowerCase();
 
-    const primaryId = (env && env.NEXTDNS_ID_PRIMARY) ? env.NEXTDNS_ID_PRIMARY : "8d3993";
-    const backupId = (env && env.NEXTDNS_ID_BACKUP) ? env.NEXTDNS_ID_BACKUP : "9d8318";
-
-    const fetchDoh = async (url) => {
-      const ctrl = new AbortController();
-      const tId = setTimeout(() => ctrl.abort(), 2000);
-      try {
-        const res = await fetch(url, {
-          headers: { "Accept": "application/dns-json" },
-          signal: ctrl.signal
-        });
-        clearTimeout(tId);
-        if (!res.ok) return null;
-        return await res.json();
-      } catch (_) {
-        clearTimeout(tId);
-        return null;
-      }
-    };
-
-    let dnsResolved = false;
-
-    // 1. PROFIL PRINCIPAL : NextDNS (ID configurable)
-    if (primaryId) {
-      const primaryDnsUrl = `https://dns.nextdns.io/${encodeURIComponent(primaryId)}/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
-      const primaryData = await fetchDoh(primaryDnsUrl);
-
-      if (primaryData && (primaryData.Status === 0 || primaryData.Status === 3 || primaryData.Status === 5 || Array.isArray(primaryData.Answer))) {
-        dnsResolved = true;
-        if (primaryData.Answer && Array.isArray(primaryData.Answer)) {
-          const isBlocked = primaryData.Answer.some(a => 
-            a.data === "0.0.0.0" || 
-            a.data === "::" || 
-            a.data === "127.0.0.1" || 
-            (typeof a.data === "string" && a.data.startsWith("0.0.0."))
-          );
-          if (isBlocked) {
-            return {
-              isBlocked: true,
-              reason: "Ce domaine est bloqué par le bouclier NextDNS (menace de sécurité, piratage ou contenu prohibé détecté)."
-            };
-          }
-          // Validé avec adresse IP saine
-          return { isBlocked: false, reason: "" };
-        }
-        if (primaryData.Status === 3 || primaryData.Status === 5) {
-          return {
-            isBlocked: true,
-            reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS (menace de sécurité ou domaine inexistant)."
-          };
-        }
-        if (primaryData.Status === 0) {
-          return { isBlocked: false, reason: "" };
-        }
-      }
-    }
-
-    // 2. PROFIL DE SECOURS : NextDNS (ID configurable pour basculement transparent)
-    if (backupId) {
-      const backupDnsUrl = `https://dns.nextdns.io/${encodeURIComponent(backupId)}/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
-      const backupData = await fetchDoh(backupDnsUrl);
-
-      if (backupData && (backupData.Status === 0 || backupData.Status === 3 || backupData.Status === 5 || Array.isArray(backupData.Answer))) {
-        dnsResolved = true;
-        if (backupData.Answer && Array.isArray(backupData.Answer)) {
-          const isBlockedBackup = backupData.Answer.some(a => 
-            a.data === "0.0.0.0" || 
-            a.data === "::" || 
-            a.data === "127.0.0.1" || 
-            (typeof a.data === "string" && a.data.startsWith("0.0.0."))
-          );
-          if (isBlockedBackup) {
-            return {
-              isBlocked: true,
-              reason: "Ce domaine est bloqué par le bouclier NextDNS de secours (menace de sécurité, piratage ou contenu prohibé détecté)."
-            };
-          }
-          return { isBlocked: false, reason: "" };
-        }
-        if (backupData.Status === 3 || backupData.Status === 5) {
-          return {
-            isBlocked: true,
-            reason: "Ce domaine est bloqué ou introuvable selon le bouclier NextDNS de secours (menace de sécurité ou domaine inexistant)."
-          };
-        }
-        if (backupData.Status === 0) {
-          return { isBlocked: false, reason: "" };
-        }
-      }
-    }
-
-    // 3. Strict Whitelist Failsafe Mode : Si les deux serveurs DNS ont échoué ou dépassé leur quota
-    if (!dnsResolved) {
-      return {
-        isBlocked: true,
-        reason: "Protection Failsafe Active : Les boucliers de vérification DNS sont temporairement indisponibles (ou quota atteint). Par mesure de sécurité stricte, seuls les médias vérifiés en liste blanche sont autorisés."
-      };
-    }
-
-  } catch (err) {
-    console.warn("Erreur de validation DNS bouclier :", err);
-    return {
-      isBlocked: true,
-      reason: "Protection Failsafe Active : Erreur lors de la vérification de sécurité DNS. Par précaution, seuls les médias vérifiés en liste blanche sont autorisés."
-    };
+  // IPv6 local / link-local / ULA / Loopback
+  if (cleanIp === "::1" || cleanIp === "::" || cleanIp.startsWith("fc00:") || cleanIp.startsWith("fe80:") || cleanIp.startsWith("fd")) {
+    return true;
   }
 
-  return { isBlocked: false, reason: "" };
+  // IPv4 format regex
+  const parts = cleanIp.split(".");
+  if (parts.length === 4 && parts.every(p => /^\d+$/.test(p))) {
+    const p0 = parseInt(parts[0], 10);
+    const p1 = parseInt(parts[1], 10);
+
+    // 0.0.0.0/8 (Broadcast/Current network)
+    if (p0 === 0) return true;
+    // 127.0.0.0/8 (Loopback)
+    if (p0 === 127) return true;
+    // 10.0.0.0/8 (Private)
+    if (p0 === 10) return true;
+    // 172.16.0.0/12 (Private: 172.16.0.0 - 172.31.255.255)
+    if (p0 === 172 && p1 >= 16 && p1 <= 31) return true;
+    // 192.168.0.0/16 (Private)
+    if (p0 === 192 && p1 === 168) return true;
+    // 169.254.0.0/16 (Link-local & AWS/GCP/Azure Metadata: 169.254.169.254)
+    if (p0 === 169 && p1 === 254) return true;
+    // 224.0.0.0/4 (Multicast) & 240.0.0.0/4 (Reserved)
+    if (p0 >= 224) return true;
+  }
+
+  return false;
 }
 
 /**
- * Mini-Bot Sentinel : Analyse heuristique et sémantique automatique gratuite.
- * Évalue la crédibilité journalistique et l'intégrité d'une source web sans intervention humaine et sans frais.
+ * 🌐 Double Bouclier DNS NextDNS & Protection Anti-SSRF :
+ * - 1. Interroge NextDNS Profil Principal (Par défaut 8d3993 ou env.NEXTDNS_ID_PRIMARY).
+ * - 2. Interroge NextDNS Profil Secours (Par défaut 9d8318 ou env.NEXTDNS_ID_BACKUP).
+ * - Bloque les maliciels, hameçonnages, traqueurs, contenus illicites et résolutions IP privées (Anti-SSRF).
+ * - Mode « Fail-Secure » : Refuse les domaines inconnus dont la sécurité DNS n'a pas pu être prouvée par NextDNS.
+>>>>>>> 285da27 (feat(atoll): dynamic island live activities, AtollExtensionKit Swift package, strict security, and media badge)
+ */
+async function checkDnsFamilyShield(hostname, env = null) {
+  const cleanHost = (hostname || "").toLowerCase().replace(/^www\./, "");
+  if (!cleanHost || isDomainAllowed(cleanHost)) {
+    return { isBlocked: false, reason: "" };
+  }
+
+  const primaryId = (env && env.NEXTDNS_ID_PRIMARY) ? env.NEXTDNS_ID_PRIMARY : "8d3993";
+  const backupId = (env && env.NEXTDNS_ID_BACKUP) ? env.NEXTDNS_ID_BACKUP : "9d8318";
+
+  const fetchDoh = async (url) => {
+    const ctrl = new AbortController();
+    const tId = setTimeout(() => ctrl.abort(), 2500);
+    try {
+      const res = await fetch(url, {
+        headers: { "Accept": "application/dns-json" },
+        signal: ctrl.signal
+      });
+      clearTimeout(tId);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (_) {
+      clearTimeout(tId);
+      return null;
+    }
+  };
+
+  const evaluateDnsResponse = (dnsData, providerName) => {
+    if (!dnsData) return { isHandled: false };
+
+    if (dnsData.Status === 3 || dnsData.Status === 5) {
+      return {
+        isHandled: true,
+        isBlocked: true,
+        reason: `Ce domaine est bloqué ou introuvable selon le bouclier NextDNS (${providerName}) : Menace de sécurité ou domaine inexistant.`
+      };
+    }
+
+    if (dnsData.Answer && Array.isArray(dnsData.Answer)) {
+      // Vérification 1 : IP nulle ou de blocage
+      const isBlocked = dnsData.Answer.some(a => 
+        a.data === "0.0.0.0" || 
+        a.data === "::" || 
+        a.data === "127.0.0.1" || 
+        (typeof a.data === "string" && a.data.startsWith("0.0.0."))
+      );
+      if (isBlocked) {
+        return {
+          isHandled: true,
+          isBlocked: true,
+          reason: `Ce domaine est formellement bloqué par le bouclier NextDNS (${providerName}) : Menace avérée de sécurité, maliciel ou fraude.`
+        };
+      }
+
+      // Vérification 2 : Anti-SSRF (Adresses IP privées, locales ou métadonnées cloud)
+      const hasPrivateIp = dnsData.Answer.some(a => typeof a.data === "string" && isPrivateOrReservedIp(a.data));
+      if (hasPrivateIp) {
+        return {
+          isHandled: true,
+          isBlocked: true,
+          reason: "Ce domaine résout vers une adresse IP locale, privée ou réservée (Protection stricte Anti-SSRF)."
+        };
+      }
+
+      // Validé avec au moins une réponse saine
+      return { isHandled: true, isBlocked: false, reason: "" };
+    }
+
+    return { isHandled: false };
+  };
+
+  try {
+    // 1. Profil Principal NextDNS
+    if (primaryId) {
+      const primaryUrl = `https://dns.nextdns.io/${encodeURIComponent(primaryId)}/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
+      const primaryData = await fetchDoh(primaryUrl);
+      const eval1 = evaluateDnsResponse(primaryData, "Principal");
+      if (eval1.isHandled) {
+        return { isBlocked: eval1.isBlocked, reason: eval1.reason };
+      }
+    }
+
+    // 2. Profil de Secours NextDNS
+    if (backupId) {
+      const backupUrl = `https://dns.nextdns.io/${encodeURIComponent(backupId)}/LienLibre?name=${encodeURIComponent(cleanHost)}&type=A`;
+      const backupData = await fetchDoh(backupUrl);
+      const eval2 = evaluateDnsResponse(backupData, "Secours");
+      if (eval2.isHandled) {
+        return { isBlocked: eval2.isBlocked, reason: eval2.reason };
+      }
+    }
+  } catch (err) {
+    console.warn("Erreur d'exécution du bouclier NextDNS :", err);
+  }
+
+  // RÈGLE STRICTE FAIL-SECURE : Si NextDNS n'a pas pu authentifier le domaine inconnu, bloquer par précaution.
+  return {
+    isBlocked: true,
+    reason: "Échec de validation de sécurité DNS : Le bouclier NextDNS n'a pas pu certifier la sécurité de ce domaine non répertorié."
+  };
+}
+
+/**
+ * Mini-Bot Sentinel : Analyse heuristique et sémantique automatique.
+ * Évalue la crédibilité journalistique et l'intégrité d'une source web sans intervention humaine.
  */
 function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThreat = null) {
   if (isWhitelisted) {
@@ -821,17 +945,18 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
       isBlocked: true,
       blockReason: dnsThreat.reason,
       category: "blocked_threat",
-      badgeText: "Source Bloquée (Bouclier DNS)",
+      badgeText: "Source Bloquée (Bouclier DNS NextDNS)",
       signals: ["⚠️ " + dnsThreat.reason]
     };
   }
 
-  let score = 30; // Score de base pour tout site accessible
+  // Score de base initial
+  let score = 10;
   const signals = [];
 
   if (urlObj.protocol === "https:") {
-    score += 20;
-    signals.push("Protocole sécurisé HTTPS");
+    score += 10;
+    signals.push("Protocole sécurisé HTTPS (+10)");
   }
 
   signals.push("Bouclier DNS NextDNS (Protection & Sécurité) validé");
@@ -839,60 +964,69 @@ function calculateBotAudit(targetUrl, meta = {}, isWhitelisted = false, dnsThrea
   const hostname = urlObj.hostname.toLowerCase().replace(/^www\./, "");
   const path = urlObj.pathname.toLowerCase();
 
-  // Extension de domaine réputée
-  if (/\.(ca|qc\.ca|org|com|net|info|news|press|media|tv|fm|io|app|dev|fr|be|ch|eu|gov|gouv\.qc\.ca|gc\.ca)$/i.test(hostname)) {
+  // Extension de domaine réputée / officielle
+  if (/\.(ca|qc\.ca|news|press|media|gov|gouv\.qc\.ca|gc\.ca)$/i.test(hostname)) {
     score += 15;
-    signals.push("Nom de domaine et TLD conformes");
+    signals.push("Extension TLD d'information ou officielle reconnue (+15)");
+  } else if (/\.(org|com|net|info|tv|fm|io|app|dev|fr|be|ch|eu)$/i.test(hostname)) {
+    score += 10;
+    signals.push("Extension TLD standard (+10)");
   }
 
   // Type Open Graph
   if (meta.ogType && meta.ogType.toLowerCase().includes("article")) {
     score += 20;
-    signals.push("Format Open Graph 'article' authentifié");
+    signals.push("Format Open Graph 'article' authentifié (+20)");
   } else if (meta.ogType && meta.ogType.toLowerCase().includes("website")) {
-    score += 10;
-    signals.push("Format Open Graph 'website' authentifié");
+    score += 5;
+    signals.push("Format Open Graph 'website' détecté (+5)");
   } else if (meta.title || meta.standardTitle) {
-    score += 10;
-    signals.push("Métadonnées de page détectées");
+    score += 5;
+    signals.push("Métadonnées de page détectées (+5)");
   }
 
-  // Schema.org ou données structurées NewsArticle
-  if (meta.schemaType && (meta.schemaType.includes("NewsArticle") || meta.schemaType.includes("Article") || meta.schemaType.includes("ReportageNewsArticle"))) {
+  // Schema.org structuré de presse (NewsArticle / ReportageNewsArticle)
+  if (meta.schemaType && (meta.schemaType.includes("NewsArticle") || meta.schemaType.includes("ReportageNewsArticle"))) {
     score += 20;
-    signals.push("Schéma sémantique de presse (NewsArticle / Schema.org)");
+    signals.push("Schéma sémantique de presse certifié (NewsArticle / Schema.org) (+20)");
+  } else if (meta.schemaType && meta.schemaType.includes("Article")) {
+    score += 10;
+    signals.push("Schéma sémantique d'article général (Article / Schema.org) (+10)");
   }
 
-  // Auteur ou Date de publication
-  if (meta.author || meta.publishedTime) {
+  // Signature : Auteur ou Date de publication éditoriale
+  if (meta.author && meta.publishedTime) {
     score += 15;
-    signals.push("Signature d'auteur ou horodatage éditorial détecté");
+    signals.push("Double signature éditoriale : Auteur et horodatage certifiés (+15)");
+  } else if (meta.author || meta.publishedTime) {
+    score += 10;
+    signals.push("Signature d'auteur ou horodatage éditorial détecté (+10)");
   }
 
   // Mot-clés de chemin journalistique
-  const newsRegex = /\/(actualites?|nouvelles?|news|articles?|reportages?|politique|societe|regions?|nation|monde|opinions?|editorial|chroniques?|journal|en-direct|faits-divers|post|blog|story)\b/i;
+  const newsRegex = /\/(actualites?|nouvelles?|news|articles?|reportages?|politique|societe|regions?|nation|monde|opinions?|editorial|chroniques?|journal|en-direct|faits-divers)\b/i;
   if (newsRegex.test(path)) {
-    score += 15;
-    signals.push("Structure d'URL de rubrique journalistique / éditoriale");
+    score += 10;
+    signals.push("Structure d'URL de rubrique journalistique vérifiée (+10)");
   }
 
   score = Math.max(0, Math.min(100, score));
   
   // RÈGLE STRICTE DE SÉCURITÉ :
   // Si le score calculé par Mini-Bot Sentinel est STRICTEMENT INFÉRIEUR À 75 (< 75/100),
-  // le site est IMMÉDIATEMENT BLOQUÉ (aucun sas de sécurité autorisé).
+  // le site est TOTALEMENT BLOQUÉ (aucun sas de sécurité autorisé).
   if (score < 75) {
     return {
       score,
       isJournalistic: false,
       isValidated: false,
       isBlocked: true,
-      blockReason: `Score de sécurité et de conformité insuffisant (${score} / 100). LienLibre exige un score d'audit minimum de 75 / 100 pour autoriser l'accès au sas de sécurité.`,
+      blockReason: `Score de sécurité et de conformité journalistique insuffisant (${score} / 100). LienLibre exige un score d'audit strict minimum de 75 / 100 pour autoriser l'accès.`,
       category: "blocked_low_score",
       badgeText: `Source Bloquée — Score Insuffisant (${score}/100 < 75)`,
       signals: [
         ...signals,
-        `⛔ Score de confiance (${score}/100) strictement inférieur au seuil obligatoire de 75/100.`
+        `⛔ Score de conformité (${score}/100) strictement inférieur au seuil obligatoire de 75/100.`
       ]
     };
   }
@@ -1254,14 +1388,20 @@ export default {
         });
       }
 
-      // 4.2. Limitation de débit glissante par adresse IP (Anti-Spam / Anti-DDoS)
-      if (!checkCreationRateLimit(clientIp)) {
+      const clientKey = getClientIdentifier(request);
+      const isInstitutional = isClientInstitutional(request, env);
+
+      // 4.2. Vérification des bannissements comportementaux (3 Strikes / 24h)
+      const banStatus = checkClientBanned(clientKey);
+      if (banStatus.isBanned) {
         return new Response(JSON.stringify({
-          error: "Protection Anti-Spam : Trop de requêtes de création en peu de temps depuis votre adresse IP. Veuillez patienter une minute.",
-          message: "Protection Anti-Spam : Trop de requêtes de création en peu de temps depuis votre adresse IP."
+          error: `Accès temporairement suspendu : Votre appareil / adresse IP a cumulé 3 infractions aux règles de sécurité (liens bloqués par Sentinel). Suspension active pour encore ~${banStatus.remainingHours} heure(s).`,
+          message: `Accès suspendu suite à 3 infractions de sécurité (liens bloqués).`,
+          banned: true,
+          strikes: banStatus.strikesCount
         }), {
-          status: 429,
-          headers: { ...CORS_HEADERS, "Retry-After": "60", "Content-Type": "application/json; charset=utf-8" }
+          status: 403,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
         });
       }
 
@@ -1327,13 +1467,33 @@ export default {
         const { cleanedUrl } = cleanTrackingParameters(parsedTarget.href);
         parsedTarget = new URL(cleanedUrl);
 
+        const isAllowed = isDomainAllowed(parsedTarget.hostname);
+
+        // 4.4. Vérification des quotas différenciés (10 total / 5 hors liste / 30 institutionnel)
+        const quotaCheck = checkClientQuota(clientKey, isAllowed, isInstitutional);
+        if (!quotaCheck.allowed) {
+          return new Response(JSON.stringify({
+            error: quotaCheck.error,
+            message: quotaCheck.message,
+            quotaExceeded: true
+          }), {
+            status: 429,
+            headers: { ...CORS_HEADERS, "Retry-After": "86400", "Content-Type": "application/json; charset=utf-8" }
+          });
+        }
+
         // 1. Vérification de la liste noire dynamique Cloudflare KV
         const kvBlacklistReason = await checkDynamicBlacklist(env, parsedTarget.hostname);
         if (kvBlacklistReason) {
-          const blockMsg = `Ce domaine est suspendu par mesure de sécurité (${kvBlacklistReason}).`;
+          const strikes = recordClientStrike(clientKey);
+          const strikeNotice = strikes >= MAX_STRIKES_BEFORE_BAN
+            ? " [Infraction 3/3 : Accès suspendu 24h]"
+            : ` [Infraction ${strikes}/3 : Attention, 3 infractions entraînent une suspension 24h]`;
+          const blockMsg = `Ce domaine est suspendu par mesure de sécurité (${kvBlacklistReason}).${strikeNotice}`;
           return new Response(JSON.stringify({
             error: blockMsg,
             blocked: true,
+            strikes,
             message: blockMsg
           }), {
             status: 403,
@@ -1344,34 +1504,42 @@ export default {
         // 2. Vérification statique des menaces
         const threat = checkSecurityThreats(parsedTarget);
         if (threat.isBlocked) {
+          const strikes = recordClientStrike(clientKey);
           recordBlockedDomain(parsedTarget.hostname, threat.reason, env, ctx);
+          const strikeNotice = strikes >= MAX_STRIKES_BEFORE_BAN
+            ? " [Infraction 3/3 : Accès suspendu 24h]"
+            : ` [Infraction ${strikes}/3 : Attention, 3 infractions entraînent une suspension 24h]`;
           return new Response(JSON.stringify({
-            error: threat.reason,
+            error: threat.reason + strikeNotice,
             blocked: true,
-            message: threat.reason
+            strikes,
           }), {
-            status: 403,
-            headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
           });
         }
 
-        const isAllowed = isDomainAllowed(parsedTarget.hostname);
-
-        // 3. Double Bouclier DNS NextDNS (Principal + Secours - Ignoré pour les domaines dans la liste blanche)
+        // 3. Double Bouclier DNS NextDNS (Principal 8d3993 + Secours 9d8318 - Ignoré pour les domaines dans la liste blanche)
         if (!isAllowed) {
           const dnsShield = await checkDnsFamilyShield(parsedTarget.hostname, env);
           if (dnsShield.isBlocked) {
+            const strikes = recordClientStrike(clientKey);
             recordBlockedDomain(parsedTarget.hostname, dnsShield.reason, env, ctx);
+            const strikeNotice = strikes >= MAX_STRIKES_BEFORE_BAN
+              ? " [Infraction 3/3 : Accès suspendu 24h]"
+              : ` [Infraction ${strikes}/3 : Attention, 3 infractions entraînent une suspension 24h]`;
             return new Response(JSON.stringify({
-              error: dnsShield.reason,
+              error: dnsShield.reason + strikeNotice,
               blocked: true,
-              message: dnsShield.reason
+              strikes,
+              message: dnsShield.reason + strikeNotice
             }), {
               status: 403,
               headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" }
             });
           }
         }
+
+        // Enregistrer la création réussie dans les compteurs du client
+        recordClientCreation(clientKey, isAllowed);
         const randomId = generateBase62Id(6); // Format compact Base62 (6 caractères)
         const packedSlug = encodePackedUrl(parsedTarget.href);
 
@@ -1671,7 +1839,7 @@ export default {
     try {
       // Effectuer la requête vers le média canadien avec nos en-têtes de spoofing et un timeout explicite anti-Slowloris
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 secondes max (Anti-Slowloris)
+      const timeoutId = setTimeout(() => controller.abort(), 6000); // 6 secondes max (Protection Slowloris / Support médias régionaux)
 
       try {
         const response = await fetch(targetUrl.href, {

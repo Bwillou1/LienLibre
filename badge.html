@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badge Médias Indépendants & Journalistes — LienLibre</title>
+  <meta name="description" content="Intégrez le badge officiel LienLibre sur vos articles en 1 ligne de code. Permettez à vos lecteurs de partager vos reportages librement sans pistage.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #131b2e;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .code-box {
+      background: #060913;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      position: relative;
+      margin: 1rem 0;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--accent);
+    }
+    .preview-area {
+      background: #060913;
+      border: 1px dashed #334155;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #38bdf8;
+      text-decoration: none;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .badge-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    @media (min-width: 640px) {
+      .badge-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+  <script src="js/badge.js" async></script>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Retour à LienLibre</a>
+
+    <div class="header">
+      <h1>📰 Badge Citoyen pour Médias & Journalistes</h1>
+      <p style="color: var(--text-muted);">
+        Offrez à vos lecteurs un moyen instantané de copier un lien épuré et de diffuser vos articles sur les réseaux sociaux.
+      </p>
+    </div>
+
+    <!-- Étape 1 : Format Carte (Recommandé) -->
+    <div class="card">
+      <h2>1. Format Encadré Éditorial (Recommandé en bas d'article)</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Idéal en fin de reportage pour encourager le partage citoyen sans tracking publicitaire.
+      </p>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+        <code>&lt;!-- Badge LienLibre Carte --&gt;
+&lt;script src="https://bwillou1.github.io/LienLibre/js/badge.js" async&gt;&lt;/script&gt;
+&lt;div class="lienlibre-badge" data-theme="dark" data-style="card"&gt;&lt;/div&gt;</code>
+      </div>
+      <div class="preview-area">
+        <div class="lienlibre-badge" data-theme="dark" data-style="card" data-url="https://bwillou1.github.io/LienLibre/"></div>
+      </div>
+    </div>
+
+    <!-- Étape 2 : Format Pilule Compacte -->
+    <div class="card">
+      <h2>2. Format Bouton Pilule (Discret sous le titre ou dans la barre latérale)</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Un badge compact cliquable qui ouvre directement la passerelle miroir sans encombrer votre mise en page.
+      </p>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+        <code>&lt;!-- Badge LienLibre Pilule --&gt;
+&lt;script src="https://bwillou1.github.io/LienLibre/js/badge.js" async&gt;&lt;/script&gt;
+&lt;div class="lienlibre-badge" data-theme="dark" data-style="pill"&gt;&lt;/div&gt;</code>
+      </div>
+      <div class="preview-area">
+        <div class="lienlibre-badge" data-theme="dark" data-style="pill" data-url="https://bwillou1.github.io/LienLibre/"></div>
+      </div>
+    </div>
+
+    <!-- Étape 3 : Avantages pour les Rédactions -->
+    <div class="card">
+      <h2>🛡️ Pourquoi intégrer ce badge sur votre média ?</h2>
+      <ul style="color: var(--text-muted); padding-left: 1.2rem; font-size: 0.95rem;">
+        <li style="margin-bottom: 0.5rem;"><strong>Diffusion sans blocage</strong> : Restaure la visibilité de vos actualités sur les réseaux sociaux.</li>
+        <li style="margin-bottom: 0.5rem;"><strong>Confidentialité totale</strong> : Zéro cookie tiers, zéro script espion injecté sur votre lectorat.</li>
+        <li style="margin-bottom: 0.5rem;"><strong>Partage Natif & Mobile</strong> : Active le menu de partage natif sur smartphones iOS et Android en 1 clic.</li>
+        <li style="margin-bottom: 0.5rem;"><strong>Ultra-léger</strong> : Chargement asynchrone non-bloquant (&lt; 5 Ko).</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const code = btn.nextElementSibling.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const oldText = btn.innerText;
+        btn.innerText = "✓ Copié !";
+        btn.style.background = "#10b981";
+        setTimeout(() => {
+          btn.innerText = oldText;
+          btn.style.background = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
