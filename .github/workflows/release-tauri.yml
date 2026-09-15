@@ -1,11 +1,13 @@
 name: Release Desktop Tauri App (v1.0.0)
 
 on:
-  release:
-    types: [published]
   push:
+    branches:
+      - main
     tags:
       - 'desktop-v*'
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
