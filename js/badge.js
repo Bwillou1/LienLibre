@@ -1,11 +1,12 @@
 /**
  * LienLibre — Script Runtime Universel pour Médias & Journalistes
  * 
- * FONCTIONNALITÉS :
- * - 0 emoji graphique (emoticones et symboles typographiques stricts).
+ * FONCTIONNALITÉS & CONFORMITÉ :
+ * - 0 emoji graphique (émoticônes et symboles typographiques stricts garantis).
  * - Détection automatique de l'URL de l'article (aucune configuration par article requise).
  * - Mention légale OBLIGATOIRE et permanente vers https://bwillou1.github.io/LienLibre/politiques.html
- * - Personnalisation : thèmes blanc/noir/verre/papier, formats carte/banniere/pilule/compact/flottant.
+ * - Validation des conditions d'utilisation requises pour l'activation.
+ * - Personnalisation : thèmes blanc/noir/verre/papier, formats carte/bannière/pilule/compact/flottant.
  * - Nettoyage automatique des balises de pistage (UTM, Facebook fbclid, etc.).
  * - Partage éthique et équitable conforme à l'article 29 de la Loi sur le droit d'auteur du Canada.
  */
@@ -15,6 +16,14 @@
 
   const LIENLIBRE_BASE = "https://bwillou1.github.io/LienLibre/";
   const LEGAL_URL = "https://bwillou1.github.io/LienLibre/politiques.html";
+
+  // Regex pour neutraliser tout emoji graphique Unicode et le remplacer par une émoticône typographique
+  const EMOJI_REGEX = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}]/gu;
+
+  function sanitizeTypography(str) {
+    if (!str) return '';
+    return str.replace(EMOJI_REGEX, '[*]');
+  }
 
   function playBadgeHapticSound() {
     try {
@@ -82,7 +91,7 @@
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
       }
       .ll-theme-glass {
-        background: rgba(15, 23, 42, 0.75);
+        background: rgba(15, 23, 42, 0.82);
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
         color: #ffffff;
@@ -117,13 +126,13 @@
         display: flex;
         flex-direction: column;
         border-radius: 14px;
-        padding: 16px 20px;
+        padding: 18px 22px;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
       .ll-format-banner {
         display: flex;
         flex-direction: column;
-        border-radius: 10px;
+        border-radius: 12px;
         padding: 18px 24px;
         width: 100%;
       }
@@ -132,7 +141,7 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
-        padding: 10px 16px;
+        padding: 10px 18px;
         border-radius: 999px;
         font-size: 13px;
         font-weight: 600;
@@ -208,9 +217,9 @@
         letter-spacing: 0.3px;
       }
       .ll-subtext {
-        font-size: 12px;
-        opacity: 0.85;
-        margin-bottom: 12px;
+        font-size: 12.5px;
+        opacity: 0.88;
+        margin-bottom: 14px;
         line-height: 1.45;
       }
       .ll-actions-row {
@@ -260,6 +269,11 @@
         background: linear-gradient(135deg, #d97706, #b45309);
         color: #ffffff !important;
         box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+      }
+      .ll-accent-ruby {
+        background: linear-gradient(135deg, #e11d48, #be123c);
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
       }
       .ll-accent-mono {
         background: #0f172a;
@@ -321,18 +335,18 @@
         transform: translateY(-1px);
       }
 
-      /* MENTION LEGALE OBLIGATOIRE */
+      /* MENTION LEGALE OBLIGATOIRE ET INVIOLABLE */
       .ll-legal-notice {
-        margin-top: 10px;
+        margin-top: 12px;
         font-size: 10.5px;
-        line-height: 1.4;
-        opacity: 0.8;
+        line-height: 1.45;
+        opacity: 0.85;
         border-top: 1px dashed rgba(255, 255, 255, 0.18);
         padding-top: 8px;
       }
       .ll-theme-light .ll-legal-notice {
         border-top-color: #cbd5e1;
-        opacity: 0.9;
+        opacity: 0.95;
       }
       .ll-legal-notice a {
         color: #38bdf8;
@@ -341,6 +355,22 @@
       }
       .ll-theme-light .ll-legal-notice a {
         color: #0284c7;
+      }
+
+      /* ENCART DE BLOCAGE DE CONFORMITÉ */
+      .ll-blocked-alert {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        border-radius: 10px;
+        padding: 12px 14px;
+        color: #fca5a5;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .ll-blocked-alert a {
+        color: #ffffff;
+        text-decoration: underline;
+        font-weight: 700;
       }
 
       .ll-toast {
@@ -358,6 +388,10 @@
     if (!container) return;
     injectBadgeStyles();
 
+    // Vérification des conditions obligatoires
+    const acceptTermsAttr = container.getAttribute('data-accept-terms');
+    const termsAccepted = acceptTermsAttr === 'true' || acceptTermsAttr === '1';
+
     const targetUrl = cleanUrl(container.getAttribute('data-url') || window.location.href);
     const theme = container.getAttribute('data-theme') || 'dark';
     const format = container.getAttribute('data-style') || 'card';
@@ -365,9 +399,10 @@
     const lang = container.getAttribute('data-lang') || (document.documentElement.lang || 'fr').slice(0, 2);
     const isEn = lang.startsWith('en');
 
-    const customTitle = container.getAttribute('data-title') || (isEn ? 'Citizen Sharing Gateway' : 'Partage Citoyen & Educatif');
-    const customSub = container.getAttribute('data-subtitle') || (isEn ? 'Share this article freely on social networks without tracking or blocking.' : 'Partagez cet article librement sans mouchards publicitaires ni blocage.');
-    const customBtnText = container.getAttribute('data-btn-text') || (isEn ? 'Copy Clean Link' : 'Copier le lien propre');
+    // Assainissement typographique (0 emoji graphique)
+    const customTitle = sanitizeTypography(container.getAttribute('data-title') || (isEn ? 'Citizen Sharing Gateway' : 'Partage Citoyen & Educatif'));
+    const customSub = sanitizeTypography(container.getAttribute('data-subtitle') || (isEn ? 'Share this article freely on social networks without tracking or blocking.' : 'Partagez cet article librement sans mouchards publicitaires ni blocage.'));
+    const customBtnText = sanitizeTypography(container.getAttribute('data-btn-text') || (isEn ? 'Copy Clean Link' : 'Copier le lien propre'));
 
     const showTag = container.getAttribute('data-show-tag') !== 'false';
     const showCopy = container.getAttribute('data-show-copy') !== 'false';
@@ -377,6 +412,14 @@
     const showEink = container.getAttribute('data-show-eink') === 'true';
     const enableSound = container.getAttribute('data-sound') !== 'false';
 
+    // Réseaux sociaux individuels
+    const showBsky = container.getAttribute('data-social-bsky') !== 'false';
+    const showMasto = container.getAttribute('data-social-masto') !== 'false';
+    const showX = container.getAttribute('data-social-x') !== 'false';
+    const showThreads = container.getAttribute('data-social-threads') !== 'false';
+    const showWa = container.getAttribute('data-social-whatsapp') !== 'false';
+    const showEmail = container.getAttribute('data-social-email') !== 'false';
+
     const encodedUrl = encodeURIComponent(targetUrl);
     const mirrorUrl = `${LIENLIBRE_BASE}?url=${encodedUrl}`;
 
@@ -385,12 +428,28 @@
     if (accent === 'emerald') tagStyleClass = 'll-accent-emerald';
     else if (accent === 'purple') tagStyleClass = 'll-accent-purple';
     else if (accent === 'amber') tagStyleClass = 'll-accent-amber';
+    else if (accent === 'ruby') tagStyleClass = 'll-accent-ruby';
     else if (accent === 'mono') tagStyleClass = 'll-accent-mono';
 
     // MENTION LÉGALE PRIMORDIALE (Présente dans toutes les configurations)
     const legalNoticeText = isEn
       ? `By sharing this link, you agree to the <a href="${LEGAL_URL}" target="_blank" rel="noopener noreferrer">Fair Use Terms (s. 29 Copyright Act of Canada)</a>. Zero tracking.`
       : `En partageant ce lien, vous soutenez la presse libre et acceptez les <a href="${LEGAL_URL}" target="_blank" rel="noopener noreferrer">conditions d'utilisation equitable (art. 29 LDA Canada)</a>. Zero pistage.`;
+
+    // Si les conditions obligatoires ne sont pas acceptées, afficher un avertissement de blocage
+    if (!termsAccepted) {
+      const blockedBox = document.createElement('div');
+      blockedBox.className = `ll-widget-root ll-format-${format} ll-theme-${theme}`;
+      blockedBox.innerHTML = `
+        <div class="ll-blocked-alert">
+          <div style="font-weight: 700; margin-bottom: 4px;">[!] BLOCAGE : CONDITIONS D'UTILISATION REQUISES</div>
+          <div>Ce badge LienLibre requiert l'attribut <code>data-accept-terms="true"</code> et l'acceptation expresse des <a href="${LEGAL_URL}" target="_blank" rel="noopener noreferrer">politiques de neutralite (art. 29 LDA)</a>.</div>
+        </div>
+      `;
+      container.innerHTML = '';
+      container.appendChild(blockedBox);
+      return;
+    }
 
     // FORMAT PILULE
     if (format === 'pill') {
@@ -460,12 +519,12 @@
       socialsHtml = `
         <div class="ll-socials-bar">
           <span style="font-size: 11px; font-weight: 700; opacity: 0.8; margin-right: 4px;">${isEn ? 'Share:' : 'Partager :'}</span>
-          <a class="ll-social-btn" href="https://bsky.app/intent/compose?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Bluesky]</a>
-          <a class="ll-social-btn" href="https://mastodonshare.com/?text=${shareTitle}&url=${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Mastodon]</a>
-          <a class="ll-social-btn" href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[X]</a>
-          <a class="ll-social-btn" href="https://threads.net/intent/post?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Threads]</a>
-          <a class="ll-social-btn" href="https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[WhatsApp]</a>
-          <a class="ll-social-btn" href="mailto:?subject=${shareTitle}&body=${shareUrlEncoded}">[Email]</a>
+          ${showBsky ? `<a class="ll-social-btn" href="https://bsky.app/intent/compose?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Bluesky]</a>` : ''}
+          ${showMasto ? `<a class="ll-social-btn" href="https://mastodonshare.com/?text=${shareTitle}&url=${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Mastodon]</a>` : ''}
+          ${showX ? `<a class="ll-social-btn" href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[X]</a>` : ''}
+          ${showThreads ? `<a class="ll-social-btn" href="https://threads.net/intent/post?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Threads]</a>` : ''}
+          ${showWa ? `<a class="ll-social-btn" href="https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[WhatsApp]</a>` : ''}
+          ${showEmail ? `<a class="ll-social-btn" href="mailto:?subject=${shareTitle}&body=${shareUrlEncoded}">[Email]</a>` : ''}
         </div>
       `;
     }
