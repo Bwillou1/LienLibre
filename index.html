@@ -1505,8 +1505,28 @@
       <!-- Modal Body -->
       <div class="p-6 space-y-4 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
         <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-          Copiez ce fragment de code HTML et collez-le dans le gabarit (template) ou en bas des articles de votre site d'information. Le badge détecte automatiquement l'URL de chaque article.
+          Personnalisez et copiez ce fragment de code HTML pour vos gabarits d'articles. Le badge détecte <strong>automatiquement</strong> l'URL de chaque article sans aucune intervention manuelle.
         </p>
+
+        <!-- Quick Theme & Style Selector -->
+        <div class="space-y-2 pt-1">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="font-bold text-[11px] text-slate-500 uppercase tracking-wider">Thème Visuel :</span>
+            <div class="flex items-center gap-1.5" id="modal-theme-btns">
+              <button type="button" class="modal-opt-btn active px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 cursor-pointer" data-theme="dark">🌑 Sombre</button>
+              <button type="button" class="modal-opt-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 cursor-pointer" data-theme="light">☀️ Blanc</button>
+              <button type="button" class="modal-opt-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 cursor-pointer" data-theme="glass">🪟 Verre</button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="font-bold text-[11px] text-slate-500 uppercase tracking-wider">Format :</span>
+            <div class="flex items-center gap-1.5" id="modal-style-btns">
+              <button type="button" class="modal-style-btn active px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 cursor-pointer" data-style="card">🃏 Carte</button>
+              <button type="button" class="modal-style-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 cursor-pointer" data-style="pill">💊 Pilule</button>
+              <button type="button" class="modal-style-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 cursor-pointer" data-style="compact">🔘 Compact</button>
+            </div>
+          </div>
+        </div>
 
         <!-- Code Snippet Box -->
         <div class="relative bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-xs text-cyan-300 overflow-x-auto">
@@ -1515,14 +1535,14 @@
 &lt;div class="lienlibre-badge" data-theme="dark" data-style="card"&gt;&lt;/div&gt;</code></pre>
         </div>
 
-        <div class="flex flex-wrap items-center justify-between gap-3 pt-3">
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
           <button type="button" id="btn-copy-badge-code" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition-all shadow-md cursor-pointer">
             <span>📋</span>
             <span id="copy-badge-btn-text">Copier le code HTML</span>
           </button>
           
-          <a href="./badge.html" target="_blank" class="text-xs text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1 font-medium">
-            <span>⚙️</span> Page de démo & autres styles ↗
+          <a href="./badge.html" target="_blank" class="text-xs text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1 font-bold">
+            <span>🎨</span> Ouvrir le Studio Complet (+30 options) ↗
           </a>
         </div>
       </div>
@@ -3987,11 +4007,47 @@
     const btnCloseBadgeModal = document.getElementById('btn-close-badge-modal');
     const btnCopyBadgeCode = document.getElementById('btn-copy-badge-code');
     const copyBadgeBtnText = document.getElementById('copy-badge-btn-text');
+    const badgeScriptCode = document.getElementById('badge-script-code');
+
+    let modalSelectedTheme = 'dark';
+    let modalSelectedStyle = 'card';
+
+    function updateModalBadgeCode() {
+      if (!badgeScriptCode) return;
+      badgeScriptCode.textContent = `<!-- Badge Citoyen LienLibre pour Médias -->\n<script src="https://bwillou1.github.io/LienLibre/js/badge.js" async><\/script>\n<div class="lienlibre-badge" data-theme="${modalSelectedTheme}" data-style="${modalSelectedStyle}"><\/div>`;
+    }
+
+    document.querySelectorAll('#modal-theme-btns .modal-opt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#modal-theme-btns .modal-opt-btn').forEach(b => {
+          b.classList.remove('active', 'bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/40');
+          b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300', 'border-slate-300', 'dark:border-slate-700');
+        });
+        btn.classList.add('active', 'bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/40');
+        btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300', 'border-slate-300', 'dark:border-slate-700');
+        modalSelectedTheme = btn.getAttribute('data-theme') || 'dark';
+        updateModalBadgeCode();
+      });
+    });
+
+    document.querySelectorAll('#modal-style-btns .modal-style-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#modal-style-btns .modal-style-btn').forEach(b => {
+          b.classList.remove('active', 'bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/40');
+          b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300', 'border-slate-300', 'dark:border-slate-700');
+        });
+        btn.classList.add('active', 'bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/40');
+        btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300', 'border-slate-300', 'dark:border-slate-700');
+        modalSelectedStyle = btn.getAttribute('data-style') || 'card';
+        updateModalBadgeCode();
+      });
+    });
 
     function openBadgeModal() {
       if (badgeModal) {
         badgeModal.classList.remove('hidden');
         document.body.classList.add('modal-active');
+        updateModalBadgeCode();
       }
     }
 
@@ -4012,7 +4068,7 @@
 
     if (btnCopyBadgeCode) {
       btnCopyBadgeCode.addEventListener('click', () => {
-        const codeText = `<!-- Badge Citoyen LienLibre pour Médias -->\n<script src="https://bwillou1.github.io/LienLibre/js/badge.js" async><\/script>\n<div class="lienlibre-badge" data-theme="dark" data-style="card"><\/div>`;
+        const codeText = badgeScriptCode ? badgeScriptCode.textContent : `<!-- Badge Citoyen LienLibre pour Médias -->\n<script src="https://bwillou1.github.io/LienLibre/js/badge.js" async><\/script>\n<div class="lienlibre-badge" data-theme="${modalSelectedTheme}" data-style="${modalSelectedStyle}"><\/div>`;
         navigator.clipboard.writeText(codeText).then(() => {
           if (copyBadgeBtnText) {
             const originalText = copyBadgeBtnText.textContent;
