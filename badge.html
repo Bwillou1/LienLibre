@@ -82,12 +82,12 @@
     .panel {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
+      border-radius: 16px;
       padding: 1.75rem;
       box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
     }
     .panel-title {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
       margin: 0 0 1.25rem 0;
       display: flex;
@@ -102,7 +102,7 @@
       margin-bottom: 1.5rem;
     }
     .control-label {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: #cbd5e1;
       text-transform: uppercase;
@@ -111,7 +111,7 @@
       display: block;
     }
 
-    /* Grille de boutons radio / toggles */
+    /* Grille de boutons */
     .btn-grid {
       display: flex;
       flex-wrap: wrap;
@@ -122,7 +122,7 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       color: #e2e8f0;
       padding: 8px 14px;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
@@ -142,7 +142,7 @@
       box-shadow: 0 0 14px var(--accent-glow);
     }
 
-    /* Commutateurs Toggles (+30 boutons) */
+    /* Commutateurs Toggles */
     .toggle-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -154,7 +154,7 @@
     .toggle-item {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
+      border-radius: 8px;
       padding: 8px 12px;
       display: flex;
       align-items: center;
@@ -176,12 +176,13 @@
     .toggle-indicator {
       width: 18px;
       height: 18px;
-      border-radius: 6px;
+      border-radius: 4px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, monospace;
     }
     .toggle-item.checked .toggle-indicator {
       background: #0284c7;
@@ -194,7 +195,7 @@
       width: 100%;
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
+      border-radius: 8px;
       padding: 9px 12px;
       color: #ffffff;
       font-size: 0.85rem;
@@ -218,7 +219,7 @@
     .preview-canvas {
       background: #030712;
       border: 1px dashed #334155;
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 2rem 1.5rem;
       display: flex;
       flex-direction: column;
@@ -237,7 +238,7 @@
       position: relative;
       background: #050811;
       border: 1px solid #1e293b;
-      border-radius: 12px;
+      border-radius: 10px;
       padding: 1rem;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 0.8rem;
@@ -251,7 +252,7 @@
       background: #0284c7;
       color: #ffffff;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       padding: 6px 12px;
       font-size: 0.78rem;
       font-weight: 700;
@@ -276,12 +277,12 @@
     .cms-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 1.25rem;
     }
     .cms-card h4 {
       margin: 0 0 0.5rem 0;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #38bdf8;
       display: flex;
       align-items: center;
@@ -298,42 +299,42 @@
 <body>
 
   <div class="container">
-    <a href="index.html" class="back-nav">← Retour à l'accueil LienLibre</a>
+    <a href="index.html" class="back-nav">&larr; Retour a LienLibre</a>
 
     <div class="header-section">
-      <h1>🎨 Studio Badge Médias & Journalistes</h1>
+      <h1>[Studio Badge Medias & Journalistes]</h1>
       <p>
-        Créez un badge sur mesure pour votre rédaction. Détecte automatiquement l'URL de chaque article, élimine les mouchards de pistage et offre un partage citoyen sans effort pour vos lecteurs.
+        Configurez un badge sur mesure pour votre redaction. Detecte automatiquement l'URL de chaque article, elimine les traceurs publicitaires et garantit la conformite legale avec <a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank" style="color: #38bdf8; text-decoration: underline;">l'article 29 de la Loi sur le droit d'auteur du Canada</a>.
       </p>
     </div>
 
     <div class="studio-grid">
-      <!-- Colonne 1 : Commandes & +30 Options -->
+      <!-- Colonne 1 : Commandes & Options -->
       <div class="panel">
-        <h2 class="panel-title">⚙️ Personnalisation Intégrale (+30 Réglages)</h2>
+        <h2 class="panel-title">[Configuration & Options Avancees]</h2>
 
         <!-- Préréglages Rapides -->
         <div class="control-group">
-          <label class="control-label">⚡ Préréglages en 1 Clic (Presets)</label>
+          <label class="control-label">[Presets Rapides]</label>
           <div class="btn-grid">
-            <button type="button" class="studio-btn" onclick="applyPreset('white')">☀️ Blanc Épuré</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('dark')">🌑 Sombre Élite</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('glass')">🪟 Verre Dépoli</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('banner')">📢 Bannière Complète</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('pill')">💊 Pilule Discrète</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('socials')">🦋 Tout-en-Un Réseaux</button>
+            <button type="button" class="studio-btn" onclick="applyPreset('white')">[Theme Blanc]</button>
+            <button type="button" class="studio-btn" onclick="applyPreset('dark')">[Theme Sombre]</button>
+            <button type="button" class="studio-btn" onclick="applyPreset('glass')">[Verre Depoli]</button>
+            <button type="button" class="studio-btn" onclick="applyPreset('banner')">[Banniere Large]</button>
+            <button type="button" class="studio-btn" onclick="applyPreset('pill')">[Pilule Compacte]</button>
+            <button type="button" class="studio-btn" onclick="applyPreset('socials')">[Reseaux Sociaux]</button>
           </div>
         </div>
 
         <!-- 1. Thème Principal -->
         <div class="control-group">
-          <label class="control-label">1. Thème Visuel</label>
+          <label class="control-label">1. Theme Visuel</label>
           <div class="btn-grid" id="theme-selector">
-            <button type="button" class="studio-btn active" data-val="dark" onclick="setTheme('dark')">🌑 Noir Élite</button>
-            <button type="button" class="studio-btn" data-val="light" onclick="setTheme('light')">☀️ Blanc Presse</button>
-            <button type="button" class="studio-btn" data-val="glass" onclick="setTheme('glass')">🪟 Verre Dépoli</button>
-            <button type="button" class="studio-btn" data-val="paper" onclick="setTheme('paper')">📰 Papier Journal</button>
-            <button type="button" class="studio-btn" data-val="auto" onclick="setTheme('auto')">🔄 Adaptatif OS</button>
+            <button type="button" class="studio-btn active" data-val="dark" onclick="setTheme('dark')">[Noir Elite]</button>
+            <button type="button" class="studio-btn" data-val="light" onclick="setTheme('light')">[Blanc Presse]</button>
+            <button type="button" class="studio-btn" data-val="glass" onclick="setTheme('glass')">[Verre Depoli]</button>
+            <button type="button" class="studio-btn" data-val="paper" onclick="setTheme('paper')">[Papier Journal]</button>
+            <button type="button" class="studio-btn" data-val="auto" onclick="setTheme('auto')">[Adaptatif OS]</button>
           </div>
         </div>
 
@@ -341,11 +342,11 @@
         <div class="control-group">
           <label class="control-label">2. Couleur d'Accentuation</label>
           <div class="btn-grid" id="accent-selector">
-            <button type="button" class="studio-btn active" data-val="cyan" onclick="setAccent('cyan')">🔵 Cyan / Bleu</button>
-            <button type="button" class="studio-btn" data-val="emerald" onclick="setAccent('emerald')">🟢 Émeraude / Vert</button>
-            <button type="button" class="studio-btn" data-val="purple" onclick="setAccent('purple')">🟣 Violet / Améthyste</button>
-            <button type="button" class="studio-btn" data-val="amber" onclick="setAccent('amber')">🟠 Ambre / Feu</button>
-            <button type="button" class="studio-btn" data-val="mono" onclick="setAccent('mono')">⚪ Monochrome</button>
+            <button type="button" class="studio-btn active" data-val="cyan" onclick="setAccent('cyan')">[Cyan / Bleu]</button>
+            <button type="button" class="studio-btn" data-val="emerald" onclick="setAccent('emerald')">[Emeraude / Vert]</button>
+            <button type="button" class="studio-btn" data-val="purple" onclick="setAccent('purple')">[Violet]</button>
+            <button type="button" class="studio-btn" data-val="amber" onclick="setAccent('amber')">[Ambre / Or]</button>
+            <button type="button" class="studio-btn" data-val="mono" onclick="setAccent('mono')">[Monochrome]</button>
           </div>
         </div>
 
@@ -353,25 +354,25 @@
         <div class="control-group">
           <label class="control-label">3. Format du Composant</label>
           <div class="btn-grid" id="style-selector">
-            <button type="button" class="studio-btn active" data-val="card" onclick="setStyle('card')">🃏 Carte Éditoriale</button>
-            <button type="button" class="studio-btn" data-val="banner" onclick="setStyle('banner')">📢 Bannière Large</button>
-            <button type="button" class="studio-btn" data-val="pill" onclick="setStyle('pill')">💊 Pilule Flottante</button>
-            <button type="button" class="studio-btn" data-val="compact" onclick="setStyle('compact')">🔘 Bouton Compact</button>
-            <button type="button" class="studio-btn" data-val="floating" onclick="setStyle('floating')">📌 Widget Flottant</button>
+            <button type="button" class="studio-btn active" data-val="card" onclick="setStyle('card')">[Carte Editoriale]</button>
+            <button type="button" class="studio-btn" data-val="banner" onclick="setStyle('banner')">[Banniere Large]</button>
+            <button type="button" class="studio-btn" data-val="pill" onclick="setStyle('pill')">[Pilule]</button>
+            <button type="button" class="studio-btn" data-val="compact" onclick="setStyle('compact')">[Bouton Compact]</button>
+            <button type="button" class="studio-btn" data-val="floating" onclick="setStyle('floating')">[Widget Flottant]</button>
           </div>
         </div>
 
         <!-- 4. Textes Personnalisables -->
         <div class="control-group">
-          <label class="control-label">4. Textes & Libellés</label>
+          <label class="control-label">4. Textes & Libelles</label>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <div>
               <span style="font-size: 0.78rem; color: #94a3b8;">Titre principal :</span>
-              <input type="text" id="input-title" class="text-input" value="Partage Citoyen & Éducatif" oninput="updateConfig()">
+              <input type="text" id="input-title" class="text-input" value="Partage Citoyen & Educatif" oninput="updateConfig()">
             </div>
             <div>
               <span style="font-size: 0.78rem; color: #94a3b8;">Sous-titre / Accroche :</span>
-              <input type="text" id="input-subtitle" class="text-input" value="Partagez cet article librement sur vos réseaux sociaux sans blocage ni mouchards publicitaires." oninput="updateConfig()">
+              <input type="text" id="input-subtitle" class="text-input" value="Partagez cet article librement sans mouchards publicitaires ni blocage." oninput="updateConfig()">
             </div>
             <div>
               <span style="font-size: 0.78rem; color: #94a3b8;">Texte du bouton d'action :</span>
@@ -380,51 +381,42 @@
           </div>
         </div>
 
-        <!-- 5. Toggles Fonctionnels (+15 boutons d'activation) -->
+        <!-- 5. Toggles Fonctionnels -->
         <div class="control-group">
-          <label class="control-label">5. Fonctionnalités & Éléments Affichés</label>
+          <label class="control-label">5. Fonctionnalites & Elements Affiches</label>
           <div class="toggle-grid">
-            <div class="toggle-item checked" id="toggle-shield" onclick="toggleOption('showShield', this)">
-              <span>🛡️ Icône Bouclier</span>
-              <span class="toggle-indicator">✓</span>
-            </div>
             <div class="toggle-item checked" id="toggle-tag" onclick="toggleOption('showTag', this)">
-              <span>🏷️ Badge Zéro Pistage</span>
-              <span class="toggle-indicator">✓</span>
+              <span>[Tag Sans Mouchard]</span>
+              <span class="toggle-indicator">[v]</span>
             </div>
             <div class="toggle-item checked" id="toggle-copy" onclick="toggleOption('showCopy', this)">
-              <span>📋 Bouton Copier</span>
-              <span class="toggle-indicator">✓</span>
+              <span>[Bouton Copier]</span>
+              <span class="toggle-indicator">[v]</span>
             </div>
             <div class="toggle-item checked" id="toggle-open" onclick="toggleOption('showOpen', this)">
-              <span>🌐 Bouton Ouvrir Lien</span>
-              <span class="toggle-indicator">✓</span>
+              <span>[Bouton Ouvrir Lien]</span>
+              <span class="toggle-indicator">[v]</span>
             </div>
             <div class="toggle-item checked" id="toggle-share" onclick="toggleOption('showShare', this)">
-              <span>📲 Bouton Partager</span>
-              <span class="toggle-indicator">✓</span>
+              <span>[Bouton Partager]</span>
+              <span class="toggle-indicator">[v]</span>
             </div>
             <div class="toggle-item" id="toggle-socials" onclick="toggleOption('showSocials', this)">
-              <span>🦋 Barre Réseaux (Bluesky, X, Mastodon)</span>
+              <span>[Barre Reseaux Sociaux]</span>
               <span class="toggle-indicator"></span>
             </div>
             <div class="toggle-item" id="toggle-eink" onclick="toggleOption('showEink', this)">
-              <span>📖 Mode Liseuse E-Ink</span>
+              <span>[Mode Liseuses E-Ink]</span>
               <span class="toggle-indicator"></span>
             </div>
-            <div class="toggle-item checked" id="toggle-legal" onclick="toggleOption('showLegal', this)">
-              <span>⚖️ Mention Utilisation Équitable</span>
-              <span class="toggle-indicator">✓</span>
-            </div>
             <div class="toggle-item checked" id="toggle-sound" onclick="toggleOption('enableSound', this)">
-              <span>🔊 Son Haptique Apple Tap</span>
-              <span class="toggle-indicator">✓</span>
-            </div>
-            <div class="toggle-item checked" id="toggle-atoll" onclick="toggleOption('enableAtoll', this)">
-              <span>🏝️ Dynamic Island Atoll</span>
-              <span class="toggle-indicator">✓</span>
+              <span>[Son Haptique Apple Tap]</span>
+              <span class="toggle-indicator">[v]</span>
             </div>
           </div>
+          <p style="font-size: 0.78rem; color: #38bdf8; margin-top: 10px;">
+            (i) La mention legale vers <a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank" style="color: #38bdf8; text-decoration: underline;">https://bwillou1.github.io/LienLibre/politiques.html</a> est obligatoire et integree en permanence sur tous les formats.
+          </p>
         </div>
       </div>
 
@@ -432,8 +424,8 @@
       <div class="preview-sticky">
         <div class="panel">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">👁️ Aperçu en Direct</h3>
-            <button type="button" class="studio-btn" style="padding: 4px 8px; font-size: 0.75rem;" onclick="toggleCanvasBg()">🌓 Fond Page</button>
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">[Apercu en Direct]</h3>
+            <button type="button" class="studio-btn" style="padding: 4px 8px; font-size: 0.75rem;" onclick="toggleCanvasBg()">[Fond Page]</button>
           </div>
 
           <div class="preview-canvas" id="preview-canvas">
@@ -442,10 +434,10 @@
 
           <!-- Code HTML Snippet -->
           <div style="margin-top: 1.5rem;">
-            <label class="control-label">📋 Code HTML Prêt à Coller dans votre CMS</label>
+            <label class="control-label">[Code HTML Pret a Coller dans votre CMS]</label>
             <div class="code-container">
               <button class="copy-code-btn" id="btn-copy-code" onclick="copySnippet()">
-                <span>📋 Copier</span>
+                <span>[Copier]</span>
               </button>
               <pre style="margin: 0;"><code id="generated-html-code">&lt;!-- Chargement en cours... --&gt;</code></pre>
             </div>
@@ -453,12 +445,12 @@
         </div>
 
         <div class="panel" style="font-size: 0.85rem; line-height: 1.5; color: #cbd5e1;">
-          <h4 style="margin: 0 0 0.5rem 0; color: #38bdf8; font-size: 0.95rem;">💡 Comment ça fonctionne ?</h4>
+          <h4 style="margin: 0 0 0.5rem 0; color: #38bdf8; font-size: 0.95rem;">[Fonctionnement Transparent]</h4>
           <p style="margin: 0 0 0.5rem 0;">
-            Le script lit automatiquement <code>window.location.href</code> pour chaque article. Vous n'avez <strong>jamais besoin</strong> de générer manuellement un lien pour chaque nouvel article publié.
+            Le script lit automatiquement <code>window.location.href</code> sur chaque article. Vous n'avez <strong>jamais besoin</strong> de generer manuellement un lien pour chaque nouvel article publie.
           </p>
           <p style="margin: 0;">
-            Chaque clic nettoie les balises mouchards (UTM, Facebook Tracking) et garantit un partage équitable et intègre à vos lecteurs.
+            Le partage respecte integralement la politique de neutralite technique et l'article 29 de la Loi sur le droit d'auteur du Canada (<a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank" style="color: #38bdf8; text-decoration: underline;">politiques.html</a>).
           </p>
         </div>
       </div>
@@ -466,23 +458,23 @@
 
     <!-- Guide d'installation CMS -->
     <div class="panel">
-      <h3 class="panel-title">📚 Guide d'Intégration Express par Plateforme</h3>
+      <h3 class="panel-title">[Guide d'Integration CMS]</h3>
       <div class="cms-guide-grid">
         <div class="cms-card">
-          <h4>🌐 WordPress</h4>
-          <p>Collez le code dans un bloc <strong>« HTML personnalisé »</strong> en fin d'article ou directement dans le fichier <code>single.php</code> / modèle de votre thème.</p>
+          <h4>[WordPress]</h4>
+          <p>Collez le code dans un bloc <strong>« HTML personnalise »</strong> en fin d'article ou dans le template <code>single.php</code> de votre theme.</p>
         </div>
         <div class="cms-card">
-          <h4>👻 Ghost CMS</h4>
-          <p>Ajoutez le code dans un bloc <strong>HTML Card</strong> ou dans les paramètres <strong>Code Injection</strong> (Footer) de votre publication.</p>
+          <h4>[Ghost CMS]</h4>
+          <p>Ajoutez le code dans un bloc <strong>HTML Card</strong> ou dans <strong>Code Injection (Footer)</strong> de votre publication.</p>
         </div>
         <div class="cms-card">
-          <h4>✉️ Substack</h4>
-          <p>Insérez un lien direct ou utilisez le bouton compact stylisé avec le format miroir LienLibre.</p>
+          <h4>[Substack]</h4>
+          <p>Inserez le lien direct ou le bouton personnalise dans votre pied de lettre d'information.</p>
         </div>
         <div class="cms-card">
-          <h4>🧱 Webflow / Drupal / Custom</h4>
-          <p>Ajoutez l'élément <strong>Embed HTML</strong> à l'endroit désiré de votre template d'article dynamique.</p>
+          <h4>[Webflow / Drupal / Custom]</h4>
+          <p>Ajoutez le bloc <strong>Embed HTML</strong> dans votre gabarit d'article dynamique.</p>
         </div>
       </div>
     </div>
@@ -494,19 +486,16 @@
       theme: 'dark',
       accent: 'cyan',
       style: 'card',
-      title: 'Partage Citoyen & Éducatif',
-      subtitle: 'Partagez cet article librement sur vos réseaux sociaux sans blocage ni mouchards publicitaires.',
+      title: 'Partage Citoyen & Educatif',
+      subtitle: 'Partagez cet article librement sans mouchards publicitaires ni blocage.',
       btnText: 'Copier le lien propre',
-      showShield: true,
       showTag: true,
       showCopy: true,
       showOpen: true,
       showShare: true,
       showSocials: false,
       showEink: false,
-      showLegal: true,
-      enableSound: true,
-      enableAtoll: true
+      enableSound: true
     };
 
     function setTheme(t) {
@@ -530,7 +519,7 @@
     function toggleOption(key, el) {
       config[key] = !config[key];
       el.classList.toggle('checked', config[key]);
-      el.querySelector('.toggle-indicator').textContent = config[key] ? '✓' : '';
+      el.querySelector('.toggle-indicator').textContent = config[key] ? '[v]' : '';
       updateConfig();
     }
 
@@ -566,23 +555,26 @@
         setAccent('cyan');
         setStyle('card');
         config.showSocials = true;
-        document.getElementById('toggle-socials').classList.add('checked');
-        document.getElementById('toggle-socials').querySelector('.toggle-indicator').textContent = '✓';
+        const socEl = document.getElementById('toggle-socials');
+        if (socEl) {
+          socEl.classList.add('checked');
+          socEl.querySelector('.toggle-indicator').textContent = '[v]';
+        }
       }
       updateConfig();
     }
 
     function toggleCanvasBg() {
       const c = document.getElementById('preview-canvas');
-      c.classList.toggle('bg-light-mode');
+      if (c) c.classList.toggle('bg-light-mode');
     }
 
     function updateConfig() {
-      config.title = document.getElementById('input-title').value.trim() || 'Partage Citoyen & Éducatif';
+      config.title = document.getElementById('input-title').value.trim() || 'Partage Citoyen & Educatif';
       config.subtitle = document.getElementById('input-subtitle').value.trim() || '';
       config.btnText = document.getElementById('input-btn-text').value.trim() || 'Copier le lien';
 
-      // Rendu de l'aperçu dynamique
+      // Rendu de l'apercu dynamique
       const canvas = document.getElementById('preview-canvas');
       if (canvas) {
         canvas.innerHTML = '';
@@ -595,14 +587,12 @@
         target.setAttribute('data-title', config.title);
         target.setAttribute('data-subtitle', config.subtitle);
         target.setAttribute('data-btn-text', config.btnText);
-        target.setAttribute('data-show-shield', config.showShield ? 'true' : 'false');
         target.setAttribute('data-show-tag', config.showTag ? 'true' : 'false');
         target.setAttribute('data-show-copy', config.showCopy ? 'true' : 'false');
         target.setAttribute('data-show-open', config.showOpen ? 'true' : 'false');
         target.setAttribute('data-show-share', config.showShare ? 'true' : 'false');
         target.setAttribute('data-show-socials', config.showSocials ? 'true' : 'false');
         target.setAttribute('data-show-eink', config.showEink ? 'true' : 'false');
-        target.setAttribute('data-show-legal', config.showLegal ? 'true' : 'false');
         target.setAttribute('data-sound', config.enableSound ? 'true' : 'false');
         target.setAttribute('data-url', 'https://ici.radio-canada.ca/nouvelle/exemple');
 
@@ -615,21 +605,19 @@
         }
       }
 
-      // Génération du code HTML
+      // Generation du code HTML
       let htmlAttributes = `class="lienlibre-badge"\n     data-theme="${config.theme}"\n     data-style="${config.style}"\n     data-accent="${config.accent}"`;
-      if (config.title !== 'Partage Citoyen & Éducatif') htmlAttributes += `\n     data-title="${escapeHtml(config.title)}"`;
+      if (config.title !== 'Partage Citoyen & Educatif') htmlAttributes += `\n     data-title="${escapeHtml(config.title)}"`;
       if (config.subtitle) htmlAttributes += `\n     data-subtitle="${escapeHtml(config.subtitle)}"`;
       if (config.btnText !== 'Copier le lien propre') htmlAttributes += `\n     data-btn-text="${escapeHtml(config.btnText)}"`;
-      if (!config.showShield) htmlAttributes += `\n     data-show-shield="false"`;
       if (!config.showTag) htmlAttributes += `\n     data-show-tag="false"`;
       if (!config.showCopy) htmlAttributes += `\n     data-show-copy="false"`;
       if (!config.showOpen) htmlAttributes += `\n     data-show-open="false"`;
       if (!config.showShare) htmlAttributes += `\n     data-show-share="false"`;
       if (config.showSocials) htmlAttributes += `\n     data-show-socials="true"`;
       if (config.showEink) htmlAttributes += `\n     data-show-eink="true"`;
-      if (!config.showLegal) htmlAttributes += `\n     data-show-legal="false"`;
 
-      const snippet = `<!-- Badge Citoyen LienLibre pour Médias -->\n<script src="https://bwillou1.github.io/LienLibre/js/badge.js" async><\/script>\n<div ${htmlAttributes}></div>`;
+      const snippet = `<!-- Badge Citoyen LienLibre pour Medias (Conforme art. 29 LDA Canada) -->\n<script src="https://bwillou1.github.io/LienLibre/js/badge.js" async><\/script>\n<div ${htmlAttributes}></div>`;
       const codeEl = document.getElementById('generated-html-code');
       if (codeEl) codeEl.textContent = snippet;
     }
@@ -645,15 +633,14 @@
       try {
         await navigator.clipboard.writeText(code);
         if (btn) {
-          btn.innerHTML = '<span>✓ Copié !</span>';
+          btn.innerHTML = '<span>[OK Copie !]</span>';
           setTimeout(() => {
-            btn.innerHTML = '<span>📋 Copier</span>';
+            btn.innerHTML = '<span>[Copier]</span>';
           }, 2000);
         }
       } catch (_) {}
     }
 
-    // Initialisation au chargement
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', updateConfig);
     } else {

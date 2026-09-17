@@ -1,19 +1,20 @@
 /**
- * 🔗 LienLibre — Script Runtime Universel pour Médias & Journalistes
+ * LienLibre — Script Runtime Universel pour Médias & Journalistes
  * 
  * FONCTIONNALITÉS :
- * - Détection automatique de l'URL de l'article en cours (aucune action manuelle requise pour chaque article).
- * - Personnalisation intégrale : +30 paramètres (thèmes blanc/noir/verre/papier, couleurs d'accent, formats, textes, boutons sociaux).
- * - Nettoyage anti-tracking automatique (suppression des paramètres utm_*, fbclid, gclid, etc.).
- * - Partage multi-plateforme en 1 clic (Presse-papier, Web Share, Bluesky, Mastodon, X, Threads, WhatsApp, Liseuses E-Ink, QR Code).
- * - Mention d'utilisation équitable intégrée en petits caractères (art. 29 LDA Canada).
- * - Zéro dépendance, CSS encapsulé et respect absolu de la vie privée des lecteurs.
+ * - 0 emoji graphique (emoticones et symboles typographiques stricts).
+ * - Détection automatique de l'URL de l'article (aucune configuration par article requise).
+ * - Mention légale OBLIGATOIRE et permanente vers https://bwillou1.github.io/LienLibre/politiques.html
+ * - Personnalisation : thèmes blanc/noir/verre/papier, formats carte/banniere/pilule/compact/flottant.
+ * - Nettoyage automatique des balises de pistage (UTM, Facebook fbclid, etc.).
+ * - Partage éthique et équitable conforme à l'article 29 de la Loi sur le droit d'auteur du Canada.
  */
 
 (function () {
   'use strict';
 
   const LIENLIBRE_BASE = "https://bwillou1.github.io/LienLibre/";
+  const LEGAL_URL = "https://bwillou1.github.io/LienLibre/politiques.html";
 
   function playBadgeHapticSound() {
     try {
@@ -25,8 +26,8 @@
       osc.connect(gain);
       gain.connect(ctx.destination);
       const now = ctx.currentTime;
-      osc.frequency.setValueAtTime(587.33, now); // D5
-      osc.frequency.setValueAtTime(880, now + 0.05); // A5
+      osc.frequency.setValueAtTime(587.33, now);
+      osc.frequency.setValueAtTime(880, now + 0.05);
       gain.gain.setValueAtTime(0.12, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
       osc.start(now);
@@ -67,22 +68,19 @@
         box-sizing: border-box;
       }
 
-      /* ================= THÈMES ================= */
-      /* 1. Thème Sombre Pro */
+      /* THÈMES */
       .ll-theme-dark {
         background: #090d16;
         color: #f8fafc;
         border: 1px solid rgba(255, 255, 255, 0.12);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       }
-      /* 2. Thème Blanc Épuré (Presse) */
       .ll-theme-light {
         background: #ffffff;
         color: #0f172a;
         border: 1px solid #e2e8f0;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
       }
-      /* 3. Thème Verre Dépoli (Glassmorphism) */
       .ll-theme-glass {
         background: rgba(15, 23, 42, 0.75);
         backdrop-filter: blur(20px) saturate(180%);
@@ -91,14 +89,12 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
       }
-      /* 4. Thème Papier Journal (Editorial) */
       .ll-theme-paper {
         background: #fbf8f1;
         color: #262626;
         border: 1px solid #dcd5c5;
         box-shadow: 0 6px 16px rgba(44, 38, 27, 0.08);
       }
-      /* 5. Thème Auto / Adaptatif */
       @media (prefers-color-scheme: dark) {
         .ll-theme-auto {
           background: #090d16;
@@ -116,48 +112,51 @@
         }
       }
 
-      /* ================= FORMATS ================= */
-      /* Format Carte */
+      /* FORMATS */
       .ll-format-card {
         display: flex;
         flex-direction: column;
-        border-radius: 16px;
+        border-radius: 14px;
         padding: 16px 20px;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
-      /* Format Bannière */
       .ll-format-banner {
         display: flex;
         flex-direction: column;
-        border-radius: 12px;
+        border-radius: 10px;
         padding: 18px 24px;
         width: 100%;
       }
-      /* Format Pilule */
       .ll-format-pill {
         display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 10px 16px;
         border-radius: 999px;
         font-size: 13px;
         font-weight: 600;
-        cursor: pointer;
         text-decoration: none;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.2s ease;
       }
-      /* Format Compact */
-      .ll-format-compact {
+      .ll-format-pill .ll-pill-top {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 6px 12px;
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .ll-format-compact {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 8px 12px;
         border-radius: 8px;
         font-size: 12px;
         font-weight: 600;
-        cursor: pointer;
       }
-      /* Format Sticky Floating Bar */
       .ll-format-floating {
         position: fixed;
         bottom: 20px;
@@ -165,18 +164,13 @@
         z-index: 9999;
         display: flex;
         flex-direction: column;
-        border-radius: 16px;
+        border-radius: 14px;
         padding: 14px 18px;
         max-width: 360px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
-        animation: ll-slide-up 0.35s ease-out;
-      }
-      @keyframes ll-slide-up {
-        from { transform: translateY(100%); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
       }
 
-      /* ================= ÉLÉMENTS INTERNES ================= */
+      /* ÉLÉMENTS */
       .ll-header {
         display: flex;
         align-items: center;
@@ -187,14 +181,24 @@
       .ll-brand {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         font-weight: 700;
         font-size: 14px;
         letter-spacing: 0.2px;
       }
-      .ll-shield-icon {
-        font-size: 17px;
-        line-height: 1;
+      .ll-emoticon-tag {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .ll-theme-light .ll-emoticon-tag {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: #0f172a;
       }
       .ll-tag {
         font-size: 11px;
@@ -205,7 +209,7 @@
       }
       .ll-subtext {
         font-size: 12px;
-        opacity: 0.82;
+        opacity: 0.85;
         margin-bottom: 12px;
         line-height: 1.45;
       }
@@ -216,7 +220,7 @@
         gap: 8px;
       }
 
-      /* Boutons */
+      /* BOUTONS */
       .ll-btn {
         display: inline-flex;
         align-items: center;
@@ -225,7 +229,7 @@
         font-size: 12px;
         font-weight: 700;
         padding: 8px 14px;
-        border-radius: 10px;
+        border-radius: 8px;
         cursor: pointer;
         border: none;
         outline: none;
@@ -236,11 +240,7 @@
       .ll-btn:hover {
         transform: translateY(-1px);
       }
-      .ll-btn:active {
-        transform: scale(0.98);
-      }
 
-      /* Couleurs d'accent pour boutons primaires */
       .ll-accent-cyan {
         background: linear-gradient(135deg, #0284c7, #0369a1);
         color: #ffffff !important;
@@ -266,12 +266,7 @@
         color: #ffffff !important;
         border: 1px solid rgba(255, 255, 255, 0.25);
       }
-      .ll-theme-light .ll-accent-mono {
-        background: #0f172a;
-        color: #ffffff !important;
-      }
 
-      /* Boutons secondaires */
       .ll-btn-sec {
         background: rgba(255, 255, 255, 0.08);
         color: inherit !important;
@@ -287,14 +282,8 @@
         color: #262626 !important;
         border: 1px solid #d4cbb8;
       }
-      .ll-btn-sec:hover {
-        background: rgba(255, 255, 255, 0.18);
-      }
-      .ll-theme-light .ll-btn-sec:hover {
-        background: #e2e8f0;
-      }
 
-      /* Boutons Réseaux Sociaux */
+      /* BARRE RESEAUX SOCIAUX SANS EMOJI */
       .ll-socials-bar {
         display: flex;
         align-items: center;
@@ -311,10 +300,11 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 30px;
-        height: 30px;
-        border-radius: 8px;
-        font-size: 13px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.12);
         color: inherit;
@@ -327,59 +317,38 @@
         border-color: #cbd5e1;
       }
       .ll-social-btn:hover {
-        transform: translateY(-2px);
         background: rgba(255, 255, 255, 0.2);
-      }
-      .ll-theme-light .ll-social-btn:hover {
-        background: #e2e8f0;
+        transform: translateY(-1px);
       }
 
-      /* Mention Légale en petits caractères */
+      /* MENTION LEGALE OBLIGATOIRE */
       .ll-legal-notice {
         margin-top: 10px;
-        font-size: 10px;
-        line-height: 1.35;
-        opacity: 0.65;
-        border-top: 1px dashed rgba(255, 255, 255, 0.15);
+        font-size: 10.5px;
+        line-height: 1.4;
+        opacity: 0.8;
+        border-top: 1px dashed rgba(255, 255, 255, 0.18);
         padding-top: 8px;
       }
       .ll-theme-light .ll-legal-notice {
-        border-top-color: #e2e8f0;
-        opacity: 0.75;
+        border-top-color: #cbd5e1;
+        opacity: 0.9;
       }
       .ll-legal-notice a {
-        color: inherit;
+        color: #38bdf8;
         text-decoration: underline;
-        font-weight: 600;
+        font-weight: 700;
+      }
+      .ll-theme-light .ll-legal-notice a {
+        color: #0284c7;
       }
 
-      /* Feedback Toast */
       .ll-toast {
         display: none;
         font-size: 11px;
         font-weight: 700;
         color: #10b981;
         margin-left: 6px;
-        animation: ll-pop 0.2s ease-out;
-      }
-      @keyframes ll-pop {
-        0% { transform: scale(0.8); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-      }
-
-      /* QR Popover */
-      .ll-qr-modal {
-        display: none;
-        position: absolute;
-        bottom: calc(100% + 10px);
-        left: 50%;
-        transform: translateX(-50%);
-        background: #ffffff;
-        padding: 12px;
-        border-radius: 12px;
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-        z-index: 99999;
-        text-align: center;
       }
     `;
     document.head.appendChild(style);
@@ -388,73 +357,85 @@
   function renderBadge(container) {
     if (!container) return;
     injectBadgeStyles();
+
     const targetUrl = cleanUrl(container.getAttribute('data-url') || window.location.href);
-    const theme = container.getAttribute('data-theme') || 'dark'; // 'dark', 'light', 'glass', 'paper', 'auto'
-    const format = container.getAttribute('data-style') || 'card'; // 'card', 'banner', 'pill', 'compact', 'floating'
-    const accent = container.getAttribute('data-accent') || 'cyan'; // 'cyan', 'emerald', 'purple', 'amber', 'mono'
+    const theme = container.getAttribute('data-theme') || 'dark';
+    const format = container.getAttribute('data-style') || 'card';
+    const accent = container.getAttribute('data-accent') || 'cyan';
     const lang = container.getAttribute('data-lang') || (document.documentElement.lang || 'fr').slice(0, 2);
     const isEn = lang.startsWith('en');
 
-    // Textes personnalisables
-    const customTitle = container.getAttribute('data-title') || (isEn ? 'Free Citizen Sharing' : 'Partage Citoyen & Éducatif');
-    const customSub = container.getAttribute('data-subtitle') || (isEn ? 'Share this article freely on social networks without tracking or blocking.' : 'Partagez cet article librement sur vos réseaux sociaux sans blocage ni mouchards publicitaires.');
+    const customTitle = container.getAttribute('data-title') || (isEn ? 'Citizen Sharing Gateway' : 'Partage Citoyen & Educatif');
+    const customSub = container.getAttribute('data-subtitle') || (isEn ? 'Share this article freely on social networks without tracking or blocking.' : 'Partagez cet article librement sans mouchards publicitaires ni blocage.');
     const customBtnText = container.getAttribute('data-btn-text') || (isEn ? 'Copy Clean Link' : 'Copier le lien propre');
 
-    // Toggles de configuration
-    const showShield = container.getAttribute('data-show-shield') !== 'false';
     const showTag = container.getAttribute('data-show-tag') !== 'false';
     const showCopy = container.getAttribute('data-show-copy') !== 'false';
     const showOpen = container.getAttribute('data-show-open') !== 'false';
     const showShare = container.getAttribute('data-show-share') !== 'false';
     const showSocials = container.getAttribute('data-show-socials') === 'true';
     const showEink = container.getAttribute('data-show-eink') === 'true';
-    const showLegal = container.getAttribute('data-show-legal') !== 'false';
     const enableSound = container.getAttribute('data-sound') !== 'false';
 
     const encodedUrl = encodeURIComponent(targetUrl);
     const mirrorUrl = `${LIENLIBRE_BASE}?url=${encodedUrl}`;
 
-    // Tag text & style
-    const tagText = isEn ? 'Zero Tracking' : 'Lien Nettoyé';
+    const tagText = isEn ? '[Zero-Tracking]' : '[Sans Mouchard]';
     let tagStyleClass = 'll-accent-cyan';
     if (accent === 'emerald') tagStyleClass = 'll-accent-emerald';
     else if (accent === 'purple') tagStyleClass = 'll-accent-purple';
     else if (accent === 'amber') tagStyleClass = 'll-accent-amber';
     else if (accent === 'mono') tagStyleClass = 'll-accent-mono';
 
-    // Rendu Format Pilule
+    // MENTION LÉGALE PRIMORDIALE (Présente dans toutes les configurations)
+    const legalNoticeText = isEn
+      ? `By sharing this link, you agree to the <a href="${LEGAL_URL}" target="_blank" rel="noopener noreferrer">Fair Use Terms (s. 29 Copyright Act of Canada)</a>. Zero tracking.`
+      : `En partageant ce lien, vous soutenez la presse libre et acceptez les <a href="${LEGAL_URL}" target="_blank" rel="noopener noreferrer">conditions d'utilisation equitable (art. 29 LDA Canada)</a>. Zero pistage.`;
+
+    // FORMAT PILULE
     if (format === 'pill') {
-      const pill = document.createElement('a');
-      pill.className = `ll-widget-root ll-format-pill ll-theme-${theme} ${tagStyleClass}`;
-      pill.href = mirrorUrl;
-      pill.target = '_blank';
-      pill.rel = 'noopener noreferrer';
-      pill.title = isEn ? 'Share freely via LienLibre' : 'Partager librement via LienLibre';
-      pill.innerHTML = `
-        ${showShield ? '<span>🛡️</span>' : '<span>🔗</span>'}
-        <span>${customTitle}</span>
-        <span style="font-size: 11px; opacity: 0.85;">↗</span>
+      const pillBox = document.createElement('div');
+      pillBox.className = `ll-widget-root ll-format-pill ll-theme-${theme}`;
+      pillBox.innerHTML = `
+        <div class="ll-pill-top">
+          <span class="ll-emoticon-tag">[LienLibre]</span>
+          <a class="ll-btn ${tagStyleClass}" href="${mirrorUrl}" target="_blank" rel="noopener noreferrer" style="font-size: 11px; padding: 4px 10px;">
+            ${customTitle} ↗
+          </a>
+        </div>
+        <div style="font-size: 9.5px; opacity: 0.8; margin-top: 2px;">
+          <a href="${LEGAL_URL}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">
+            (i) ${isEn ? 'Fair Use Terms (s. 29)' : 'Conditions d\'utilisation equitable (art. 29)'}
+          </a>
+        </div>
       `;
       container.innerHTML = '';
-      container.appendChild(pill);
+      container.appendChild(pillBox);
       return;
     }
 
-    // Rendu Format Compact
+    // FORMAT COMPACT
     if (format === 'compact') {
-      const compact = document.createElement('button');
-      compact.type = 'button';
-      compact.className = `ll-widget-root ll-format-compact ll-theme-${theme} ${tagStyleClass} ll-btn`;
-      compact.innerHTML = `
-        ${showShield ? '<span>🛡️</span>' : '<span>🔗</span>'}
-        <span>${customBtnText}</span>
-        <span class="ll-toast">✓</span>
+      const compactBox = document.createElement('div');
+      compactBox.className = `ll-widget-root ll-format-compact ll-theme-${theme}`;
+      compactBox.innerHTML = `
+        <button type="button" class="ll-btn ${tagStyleClass} ll-compact-btn">
+          <span class="ll-emoticon-tag">[+]</span>
+          <span>${customBtnText}</span>
+          <span class="ll-toast">[OK]</span>
+        </button>
+        <div style="font-size: 9.5px; opacity: 0.8; margin-top: 2px;">
+          <a href="${LEGAL_URL}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">
+            (i) ${isEn ? 'Legal Notice (s. 29)' : 'Mention legale (art. 29)'}
+          </a>
+        </div>
       `;
-      compact.addEventListener('click', async () => {
+      const btn = compactBox.querySelector('.ll-compact-btn');
+      btn.addEventListener('click', async () => {
         if (enableSound) playBadgeHapticSound();
         try {
           await navigator.clipboard.writeText(mirrorUrl);
-          const t = compact.querySelector('.ll-toast');
+          const t = compactBox.querySelector('.ll-toast');
           if (t) {
             t.style.display = 'inline-block';
             setTimeout(() => { t.style.display = 'none'; }, 2000);
@@ -464,40 +445,27 @@
         }
       });
       container.innerHTML = '';
-      container.appendChild(compact);
+      container.appendChild(compactBox);
       return;
     }
 
-    // Rendu Carte / Bannière / Flottant
+    // FORMAT CARTE / BANNIERE / FLOTTANT
     const box = document.createElement('div');
     box.className = `ll-widget-root ll-format-${format} ll-theme-${theme}`;
 
-    // Réseaux sociaux HTML si activés
     let socialsHtml = '';
     if (showSocials) {
       const shareTitle = encodeURIComponent(document.title || 'Article');
       const shareUrlEncoded = encodeURIComponent(mirrorUrl);
       socialsHtml = `
         <div class="ll-socials-bar">
-          <span style="font-size: 11px; font-weight: 600; opacity: 0.8; margin-right: 4px;">${isEn ? 'Share on:' : 'Partager sur :'}</span>
-          <a class="ll-social-btn" href="https://bsky.app/intent/compose?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer" title="Bluesky">🦋</a>
-          <a class="ll-social-btn" href="https://mastodonshare.com/?text=${shareTitle}&url=${shareUrlEncoded}" target="_blank" rel="noopener noreferrer" title="Mastodon">🐘</a>
-          <a class="ll-social-btn" href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrlEncoded}" target="_blank" rel="noopener noreferrer" title="X / Twitter">𝕏</a>
-          <a class="ll-social-btn" href="https://threads.net/intent/post?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer" title="Threads">🧵</a>
-          <a class="ll-social-btn" href="https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer" title="WhatsApp">💬</a>
-          <a class="ll-social-btn" href="mailto:?subject=${shareTitle}&body=${shareUrlEncoded}" title="Email">✉️</a>
-        </div>
-      `;
-    }
-
-    // Mention Légale HTML
-    let legalHtml = '';
-    if (showLegal) {
-      legalHtml = `
-        <div class="ll-legal-notice">
-          ${isEn 
-            ? 'By sharing this link, you support independent journalism and agree to the <a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank">Fair Use Terms (s. 29 Copyright Act of Canada)</a>. Zero tracking or profiling.'
-            : 'En partageant ce lien, vous soutenez l\'indépendance de la presse et acceptez les <a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank">conditions d\'utilisation équitable (art. 29 LDA Canada)</a>. Aucun pistage ni collecte de données.'}
+          <span style="font-size: 11px; font-weight: 700; opacity: 0.8; margin-right: 4px;">${isEn ? 'Share:' : 'Partager :'}</span>
+          <a class="ll-social-btn" href="https://bsky.app/intent/compose?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Bluesky]</a>
+          <a class="ll-social-btn" href="https://mastodonshare.com/?text=${shareTitle}&url=${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Mastodon]</a>
+          <a class="ll-social-btn" href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[X]</a>
+          <a class="ll-social-btn" href="https://threads.net/intent/post?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[Threads]</a>
+          <a class="ll-social-btn" href="https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrlEncoded}" target="_blank" rel="noopener noreferrer">[WhatsApp]</a>
+          <a class="ll-social-btn" href="mailto:?subject=${shareTitle}&body=${shareUrlEncoded}">[Email]</a>
         </div>
       `;
     }
@@ -505,7 +473,7 @@
     box.innerHTML = `
       <div class="ll-header">
         <div class="ll-brand">
-          ${showShield ? '<span class="ll-shield-icon">🛡️</span>' : '<span>🔗</span>'}
+          <span class="ll-emoticon-tag">[LienLibre]</span>
           <span>${customTitle}</span>
         </div>
         ${showTag ? `<span class="ll-tag ${tagStyleClass}">${tagText}</span>` : ''}
@@ -518,40 +486,42 @@
       <div class="ll-actions-row">
         ${showCopy ? `
           <button class="ll-btn ${tagStyleClass} ll-copy-btn" type="button">
-            <span>📋</span>
+            <span>[Copier]</span>
             <span>${customBtnText}</span>
           </button>
         ` : ''}
         
         ${showOpen ? `
           <a class="ll-btn ll-btn-sec" href="${mirrorUrl}" target="_blank" rel="noopener noreferrer">
-            <span>🌐</span>
-            <span>${isEn ? 'Open via LienLibre' : 'Ouvrir via LienLibre'}</span>
+            <span>[Ouvrir]</span>
+            <span>${isEn ? 'Open' : 'Ouvrir via LienLibre'} ↗</span>
           </a>
         ` : ''}
 
         ${showShare ? `
           <button class="ll-btn ll-btn-sec ll-share-btn" type="button">
-            <span>📲</span>
-            <span>${isEn ? 'Share' : 'Partager'}</span>
+            <span>[Partager]</span>
+            <span>${isEn ? 'Share' : 'Partager'} »</span>
           </button>
         ` : ''}
 
         ${showEink ? `
-          <a class="ll-btn ll-btn-sec" href="${LIENLIBRE_BASE}#ereader" target="_blank" rel="noopener noreferrer" title="Liseuses Kobo/Kindle/reMarkable">
-            <span>📖</span>
-            <span>E-Ink</span>
+          <a class="ll-btn ll-btn-sec" href="${LIENLIBRE_BASE}#ereader" target="_blank" rel="noopener noreferrer">
+            <span>[E-Ink]</span>
+            <span>Liseuses</span>
           </a>
         ` : ''}
 
-        <span class="ll-toast">✓ ${isEn ? 'Copied!' : 'Copié !'}</span>
+        <span class="ll-toast">[OK] ${isEn ? 'Copied!' : 'Copie !'}</span>
       </div>
 
       ${socialsHtml}
-      ${legalHtml}
+
+      <div class="ll-legal-notice">
+        ${legalNoticeText}
+      </div>
     `;
 
-    // Événements
     const copyBtn = box.querySelector('.ll-copy-btn');
     const shareBtn = box.querySelector('.ll-share-btn');
     const toast = box.querySelector('.ll-toast');
@@ -564,14 +534,6 @@
           if (toast) {
             toast.style.display = 'inline-block';
             setTimeout(() => { toast.style.display = 'none'; }, 2500);
-          }
-          if (window.LienLibreAtoll) {
-            window.LienLibreAtoll.notify({
-              title: "LienLibre Prêt",
-              subtitle: "Lien propre copié dans le presse-papier",
-              status: "verified",
-              link: mirrorUrl
-            });
           }
         } catch (_) {
           window.open(mirrorUrl, '_blank');
@@ -606,14 +568,12 @@
     containers.forEach(renderBadge);
   }
 
-  // Initialisation automatique
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initLienLibreBadges);
   } else {
     initLienLibreBadges();
   }
 
-  // Export pour les configurateurs dynamiques
   window.initLienLibreBadges = initLienLibreBadges;
   window.renderLienLibreBadge = renderBadge;
 })();
