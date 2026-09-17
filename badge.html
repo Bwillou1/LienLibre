@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Studio de Personnalisation du Badge Journalistes — LienLibre</title>
-  <meta name="description" content="Configurez et personnalisez le badge officiel LienLibre pour vos articles de presse. Thème blanc ou noir, textes sur mesure, réseaux sociaux et code HTML prêt à coller.">
+  <title>Studio Badge Medias & Journalistes — LienLibre</title>
+  <meta name="description" content="Studio complet de creation de badge pour journalistes et medias. Editeur visuel par glisser-deposer, editeur de code en direct, +30 options et conformite legale art. 29 LDA Canada.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <style>
     :root {
@@ -15,6 +15,8 @@
       --text-muted: #94a3b8;
       --accent: #0284c7;
       --accent-glow: rgba(2, 132, 199, 0.35);
+      --emerald: #059669;
+      --amber: #d97706;
     }
     * { box-sizing: border-box; }
     body {
@@ -30,7 +32,7 @@
       line-height: 1.5;
     }
     .container {
-      max-width: 1080px;
+      max-width: 1160px;
       width: 100%;
     }
     .back-nav {
@@ -48,7 +50,7 @@
     
     .header-section {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
     .header-section h1 {
       font-size: 2.2rem;
@@ -61,9 +63,47 @@
     }
     .header-section p {
       color: var(--text-muted);
-      font-size: 1.05rem;
-      max-width: 720px;
+      font-size: 1rem;
+      max-width: 760px;
       margin: 0 auto;
+    }
+
+    /* Onglets de Mode : Visuel Drag&Drop vs Code */
+    .tab-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 2rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { color: #ffffff; }
+    .tab-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 2px 10px var(--accent-glow);
     }
 
     /* Layout 2 colonnes : Studio & Aperçu */
@@ -73,9 +113,9 @@
       gap: 2rem;
       margin-bottom: 3rem;
     }
-    @media (min-width: 900px) {
+    @media (min-width: 960px) {
       .studio-grid {
-        grid-template-columns: 1.15fr 0.85fr;
+        grid-template-columns: 1.2fr 0.8fr;
       }
     }
 
@@ -92,6 +132,7 @@
       margin: 0 0 1.25rem 0;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
       border-bottom: 1px solid var(--card-border);
       padding-bottom: 0.75rem;
@@ -108,7 +149,9 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 0.6rem;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     /* Grille de boutons */
@@ -142,52 +185,75 @@
       box-shadow: 0 0 14px var(--accent-glow);
     }
 
-    /* Commutateurs Toggles */
-    .toggle-grid {
-      display: grid;
-      grid-template-columns: 1fr;
+    /* DRAG & DROP BLOCKS BUILDER */
+    .dnd-container {
+      display: flex;
+      flex-direction: column;
       gap: 8px;
+      margin-top: 8px;
     }
-    @media (min-width: 500px) {
-      .toggle-grid { grid-template-columns: 1fr 1fr; }
-    }
-    .toggle-item {
+    .dnd-block {
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
+      gap: 12px;
+      cursor: grab;
       user-select: none;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
     }
-    .toggle-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-    .toggle-item.checked {
-      background: rgba(2, 132, 199, 0.18);
-      border-color: rgba(56, 189, 248, 0.4);
-      color: #38bdf8;
-    }
-    .toggle-indicator {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-family: ui-monospace, SFMono-Regular, monospace;
-    }
-    .toggle-item.checked .toggle-indicator {
-      background: #0284c7;
+    .dnd-block:active { cursor: grabbing; }
+    .dnd-block.dragging {
+      opacity: 0.4;
       border-color: #38bdf8;
-      color: #ffffff;
+      background: rgba(2, 132, 199, 0.2);
+    }
+    .dnd-block.drag-over {
+      border-top: 2px solid #38bdf8;
+      transform: translateY(-2px);
+    }
+    .dnd-handle {
+      font-family: ui-monospace, monospace;
+      color: var(--text-muted);
+      font-weight: bold;
+      font-size: 13px;
+      letter-spacing: -1px;
+    }
+    .dnd-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .dnd-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    .dnd-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .dnd-badge-req {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-family: ui-monospace, monospace;
+    }
+    .dnd-badge-opt {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-family: ui-monospace, monospace;
     }
 
     /* Champs textes */
@@ -206,6 +272,26 @@
     .text-input:focus {
       border-color: #38bdf8;
       box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Code Editor Textarea */
+    .code-editor-area {
+      width: 100%;
+      min-height: 280px;
+      background: #050811;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      color: #38bdf8;
+      line-height: 1.5;
+      outline: none;
+      resize: vertical;
+    }
+    .code-editor-area:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 14px var(--accent-glow);
     }
 
     /* Zone Aperçu Live */
@@ -233,66 +319,67 @@
       border-color: #cbd5e1;
     }
 
-    /* Boîte de code */
-    .code-container {
-      position: relative;
-      background: #050811;
-      border: 1px solid #1e293b;
-      border-radius: 10px;
-      padding: 1rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.8rem;
-      color: #38bdf8;
-      overflow-x: auto;
-    }
     .copy-code-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
       background: #0284c7;
       color: #ffffff;
       border: none;
       border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 0.78rem;
+      padding: 8px 16px;
+      font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
     .copy-code-btn:hover {
       background: #0369a1;
       transform: translateY(-1px);
     }
 
-    /* Guide CMS */
-    .cms-guide-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
+    /* Guide Pédagogique */
+    .guide-table {
+      width: 100%;
+      border-collapse: collapse;
       margin-top: 1rem;
-    }
-    .cms-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 1.25rem;
-    }
-    .cms-card h4 {
-      margin: 0 0 0.5rem 0;
-      font-size: 0.95rem;
-      color: #38bdf8;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .cms-card p {
       font-size: 0.85rem;
+    }
+    .guide-table th, .guide-table td {
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+    .guide-table th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #f1f5f9;
+      font-weight: 700;
+    }
+    .guide-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      font-family: ui-monospace, monospace;
+    }
+    .status-req {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    .status-rec {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+    .status-opt {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: var(--text-muted);
-      margin: 0;
-      line-height: 1.45;
     }
   </style>
 </head>
@@ -304,123 +391,193 @@
     <div class="header-section">
       <h1>[Studio Badge Medias & Journalistes]</h1>
       <p>
-        Configurez un badge sur mesure pour votre redaction. Detecte automatiquement l'URL de chaque article, elimine les traceurs publicitaires et garantit la conformite legale avec <a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank" style="color: #38bdf8; text-decoration: underline;">l'article 29 de la Loi sur le droit d'auteur du Canada</a>.
+        Constructeur visuel par glisser-deposer et editeur de code en direct. Personnalisation integrale de votre bouton de partage sans pistage avec conformite permanente a <a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank" style="color: #38bdf8; text-decoration: underline;">l'article 29 de la Loi sur le droit d'auteur du Canada</a>.
       </p>
     </div>
 
+    <!-- Navigation par Onglets de Mode -->
+    <div class="tab-nav">
+      <button type="button" class="tab-btn active" id="tab-visual-btn" onclick="switchMode('visual')">
+        [Editeur Visuel & Glisser-Deposer]
+      </button>
+      <button type="button" class="tab-btn" id="tab-code-btn" onclick="switchMode('code')">
+        [Editeur de Code Source en Direct]
+      </button>
+    </div>
+
     <div class="studio-grid">
-      <!-- Colonne 1 : Commandes & Options -->
-      <div class="panel">
-        <h2 class="panel-title">[Configuration & Options Avancees]</h2>
+      <!-- Colonne 1 : Mode Visuel / Mode Code -->
+      <div>
+        <!-- VUE 1 : Editeur Visuel & Glisser-Déposer -->
+        <div class="panel" id="view-visual">
+          <h2 class="panel-title">
+            <span>[Constructeur de Blocs & Personnalisation]</span>
+            <span style="font-size: 0.78rem; font-weight: normal; color: var(--text-muted);">(Glissez les blocs pour reorganiser)</span>
+          </h2>
 
-        <!-- Préréglages Rapides -->
-        <div class="control-group">
-          <label class="control-label">[Presets Rapides]</label>
-          <div class="btn-grid">
-            <button type="button" class="studio-btn" onclick="applyPreset('white')">[Theme Blanc]</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('dark')">[Theme Sombre]</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('glass')">[Verre Depoli]</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('banner')">[Banniere Large]</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('pill')">[Pilule Compacte]</button>
-            <button type="button" class="studio-btn" onclick="applyPreset('socials')">[Reseaux Sociaux]</button>
+          <!-- Presets Rapides -->
+          <div class="control-group">
+            <label class="control-label">[Presets Rapides en 1 Clic]</label>
+            <div class="btn-grid">
+              <button type="button" class="studio-btn" onclick="applyPreset('white')">[Theme Blanc]</button>
+              <button type="button" class="studio-btn" onclick="applyPreset('dark')">[Theme Sombre]</button>
+              <button type="button" class="studio-btn" onclick="applyPreset('glass')">[Verre Depoli]</button>
+              <button type="button" class="studio-btn" onclick="applyPreset('banner')">[Banniere Large]</button>
+              <button type="button" class="studio-btn" onclick="applyPreset('pill')">[Pilule Compacte]</button>
+              <button type="button" class="studio-btn" onclick="applyPreset('socials')">[Barre Reseaux]</button>
+            </div>
+          </div>
+
+          <!-- 1. Thèmes & Accents -->
+          <div class="control-group">
+            <label class="control-label">1. Theme Visuel & Ambiance</label>
+            <div class="btn-grid" id="theme-selector">
+              <button type="button" class="studio-btn active" data-val="dark" onclick="setTheme('dark')">[Noir Elite]</button>
+              <button type="button" class="studio-btn" data-val="light" onclick="setTheme('light')">[Blanc Presse]</button>
+              <button type="button" class="studio-btn" data-val="glass" onclick="setTheme('glass')">[Verre Depoli]</button>
+              <button type="button" class="studio-btn" data-val="paper" onclick="setTheme('paper')">[Papier Journal]</button>
+              <button type="button" class="studio-btn" data-val="auto" onclick="setTheme('auto')">[Adaptatif OS]</button>
+            </div>
+          </div>
+
+          <!-- 2. Couleur d'Accent -->
+          <div class="control-group">
+            <label class="control-label">2. Couleur d'Accentuation</label>
+            <div class="btn-grid" id="accent-selector">
+              <button type="button" class="studio-btn active" data-val="cyan" onclick="setAccent('cyan')">[Cyan / Bleu]</button>
+              <button type="button" class="studio-btn" data-val="emerald" onclick="setAccent('emerald')">[Emeraude / Vert]</button>
+              <button type="button" class="studio-btn" data-val="purple" onclick="setAccent('purple')">[Violet]</button>
+              <button type="button" class="studio-btn" data-val="amber" onclick="setAccent('amber')">[Ambre / Or]</button>
+              <button type="button" class="studio-btn" data-val="mono" onclick="setAccent('mono')">[Monochrome]</button>
+            </div>
+          </div>
+
+          <!-- 3. Format -->
+          <div class="control-group">
+            <label class="control-label">3. Format du Composant</label>
+            <div class="btn-grid" id="style-selector">
+              <button type="button" class="studio-btn active" data-val="card" onclick="setStyle('card')">[Carte Editoriale]</button>
+              <button type="button" class="studio-btn" data-val="banner" onclick="setStyle('banner')">[Banniere Large]</button>
+              <button type="button" class="studio-btn" data-val="pill" onclick="setStyle('pill')">[Pilule]</button>
+              <button type="button" class="studio-btn" data-val="compact" onclick="setStyle('compact')">[Bouton Compact]</button>
+              <button type="button" class="studio-btn" data-val="floating" onclick="setStyle('floating')">[Widget Flottant]</button>
+            </div>
+          </div>
+
+          <!-- 4. Constructeur par Glisser-Déposer (Drop & Place) -->
+          <div class="control-group">
+            <label class="control-label">
+              <span>4. Blocs Composants (Glisser-Deposer pour ordonner)</span>
+            </label>
+            <div class="dnd-container" id="dnd-blocks-list">
+              <!-- Bloc Titre -->
+              <div class="dnd-block" draggable="true" data-block-id="title">
+                <span class="dnd-handle">[::]</span>
+                <div class="dnd-info">
+                  <span class="dnd-title">[Bloc En-tete & Titre]</span>
+                  <span class="dnd-desc">Marque [LienLibre] et titre principal du badge</span>
+                </div>
+                <span class="dnd-badge-req">[RECOMMANDE]</span>
+              </div>
+              <!-- Bloc Tag Statut -->
+              <div class="dnd-block" draggable="true" data-block-id="tag">
+                <span class="dnd-handle">[::]</span>
+                <div class="dnd-info">
+                  <span class="dnd-title">[Tag Sans Mouchard]</span>
+                  <span class="dnd-desc">Indicateur de confidentialite zero-tracking</span>
+                </div>
+                <span class="dnd-badge-opt">[OPTIONNEL]</span>
+              </div>
+              <!-- Bloc Description -->
+              <div class="dnd-block" draggable="true" data-block-id="desc">
+                <span class="dnd-handle">[::]</span>
+                <div class="dnd-info">
+                  <span class="dnd-title">[Texte d'Accroche]</span>
+                  <span class="dnd-desc">Explication de partage pour les lecteurs</span>
+                </div>
+                <span class="dnd-badge-opt">[OPTIONNEL]</span>
+              </div>
+              <!-- Bloc Bouton Copier -->
+              <div class="dnd-block" draggable="true" data-block-id="copy">
+                <span class="dnd-handle">[::]</span>
+                <div class="dnd-info">
+                  <span class="dnd-title">[Bouton Copier Lien]</span>
+                  <span class="dnd-desc">Copie directe en 1 clic avec son haptique</span>
+                </div>
+                <span class="dnd-badge-req">[RECOMMANDE]</span>
+              </div>
+              <!-- Bloc Bouton Ouvrir -->
+              <div class="dnd-block" draggable="true" data-block-id="open">
+                <span class="dnd-handle">[::]</span>
+                <div class="dnd-info">
+                  <span class="dnd-title">[Bouton Ouvrir LienLibre]</span>
+                  <span class="dnd-desc">Acceder a la passerelle miroir de recherche</span>
+                </div>
+                <span class="dnd-badge-opt">[OPTIONNEL]</span>
+              </div>
+              <!-- Bloc Reseaux Sociaux -->
+              <div class="dnd-block" draggable="true" data-block-id="socials">
+                <span class="dnd-handle">[::]</span>
+                <div class="dnd-info">
+                  <span class="dnd-title">[Barre Reseaux Sociaux]</span>
+                  <span class="dnd-desc">Partage Bluesky, Mastodon, X, Threads, Email</span>
+                </div>
+                <span class="dnd-badge-opt">[OPTIONNEL]</span>
+              </div>
+              <!-- Bloc Mention Legale -->
+              <div class="dnd-block" draggable="false" data-block-id="legal" style="cursor: not-allowed; border-color: rgba(56, 189, 248, 0.4); background: rgba(2, 132, 199, 0.08);">
+                <span class="dnd-handle">[#]</span>
+                <div class="dnd-info">
+                  <span class="dnd-title">[Mention Legale Permanente (Art. 29 LDA)]</span>
+                  <span class="dnd-desc">Lien obligatoire vers politiques.html</span>
+                </div>
+                <span class="dnd-badge-req" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #f87171;">[OBLIGATOIRE]</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Textes Personnalisables -->
+          <div class="control-group">
+            <label class="control-label">5. Textes & Libelles</label>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div>
+                <span style="font-size: 0.78rem; color: #94a3b8;">Titre principal :</span>
+                <input type="text" id="input-title" class="text-input" value="Partage Citoyen & Educatif" oninput="updateConfig()">
+              </div>
+              <div>
+                <span style="font-size: 0.78rem; color: #94a3b8;">Sous-titre / Accroche :</span>
+                <input type="text" id="input-subtitle" class="text-input" value="Partagez cet article librement sans mouchards publicitaires ni blocage." oninput="updateConfig()">
+              </div>
+              <div>
+                <span style="font-size: 0.78rem; color: #94a3b8;">Texte du bouton d'action :</span>
+                <input type="text" id="input-btn-text" class="text-input" value="Copier le lien propre" oninput="updateConfig()">
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- 1. Thème Principal -->
-        <div class="control-group">
-          <label class="control-label">1. Theme Visuel</label>
-          <div class="btn-grid" id="theme-selector">
-            <button type="button" class="studio-btn active" data-val="dark" onclick="setTheme('dark')">[Noir Elite]</button>
-            <button type="button" class="studio-btn" data-val="light" onclick="setTheme('light')">[Blanc Presse]</button>
-            <button type="button" class="studio-btn" data-val="glass" onclick="setTheme('glass')">[Verre Depoli]</button>
-            <button type="button" class="studio-btn" data-val="paper" onclick="setTheme('paper')">[Papier Journal]</button>
-            <button type="button" class="studio-btn" data-val="auto" onclick="setTheme('auto')">[Adaptatif OS]</button>
-          </div>
-        </div>
+        <!-- VUE 2 : Editeur de Code Source Bidirectionnel -->
+        <div class="panel" id="view-code" style="display: none;">
+          <h2 class="panel-title">
+            <span>[Editeur de Code HTML / Attributs data-*]</span>
+            <button type="button" class="studio-btn" style="font-size: 0.75rem; padding: 4px 8px;" onclick="resetCodeToDefault()">[Reinitialiser]</button>
+          </h2>
 
-        <!-- 2. Couleur d'Accent -->
-        <div class="control-group">
-          <label class="control-label">2. Couleur d'Accentuation</label>
-          <div class="btn-grid" id="accent-selector">
-            <button type="button" class="studio-btn active" data-val="cyan" onclick="setAccent('cyan')">[Cyan / Bleu]</button>
-            <button type="button" class="studio-btn" data-val="emerald" onclick="setAccent('emerald')">[Emeraude / Vert]</button>
-            <button type="button" class="studio-btn" data-val="purple" onclick="setAccent('purple')">[Violet]</button>
-            <button type="button" class="studio-btn" data-val="amber" onclick="setAccent('amber')">[Ambre / Or]</button>
-            <button type="button" class="studio-btn" data-val="mono" onclick="setAccent('mono')">[Monochrome]</button>
-          </div>
-        </div>
-
-        <!-- 3. Format & Disposition -->
-        <div class="control-group">
-          <label class="control-label">3. Format du Composant</label>
-          <div class="btn-grid" id="style-selector">
-            <button type="button" class="studio-btn active" data-val="card" onclick="setStyle('card')">[Carte Editoriale]</button>
-            <button type="button" class="studio-btn" data-val="banner" onclick="setStyle('banner')">[Banniere Large]</button>
-            <button type="button" class="studio-btn" data-val="pill" onclick="setStyle('pill')">[Pilule]</button>
-            <button type="button" class="studio-btn" data-val="compact" onclick="setStyle('compact')">[Bouton Compact]</button>
-            <button type="button" class="studio-btn" data-val="floating" onclick="setStyle('floating')">[Widget Flottant]</button>
-          </div>
-        </div>
-
-        <!-- 4. Textes Personnalisables -->
-        <div class="control-group">
-          <label class="control-label">4. Textes & Libelles</label>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div>
-              <span style="font-size: 0.78rem; color: #94a3b8;">Titre principal :</span>
-              <input type="text" id="input-title" class="text-input" value="Partage Citoyen & Educatif" oninput="updateConfig()">
-            </div>
-            <div>
-              <span style="font-size: 0.78rem; color: #94a3b8;">Sous-titre / Accroche :</span>
-              <input type="text" id="input-subtitle" class="text-input" value="Partagez cet article librement sans mouchards publicitaires ni blocage." oninput="updateConfig()">
-            </div>
-            <div>
-              <span style="font-size: 0.78rem; color: #94a3b8;">Texte du bouton d'action :</span>
-              <input type="text" id="input-btn-text" class="text-input" value="Copier le lien propre" oninput="updateConfig()">
-            </div>
-          </div>
-        </div>
-
-        <!-- 5. Toggles Fonctionnels -->
-        <div class="control-group">
-          <label class="control-label">5. Fonctionnalites & Elements Affiches</label>
-          <div class="toggle-grid">
-            <div class="toggle-item checked" id="toggle-tag" onclick="toggleOption('showTag', this)">
-              <span>[Tag Sans Mouchard]</span>
-              <span class="toggle-indicator">[v]</span>
-            </div>
-            <div class="toggle-item checked" id="toggle-copy" onclick="toggleOption('showCopy', this)">
-              <span>[Bouton Copier]</span>
-              <span class="toggle-indicator">[v]</span>
-            </div>
-            <div class="toggle-item checked" id="toggle-open" onclick="toggleOption('showOpen', this)">
-              <span>[Bouton Ouvrir Lien]</span>
-              <span class="toggle-indicator">[v]</span>
-            </div>
-            <div class="toggle-item checked" id="toggle-share" onclick="toggleOption('showShare', this)">
-              <span>[Bouton Partager]</span>
-              <span class="toggle-indicator">[v]</span>
-            </div>
-            <div class="toggle-item" id="toggle-socials" onclick="toggleOption('showSocials', this)">
-              <span>[Barre Reseaux Sociaux]</span>
-              <span class="toggle-indicator"></span>
-            </div>
-            <div class="toggle-item" id="toggle-eink" onclick="toggleOption('showEink', this)">
-              <span>[Mode Liseuses E-Ink]</span>
-              <span class="toggle-indicator"></span>
-            </div>
-            <div class="toggle-item checked" id="toggle-sound" onclick="toggleOption('enableSound', this)">
-              <span>[Son Haptique Apple Tap]</span>
-              <span class="toggle-indicator">[v]</span>
-            </div>
-          </div>
-          <p style="font-size: 0.78rem; color: #38bdf8; margin-top: 10px;">
-            (i) La mention legale vers <a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank" style="color: #38bdf8; text-decoration: underline;">https://bwillou1.github.io/LienLibre/politiques.html</a> est obligatoire et integree en permanence sur tous les formats.
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">
+            Modifiez le code directement ci-dessous. Tout est configurable et la previsualisation s'ajuste en temps reel :
           </p>
+
+          <textarea id="live-code-textarea" class="code-editor-area" oninput="onCodeEditorInput()"></textarea>
+
+          <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+            <button type="button" class="copy-code-btn" onclick="copySnippet()">
+              <span>[Copier le Code Final]</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Colonne 2 : Aperçu Direct & Code Généré -->
+      <!-- Colonne 2 : Aperçu Direct & Code Prêt -->
       <div class="preview-sticky">
         <div class="panel">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
@@ -434,12 +591,12 @@
 
           <!-- Code HTML Snippet -->
           <div style="margin-top: 1.5rem;">
-            <label class="control-label">[Code HTML Pret a Coller dans votre CMS]</label>
+            <label class="control-label">[Code HTML Pret a Integrer]</label>
             <div class="code-container">
-              <button class="copy-code-btn" id="btn-copy-code" onclick="copySnippet()">
+              <button class="copy-code-btn" id="btn-copy-code" onclick="copySnippet()" style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; font-size: 0.75rem;">
                 <span>[Copier]</span>
               </button>
-              <pre style="margin: 0;"><code id="generated-html-code">&lt;!-- Chargement en cours... --&gt;</code></pre>
+              <pre style="margin: 0; overflow-x: auto;"><code id="generated-html-code">&lt;!-- Chargement en cours... --&gt;</code></pre>
             </div>
           </div>
         </div>
@@ -447,12 +604,77 @@
         <div class="panel" style="font-size: 0.85rem; line-height: 1.5; color: #cbd5e1;">
           <h4 style="margin: 0 0 0.5rem 0; color: #38bdf8; font-size: 0.95rem;">[Fonctionnement Transparent]</h4>
           <p style="margin: 0 0 0.5rem 0;">
-            Le script lit automatiquement <code>window.location.href</code> sur chaque article. Vous n'avez <strong>jamais besoin</strong> de generer manuellement un lien pour chaque nouvel article publie.
+            Le script lit automatiquement <code>window.location.href</code>. Vous n'avez <strong>jamais besoin</strong> de generer manuellement un lien pour chaque nouvel article publie.
           </p>
           <p style="margin: 0;">
             Le partage respecte integralement la politique de neutralite technique et l'article 29 de la Loi sur le droit d'auteur du Canada (<a href="https://bwillou1.github.io/LienLibre/politiques.html" target="_blank" style="color: #38bdf8; text-decoration: underline;">politiques.html</a>).
           </p>
         </div>
+      </div>
+    </div>
+
+    <!-- GUIDE PEDAGOGIQUE : Reglagles Obligatoires vs Recommandés vs Optionnels -->
+    <div class="panel" style="margin-bottom: 2.5rem;">
+      <h3 class="panel-title">[Guide Pedagogique des Reglages & Conformite]</h3>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0 0 1rem 0;">
+        Ce tableau vous resume les elements indispensables et les options de personnalisation avancee pour garantir une utilisation sereine et conforme :
+      </p>
+
+      <div style="overflow-x: auto;">
+        <table class="guide-table">
+          <thead>
+            <tr>
+              <th>Parametre / Attribut</th>
+              <th>Statut</th>
+              <th>Role & Impact</th>
+              <th>Valeur par defaut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>https://.../politiques.html</code></td>
+              <td><span class="status-badge status-req">[OBLIGATOIRE]</span></td>
+              <td>Mention d'utilisation equitable (art. 29 LDA Canada). Protege la neutralite juridique du media.</td>
+              <td>Verrouillee et active</td>
+            </tr>
+            <tr>
+              <td><code>data-url</code></td>
+              <td><span class="status-badge status-rec">[AUTOMATIQUE]</span></td>
+              <td>Detecte dynamiquement l'URL de l'article via <code>window.location.href</code>. Peut etre surchargee si besoin.</td>
+              <td>URL courante du navigateur</td>
+            </tr>
+            <tr>
+              <td><code>data-theme</code></td>
+              <td><span class="status-badge status-rec">[RECOMMANDE]</span></td>
+              <td>Choix de l'ambiance visuelle : <code>dark</code> (noir), <code>light</code> (blanc), <code>glass</code> (verre), <code>paper</code>, <code>auto</code>.</td>
+              <td><code>dark</code></td>
+            </tr>
+            <tr>
+              <td><code>data-style</code></td>
+              <td><span class="status-badge status-rec">[RECOMMANDE]</span></td>
+              <td>Format d'affichage : <code>card</code> (carte complete), <code>banner</code>, <code>pill</code>, <code>compact</code>, <code>floating</code>.</td>
+              <td><code>card</code></td>
+            </tr>
+            <tr>
+              <td><code>data-title</code></td>
+              <td><span class="status-badge status-opt">[OPTIONNEL]</span></td>
+              <td>Titre personnalise affiche en tete de badge.</td>
+              <td>"Partage Citoyen & Educatif"</td>
+            </tr>
+            <tr>
+              <td><code>data-show-socials</code></td>
+              <td><span class="status-badge status-opt">[OPTIONNEL]</span></td>
+              <td>Affiche la barre de raccourcis directs vers Bluesky, Mastodon, X, Threads et Email.</td>
+              <td><code>false</code></td>
+            </tr>
+            <tr>
+              <td><code>data-show-eink</code></td>
+              <td><span class="status-badge status-opt">[OPTIONNEL]</span></td>
+              <td>Bouton de transfert rapide vers liseuses E-Ink (Kobo, Kindle, reMarkable).</td>
+              <td><code>false</code></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -495,8 +717,30 @@
       showShare: true,
       showSocials: false,
       showEink: false,
-      enableSound: true
+      enableSound: true,
+      blockOrder: ['title', 'tag', 'desc', 'copy', 'open', 'socials', 'legal']
     };
+
+    function switchMode(mode) {
+      const viewVisual = document.getElementById('view-visual');
+      const viewCode = document.getElementById('view-code');
+      const tabVisualBtn = document.getElementById('tab-visual-btn');
+      const tabCodeBtn = document.getElementById('tab-code-btn');
+
+      if (mode === 'visual') {
+        viewVisual.style.display = 'block';
+        viewCode.style.display = 'none';
+        tabVisualBtn.classList.add('active');
+        tabCodeBtn.classList.remove('active');
+        updateConfig();
+      } else {
+        viewVisual.style.display = 'none';
+        viewCode.style.display = 'block';
+        tabVisualBtn.classList.remove('active');
+        tabCodeBtn.classList.add('active');
+        document.getElementById('live-code-textarea').value = generateSnippet();
+      }
+    }
 
     function setTheme(t) {
       config.theme = t;
@@ -513,13 +757,6 @@
     function setStyle(s) {
       config.style = s;
       updateActiveBtn('#style-selector', s);
-      updateConfig();
-    }
-
-    function toggleOption(key, el) {
-      config[key] = !config[key];
-      el.classList.toggle('checked', config[key]);
-      el.querySelector('.toggle-indicator').textContent = config[key] ? '[v]' : '';
       updateConfig();
     }
 
@@ -555,11 +792,6 @@
         setAccent('cyan');
         setStyle('card');
         config.showSocials = true;
-        const socEl = document.getElementById('toggle-socials');
-        if (socEl) {
-          socEl.classList.add('checked');
-          socEl.querySelector('.toggle-indicator').textContent = '[v]';
-        }
       }
       updateConfig();
     }
@@ -569,10 +801,29 @@
       if (c) c.classList.toggle('bg-light-mode');
     }
 
+    function generateSnippet() {
+      let htmlAttributes = `class="lienlibre-badge"\n     data-theme="${config.theme}"\n     data-style="${config.style}"\n     data-accent="${config.accent}"`;
+      if (config.title !== 'Partage Citoyen & Educatif') htmlAttributes += `\n     data-title="${escapeHtml(config.title)}"`;
+      if (config.subtitle) htmlAttributes += `\n     data-subtitle="${escapeHtml(config.subtitle)}"`;
+      if (config.btnText !== 'Copier le lien propre') htmlAttributes += `\n     data-btn-text="${escapeHtml(config.btnText)}"`;
+      if (!config.showTag) htmlAttributes += `\n     data-show-tag="false"`;
+      if (!config.showCopy) htmlAttributes += `\n     data-show-copy="false"`;
+      if (!config.showOpen) htmlAttributes += `\n     data-show-open="false"`;
+      if (!config.showShare) htmlAttributes += `\n     data-show-share="false"`;
+      if (config.showSocials) htmlAttributes += `\n     data-show-socials="true"`;
+      if (config.showEink) htmlAttributes += `\n     data-show-eink="true"`;
+
+      return `<!-- Badge Citoyen LienLibre pour Medias (Conforme art. 29 LDA Canada) -->\n<script src="https://bwillou1.github.io/LienLibre/js/badge.js" async><\/script>\n<div ${htmlAttributes}></div>`;
+    }
+
     function updateConfig() {
-      config.title = document.getElementById('input-title').value.trim() || 'Partage Citoyen & Educatif';
-      config.subtitle = document.getElementById('input-subtitle').value.trim() || '';
-      config.btnText = document.getElementById('input-btn-text').value.trim() || 'Copier le lien';
+      const titleInput = document.getElementById('input-title');
+      const subInput = document.getElementById('input-subtitle');
+      const btnInput = document.getElementById('input-btn-text');
+
+      if (titleInput) config.title = titleInput.value.trim() || 'Partage Citoyen & Educatif';
+      if (subInput) config.subtitle = subInput.value.trim() || '';
+      if (btnInput) config.btnText = btnInput.value.trim() || 'Copier le lien';
 
       // Rendu de l'apercu dynamique
       const canvas = document.getElementById('preview-canvas');
@@ -605,21 +856,123 @@
         }
       }
 
-      // Generation du code HTML
-      let htmlAttributes = `class="lienlibre-badge"\n     data-theme="${config.theme}"\n     data-style="${config.style}"\n     data-accent="${config.accent}"`;
-      if (config.title !== 'Partage Citoyen & Educatif') htmlAttributes += `\n     data-title="${escapeHtml(config.title)}"`;
-      if (config.subtitle) htmlAttributes += `\n     data-subtitle="${escapeHtml(config.subtitle)}"`;
-      if (config.btnText !== 'Copier le lien propre') htmlAttributes += `\n     data-btn-text="${escapeHtml(config.btnText)}"`;
-      if (!config.showTag) htmlAttributes += `\n     data-show-tag="false"`;
-      if (!config.showCopy) htmlAttributes += `\n     data-show-copy="false"`;
-      if (!config.showOpen) htmlAttributes += `\n     data-show-open="false"`;
-      if (!config.showShare) htmlAttributes += `\n     data-show-share="false"`;
-      if (config.showSocials) htmlAttributes += `\n     data-show-socials="true"`;
-      if (config.showEink) htmlAttributes += `\n     data-show-eink="true"`;
-
-      const snippet = `<!-- Badge Citoyen LienLibre pour Medias (Conforme art. 29 LDA Canada) -->\n<script src="https://bwillou1.github.io/LienLibre/js/badge.js" async><\/script>\n<div ${htmlAttributes}></div>`;
+      const snippet = generateSnippet();
       const codeEl = document.getElementById('generated-html-code');
       if (codeEl) codeEl.textContent = snippet;
+      const codeTextarea = document.getElementById('live-code-textarea');
+      if (codeTextarea && document.activeElement !== codeTextarea) {
+        codeTextarea.value = snippet;
+      }
+    }
+
+    function onCodeEditorInput() {
+      const rawCode = document.getElementById('live-code-textarea').value;
+      const codeEl = document.getElementById('generated-html-code');
+      if (codeEl) codeEl.textContent = rawCode;
+
+      // Extraction des attributs du div
+      const themeMatch = rawCode.match(/data-theme="([^"]+)"/);
+      const styleMatch = rawCode.match(/data-style="([^"]+)"/);
+      const accentMatch = rawCode.match(/data-accent="([^"]+)"/);
+      const titleMatch = rawCode.match(/data-title="([^"]+)"/);
+      const subMatch = rawCode.match(/data-subtitle="([^"]+)"/);
+      const btnMatch = rawCode.match(/data-btn-text="([^"]+)"/);
+
+      if (themeMatch) config.theme = themeMatch[1];
+      if (styleMatch) config.style = styleMatch[1];
+      if (accentMatch) config.accent = accentMatch[1];
+      if (titleMatch) config.title = titleMatch[1];
+      if (subMatch) config.subtitle = subMatch[1];
+      if (btnMatch) config.btnText = btnMatch[1];
+
+      config.showSocials = /data-show-socials="true"/.test(rawCode);
+      config.showEink = /data-show-eink="true"/.test(rawCode);
+      config.showTag = !/data-show-tag="false"/.test(rawCode);
+      config.showCopy = !/data-show-copy="false"/.test(rawCode);
+      config.showOpen = !/data-show-open="false"/.test(rawCode);
+      config.showShare = !/data-show-share="false"/.test(rawCode);
+
+      // Rafraichir le canevas d'aperçu
+      const canvas = document.getElementById('preview-canvas');
+      if (canvas) {
+        canvas.innerHTML = '';
+        const target = document.createElement('div');
+        target.id = 'live-badge-target';
+        target.className = 'lienlibre-badge';
+        target.setAttribute('data-theme', config.theme);
+        target.setAttribute('data-accent', config.accent);
+        target.setAttribute('data-style', config.style);
+        target.setAttribute('data-title', config.title);
+        target.setAttribute('data-subtitle', config.subtitle);
+        target.setAttribute('data-btn-text', config.btnText);
+        target.setAttribute('data-show-tag', config.showTag ? 'true' : 'false');
+        target.setAttribute('data-show-copy', config.showCopy ? 'true' : 'false');
+        target.setAttribute('data-show-open', config.showOpen ? 'true' : 'false');
+        target.setAttribute('data-show-share', config.showShare ? 'true' : 'false');
+        target.setAttribute('data-show-socials', config.showSocials ? 'true' : 'false');
+        target.setAttribute('data-show-eink', config.showEink ? 'true' : 'false');
+        target.setAttribute('data-url', 'https://ici.radio-canada.ca/nouvelle/exemple');
+
+        canvas.appendChild(target);
+
+        if (window.renderLienLibreBadge) {
+          window.renderLienLibreBadge(target);
+        }
+      }
+    }
+
+    function resetCodeToDefault() {
+      applyPreset('dark');
+      document.getElementById('live-code-textarea').value = generateSnippet();
+    }
+
+    // GESTION DRAG AND DROP DES BLOCS
+    function initDragAndDrop() {
+      const list = document.getElementById('dnd-blocks-list');
+      if (!list) return;
+
+      let draggedItem = null;
+
+      list.querySelectorAll('.dnd-block[draggable="true"]').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+          draggedItem = item;
+          setTimeout(() => item.classList.add('dragging'), 0);
+        });
+
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          list.querySelectorAll('.dnd-block').forEach(b => b.classList.remove('drag-over'));
+          draggedItem = null;
+          updateConfig();
+        });
+
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          if (item !== draggedItem && item.getAttribute('draggable') === 'true') {
+            item.classList.add('drag-over');
+          }
+        });
+
+        item.addEventListener('dragleave', () => {
+          item.classList.remove('drag-over');
+        });
+
+        item.addEventListener('drop', (e) => {
+          e.preventDefault();
+          item.classList.remove('drag-over');
+          if (draggedItem && item !== draggedItem) {
+            const allBlocks = Array.from(list.querySelectorAll('.dnd-block'));
+            const draggedIdx = allBlocks.indexOf(draggedItem);
+            const droppedIdx = allBlocks.indexOf(item);
+            if (draggedIdx < droppedIdx) {
+              list.insertBefore(draggedItem, item.nextSibling);
+            } else {
+              list.insertBefore(draggedItem, item);
+            }
+            updateConfig();
+          }
+        });
+      });
     }
 
     function escapeHtml(str) {
@@ -628,7 +981,7 @@
 
     async function copySnippet() {
       const codeEl = document.getElementById('generated-html-code');
-      const code = codeEl ? codeEl.textContent : '';
+      const code = codeEl ? codeEl.textContent : generateSnippet();
       const btn = document.getElementById('btn-copy-code');
       try {
         await navigator.clipboard.writeText(code);
@@ -642,11 +995,18 @@
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', updateConfig);
+      document.addEventListener('DOMContentLoaded', () => {
+        updateConfig();
+        initDragAndDrop();
+      });
     } else {
       updateConfig();
+      initDragAndDrop();
     }
-    window.addEventListener('load', updateConfig);
+    window.addEventListener('load', () => {
+      updateConfig();
+      initDragAndDrop();
+    });
   </script>
 </body>
 </html>
