@@ -172,7 +172,6 @@
           </div>
           <div class="flex items-center justify-between text-[11px]">
             <a href="https://meteo.gc.ca/warnings/index_f.html" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white underline">Ouvrir l'avis officiel ↗</a>
-            <button type="button" class="btn-share-mesh text-slate-400 hover:text-cyan-300 font-medium cursor-pointer" data-url="https://meteo.gc.ca/warnings/index_f.html" data-title="Alerte Météo Canada">📻 Meshtastic / Radio</button>
           </div>
         </div>
       </div>
@@ -210,7 +209,6 @@
           </div>
           <div class="flex items-center justify-between text-[11px]">
             <a href="https://sopfeu.qc.ca/" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white underline">Ouvrir l'avis officiel ↗</a>
-            <button type="button" class="btn-share-mesh text-slate-400 hover:text-cyan-300 font-medium cursor-pointer" data-url="https://sopfeu.qc.ca/" data-title="Alerte SOPFEU">📻 Meshtastic / Radio</button>
           </div>
         </div>
       </div>
@@ -248,7 +246,6 @@
           </div>
           <div class="flex items-center justify-between text-[11px]">
             <a href="https://recalls-rappels.canada.ca/fr" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white underline">Ouvrir l'avis officiel ↗</a>
-            <button type="button" class="btn-share-mesh text-slate-400 hover:text-cyan-300 font-medium cursor-pointer" data-url="https://recalls-rappels.canada.ca/fr" data-title="Rappel Santé Canada">📻 Meshtastic / Radio</button>
           </div>
         </div>
       </div>
@@ -286,7 +283,6 @@
           </div>
           <div class="flex items-center justify-between text-[11px]">
             <a href="https://www.quebec.ca/securite-situations-urgence" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white underline">Ouvrir l'avis officiel ↗</a>
-            <button type="button" class="btn-share-mesh text-slate-400 hover:text-cyan-300 font-medium cursor-pointer" data-url="https://www.quebec.ca/securite-situations-urgence" data-title="Sécurité Publique Québec">📻 Meshtastic / Radio</button>
           </div>
         </div>
       </div>
@@ -316,19 +312,13 @@
             <span class="text-[10px] text-slate-600 font-medium mt-1">Scannable hors-ligne sans connexion</span>
           </div>
 
-          <!-- Actions de Partage Avancées (Meshtastic, ggwave audio, TxQR) -->
+          <!-- Actions de Partage -->
           <div class="grid grid-cols-2 gap-2 text-xs">
             <button type="button" id="btn-copy-modal-link" class="px-3 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold transition-all cursor-pointer">
               📋 Copier le lien
             </button>
             <button type="button" id="btn-native-share-alert" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold border border-slate-700 transition-all cursor-pointer">
               📲 Partage Natif
-            </button>
-            <button type="button" id="btn-copy-meshtastic" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold border border-slate-700 transition-all cursor-pointer">
-              📻 Paquet Meshtastic
-            </button>
-            <button type="button" id="btn-play-audio-chirp" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold border border-slate-700 transition-all cursor-pointer">
-              🔊 Son / Ultrason (ggwave)
             </button>
           </div>
         </div>
@@ -418,8 +408,6 @@
     const qrCanvas = document.getElementById('alert-qr-canvas');
     const btnCopyModalLink = document.getElementById('btn-copy-modal-link');
     const btnNativeShareAlert = document.getElementById('btn-native-share-alert');
-    const btnCopyMeshtastic = document.getElementById('btn-copy-meshtastic');
-    const btnPlayAudioChirp = document.getElementById('btn-play-audio-chirp');
 
     let currentModalPayload = { url: '', title: '', link: '' };
 
@@ -482,28 +470,6 @@
       });
     });
 
-    // Meshtastic Radio Packet Formatter
-    document.querySelectorAll('.btn-share-mesh').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const url = btn.getAttribute('data-url');
-        const title = btn.getAttribute('data-title') || 'Alerte Urgence';
-        const meshtasticMsg = `🚨 [ALERTE LIENLIBRE] ${title}\nSource : ${url}\n(Relayé par maillage citoyen)`;
-        navigator.clipboard.writeText(meshtasticMsg).then(() => {
-          alert("✓ Paquet radio Meshtastic copié dans le presse-papier !\nPrêt à être diffusé sur votre réseau LoRa.");
-        });
-      });
-    });
-
-    if (btnCopyMeshtastic) {
-      btnCopyMeshtastic.addEventListener('click', () => {
-        const msg = `🚨 [ALERTE LIENLIBRE] ${currentModalPayload.title}\nLien : ${currentModalPayload.link}\n(Relais radio citoyen)`;
-        navigator.clipboard.writeText(msg).then(() => {
-          btnCopyMeshtastic.textContent = '✓ Paquet copié !';
-          setTimeout(() => { btnCopyMeshtastic.textContent = '📻 Paquet Meshtastic'; }, 2000);
-        });
-      });
-    }
-
     if (btnCopyModalLink) {
       btnCopyModalLink.addEventListener('click', () => {
         navigator.clipboard.writeText(currentModalPayload.link).then(() => {
@@ -526,42 +492,6 @@
         } else {
           navigator.clipboard.writeText(currentModalPayload.link);
           alert('Lien copié dans votre presse-papier !');
-        }
-      });
-    }
-
-    // ggwave Sound / Audio Chirp Synthesizer (WebAudio API)
-    if (btnPlayAudioChirp) {
-      btnPlayAudioChirp.addEventListener('click', () => {
-        try {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (!AudioContext) return;
-          const ctx = new AudioContext();
-          const freqs = [1764, 2205, 2646, 3087, 3528, 3969, 4410]; // Multi-frequency FSK tones
-          let now = ctx.currentTime;
-          
-          btnPlayAudioChirp.textContent = '🔊 Émission sonore...';
-          
-          // Header sequence + payload pulse tone
-          const seq = [0, 2, 4, 1, 3, 5, 0, 4, 2, 6, 1, 5];
-          seq.forEach((idx) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.frequency.setValueAtTime(freqs[idx % freqs.length], now);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(now);
-            osc.stop(now + 0.12);
-            now += 0.13;
-          });
-
-          setTimeout(() => {
-            btnPlayAudioChirp.textContent = '🔊 Son / Ultrason (ggwave)';
-          }, 2000);
-        } catch (err) {
-          console.warn("Audio non supporté:", err);
         }
       });
     }
