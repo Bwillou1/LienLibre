@@ -386,6 +386,8 @@
   }
 
   function renderBadge(container) {
+    if (!container) return;
+    injectBadgeStyles();
     const targetUrl = cleanUrl(container.getAttribute('data-url') || window.location.href);
     const theme = container.getAttribute('data-theme') || 'dark'; // 'dark', 'light', 'glass', 'paper', 'auto'
     const format = container.getAttribute('data-style') || 'card'; // 'card', 'banner', 'pill', 'compact', 'floating'

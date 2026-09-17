@@ -583,40 +583,55 @@
       config.btnText = document.getElementById('input-btn-text').value.trim() || 'Copier le lien';
 
       // Rendu de l'aperçu dynamique
-      const target = document.getElementById('live-badge-target');
-      target.className = 'lienlibre-badge';
-      target.setAttribute('data-theme', config.theme);
-      target.setAttribute('data-accent', config.accent);
-      target.setAttribute('data-style', config.style);
-      target.setAttribute('data-title', config.title);
-      target.setAttribute('data-subtitle', config.subtitle);
-      target.setAttribute('data-btn-text', config.btnText);
-      target.setAttribute('data-show-shield', config.showShield);
-      target.setAttribute('data-show-tag', config.showTag);
-      target.setAttribute('data-show-copy', config.showCopy);
-      target.setAttribute('data-show-open', config.showOpen);
-      target.setAttribute('data-show-share', config.showShare);
-      target.setAttribute('data-show-socials', config.showSocials);
-      target.setAttribute('data-show-eink', config.showEink);
-      target.setAttribute('data-show-legal', config.showLegal);
-      target.setAttribute('data-sound', config.enableSound);
-      target.setAttribute('data-url', 'https://ici.radio-canada.ca/nouvelle/exemple');
+      const canvas = document.getElementById('preview-canvas');
+      if (canvas) {
+        canvas.innerHTML = '';
+        const target = document.createElement('div');
+        target.id = 'live-badge-target';
+        target.className = 'lienlibre-badge';
+        target.setAttribute('data-theme', config.theme);
+        target.setAttribute('data-accent', config.accent);
+        target.setAttribute('data-style', config.style);
+        target.setAttribute('data-title', config.title);
+        target.setAttribute('data-subtitle', config.subtitle);
+        target.setAttribute('data-btn-text', config.btnText);
+        target.setAttribute('data-show-shield', config.showShield ? 'true' : 'false');
+        target.setAttribute('data-show-tag', config.showTag ? 'true' : 'false');
+        target.setAttribute('data-show-copy', config.showCopy ? 'true' : 'false');
+        target.setAttribute('data-show-open', config.showOpen ? 'true' : 'false');
+        target.setAttribute('data-show-share', config.showShare ? 'true' : 'false');
+        target.setAttribute('data-show-socials', config.showSocials ? 'true' : 'false');
+        target.setAttribute('data-show-eink', config.showEink ? 'true' : 'false');
+        target.setAttribute('data-show-legal', config.showLegal ? 'true' : 'false');
+        target.setAttribute('data-sound', config.enableSound ? 'true' : 'false');
+        target.setAttribute('data-url', 'https://ici.radio-canada.ca/nouvelle/exemple');
 
-      if (window.renderLienLibreBadge) {
-        window.renderLienLibreBadge(target);
+        canvas.appendChild(target);
+
+        if (window.renderLienLibreBadge) {
+          window.renderLienLibreBadge(target);
+        } else if (window.initLienLibreBadges) {
+          window.initLienLibreBadges();
+        }
       }
 
       // Génération du code HTML
       let htmlAttributes = `class="lienlibre-badge"\n     data-theme="${config.theme}"\n     data-style="${config.style}"\n     data-accent="${config.accent}"`;
       if (config.title !== 'Partage Citoyen & Éducatif') htmlAttributes += `\n     data-title="${escapeHtml(config.title)}"`;
+      if (config.subtitle) htmlAttributes += `\n     data-subtitle="${escapeHtml(config.subtitle)}"`;
+      if (config.btnText !== 'Copier le lien propre') htmlAttributes += `\n     data-btn-text="${escapeHtml(config.btnText)}"`;
       if (!config.showShield) htmlAttributes += `\n     data-show-shield="false"`;
       if (!config.showTag) htmlAttributes += `\n     data-show-tag="false"`;
+      if (!config.showCopy) htmlAttributes += `\n     data-show-copy="false"`;
+      if (!config.showOpen) htmlAttributes += `\n     data-show-open="false"`;
+      if (!config.showShare) htmlAttributes += `\n     data-show-share="false"`;
       if (config.showSocials) htmlAttributes += `\n     data-show-socials="true"`;
       if (config.showEink) htmlAttributes += `\n     data-show-eink="true"`;
       if (!config.showLegal) htmlAttributes += `\n     data-show-legal="false"`;
 
       const snippet = `<!-- Badge Citoyen LienLibre pour Médias -->\n<script src="https://bwillou1.github.io/LienLibre/js/badge.js" async><\/script>\n<div ${htmlAttributes}></div>`;
-      document.getElementById('generated-html-code').textContent = snippet;
+      const codeEl = document.getElementById('generated-html-code');
+      if (codeEl) codeEl.textContent = snippet;
     }
 
     function escapeHtml(str) {
@@ -624,21 +639,27 @@
     }
 
     async function copySnippet() {
-      const code = document.getElementById('generated-html-code').textContent;
+      const codeEl = document.getElementById('generated-html-code');
+      const code = codeEl ? codeEl.textContent : '';
       const btn = document.getElementById('btn-copy-code');
       try {
         await navigator.clipboard.writeText(code);
-        btn.innerHTML = '<span>✓ Copié !</span>';
-        setTimeout(() => {
-          btn.innerHTML = '<span>📋 Copier</span>';
-        }, 2000);
+        if (btn) {
+          btn.innerHTML = '<span>✓ Copié !</span>';
+          setTimeout(() => {
+            btn.innerHTML = '<span>📋 Copier</span>';
+          }, 2000);
+        }
       } catch (_) {}
     }
 
     // Initialisation au chargement
-    document.addEventListener('DOMContentLoaded', () => {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateConfig);
+    } else {
       updateConfig();
-    });
+    }
+    window.addEventListener('load', updateConfig);
   </script>
 </body>
 </html>
