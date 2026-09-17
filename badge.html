@@ -673,13 +673,12 @@
             </div>
           </div>
 
-          <!-- 4. Bascules d'Éléments & Composants (8 boutons ON/OFF) -->
+          <!-- 4. Bascules d'Éléments & Composants (7 boutons ON/OFF) -->
           <div class="control-group">
-            <label class="control-label">4. Elements & Composants a Afficher (8 Bascules)</label>
+            <label class="control-label">4. Elements & Composants a Afficher (7 Bascules)</label>
             <div class="btn-grid">
               <button type="button" class="studio-btn toggle-on" id="toggle-tag" onclick="toggleOption('showTag')">[Tag Sans Mouchard : ON]</button>
               <button type="button" class="studio-btn toggle-on" id="toggle-copy" onclick="toggleOption('showCopy')">[Bouton Copier : ON]</button>
-              <button type="button" class="studio-btn toggle-on" id="toggle-open" onclick="toggleOption('showOpen')">[Bouton Ouvrir : ON]</button>
               <button type="button" class="studio-btn toggle-on" id="toggle-share" onclick="toggleOption('showShare')">[Bouton Partage OS : ON]</button>
               <button type="button" class="studio-btn toggle-off" id="toggle-socials" onclick="toggleOption('showSocials')">[Barre Reseaux : OFF]</button>
               <button type="button" class="studio-btn toggle-off" id="toggle-eink" onclick="toggleOption('showEink')">[Bouton Liseuses : OFF]</button>
@@ -742,15 +741,6 @@
                   <span class="dnd-desc">Copie directe en 1 clic avec son haptique</span>
                 </div>
                 <span class="dnd-badge-req">[RECOMMANDE]</span>
-              </div>
-              <!-- Bloc Bouton Ouvrir -->
-              <div class="dnd-block" draggable="true" data-block-id="open">
-                <span class="dnd-handle">[::]</span>
-                <div class="dnd-info">
-                  <span class="dnd-title">[Bouton Ouvrir LienLibre]</span>
-                  <span class="dnd-desc">Acceder a la passerelle miroir de recherche</span>
-                </div>
-                <span class="dnd-badge-opt">[OPTIONNEL]</span>
               </div>
               <!-- Bloc Reseaux Sociaux -->
               <div class="dnd-block" draggable="true" data-block-id="socials">
@@ -959,7 +949,6 @@
       btnText: 'Copier le lien propre',
       showTag: true,
       showCopy: true,
-      showOpen: true,
       showShare: true,
       showSocials: false,
       showEink: false,
@@ -970,7 +959,7 @@
       showThreads: true,
       showWa: true,
       showEmail: true,
-      blockOrder: ['title', 'tag', 'desc', 'copy', 'open', 'socials', 'legal']
+      blockOrder: ['title', 'tag', 'desc', 'copy', 'socials', 'legal']
     };
 
     function switchMode(mode) {
@@ -1047,7 +1036,6 @@
 
       syncBtn('toggle-tag', config.showTag, 'Tag Sans Mouchard');
       syncBtn('toggle-copy', config.showCopy, 'Bouton Copier');
-      syncBtn('toggle-open', config.showOpen, 'Bouton Ouvrir');
       syncBtn('toggle-share', config.showShare, 'Bouton Partage OS');
       syncBtn('toggle-socials', config.showSocials, 'Barre Reseaux');
       syncBtn('toggle-eink', config.showEink, 'Bouton Liseuses');
@@ -1183,7 +1171,6 @@
       if (config.btnText !== 'Copier le lien propre') htmlAttributes += `\n     data-btn-text="${escapeHtml(config.btnText)}"`;
       if (!config.showTag) htmlAttributes += `\n     data-show-tag="false"`;
       if (!config.showCopy) htmlAttributes += `\n     data-show-copy="false"`;
-      if (!config.showOpen) htmlAttributes += `\n     data-show-open="false"`;
       if (!config.showShare) htmlAttributes += `\n     data-show-share="false"`;
       if (config.showSocials) htmlAttributes += `\n     data-show-socials="true"`;
       if (config.showEink) htmlAttributes += `\n     data-show-eink="true"`;
@@ -1219,7 +1206,6 @@
         target.setAttribute('data-btn-text', config.btnText);
         target.setAttribute('data-show-tag', config.showTag ? 'true' : 'false');
         target.setAttribute('data-show-copy', config.showCopy ? 'true' : 'false');
-        target.setAttribute('data-show-open', config.showOpen ? 'true' : 'false');
         target.setAttribute('data-show-share', config.showShare ? 'true' : 'false');
         target.setAttribute('data-show-socials', config.showSocials ? 'true' : 'false');
         target.setAttribute('data-show-eink', config.showEink ? 'true' : 'false');
@@ -1280,7 +1266,6 @@
       config.showEink = /data-show-eink="true"/.test(rawCode);
       config.showTag = !/data-show-tag="false"/.test(rawCode);
       config.showCopy = !/data-show-copy="false"/.test(rawCode);
-      config.showOpen = !/data-show-open="false"/.test(rawCode);
       config.showShare = !/data-show-share="false"/.test(rawCode);
 
       auditValidation();
@@ -1301,7 +1286,6 @@
         target.setAttribute('data-btn-text', config.btnText);
         target.setAttribute('data-show-tag', config.showTag ? 'true' : 'false');
         target.setAttribute('data-show-copy', config.showCopy ? 'true' : 'false');
-        target.setAttribute('data-show-open', config.showOpen ? 'true' : 'false');
         target.setAttribute('data-show-share', config.showShare ? 'true' : 'false');
         target.setAttribute('data-show-socials', config.showSocials ? 'true' : 'false');
         target.setAttribute('data-show-eink', config.showEink ? 'true' : 'false');
@@ -1425,4 +1409,3 @@
   </script>
 </body>
 </html>
-

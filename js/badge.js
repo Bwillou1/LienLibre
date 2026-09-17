@@ -457,10 +457,11 @@
       pillBox.className = `ll-widget-root ll-format-pill ll-theme-${theme}`;
       pillBox.innerHTML = `
         <div class="ll-pill-top">
-          <span class="ll-emoticon-tag">[LienLibre]</span>
-          <a class="ll-btn ${tagStyleClass}" href="${mirrorUrl}" target="_blank" rel="noopener noreferrer" style="font-size: 11px; padding: 4px 10px;">
-            ${customTitle} ↗
-          </a>
+          <button type="button" class="ll-btn ${tagStyleClass} ll-pill-copy-btn" style="font-size: 11px; padding: 5px 12px;">
+            <span class="ll-emoticon-tag">[+]</span>
+            <span>${customBtnText}</span>
+            <span class="ll-toast">[OK]</span>
+          </button>
         </div>
         <div style="font-size: 9.5px; opacity: 0.8; margin-top: 2px;">
           <a href="${LEGAL_URL}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">
@@ -468,6 +469,20 @@
           </a>
         </div>
       `;
+      const btn = pillBox.querySelector('.ll-pill-copy-btn');
+      btn.addEventListener('click', async () => {
+        if (enableSound) playBadgeHapticSound();
+        try {
+          await navigator.clipboard.writeText(mirrorUrl);
+          const t = pillBox.querySelector('.ll-toast');
+          if (t) {
+            t.style.display = 'inline-block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+          }
+        } catch (_) {
+          window.open(mirrorUrl, '_blank');
+        }
+      });
       container.innerHTML = '';
       container.appendChild(pillBox);
       return;
@@ -548,13 +563,6 @@
             <span>[Copier]</span>
             <span>${customBtnText}</span>
           </button>
-        ` : ''}
-        
-        ${showOpen ? `
-          <a class="ll-btn ll-btn-sec" href="${mirrorUrl}" target="_blank" rel="noopener noreferrer">
-            <span>[Ouvrir]</span>
-            <span>${isEn ? 'Open' : 'Ouvrir via LienLibre'} ↗</span>
-          </a>
         ` : ''}
 
         ${showShare ? `
